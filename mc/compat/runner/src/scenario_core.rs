@@ -2136,12 +2136,18 @@ pub(crate) const SCENARIO_SPECS: &[ScenarioSpec] = &[
             ("team_red", "You are on team RED!"),
             ("remote_player_spawn", "remote_player_spawn"),
             ("projectile_use_sent", "projectile_probe_use_item_sent"),
+            ("projectile_spawn_visible", "projectile_probe_spawn_visible"),
             ("projectile_swing_sent", "projectile_probe_swing_sent"),
+            ("projectile_travel_observed", "projectile_probe_travel_observed"),
         ],
         server_milestones: &[
             ("server_client_a_seen", "compatbota"),
             ("server_client_b_seen", "compatbotb"),
             ("server_projectile_loadout", "projectile_loadout"),
+            ("server_projectile_use", "projectile_use"),
+            ("server_projectile_travel_sample", "projectile_travel_sample"),
+            ("server_projectile_collision", "projectile_collision"),
+            ("server_projectile_hit", "projectile_hit"),
         ],
         forbidden_patterns: &[
             ("panic", "panicked"),

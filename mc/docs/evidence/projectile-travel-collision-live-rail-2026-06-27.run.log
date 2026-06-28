@@ -1,0 +1,25 @@
+command=rm -rf target/projectile-travel-collision-live-rail && VALENCE_REPO=/home/brittonr/git VALENCE_WORKTREE=/home/brittonr/git VALENCE_REV=HEAD VALENCE_TARGET_DIR=/tmp/valence-compat-projectile-travel-collision-target CLIENT_TIMEOUT=300 MC_COMPAT_PROJECTILE_HIT_RECEIPT=target/projectile-travel-collision-live-rail/projectile-hit-travel-collision.receipt.json nix run --no-update-lock-file .#mc-compat-valence-ctf-projectile-hit -- --run
+pueue_task=23
+result=pass
+receipt=target/projectile-travel-collision-live-rail/projectile-hit-travel-collision.receipt.json
+typed_events=target/projectile-travel-collision-live-rail/projectile-hit-travel-collision.receipt.typed-events.log
+source_client_compatbota_log=/tmp/mc-compat-client.compatbota.1782614183270.log
+source_client_compatbotb_log=/tmp/mc-compat-client.compatbotb.1782614188270.log
+source_valence_log=/tmp/mc-compat-valence.log
+promoted_receipt=docs/evidence/projectile-travel-collision-live-rail-2026-06-27.receipt.json
+promoted_typed_events=docs/evidence/projectile-travel-collision-live-rail-2026-06-27.typed-events.log
+promoted_valence_log=docs/evidence/projectile-travel-collision-live-rail-2026-06-27.valence.log
+promoted_client_logs=docs/evidence/projectile-travel-collision-live-rail-2026-06-27.client-compatbota.log,docs/evidence/projectile-travel-collision-live-rail-2026-06-27.client-compatbotb.log
+status=pass
+mode=run
+dry_run=false
+scenario=projectile-hit
+scenario.passed=true
+server.passed=true
+projectile_travel_collision.selected=true
+projectile_travel_collision.passed=true
+projectile_travel_collision.missing_steps=[]
+projectile_travel_collision.order_violations=[]
+projectile_travel_collision.identity_violations=[]
+triage.suggested_boundary=none
+exit_status=0

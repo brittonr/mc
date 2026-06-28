@@ -20,6 +20,9 @@ pub(crate) fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         if behavior.is_mcp_controlled_smoke() {
             return Ok(mcp_controlled_dry_run_evidence(cfg));
         }
+        if cfg.scenario == Scenario::ProjectileHit {
+            return Ok(projectile_travel_collision_dry_run_evidence(cfg));
+        }
         if behavior.uses_dynamic_projectile_health() {
             return Ok(projectile_damage_dry_run_evidence(cfg));
         }
@@ -39,6 +42,7 @@ pub(crate) fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             scenario: Some(scenario),
             server_scenario,
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         });
@@ -112,19 +116,28 @@ pub(crate) fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         }
     }
 
+    let projectile_client_logs = runs
+        .iter()
+        .map(|run| ClientLogSlice {
+            username: &run.username,
+            output: &run.output,
+        })
+        .collect::<Vec<_>>();
+    let projectile_server_log =
+        if behavior.uses_dynamic_projectile_health() || cfg.scenario == Scenario::ProjectileHit {
+            Some(read_valence_log(cfg)?)
+        } else {
+            None
+        };
+
     let projectile_damage_causality = if behavior.uses_dynamic_projectile_health() {
-        let server_log = read_valence_log(cfg)?;
-        let client_logs = runs
-            .iter()
-            .map(|run| ClientLogSlice {
-                username: &run.username,
-                output: &run.output,
-            })
-            .collect::<Vec<_>>();
+        let server_log = projectile_server_log
+            .as_deref()
+            .expect("projectile server log loaded for dynamic projectile health");
         let expected_damage = projectile_damage_amount_needle(cfg);
         let causality = evaluate_projectile_damage_causality_for_damage(
-            &client_logs,
-            &server_log,
+            &projectile_client_logs,
+            server_log,
             &cfg.client_username,
             &expected_damage,
         );
@@ -141,6 +154,33 @@ pub(crate) fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
             ));
         }
         Some(causality)
+    } else {
+        None
+    };
+
+    let projectile_travel_collision = if cfg.scenario == Scenario::ProjectileHit {
+        let server_log = projectile_server_log
+            .as_deref()
+            .expect("projectile server log loaded for projectile-hit travel rail");
+        let evidence = evaluate_projectile_travel_collision(
+            &projectile_client_logs,
+            server_log,
+            &cfg.client_username,
+        );
+        if !evidence.passed {
+            return Err(format!(
+                "projectile travel/collision rail failed: missing={:?} order_violations={:?} identity_violations={:?}; client_logs={}; server_log={}",
+                evidence.missing_steps,
+                evidence.order_violations,
+                evidence.identity_violations,
+                runs.iter()
+                    .map(|run| run.log_path.display().to_string())
+                    .collect::<Vec<_>>()
+                    .join(","),
+                cfg.valence_log.display()
+            ));
+        }
+        Some(evidence)
     } else {
         None
     };
@@ -197,6 +237,7 @@ pub(crate) fn run_client(cfg: &Config) -> Result<ClientRunEvidence, String> {
         scenario: Some(scenario),
         server_scenario,
         projectile_damage_causality,
+        projectile_travel_collision,
         mcp_control: None,
         frame_artifacts: None,
     };
@@ -220,6 +261,7 @@ pub(crate) fn mcp_controlled_dry_run_evidence(cfg: &Config) -> ClientRunEvidence
             &cfg.client_username,
         )),
         projectile_damage_causality: None,
+        projectile_travel_collision: None,
         mcp_control: Some(mcp_control_dry_run_control_evidence()),
         frame_artifacts: Some(evaluate_frame_artifacts_receipt(cfg, None)),
     }
@@ -559,6 +601,7 @@ fn run_mcp_controlled_live_client(cfg: &Config) -> Result<ClientRunEvidence, Str
             &cfg.client_username,
         )),
         projectile_damage_causality: None,
+        projectile_travel_collision: None,
         mcp_control: Some(control),
         frame_artifacts: Some(frame_artifacts),
     })
@@ -764,6 +807,98 @@ fn relative_artifact_path_is_contained(path: &Path) -> bool {
     saw_component
 }
 
+pub(crate) fn projectile_travel_collision_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
+    let attacker_username = format!(
+        "{}{}",
+        cfg.client_username, PROJECTILE_DAMAGE_ATTACKER_SUFFIX
+    );
+    let target_username = format!("{}{}", cfg.client_username, PROJECTILE_DAMAGE_VICTIM_SUFFIX);
+    let attacker_log = format!(
+        "Detected server protocol version {}\njoin_game\nrender_tick_with_player\nYou are on team RED!\nremote_player_spawn\n{} hand=main {} projectile_id={} weapon={}\n{} projectile_id={} weapon={} proof_basis={}\n{} hand=main projectile_id={}\n{} projectile_id={} proof_basis={}\n",
+        cfg.server_protocol,
+        PROJECTILE_DAMAGE_CLIENT_USE_NEEDLE,
+        PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
+        PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+        PROJECTILE_TRAVEL_COLLISION_WEAPON,
+        PROJECTILE_TRAVEL_COLLISION_CLIENT_SPAWN_NEEDLE,
+        PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+        PROJECTILE_TRAVEL_COLLISION_WEAPON,
+        PROJECTILE_TRAVEL_COLLISION_PROOF_BASIS,
+        PROJECTILE_DAMAGE_CLIENT_SWING_NEEDLE,
+        PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+        PROJECTILE_TRAVEL_COLLISION_CLIENT_TRAVEL_NEEDLE,
+        PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+        PROJECTILE_TRAVEL_COLLISION_PROOF_BASIS
+    );
+    let target_log = format!(
+        "Detected server protocol version {}\njoin_game\nrender_tick_with_player\nYou are on team BLUE!\nremote_player_spawn\n",
+        cfg.server_protocol
+    );
+    let server_log = format!(
+        "{attacker_username} joined\n{target_username} joined\nMC-COMPAT-MILESTONE projectile_loadout username={attacker_username} slot=0 item=Bow arrows={}\n{} attacker={attacker_username} victim={target_username} hand=Main {} projectile_id={} weapon={} {} policy={} generation={} clamped=false\n{} attacker={attacker_username} target={target_username} {} projectile_id={} weapon={} sample={} sample_index={} proof_basis={}\n{} attacker={attacker_username} target={target_username} {} projectile_id={} weapon={} collision={} proof_basis={}\n{} attacker={attacker_username} victim={target_username} {} projectile_id={} weapon={} {} victim_health_before={:.1} victim_health_after={:.1} policy={} generation={} clamped=false\n",
+        PROJECTILE_TRAVEL_COLLISION_LOADOUT_ARROW_COUNT,
+        PROJECTILE_DAMAGE_SERVER_USE_NEEDLE,
+        PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
+        PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+        PROJECTILE_TRAVEL_COLLISION_WEAPON,
+        PROJECTILE_DAMAGE_AMOUNT_NEEDLE,
+        PROJECTILE_TRAVEL_COLLISION_POLICY_ID,
+        PROJECTILE_TRAVEL_COLLISION_POLICY_GENERATION,
+        PROJECTILE_TRAVEL_COLLISION_SERVER_TRAVEL_NEEDLE,
+        PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
+        PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+        PROJECTILE_TRAVEL_COLLISION_WEAPON,
+        PROJECTILE_TRAVEL_COLLISION_SAMPLE_KIND,
+        PROJECTILE_TRAVEL_COLLISION_SAMPLE_INDEX,
+        PROJECTILE_TRAVEL_COLLISION_PROOF_BASIS,
+        PROJECTILE_TRAVEL_COLLISION_SERVER_COLLISION_NEEDLE,
+        PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
+        PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+        PROJECTILE_TRAVEL_COLLISION_WEAPON,
+        PROJECTILE_TRAVEL_COLLISION_COLLISION_KIND,
+        PROJECTILE_TRAVEL_COLLISION_PROOF_BASIS,
+        PROJECTILE_DAMAGE_SERVER_HIT_NEEDLE,
+        PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
+        PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+        PROJECTILE_TRAVEL_COLLISION_WEAPON,
+        PROJECTILE_DAMAGE_AMOUNT_NEEDLE,
+        PROJECTILE_DAMAGE_VICTIM_START_HEALTH,
+        PROJECTILE_TRAVEL_COLLISION_VICTIM_END_HEALTH,
+        PROJECTILE_TRAVEL_COLLISION_POLICY_ID,
+        PROJECTILE_TRAVEL_COLLISION_POLICY_GENERATION
+    );
+    let combined_output =
+        format!("mc_compat_projectile_hit_client_count=2\n{attacker_log}{target_log}");
+    let client_logs = [
+        ClientLogSlice {
+            username: &attacker_username,
+            output: &attacker_log,
+        },
+        ClientLogSlice {
+            username: &target_username,
+            output: &target_log,
+        },
+    ];
+    let scenario = evaluate_scenario_for_config(cfg, &combined_output);
+    let server_scenario = evaluate_server_scenario(cfg.scenario, &server_log, &cfg.client_username);
+    let projectile_travel_collision =
+        evaluate_projectile_travel_collision(&client_logs, &server_log, &cfg.client_username);
+    ClientRunEvidence {
+        log_path: None,
+        log_paths: Vec::new(),
+        usernames: vec![attacker_username, target_username],
+        exit_code: None,
+        classification: "dry-run",
+        matched_success_pattern: Some("Detected server protocol version".to_string()),
+        scenario: Some(scenario),
+        server_scenario: Some(server_scenario),
+        projectile_damage_causality: None,
+        projectile_travel_collision: Some(projectile_travel_collision),
+        mcp_control: None,
+        frame_artifacts: None,
+    }
+}
+
 pub(crate) fn projectile_damage_dry_run_evidence(cfg: &Config) -> ClientRunEvidence {
     let attacker_username = format!(
         "{}{}",
@@ -823,6 +958,7 @@ pub(crate) fn projectile_damage_dry_run_evidence(cfg: &Config) -> ClientRunEvide
         scenario: Some(scenario),
         server_scenario: Some(server_scenario),
         projectile_damage_causality: Some(projectile_damage_causality),
+        projectile_travel_collision: None,
         mcp_control: None,
         frame_artifacts: None,
     }

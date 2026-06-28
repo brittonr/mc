@@ -28,19 +28,21 @@ use client_driver::{
     client_timeout_secs, derive_survival_crash_recovery_client_milestones,
     derive_survival_crash_recovery_server_milestones, mcp_control_dry_run_control_evidence,
     mcp_controlled_dry_run_evidence, mcp_controlled_success_output, planned_client_usernames,
-    projectile_damage_dry_run_evidence, read_paper_log, read_valence_log,
-    requires_server_correlation, run_client, server_log_label, uses_isolated_restart_storage,
-    world_persistence_phase_value, world_persistence_pre_restart_server_log_path,
-    world_persistence_restart_phase_path, world_persistence_state_dir,
+    projectile_damage_dry_run_evidence, projectile_travel_collision_dry_run_evidence,
+    read_paper_log, read_valence_log, requires_server_correlation, run_client, server_log_label,
+    uses_isolated_restart_storage, world_persistence_phase_value,
+    world_persistence_pre_restart_server_log_path, world_persistence_restart_phase_path,
+    world_persistence_state_dir,
 };
 use evidence_bundle::*;
 use evidence_core::{
     evaluate_projectile_damage_causality, evaluate_projectile_damage_causality_for_damage,
-    evaluate_scenario_for_config, evaluate_server_scenario, evaluate_typed_event_graph,
-    normalize_typed_event_timeline, typed_event_oracle_contributes_to_pass_fail,
-    typed_event_oracle_receipt_json, typed_event_ordered_edges_for_scenario,
-    typed_event_required_events_for_graph, typed_event_timeline_blake3,
-    typed_events_from_receipt_evidence, validate_typed_event_oracle_for_migrated_scenario,
+    evaluate_projectile_travel_collision, evaluate_scenario_for_config, evaluate_server_scenario,
+    evaluate_typed_event_graph, normalize_typed_event_timeline,
+    typed_event_oracle_contributes_to_pass_fail, typed_event_oracle_receipt_json,
+    typed_event_ordered_edges_for_scenario, typed_event_required_events_for_graph,
+    typed_event_timeline_blake3, typed_events_from_receipt_evidence,
+    validate_typed_event_oracle_for_migrated_scenario,
 };
 #[cfg(test)]
 use evidence_core::{
@@ -137,6 +139,37 @@ const PROJECTILE_DAMAGE_SERVER_USE_NEEDLE: &str = "MC-COMPAT-MILESTONE projectil
 const PROJECTILE_DAMAGE_SERVER_HIT_NEEDLE: &str = "MC-COMPAT-MILESTONE projectile_hit";
 const PROJECTILE_DAMAGE_SEQUENCE_NEEDLE: &str = "sequence=303";
 const PROJECTILE_DAMAGE_AMOUNT_NEEDLE: &str = "damage=3.0";
+const PROJECTILE_TRAVEL_COLLISION_ROW_ID: &str = "bow_arrow_synthetic_use_to_hit";
+const PROJECTILE_TRAVEL_COLLISION_WEAPON: &str = "Bow";
+const PROJECTILE_TRAVEL_COLLISION_WEAPON_REPRESENTATIVE: &str = "bow_like_projectile_probe";
+const PROJECTILE_TRAVEL_COLLISION_PROJECTILE_REPRESENTATIVE: &str = "arrow_like_probe";
+const PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID: &str = "arrow_probe_sequence_303";
+const PROJECTILE_TRAVEL_COLLISION_CLIENT_SPAWN_NEEDLE: &str = "projectile_probe_spawn_visible";
+const PROJECTILE_TRAVEL_COLLISION_CLIENT_TRAVEL_NEEDLE: &str = "projectile_probe_travel_observed";
+const PROJECTILE_TRAVEL_COLLISION_SERVER_TRAVEL_NEEDLE: &str =
+    "MC-COMPAT-MILESTONE projectile_travel_sample";
+const PROJECTILE_TRAVEL_COLLISION_SERVER_COLLISION_NEEDLE: &str =
+    "MC-COMPAT-MILESTONE projectile_collision";
+const PROJECTILE_TRAVEL_COLLISION_SAMPLE_KIND: &str = "synthetic_midpoint";
+const PROJECTILE_TRAVEL_COLLISION_SAMPLE_INDEX: u32 = 1;
+const PROJECTILE_TRAVEL_COLLISION_COLLISION_KIND: &str = "synthetic_entity_hit";
+const PROJECTILE_TRAVEL_COLLISION_PROOF_BASIS: &str = "bounded_fixture_not_entity_physics";
+const PROJECTILE_TRAVEL_COLLISION_POLICY_ID: &str = "damage-linear";
+const PROJECTILE_TRAVEL_COLLISION_POLICY_GENERATION: u64 = 0;
+const PROJECTILE_TRAVEL_COLLISION_LOADOUT_ARROW_COUNT: u32 = 16;
+const PROJECTILE_TRAVEL_COLLISION_VICTIM_END_HEALTH: f64 = 17.0;
+const PROJECTILE_TRAVEL_COLLISION_FORBIDDEN_PARITY_CLAIMS: &[&str] = &[
+    "claim=exact_vanilla_projectile_parity",
+    "claim=full_projectile_physics",
+    "claims_exact_vanilla_parity=true",
+];
+const PROJECTILE_TRAVEL_COLLISION_NON_CLAIMS: &[&str] = &[
+    "not_full_projectile_physics",
+    "not_entity_spawn_or_ballistics",
+    "not_exact_vanilla_projectile_parity",
+    "not_public_server_safety",
+    "not_production_readiness",
+];
 const DEFAULT_ARROW_DAMAGE: f64 = 3.0;
 const DEFAULT_ARROW_VELOCITY_MULTIPLIER: f64 = 1.0;
 const DEFAULT_ARROW_MAX_DAMAGE: f64 = 10.0;
@@ -613,6 +646,7 @@ struct ClientRunEvidence {
     scenario: Option<ScenarioEvidence>,
     server_scenario: Option<ServerScenarioEvidence>,
     projectile_damage_causality: Option<ProjectileDamageCausalityEvidence>,
+    projectile_travel_collision: Option<ProjectileTravelCollisionEvidence>,
     mcp_control: Option<McpControlRunEvidence>,
     frame_artifacts: Option<FrameArtifactsReceiptEvidence>,
 }
@@ -4868,6 +4902,7 @@ mod tests {
                 TEST_USERNAME,
             )),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: Some(McpControlRunEvidence {
                 handshake_success: true,
                 tool_list_digest: mcp_control_tool_list_digest(),
@@ -7374,6 +7409,7 @@ mod tests {
                 passed: true,
             }),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         }
@@ -7687,10 +7723,10 @@ mod tests {
             ),
             (
                 Scenario::ProjectileHit,
-                "projectile_use_sent",
-                "projectile_use_sent",
-                "projectile_swing_sent",
-                false,
+                "projectile_travel_observed",
+                "server_projectile_travel_sample",
+                "server_projectile_collision",
+                true,
             ),
             (
                 Scenario::ProjectileDamageAttribution,
@@ -7920,6 +7956,7 @@ mod tests {
                 passed: true,
             }),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         };
@@ -8085,6 +8122,7 @@ mod tests {
                 passed: true,
             }),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         };
@@ -8143,6 +8181,7 @@ mod tests {
                 passed: true,
             }),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         };
@@ -8221,6 +8260,7 @@ mod tests {
                 passed: true,
             }),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         };
@@ -8299,6 +8339,7 @@ mod tests {
                 passed: true,
             }),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         };
@@ -8383,6 +8424,7 @@ mod tests {
                 passed: true,
             }),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         };
@@ -8471,6 +8513,7 @@ mod tests {
                 passed: true,
             }),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         };
@@ -8558,6 +8601,7 @@ mod tests {
                 passed: true,
             }),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         };
@@ -8644,6 +8688,7 @@ mod tests {
                 passed: true,
             }),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         };
@@ -8777,6 +8822,7 @@ mod tests {
                 passed: true,
             }),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         };
@@ -9002,6 +9048,7 @@ red flag captured
                 "compatbot",
             )),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         });
@@ -9071,6 +9118,7 @@ red flag captured
                 "compatbot",
             )),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         });
@@ -9395,6 +9443,7 @@ negative_custom_payload_contained
                 "compatbot",
             )),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         });
@@ -9964,6 +10013,268 @@ negative_custom_payload_contained
         assert!(json.contains("\"promotion_ready\": false"), "{json}");
         assert!(json.contains("\"all_enchantments\""), "{json}");
         assert!(json.contains("\"full_combat_correctness\""), "{json}");
+    }
+
+    fn projectile_travel_attacker_log() -> String {
+        format!(
+            "{} hand=main {} projectile_id={} weapon={}\n{} projectile_id={} weapon={} proof_basis={}\n{} hand=main projectile_id={}\n{} projectile_id={} proof_basis={}\n",
+            PROJECTILE_DAMAGE_CLIENT_USE_NEEDLE,
+            PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
+            PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+            PROJECTILE_TRAVEL_COLLISION_WEAPON,
+            PROJECTILE_TRAVEL_COLLISION_CLIENT_SPAWN_NEEDLE,
+            PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+            PROJECTILE_TRAVEL_COLLISION_WEAPON,
+            PROJECTILE_TRAVEL_COLLISION_PROOF_BASIS,
+            PROJECTILE_DAMAGE_CLIENT_SWING_NEEDLE,
+            PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+            PROJECTILE_TRAVEL_COLLISION_CLIENT_TRAVEL_NEEDLE,
+            PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+            PROJECTILE_TRAVEL_COLLISION_PROOF_BASIS
+        )
+    }
+
+    fn projectile_travel_client_logs<'a>(attacker_log: &'a str) -> [ClientLogSlice<'a>; 2] {
+        [
+            ClientLogSlice {
+                username: TEST_ATTACKER_USERNAME,
+                output: attacker_log,
+            },
+            ClientLogSlice {
+                username: TEST_VICTIM_USERNAME,
+                output: "",
+            },
+        ]
+    }
+
+    fn projectile_travel_use_line(target: &str, weapon: &str) -> String {
+        format!(
+            "{} attacker={} victim={} hand=Main {} projectile_id={} weapon={} {}",
+            PROJECTILE_DAMAGE_SERVER_USE_NEEDLE,
+            TEST_ATTACKER_USERNAME,
+            target,
+            PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
+            PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+            weapon,
+            PROJECTILE_DAMAGE_AMOUNT_NEEDLE
+        )
+    }
+
+    fn projectile_travel_sample_line(target: &str, weapon: &str) -> String {
+        format!(
+            "{} attacker={} target={} {} projectile_id={} weapon={} sample={} sample_index={} proof_basis={}",
+            PROJECTILE_TRAVEL_COLLISION_SERVER_TRAVEL_NEEDLE,
+            TEST_ATTACKER_USERNAME,
+            target,
+            PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
+            PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+            weapon,
+            PROJECTILE_TRAVEL_COLLISION_SAMPLE_KIND,
+            PROJECTILE_TRAVEL_COLLISION_SAMPLE_INDEX,
+            PROJECTILE_TRAVEL_COLLISION_PROOF_BASIS
+        )
+    }
+
+    fn projectile_travel_collision_line(target: &str, weapon: &str) -> String {
+        format!(
+            "{} attacker={} target={} {} projectile_id={} weapon={} collision={} proof_basis={}",
+            PROJECTILE_TRAVEL_COLLISION_SERVER_COLLISION_NEEDLE,
+            TEST_ATTACKER_USERNAME,
+            target,
+            PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
+            PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+            weapon,
+            PROJECTILE_TRAVEL_COLLISION_COLLISION_KIND,
+            PROJECTILE_TRAVEL_COLLISION_PROOF_BASIS
+        )
+    }
+
+    fn projectile_travel_hit_line(target: &str, weapon: &str) -> String {
+        format!(
+            "{} attacker={} victim={} {} projectile_id={} weapon={} {} victim_health_before={:.1} victim_health_after={:.1}",
+            PROJECTILE_DAMAGE_SERVER_HIT_NEEDLE,
+            TEST_ATTACKER_USERNAME,
+            target,
+            PROJECTILE_DAMAGE_SEQUENCE_NEEDLE,
+            PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+            weapon,
+            PROJECTILE_DAMAGE_AMOUNT_NEEDLE,
+            PROJECTILE_DAMAGE_VICTIM_START_HEALTH,
+            PROJECTILE_TRAVEL_COLLISION_VICTIM_END_HEALTH
+        )
+    }
+
+    fn projectile_travel_server_log(target: &str, weapon: &str) -> String {
+        format!(
+            "{}\n{}\n{}\n{}\n",
+            projectile_travel_use_line(target, weapon),
+            projectile_travel_sample_line(target, weapon),
+            projectile_travel_collision_line(target, weapon),
+            projectile_travel_hit_line(target, weapon)
+        )
+    }
+
+    fn projectile_travel_evidence_for(server_log: &str) -> ProjectileTravelCollisionEvidence {
+        let attacker_log = projectile_travel_attacker_log();
+        let client_logs = projectile_travel_client_logs(&attacker_log);
+        evaluate_projectile_travel_collision(&client_logs, server_log, TEST_USERNAME)
+    }
+
+    #[test]
+    fn projectile_travel_collision_synthetic_row_tracks_client_and_server_evidence() {
+        let cfg = test_config(&["--scenario", "projectile-hit"], &[])
+            .expect("projectile-hit config parses");
+        let dry_run = projectile_travel_collision_dry_run_evidence(&cfg);
+        assert!(dry_run
+            .scenario
+            .as_ref()
+            .is_some_and(|evidence| evidence.passed));
+        assert!(dry_run
+            .server_scenario
+            .as_ref()
+            .is_some_and(|evidence| evidence.passed));
+        let travel = dry_run
+            .projectile_travel_collision
+            .as_ref()
+            .expect("travel collision evidence");
+        assert!(travel.passed, "{travel:?}");
+        assert_eq!(travel.row_id, PROJECTILE_TRAVEL_COLLISION_ROW_ID);
+        assert!(travel
+            .observed_steps
+            .contains(&"server_projectile_travel_sample"));
+        assert!(travel
+            .observed_steps
+            .contains(&"server_projectile_collision"));
+
+        let server_log =
+            projectile_travel_server_log(TEST_VICTIM_USERNAME, PROJECTILE_TRAVEL_COLLISION_WEAPON);
+        let direct = projectile_travel_evidence_for(&server_log);
+        assert!(direct.passed, "{direct:?}");
+        assert!(direct.identity_violations.is_empty(), "{direct:?}");
+        assert!(direct
+            .non_claims
+            .contains(&"not_exact_vanilla_projectile_parity"));
+    }
+
+    #[test]
+    fn projectile_travel_collision_fails_closed_for_bad_evidence() {
+        let attacker_log = projectile_travel_attacker_log();
+        let client_logs = projectile_travel_client_logs(&attacker_log);
+        let good_server =
+            projectile_travel_server_log(TEST_VICTIM_USERNAME, PROJECTILE_TRAVEL_COLLISION_WEAPON);
+
+        let missing_travel = good_server.replace(
+            &format!(
+                "{}\n",
+                projectile_travel_sample_line(
+                    TEST_VICTIM_USERNAME,
+                    PROJECTILE_TRAVEL_COLLISION_WEAPON
+                )
+            ),
+            "",
+        );
+        let evidence =
+            evaluate_projectile_travel_collision(&client_logs, &missing_travel, TEST_USERNAME);
+        assert!(!evidence.passed, "{evidence:?}");
+        assert!(evidence
+            .missing_steps
+            .contains(&"server_projectile_travel_sample"));
+        assert!(evidence
+            .order_violations
+            .contains(&"server_collision_or_hit_without_travel"));
+
+        let missing_collision = good_server.replace(
+            &format!(
+                "{}\n",
+                projectile_travel_collision_line(
+                    TEST_VICTIM_USERNAME,
+                    PROJECTILE_TRAVEL_COLLISION_WEAPON
+                )
+            ),
+            "",
+        );
+        let evidence =
+            evaluate_projectile_travel_collision(&client_logs, &missing_collision, TEST_USERNAME);
+        assert!(!evidence.passed, "{evidence:?}");
+        assert!(evidence
+            .missing_steps
+            .contains(&"server_projectile_collision"));
+
+        let wrong_target =
+            projectile_travel_server_log("compatbotz", PROJECTILE_TRAVEL_COLLISION_WEAPON);
+        let evidence =
+            evaluate_projectile_travel_collision(&client_logs, &wrong_target, TEST_USERNAME);
+        assert!(!evidence.passed, "{evidence:?}");
+        assert!(evidence.identity_violations.contains(&"wrong_target"));
+
+        let wrong_weapon = projectile_travel_server_log(TEST_VICTIM_USERNAME, "Crossbow");
+        let evidence =
+            evaluate_projectile_travel_collision(&client_logs, &wrong_weapon, TEST_USERNAME);
+        assert!(!evidence.passed, "{evidence:?}");
+        assert!(evidence.identity_violations.contains(&"wrong_weapon"));
+
+        let out_of_order = format!(
+            "{}\n{}\n{}\n{}\n",
+            projectile_travel_sample_line(TEST_VICTIM_USERNAME, PROJECTILE_TRAVEL_COLLISION_WEAPON),
+            projectile_travel_use_line(TEST_VICTIM_USERNAME, PROJECTILE_TRAVEL_COLLISION_WEAPON),
+            projectile_travel_collision_line(
+                TEST_VICTIM_USERNAME,
+                PROJECTILE_TRAVEL_COLLISION_WEAPON
+            ),
+            projectile_travel_hit_line(TEST_VICTIM_USERNAME, PROJECTILE_TRAVEL_COLLISION_WEAPON)
+        );
+        let evidence =
+            evaluate_projectile_travel_collision(&client_logs, &out_of_order, TEST_USERNAME);
+        assert!(!evidence.passed, "{evidence:?}");
+        assert!(evidence
+            .order_violations
+            .contains(&"server_projectile_use_before_travel"));
+
+        let ambiguous_identity = format!(
+            "{}\n{}\n",
+            good_server,
+            projectile_travel_use_line("compatbotz", PROJECTILE_TRAVEL_COLLISION_WEAPON)
+        );
+        let evidence =
+            evaluate_projectile_travel_collision(&client_logs, &ambiguous_identity, TEST_USERNAME);
+        assert!(!evidence.passed, "{evidence:?}");
+        assert!(evidence
+            .identity_violations
+            .contains(&"ambiguous_projectile_identity"));
+
+        let overbroad_claim = format!("{good_server}claim=exact_vanilla_projectile_parity\n");
+        let evidence =
+            evaluate_projectile_travel_collision(&client_logs, &overbroad_claim, TEST_USERNAME);
+        assert!(!evidence.passed, "{evidence:?}");
+        assert!(evidence
+            .identity_violations
+            .contains(&"overbroad_parity_claim"));
+    }
+
+    #[test]
+    fn projectile_travel_collision_receipt_preserves_non_claims() {
+        let cfg = test_config(&["--scenario", "projectile-hit"], &[])
+            .expect("projectile-hit config parses");
+        let evidence = projectile_travel_collision_dry_run_evidence(&cfg);
+        let receipt = smoke_receipt_json(&cfg, Ok(&Some(evidence)));
+        assert!(
+            receipt.contains("\"projectile_travel_collision\""),
+            "{receipt}"
+        );
+        assert!(receipt.contains("\"selected\": true"), "{receipt}");
+        assert!(receipt.contains("not_full_projectile_physics"), "{receipt}");
+        assert!(
+            receipt.contains("not_exact_vanilla_projectile_parity"),
+            "{receipt}"
+        );
+        assert!(
+            receipt.contains("\"claims_semantic_equivalence\": false"),
+            "{receipt}"
+        );
+        assert!(
+            receipt.contains("\"claims_correctness\": false"),
+            "{receipt}"
+        );
     }
 
     #[test]
@@ -11052,6 +11363,7 @@ RED: 1
             )),
             server_scenario: Some(evaluate_server_scenario(Scenario::Smoke, "", "compatbot")),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         });
@@ -11136,6 +11448,7 @@ RED: 1
                 "compatbot",
             )),
             projectile_damage_causality: None,
+            projectile_travel_collision: None,
             mcp_control: None,
             frame_artifacts: None,
         });

@@ -6,8 +6,8 @@ f967534ff66bea544521324f61dfa22ad4ffab435c714a78d1f6a31389361daa  docs/evidence/
 f4c68ed447d437721a7cb483e76cfd55b6c43ca9f2cb87beae310ef7760f2d18  docs/evidence/mc-compat-row-fixture-rail-2026-06-01/death-respawn-invalid-respawn-timing.kv
 080961d7e6f3bbdd3be3f68ea08ed6a83edc9a1ac9bd8e4df207b94bafc1352e  docs/evidence/mc-compat-row-fixture-rail-2026-06-01.run.log
 012dcaf4839be25ff4d9d4ec9a82050fd93b5223ea7f2b7c07539e1866967007  docs/evidence/mc-compat-row-fixture-rail-2026-06-01.b3
-08bca3daca99b1e61f8d139c7906e872ca5231b0624209e8dd88fa5ff808063a  docs/evidence/protocol-763-acceptance-matrix.md
-8ea2e7031210cdd778e2fb2a90bf86df8e4b6b1eca3b9c4f07fea5899e614784  docs/evidence/protocol-763-current-evidence-bundle.md
+2b55e9f5959a515a596b05636bf8a97b2f3832ce969cf534cc8a240f49ea82de  docs/evidence/protocol-763-acceptance-matrix.md
+15711d3b66b03194bf86344242b8f7e0323876fb68df5df9a37b8de2284ef81c  docs/evidence/protocol-763-current-evidence-bundle.md
 bb79322c8a87766fbb1c090d34f2b628566f6c78e5d7f99fc242fadda1605c39  cairn/archive/2026-06-01-death-respawn-invalid-respawn-timing/tasks.md
 dc3799d401c48f1ca61ecc4001bff57f37c854b5e380a83a8f734a03e9a8890b  cairn/archive/2026-06-01-death-respawn-invalid-respawn-timing/proposal.md
 ef6cc192371ccb7c9589b58f9919287db46d45138c65e1bbc8c84cf2496290c4  cairn/archive/2026-06-01-death-respawn-invalid-respawn-timing/design.md

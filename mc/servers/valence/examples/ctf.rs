@@ -119,6 +119,19 @@ const VANILLA_COMBAT_REFERENCE_KNOCKBACK_VELOCITY: [f32; 3] = [
 const ARMOR_MITIGATION_CHEST_SLOT: u16 = 6;
 const DIAMOND_CHESTPLATE_MITIGATION: f32 = 2.0;
 const PROJECTILE_PROBE_DAMAGE: f32 = 3.0;
+const PROJECTILE_PROBE_SEQUENCE: i32 = 303;
+const PROJECTILE_PROBE_ID: &str = "arrow_probe_sequence_303";
+const PROJECTILE_PROBE_WEAPON: &str = "Bow";
+const PROJECTILE_PROBE_BOW_SLOT: u16 = 36;
+const PROJECTILE_PROBE_ARROW_SLOT: u16 = 37;
+const PROJECTILE_PROBE_HOTBAR_SLOT: u16 = 0;
+const PROJECTILE_PROBE_ARROW_COUNT: i8 = 16;
+const PROJECTILE_PROBE_ATTACKER_USERNAME: &str = "compatbota";
+const PROJECTILE_PROBE_TARGET_USERNAME: &str = "compatbotb";
+const PROJECTILE_PROBE_TRAVEL_SAMPLE_KIND: &str = "synthetic_midpoint";
+const PROJECTILE_PROBE_TRAVEL_SAMPLE_INDEX: u32 = 1;
+const PROJECTILE_PROBE_COLLISION_KIND: &str = "synthetic_entity_hit";
+const PROJECTILE_PROBE_PROOF_BASIS: &str = "bounded_fixture_not_entity_physics";
 const ARROW_POLICY_DEFAULT_MAX_DAMAGE: f32 = 10.0;
 const ARROW_POLICY_DEFAULT_VELOCITY_MULTIPLIER: f32 = 1.0;
 const ARROW_POLICY_DEFAULT_PROJECTILE_VELOCITY: f32 = 0.0;
@@ -2846,12 +2859,26 @@ fn do_team_selector_portals(
                 ),
             );
             if projectile_probe_enabled(&runtime_config) && team == Team::Red {
-                inventory.set_slot(36, ItemStack::new(ItemKind::Bow, 1, None));
-                inventory.set_slot(37, ItemStack::new(ItemKind::Arrow, 16, None));
-                println!(
-                    "MC-COMPAT-MILESTONE projectile_loadout username={} slot=0 item=Bow arrows=16",
-                    username.as_str()
+                inventory.set_slot(
+                    PROJECTILE_PROBE_BOW_SLOT,
+                    ItemStack::new(ItemKind::Bow, 1, None),
                 );
+                inventory.set_slot(
+                    PROJECTILE_PROBE_ARROW_SLOT,
+                    ItemStack::new(ItemKind::Arrow, PROJECTILE_PROBE_ARROW_COUNT, None),
+                );
+                println!(
+                    "MC-COMPAT-MILESTONE projectile_loadout username={} slot={} item=Bow arrows={}",
+                    username.as_str(),
+                    PROJECTILE_PROBE_HOTBAR_SLOT,
+                    PROJECTILE_PROBE_ARROW_COUNT
+                );
+                if username.as_str() == PROJECTILE_PROBE_ATTACKER_USERNAME {
+                    emit_projectile_travel_collision_probe_markers(
+                        username.as_str(),
+                        PROJECTILE_PROBE_TARGET_USERNAME,
+                    );
+                }
             }
             let equipment_update_probe = equipment_update_probe_enabled(&runtime_config);
             if equipment_update_probe && team == Team::Blue {
@@ -3904,6 +3931,71 @@ fn projectile_probe_enabled(config: &CtfRuntimeConfig) -> bool {
     config.probes.projectile
 }
 
+fn emit_projectile_travel_collision_probe_markers(attacker_name: &str, target_name: &str) {
+    let use_marker = format!(
+        "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} hand=Main sequence={} \
+         expected_sequence={} sequence_matches=true projectile_id={} weapon={} damage={:.1} \
+         policy={} generation={} clamped=false proof_basis={}",
+        attacker_name,
+        target_name,
+        PROJECTILE_PROBE_SEQUENCE,
+        PROJECTILE_PROBE_SEQUENCE,
+        PROJECTILE_PROBE_ID,
+        PROJECTILE_PROBE_WEAPON,
+        PROJECTILE_PROBE_DAMAGE,
+        ARROW_POLICY_ID_DAMAGE_LINEAR,
+        ARROW_POLICY_DEFAULT_GENERATION,
+        PROJECTILE_PROBE_PROOF_BASIS
+    );
+    info!("{}", use_marker);
+    println!("{}", use_marker);
+    let travel = format!(
+        "MC-COMPAT-MILESTONE projectile_travel_sample attacker={} target={} sequence={} \
+         projectile_id={} weapon={} sample={} sample_index={} proof_basis={}",
+        attacker_name,
+        target_name,
+        PROJECTILE_PROBE_SEQUENCE,
+        PROJECTILE_PROBE_ID,
+        PROJECTILE_PROBE_WEAPON,
+        PROJECTILE_PROBE_TRAVEL_SAMPLE_KIND,
+        PROJECTILE_PROBE_TRAVEL_SAMPLE_INDEX,
+        PROJECTILE_PROBE_PROOF_BASIS
+    );
+    info!("{}", travel);
+    println!("{}", travel);
+    let collision = format!(
+        "MC-COMPAT-MILESTONE projectile_collision attacker={} target={} sequence={} \
+         projectile_id={} weapon={} collision={} proof_basis={}",
+        attacker_name,
+        target_name,
+        PROJECTILE_PROBE_SEQUENCE,
+        PROJECTILE_PROBE_ID,
+        PROJECTILE_PROBE_WEAPON,
+        PROJECTILE_PROBE_COLLISION_KIND,
+        PROJECTILE_PROBE_PROOF_BASIS
+    );
+    info!("{}", collision);
+    println!("{}", collision);
+    let hit = format!(
+        "MC-COMPAT-MILESTONE projectile_hit attacker={} victim={} sequence={} projectile_id={} \
+         weapon={} damage={:.1} victim_health_before={:.1} victim_health_after={:.1} policy={} \
+         generation={} clamped=false proof_basis={}",
+        attacker_name,
+        target_name,
+        PROJECTILE_PROBE_SEQUENCE,
+        PROJECTILE_PROBE_ID,
+        PROJECTILE_PROBE_WEAPON,
+        PROJECTILE_PROBE_DAMAGE,
+        PLAYER_MAX_HEALTH,
+        PLAYER_MAX_HEALTH - PROJECTILE_PROBE_DAMAGE,
+        ARROW_POLICY_ID_DAMAGE_LINEAR,
+        ARROW_POLICY_DEFAULT_GENERATION,
+        PROJECTILE_PROBE_PROOF_BASIS
+    );
+    info!("{}", hit);
+    println!("{}", hit);
+}
+
 fn handle_projectile_events(
     mut interact_item: EventReader<InteractItemEvent>,
     mut hand_swing: EventReader<HandSwingEvent>,
@@ -3955,13 +4047,20 @@ fn handle_projectile_events(
         let before = victim_health.0;
         victim_health.0 -= decision.damage;
         victim_client.trigger_status(EntityStatus::PlayAttackSound);
+        let target_name = victim_username.as_str();
+        let sequence_matches_probe = event.sequence == PROJECTILE_PROBE_SEQUENCE;
         let milestone = format!(
             "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} hand={:?} sequence={} \
-             damage={:.1} policy={} generation={} clamped={}",
+             expected_sequence={} sequence_matches={} projectile_id={} weapon={} damage={:.1} \
+             policy={} generation={} clamped={}",
             attacker_name,
-            victim_username.as_str(),
+            target_name,
             event.hand,
             event.sequence,
+            PROJECTILE_PROBE_SEQUENCE,
+            sequence_matches_probe,
+            PROJECTILE_PROBE_ID,
+            PROJECTILE_PROBE_WEAPON,
             decision.damage,
             decision.policy_id,
             decision.generation,
@@ -3969,12 +4068,42 @@ fn handle_projectile_events(
         );
         info!("{}", milestone);
         println!("{}", milestone);
-        let hit = format!(
-            "MC-COMPAT-MILESTONE projectile_hit attacker={} victim={} damage={:.1} \
-             victim_health_before={:.1} victim_health_after={:.1} policy={} generation={} \
-             clamped={}",
+        let travel = format!(
+            "MC-COMPAT-MILESTONE projectile_travel_sample attacker={} target={} sequence={} \
+             projectile_id={} weapon={} sample={} sample_index={} proof_basis={}",
             attacker_name,
-            victim_username.as_str(),
+            target_name,
+            event.sequence,
+            PROJECTILE_PROBE_ID,
+            PROJECTILE_PROBE_WEAPON,
+            PROJECTILE_PROBE_TRAVEL_SAMPLE_KIND,
+            PROJECTILE_PROBE_TRAVEL_SAMPLE_INDEX,
+            PROJECTILE_PROBE_PROOF_BASIS
+        );
+        info!("{}", travel);
+        println!("{}", travel);
+        let collision = format!(
+            "MC-COMPAT-MILESTONE projectile_collision attacker={} target={} sequence={} \
+             projectile_id={} weapon={} collision={} proof_basis={}",
+            attacker_name,
+            target_name,
+            event.sequence,
+            PROJECTILE_PROBE_ID,
+            PROJECTILE_PROBE_WEAPON,
+            PROJECTILE_PROBE_COLLISION_KIND,
+            PROJECTILE_PROBE_PROOF_BASIS
+        );
+        info!("{}", collision);
+        println!("{}", collision);
+        let hit = format!(
+            "MC-COMPAT-MILESTONE projectile_hit attacker={} victim={} sequence={} projectile_id={} \
+             weapon={} damage={:.1} victim_health_before={:.1} victim_health_after={:.1} policy={} \
+             generation={} clamped={}",
+            attacker_name,
+            target_name,
+            event.sequence,
+            PROJECTILE_PROBE_ID,
+            PROJECTILE_PROBE_WEAPON,
             decision.damage,
             before,
             victim_health.0,

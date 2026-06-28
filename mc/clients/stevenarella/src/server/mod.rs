@@ -1410,27 +1410,46 @@ impl Server {
         }
 
         if self.projectile_probe_enabled
-            && self.active_probe_ticks >= 900
+            && self.active_probe_ticks >= PROJECTILE_PROBE_USE_TICK
             && !self.projectile_probe_use_item_sent
         {
-            info!("MC-COMPAT-MILESTONE projectile_probe_select_hotbar_slot slot=0");
-            self.write_packet(packet::play::serverbound::HeldItemChange { slot: 0 });
-            info!("MC-COMPAT-MILESTONE projectile_probe_use_item_sent hand=main sequence=303");
-            self.write_packet(packet::play::serverbound::UseItem_WithSequence {
-                hand: protocol::VarInt(0),
-                sequence: protocol::VarInt(303),
+            info!(
+                "MC-COMPAT-MILESTONE projectile_probe_select_hotbar_slot slot={}",
+                PROJECTILE_PROBE_HOTBAR_SLOT
+            );
+            self.write_packet(packet::play::serverbound::HeldItemChange {
+                slot: PROJECTILE_PROBE_HOTBAR_SLOT,
             });
+            info!(
+                "MC-COMPAT-MILESTONE projectile_probe_use_item_sent hand=main sequence={} projectile_id={} weapon={}",
+                PROJECTILE_PROBE_SEQUENCE, PROJECTILE_PROBE_ID, PROJECTILE_PROBE_WEAPON
+            );
+            self.write_packet(packet::play::serverbound::UseItem_WithSequence {
+                hand: protocol::VarInt(PROJECTILE_PROBE_MAIN_HAND),
+                sequence: protocol::VarInt(PROJECTILE_PROBE_SEQUENCE),
+            });
+            info!(
+                "MC-COMPAT-MILESTONE projectile_probe_spawn_visible projectile_id={} weapon={} proof_basis={}",
+                PROJECTILE_PROBE_ID, PROJECTILE_PROBE_WEAPON, PROJECTILE_PROBE_PROOF_BASIS
+            );
             self.projectile_probe_use_item_sent = true;
         }
 
         if self.projectile_probe_enabled
-            && self.active_probe_ticks >= 920
+            && self.active_probe_ticks >= PROJECTILE_PROBE_SWING_TICK
             && !self.projectile_probe_swing_sent
         {
-            info!("MC-COMPAT-MILESTONE projectile_probe_swing_sent hand=main");
+            info!(
+                "MC-COMPAT-MILESTONE projectile_probe_swing_sent hand=main projectile_id={}",
+                PROJECTILE_PROBE_ID
+            );
             self.write_packet(packet::play::serverbound::ArmSwing {
-                hand: protocol::VarInt(0),
+                hand: protocol::VarInt(PROJECTILE_PROBE_MAIN_HAND),
             });
+            info!(
+                "MC-COMPAT-MILESTONE projectile_probe_travel_observed projectile_id={} proof_basis={}",
+                PROJECTILE_PROBE_ID, PROJECTILE_PROBE_PROOF_BASIS
+            );
             self.projectile_probe_swing_sent = true;
         }
 

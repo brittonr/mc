@@ -1194,8 +1194,15 @@ in
         grep -Fq '"timeout_secs": 240' receipts/projectile-hit-receipt.json
         grep -Fq '"usernames": ["compatbota", "compatbotb"]' receipts/projectile-hit-receipt.json
         grep -Fq '"projectile_use_sent"' receipts/projectile-hit-receipt.json
+        grep -Fq '"projectile_spawn_visible"' receipts/projectile-hit-receipt.json
         grep -Fq '"projectile_swing_sent"' receipts/projectile-hit-receipt.json
+        grep -Fq '"projectile_travel_observed"' receipts/projectile-hit-receipt.json
         grep -Fq '"server_projectile_loadout"' receipts/projectile-hit-receipt.json
+        grep -Fq '"server_projectile_travel_sample"' receipts/projectile-hit-receipt.json
+        grep -Fq '"server_projectile_collision"' receipts/projectile-hit-receipt.json
+        grep -Fq '"projectile_travel_collision"' receipts/projectile-hit-receipt.json
+        grep -Fq '"row_id": "bow_arrow_synthetic_use_to_hit"' receipts/projectile-hit-receipt.json
+        grep -Fq '"not_exact_vanilla_projectile_parity"' receipts/projectile-hit-receipt.json
         grep -Fq '"expected_summary_packets": ["two_client_login", "play_join_game", "projectile_use_item", "projectile_hit_attribution"]' receipts/projectile-hit-receipt.json
         grep -Fq '"claims_correctness": false' receipts/projectile-hit-receipt.json
         grep -Fq '"claims_semantic_equivalence": false' receipts/projectile-hit-receipt.json

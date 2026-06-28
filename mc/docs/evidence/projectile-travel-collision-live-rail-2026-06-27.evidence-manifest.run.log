@@ -1,0 +1,13 @@
+projectile_travel_collision_live_rail_evidence_manifest=2026-06-27
+
+refresh:
+- pueue_task=61
+  command: rustc tools/refresh_evidence_manifests.rs -o target/refresh-evidence-manifests && target/refresh-evidence-manifests --self-test && target/refresh-evidence-manifests --refresh
+  result: evidence manifest refresh self-test ok; manifests=515; entries=4666; current=4666; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; manifest_writes=198
+  exit_status=0
+
+check:
+- pueue_task=70
+  command: target/check-evidence-manifests --self-test && target/check-evidence-manifests
+  result: evidence manifest self-test ok; evidence manifests ok: 515 manifests, 4666 entries, 141 receipts scanned
+  exit_status=0

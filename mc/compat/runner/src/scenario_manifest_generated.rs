@@ -1149,12 +1149,18 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
             "team_red",
             "remote_player_spawn",
             "projectile_use_sent",
+            "projectile_spawn_visible",
             "projectile_swing_sent",
+            "projectile_travel_observed",
         ],
         server_milestones: &[
             "server_client_a_seen",
             "server_client_b_seen",
             "server_projectile_loadout",
+            "server_projectile_use",
+            "server_projectile_travel_sample",
+            "server_projectile_collision",
+            "server_projectile_hit",
         ],
         forbidden_patterns: &[
             "panic",

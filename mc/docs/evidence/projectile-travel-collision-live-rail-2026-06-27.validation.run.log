@@ -1,0 +1,64 @@
+projectile_travel_collision_live_rail_validation=2026-06-27
+
+baseline:
+- command: cargo test projectile -- --nocapture
+  cwd: compat/runner
+  result: passed before core changes; 6 tests passed
+  exit_status=0
+
+implementation_checks:
+- pueue_task=93
+  command: cargo test -- --nocapture
+  cwd: compat/runner
+  result: 185 passed, 0 failed
+  exit_status=0
+- pueue_task=91
+  command: target/check-scenario-manifest --write-generated-surfaces && target/check-scenario-manifest --self-test && target/check-scenario-manifest && target/check-scenario-manifest --check-generated-surfaces
+  cwd: /home/brittonr/git/mc
+  result: 46 rows validated; generated surfaces current
+  exit_status=0
+- pueue_task=22
+  command: cargo check --example ctf
+  cwd: servers/valence
+  result: passed with existing warnings
+  exit_status=0
+- pueue_task=19
+  command: nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo check --bin stevenarella
+  cwd: clients/stevenarella
+  result: passed with existing warnings
+  exit_status=0
+- pueue_task=97
+  command: nix build .#checks.x86_64-linux.mc-compat-valence-ctf-projectile-hit-dry-run --no-link -L --no-update-lock-file --option builders ''
+  cwd: /home/brittonr/git/mc
+  result: passed
+  exit_status=0
+
+live_evidence:
+- pueue_task=23
+  command: rm -rf target/projectile-travel-collision-live-rail && VALENCE_REPO=/home/brittonr/git VALENCE_WORKTREE=/home/brittonr/git VALENCE_REV=HEAD VALENCE_TARGET_DIR=/tmp/valence-compat-projectile-travel-collision-target CLIENT_TIMEOUT=300 MC_COMPAT_PROJECTILE_HIT_RECEIPT=target/projectile-travel-collision-live-rail/projectile-hit-travel-collision.receipt.json nix run --no-update-lock-file .#mc-compat-valence-ctf-projectile-hit -- --run
+  result: pass receipt promoted to docs/evidence/projectile-travel-collision-live-rail-2026-06-27.receipt.json
+  exit_status=0
+
+bundle_checks:
+- pueue_task=115
+  command: target/check-acceptance-matrix --self-test && target/check-acceptance-matrix
+  result: acceptance matrix self-test ok; 62 rows validated
+  exit_status=0
+- pueue_task=119
+  command: target/check-current-evidence-bundle --self-test && target/check-current-evidence-bundle
+  result: current evidence bundle self-test ok; 62 rows validated
+  exit_status=0
+
+cairn_sync_and_gates:
+- pueue_task=90
+  command: nix run .#cairn -- sync projectile-travel-collision-live-rail --root .
+  result: dry-run passed
+  exit_status=0
+- pueue_task=92
+  command: nix run .#cairn -- sync projectile-travel-collision-live-rail --root . --execute
+  result: sync executed; accepted spec required manual full-spec-shaped merge check and repair
+  exit_status=0
+- pueue_task=102
+  command: nix run .#cairn -- validate --root . && nix run .#cairn -- gate proposal projectile-travel-collision-live-rail --root . && nix run .#cairn -- gate design projectile-travel-collision-live-rail --root . && nix run .#cairn -- gate tasks projectile-travel-collision-live-rail --root .
+  result: validate/gates passed
+  exit_status=0

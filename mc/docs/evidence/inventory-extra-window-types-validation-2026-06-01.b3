@@ -6,8 +6,8 @@ a347e00b5a46edeed361b2d45a965e48ff3cf0b16f20dc82d05352967c16924b  docs/evidence/
 dde9c3076c6a65bfa8f5379677efe9e3050343d02038fd5867161316061a46a6  docs/evidence/mc-compat-row-fixture-rail-2026-06-01/inventory-extra-window-types.kv
 080961d7e6f3bbdd3be3f68ea08ed6a83edc9a1ac9bd8e4df207b94bafc1352e  docs/evidence/mc-compat-row-fixture-rail-2026-06-01.run.log
 012dcaf4839be25ff4d9d4ec9a82050fd93b5223ea7f2b7c07539e1866967007  docs/evidence/mc-compat-row-fixture-rail-2026-06-01.b3
-08bca3daca99b1e61f8d139c7906e872ca5231b0624209e8dd88fa5ff808063a  docs/evidence/protocol-763-acceptance-matrix.md
-8ea2e7031210cdd778e2fb2a90bf86df8e4b6b1eca3b9c4f07fea5899e614784  docs/evidence/protocol-763-current-evidence-bundle.md
+2b55e9f5959a515a596b05636bf8a97b2f3832ce969cf534cc8a240f49ea82de  docs/evidence/protocol-763-acceptance-matrix.md
+15711d3b66b03194bf86344242b8f7e0323876fb68df5df9a37b8de2284ef81c  docs/evidence/protocol-763-current-evidence-bundle.md
 9617236a5553aff6a414a68c013a54a6917f3196a20e6ec94f7d0651fd4e889c  cairn/archive/2026-06-01-inventory-extra-window-types/tasks.md
 9f60832eb2e666912d262e990d6cb583466a88ba5413fd953ae63c8e0cd8f1b2  cairn/archive/2026-06-01-inventory-extra-window-types/proposal.md
 c2fd6a1a9bcd06f8fc02249feadd05c1ac21fb28f62c85cd3782750a99487cc8  cairn/archive/2026-06-01-inventory-extra-window-types/design.md

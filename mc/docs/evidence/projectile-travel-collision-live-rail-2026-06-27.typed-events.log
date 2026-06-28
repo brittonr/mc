@@ -1,0 +1,17 @@
+MC-COMPAT-EVENT schema=1 source=client scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=1 event=multi_client_count
+MC-COMPAT-EVENT schema=1 source=client scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=2 event=protocol_detected
+MC-COMPAT-EVENT schema=1 source=client scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=3 event=join_game
+MC-COMPAT-EVENT schema=1 source=client scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=4 event=render_tick
+MC-COMPAT-EVENT schema=1 source=client scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=5 event=team_red
+MC-COMPAT-EVENT schema=1 source=client scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=6 event=remote_player_spawn
+MC-COMPAT-EVENT schema=1 source=client scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=7 event=projectile_use_sent
+MC-COMPAT-EVENT schema=1 source=client scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=8 event=projectile_spawn_visible
+MC-COMPAT-EVENT schema=1 source=client scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=9 event=projectile_swing_sent
+MC-COMPAT-EVENT schema=1 source=client scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=10 event=projectile_travel_observed
+MC-COMPAT-EVENT schema=1 source=server scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=11 event=server_client_a_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=12 event=server_client_b_seen
+MC-COMPAT-EVENT schema=1 source=server scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=13 event=server_projectile_loadout
+MC-COMPAT-EVENT schema=1 source=server scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=14 event=server_projectile_use
+MC-COMPAT-EVENT schema=1 source=server scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=15 event=server_projectile_travel_sample
+MC-COMPAT-EVENT schema=1 source=server scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=16 event=server_projectile_collision
+MC-COMPAT-EVENT schema=1 source=server scenario=projectile-hit session=projectile-hit-travel-collision.receipt seq=17 event=server_projectile_hit

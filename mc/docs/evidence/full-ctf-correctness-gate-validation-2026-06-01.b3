@@ -7,8 +7,8 @@ c241bfd8f573a45250e454d5430d85515fe481bce0ba4e70cc55c6fd2d8aef62  docs/evidence/
 bdf871b52d76b3dbb1b7d471080cd3f4b86d4df3685161bb0ba1368a562ba87e  docs/evidence/full-ctf-correctness-gate-archive-2026-06-01.b3
 eb739f8d83555254e252e4fe1a3b4202887ea1bfc8df1907ea7dbb5ce38e1853  docs/evidence/aggregate-claim-gates-2026-06-01.run.log
 7f323605f0c26a33b0403564a221b286e452a9bcbd1697786f31e35abe52707f  docs/evidence/aggregate-claim-gates-2026-06-01.b3
-08bca3daca99b1e61f8d139c7906e872ca5231b0624209e8dd88fa5ff808063a  docs/evidence/protocol-763-acceptance-matrix.md
-8ea2e7031210cdd778e2fb2a90bf86df8e4b6b1eca3b9c4f07fea5899e614784  docs/evidence/protocol-763-current-evidence-bundle.md
+2b55e9f5959a515a596b05636bf8a97b2f3832ce969cf534cc8a240f49ea82de  docs/evidence/protocol-763-acceptance-matrix.md
+15711d3b66b03194bf86344242b8f7e0323876fb68df5df9a37b8de2284ef81c  docs/evidence/protocol-763-current-evidence-bundle.md
 d8c9d0918f24ae0e8e4df73e09ee39f51b9141f4b51f17b802ac2c4d7ab14d26  docs/evidence/protocol-763-ctf-rule-ledger-2026-05-27.md
 154dbdfd3531d8bd53b6f65ab54386c4c83fceb311fc0925cae498a4b259aecc  cairn/archive/2026-06-01-full-ctf-correctness-gate/tasks.md
 1008b46c7c4279f557d6684541dd54b6dda36c336710dc56a6f68cd8c0af5a70  cairn/archive/2026-06-01-full-ctf-correctness-gate/proposal.md

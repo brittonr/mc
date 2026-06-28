@@ -1,0 +1,21 @@
+projectile_travel_collision_live_rail_archive_closeout=2026-06-27
+
+archive:
+- pueue_task=46
+  command: nix run .#cairn -- archive projectile-travel-collision-live-rail --root .
+  result: dry-run passed; blocked=false
+  exit_status=0
+- pueue_task=47
+  command: CAIRN_ARCHIVE_DATE=2026-06-27 nix run .#cairn -- archive projectile-travel-collision-live-rail --root . --execute
+  result: archive executed to cairn/archive/2026-06-27-projectile-travel-collision-live-rail
+  exit_status=0
+
+post_archive_validation:
+- pueue_task=48
+  command: nix run .#cairn -- validate --root .
+  result: valid=true; specs_validated=8; issues=[]
+  exit_status=0
+- pueue_task=49
+  command: target/check-cairn-task-evidence --self-test && target/check-cairn-task-evidence cairn/archive/2026-06-27-projectile-travel-collision-live-rail/tasks.md
+  result: task evidence gate passed for 7 completed archived tasks
+  exit_status=0

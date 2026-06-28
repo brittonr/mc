@@ -1,0 +1,54 @@
+[main.rs:1183][INFO] Starting steven
+[platform_impl/linux/x11/util/randr.rs:23][WARN] XRandR reported that the display's 0mm in size, which is certifiably insane
+[platform_impl/linux/x11/window.rs:147][INFO] Guessed window scale factor: 1
+[main.rs:1295][INFO] Shader version: #version 150
+[main.rs:318][INFO] Detected server protocol version 763
+[server/mod.rs:351][INFO] MC-COMPAT-MILESTONE connect_start protocol=763 address=127.0.0.1:25565
+[server/mod.rs:356][INFO] MC-COMPAT-MILESTONE tcp_connected
+[server/mod.rs:373][INFO] MC-COMPAT-MILESTONE handshake_sent next=login
+[server/mod.rs:387][INFO] MC-COMPAT-MILESTONE login_start_sent
+[server/mod.rs:394][INFO] MC-COMPAT-MILESTONE login_compression threshold=256
+[server/mod.rs:455][WARN] Server is running in offline mode
+[server/mod.rs:456][INFO] MC-COMPAT-MILESTONE login_success state=play protocol=763 username=compatbota properties=0
+[server/mod.rs:2698][INFO] MC-COMPAT-MILESTONE join_game_763_shape dimension_type=minecraft:overworld world=minecraft:overworld portal_cooldown=0
+[world/mod.rs:1123][INFO] Dimension bounds: min_y=-64 height=384
+[server/mod.rs:2783][INFO] MC-COMPAT-MILESTONE join_game entity_id=0 gamemode=Adventure
+[server/mod.rs:6017][INFO] Received chat message: Welcome to Valence! Select a team by jumping in the team's portal.
+[server/mod.rs:3317][INFO] MC-COMPAT-MILESTONE update_health health=20.0 food=20 saturation=0.0
+[server/mod.rs:6196][INFO] MC-COMPAT-MILESTONE first_chunk_data chunk_x=0 chunk_z=0
+[server/mod.rs:1140][INFO] MC-COMPAT-MILESTONE render_tick_with_player
+[server/mod.rs:1220][INFO] MC-COMPAT-MILESTONE active_probe_input_start forward+sprint+jump
+[server/mod.rs:2346][INFO] MC-COMPAT-MILESTONE active_probe_position_look_sent x=0.000 y=85.736 z=2.525 on_ground=true
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:noteblock
+[model/mod.rs:368][ERROR] Error loading model minecraft:noteblock
+[server/mod.rs:1226][INFO] MC-COMPAT-MILESTONE active_probe_jump_release
+[server/mod.rs:1230][INFO] MC-COMPAT-MILESTONE active_probe_input_turn right
+[server/mod.rs:6017][INFO] Received chat message: You are on team RED!
+[server/mod.rs:3298][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=4 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-40.000 y=65.000 z=0.000
+[model/mod.rs:398][ERROR] Error missing block state for minecraft:wooden_button
+[model/mod.rs:368][ERROR] Error loading model minecraft:wooden_button
+[server/mod.rs:1234][INFO] MC-COMPAT-MILESTONE active_probe_input_stop
+[server/mod.rs:1280][INFO] MC-COMPAT-MILESTONE team_probe_enter_red_portal x=-4.0 y=84.0 z=4.0
+[server/mod.rs:1299][INFO] MC-COMPAT-MILESTONE team_probe_hold_red_portal start
+[server/mod.rs:1312][INFO] MC-COMPAT-MILESTONE team_probe_select_hotbar_slot slot=0
+[server/mod.rs:1316][INFO] MC-COMPAT-MILESTONE team_probe_use_item_sent hand=main sequence=0
+[server/mod.rs:1344][INFO] MC-COMPAT-MILESTONE combat_probe_move_near_blue_spawn x=38.0 y=65.0 z=0.0
+[server/mod.rs:3298][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=4 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=38.000 y=65.000 z=0.000
+[server/mod.rs:1403][INFO] MC-COMPAT-MILESTONE combat_probe_attack_sent target_id=4 count=1
+[server/mod.rs:1416][INFO] MC-COMPAT-MILESTONE projectile_probe_select_hotbar_slot slot=0
+[server/mod.rs:1423][INFO] MC-COMPAT-MILESTONE projectile_probe_use_item_sent hand=main sequence=303 projectile_id=arrow_probe_sequence_303 weapon=Bow
+[server/mod.rs:1431][INFO] MC-COMPAT-MILESTONE projectile_probe_spawn_visible projectile_id=arrow_probe_sequence_303 weapon=Bow proof_basis=bounded_fixture_not_entity_physics
+[server/mod.rs:1403][INFO] MC-COMPAT-MILESTONE combat_probe_attack_sent target_id=4 count=2
+[server/mod.rs:1442][INFO] MC-COMPAT-MILESTONE projectile_probe_swing_sent hand=main projectile_id=arrow_probe_sequence_303
+[server/mod.rs:1449][INFO] MC-COMPAT-MILESTONE projectile_probe_travel_observed projectile_id=arrow_probe_sequence_303 proof_basis=bounded_fixture_not_entity_physics
+[server/mod.rs:3298][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=7 uuid=UUID(17279542629861541104, 17597886568995341490) name=compatbotb x=-39.206 y=65.000 z=0.794
+[server/mod.rs:1403][INFO] MC-COMPAT-MILESTONE combat_probe_attack_sent target_id=7 count=3
+[server/mod.rs:3298][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=7 uuid=UUID(17279542629861541104, 17597886568995341490) name=compatbotb x=-39.206 y=65.000 z=0.794
+[server/mod.rs:1403][INFO] MC-COMPAT-MILESTONE combat_probe_attack_sent target_id=7 count=4
+[server/mod.rs:1403][INFO] MC-COMPAT-MILESTONE combat_probe_attack_sent target_id=7 count=5
+[server/mod.rs:3298][INFO] MC-COMPAT-MILESTONE remote_player_spawn entity_id=4 uuid=UUID(57399523660260232, 4659645379363650449) name=compatbota x=-39.206 y=65.000 z=0.794
+[server/mod.rs:1403][INFO] MC-COMPAT-MILESTONE combat_probe_attack_sent target_id=7 count=6
+[server/mod.rs:1403][INFO] MC-COMPAT-MILESTONE combat_probe_attack_sent target_id=7 count=7
+[server/mod.rs:1403][INFO] MC-COMPAT-MILESTONE combat_probe_attack_sent target_id=7 count=8
+[server/mod.rs:1403][INFO] MC-COMPAT-MILESTONE combat_probe_attack_sent target_id=7 count=9
+[server/mod.rs:1403][INFO] MC-COMPAT-MILESTONE combat_probe_attack_sent target_id=7 count=10

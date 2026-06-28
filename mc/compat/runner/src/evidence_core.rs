@@ -1329,8 +1329,17 @@ pub(crate) fn typed_event_ordered_edges_for_scenario(
         ],
         Scenario::ProjectileHit => vec![
             ("remote_player_spawn", "projectile_use_sent"),
-            ("projectile_use_sent", "projectile_swing_sent"),
+            ("projectile_use_sent", "projectile_spawn_visible"),
+            ("projectile_spawn_visible", "projectile_swing_sent"),
+            ("projectile_swing_sent", "projectile_travel_observed"),
             ("server_client_a_seen", "server_projectile_loadout"),
+            ("server_projectile_loadout", "server_projectile_use"),
+            ("server_projectile_use", "server_projectile_travel_sample"),
+            (
+                "server_projectile_travel_sample",
+                "server_projectile_collision",
+            ),
+            ("server_projectile_collision", "server_projectile_hit"),
         ],
         Scenario::ProjectileDamageAttribution => vec![
             ("remote_player_spawn", "projectile_use_sent"),
@@ -1560,6 +1569,217 @@ pub(crate) fn evaluate_projectile_damage_causality_for_damage(
     }
 }
 
+pub(crate) fn projectile_travel_collision_required_steps() -> Vec<&'static str> {
+    vec![
+        "attacker_client_projectile_use_sent",
+        "attacker_client_projectile_spawn_visible",
+        "attacker_client_projectile_swing_sent",
+        "attacker_client_projectile_travel_observed",
+        "server_projectile_use_attacker_target",
+        "server_projectile_travel_sample",
+        "server_projectile_collision",
+        "server_projectile_hit_result",
+    ]
+}
+
+pub(crate) fn evaluate_projectile_travel_collision(
+    client_logs: &[ClientLogSlice<'_>],
+    server_log: &str,
+    base_username: &str,
+) -> ProjectileTravelCollisionEvidence {
+    let fallback_attacker = format!("{base_username}{PROJECTILE_DAMAGE_ATTACKER_SUFFIX}");
+    let fallback_target = format!("{base_username}{PROJECTILE_DAMAGE_VICTIM_SUFFIX}");
+    let use_events =
+        projectile_travel_server_events(server_log, PROJECTILE_DAMAGE_SERVER_USE_NEEDLE);
+    let travel_events = projectile_travel_server_events(
+        server_log,
+        PROJECTILE_TRAVEL_COLLISION_SERVER_TRAVEL_NEEDLE,
+    );
+    let collision_events = projectile_travel_server_events(
+        server_log,
+        PROJECTILE_TRAVEL_COLLISION_SERVER_COLLISION_NEEDLE,
+    );
+    let hit_events =
+        projectile_travel_server_events(server_log, PROJECTILE_DAMAGE_SERVER_HIT_NEEDLE);
+
+    let mut identity_violations = Vec::new();
+    note_ambiguous_projectile_identity(&use_events, &mut identity_violations);
+    note_ambiguous_projectile_identity(&travel_events, &mut identity_violations);
+    note_ambiguous_projectile_identity(&collision_events, &mut identity_violations);
+    note_ambiguous_projectile_identity(&hit_events, &mut identity_violations);
+
+    let server_use = first_projectile_travel_event(&use_events);
+    let server_travel = first_projectile_travel_event(&travel_events);
+    let server_collision = first_projectile_travel_event(&collision_events);
+    let server_hit = first_projectile_travel_event(&hit_events);
+
+    let attacker_username = server_use
+        .map(|event| event.attacker.clone())
+        .unwrap_or_else(|| fallback_attacker.clone());
+    let target_username = server_use
+        .map(|event| event.target.clone())
+        .unwrap_or_else(|| fallback_target.clone());
+    let projectile_id = server_use
+        .map(|event| event.projectile_id.clone())
+        .unwrap_or_else(|| PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID.to_string());
+    let attacker_log = client_log_for(client_logs, &attacker_username);
+
+    let attacker_use = first_line_index(attacker_log, PROJECTILE_DAMAGE_CLIENT_USE_NEEDLE);
+    let attacker_spawn = first_line_index(
+        attacker_log,
+        PROJECTILE_TRAVEL_COLLISION_CLIENT_SPAWN_NEEDLE,
+    );
+    let attacker_swing = first_line_index(attacker_log, PROJECTILE_DAMAGE_CLIENT_SWING_NEEDLE);
+    let attacker_travel = first_line_index(
+        attacker_log,
+        PROJECTILE_TRAVEL_COLLISION_CLIENT_TRAVEL_NEEDLE,
+    );
+
+    let mut observed_steps = Vec::new();
+    let mut missing_steps = Vec::new();
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "attacker_client_projectile_use_sent",
+        attacker_use,
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "attacker_client_projectile_spawn_visible",
+        attacker_spawn,
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "attacker_client_projectile_swing_sent",
+        attacker_swing,
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "attacker_client_projectile_travel_observed",
+        attacker_travel,
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "server_projectile_use_attacker_target",
+        server_use.map(|event| event.line),
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "server_projectile_travel_sample",
+        server_travel.map(|event| event.line),
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "server_projectile_collision",
+        server_collision.map(|event| event.line),
+    );
+    push_step_presence(
+        &mut observed_steps,
+        &mut missing_steps,
+        "server_projectile_hit_result",
+        server_hit.map(|event| event.line),
+    );
+
+    validate_projectile_travel_event_identity(
+        server_use,
+        &fallback_attacker,
+        &fallback_target,
+        &mut identity_violations,
+    );
+    validate_projectile_travel_event_identity(
+        server_travel,
+        &fallback_attacker,
+        &fallback_target,
+        &mut identity_violations,
+    );
+    validate_projectile_travel_event_identity(
+        server_collision,
+        &fallback_attacker,
+        &fallback_target,
+        &mut identity_violations,
+    );
+    validate_projectile_travel_event_identity(
+        server_hit,
+        &fallback_attacker,
+        &fallback_target,
+        &mut identity_violations,
+    );
+    if projectile_travel_forbidden_claim_present(server_log)
+        || projectile_travel_forbidden_claim_present(attacker_log)
+    {
+        push_unique_violation(&mut identity_violations, "overbroad_parity_claim");
+    }
+
+    let mut order_violations = Vec::new();
+    push_line_order_violation(
+        &mut order_violations,
+        attacker_use,
+        attacker_spawn,
+        "attacker_client_use_before_spawn_visible",
+    );
+    push_line_order_violation(
+        &mut order_violations,
+        attacker_spawn,
+        attacker_swing,
+        "attacker_client_spawn_visible_before_swing",
+    );
+    push_line_order_violation(
+        &mut order_violations,
+        attacker_swing,
+        attacker_travel,
+        "attacker_client_swing_before_travel_observed",
+    );
+    push_event_order_violation(
+        &mut order_violations,
+        server_use,
+        server_travel,
+        "server_projectile_use_before_travel",
+    );
+    push_event_order_violation(
+        &mut order_violations,
+        server_travel,
+        server_collision,
+        "server_projectile_travel_before_collision",
+    );
+    push_event_order_violation(
+        &mut order_violations,
+        server_collision,
+        server_hit,
+        "server_projectile_collision_before_hit",
+    );
+    if server_travel.is_none() && (server_collision.is_some() || server_hit.is_some()) {
+        push_unique_violation(
+            &mut order_violations,
+            "server_collision_or_hit_without_travel",
+        );
+    }
+
+    let passed =
+        missing_steps.is_empty() && order_violations.is_empty() && identity_violations.is_empty();
+    ProjectileTravelCollisionEvidence {
+        selected: true,
+        row_id: PROJECTILE_TRAVEL_COLLISION_ROW_ID,
+        weapon_representative: PROJECTILE_TRAVEL_COLLISION_WEAPON_REPRESENTATIVE,
+        projectile_representative: PROJECTILE_TRAVEL_COLLISION_PROJECTILE_REPRESENTATIVE,
+        attacker_username,
+        target_username,
+        projectile_id,
+        required_steps: projectile_travel_collision_required_steps(),
+        observed_steps,
+        missing_steps,
+        order_violations,
+        identity_violations,
+        non_claims: PROJECTILE_TRAVEL_COLLISION_NON_CLAIMS.to_vec(),
+        passed,
+    }
+}
+
 fn push_step_presence(
     observed_steps: &mut Vec<&'static str>,
     missing_steps: &mut Vec<&'static str>,
@@ -1583,6 +1803,162 @@ fn client_log_for<'a>(client_logs: &'a [ClientLogSlice<'a>], username: &str) -> 
         .find(|log| log.username == username)
         .map(|log| log.output)
         .unwrap_or("")
+}
+
+fn push_line_order_violation(
+    order_violations: &mut Vec<&'static str>,
+    before: Option<usize>,
+    after: Option<usize>,
+    violation: &'static str,
+) {
+    if let (Some(before_line), Some(after_line)) = (before, after) {
+        if before_line >= after_line {
+            push_unique_violation(order_violations, violation);
+        }
+    }
+}
+
+fn push_event_order_violation(
+    order_violations: &mut Vec<&'static str>,
+    before: Option<&ProjectileTravelServerEvent>,
+    after: Option<&ProjectileTravelServerEvent>,
+    violation: &'static str,
+) {
+    push_line_order_violation(
+        order_violations,
+        before.map(|event| event.line),
+        after.map(|event| event.line),
+        violation,
+    );
+}
+
+fn push_unique_violation(violations: &mut Vec<&'static str>, violation: &'static str) {
+    if !violations.contains(&violation) {
+        violations.push(violation);
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ProjectileTravelServerEvent {
+    line: usize,
+    attacker: String,
+    target: String,
+    projectile_id: String,
+    weapon: String,
+    sequence: String,
+}
+
+fn projectile_travel_server_events(
+    server_log: &str,
+    needle: &str,
+) -> Vec<ProjectileTravelServerEvent> {
+    let mut events = Vec::new();
+    for (line, text) in server_log.lines().enumerate() {
+        if !text.contains(needle) {
+            continue;
+        }
+        let Some(projectile_id) = field_value(text, "projectile_id=") else {
+            continue;
+        };
+        let Some(attacker) = field_value(text, "attacker=") else {
+            continue;
+        };
+        let Some(target) = field_value(text, "target=").or_else(|| field_value(text, "victim="))
+        else {
+            continue;
+        };
+        let Some(sequence) = field_value(text, "sequence=") else {
+            continue;
+        };
+        let weapon = field_value(text, "weapon=")
+            .or_else(|| field_value(text, "item="))
+            .unwrap_or("");
+        let candidate = ProjectileTravelServerEvent {
+            line,
+            attacker: attacker.to_string(),
+            target: target.to_string(),
+            projectile_id: projectile_id.to_string(),
+            weapon: weapon.to_string(),
+            sequence: sequence.to_string(),
+        };
+        if !events
+            .iter()
+            .any(|event| projectile_travel_event_key_matches(event, &candidate))
+        {
+            events.push(candidate);
+        }
+    }
+    events
+}
+
+fn projectile_travel_event_key_matches(
+    left: &ProjectileTravelServerEvent,
+    right: &ProjectileTravelServerEvent,
+) -> bool {
+    left.attacker == right.attacker
+        && left.target == right.target
+        && left.projectile_id == right.projectile_id
+        && left.weapon == right.weapon
+        && left.sequence == right.sequence
+}
+
+fn first_projectile_travel_event(
+    events: &[ProjectileTravelServerEvent],
+) -> Option<&ProjectileTravelServerEvent> {
+    events
+        .iter()
+        .find(|event| event.projectile_id == PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID)
+}
+
+fn note_ambiguous_projectile_identity(
+    events: &[ProjectileTravelServerEvent],
+    identity_violations: &mut Vec<&'static str>,
+) {
+    let matching_events = events
+        .iter()
+        .filter(|event| event.projectile_id == PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID)
+        .count();
+    if matching_events > 1 {
+        push_unique_violation(identity_violations, "ambiguous_projectile_identity");
+    }
+}
+
+fn projectile_travel_forbidden_claim_present(text: &str) -> bool {
+    PROJECTILE_TRAVEL_COLLISION_FORBIDDEN_PARITY_CLAIMS
+        .iter()
+        .any(|claim| text.contains(claim))
+}
+
+fn validate_projectile_travel_event_identity(
+    event: Option<&ProjectileTravelServerEvent>,
+    expected_attacker: &str,
+    expected_target: &str,
+    identity_violations: &mut Vec<&'static str>,
+) {
+    let Some(event) = event else {
+        return;
+    };
+    if event.projectile_id != PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID {
+        push_unique_violation(identity_violations, "wrong_projectile_identity");
+    }
+    if event.attacker != expected_attacker {
+        push_unique_violation(identity_violations, "wrong_attacker");
+    }
+    if event.target != expected_target {
+        push_unique_violation(identity_violations, "wrong_target");
+    }
+    if event.weapon != PROJECTILE_TRAVEL_COLLISION_WEAPON {
+        push_unique_violation(identity_violations, "wrong_weapon");
+    }
+    if event.sequence != projectile_travel_collision_sequence_value() {
+        push_unique_violation(identity_violations, "wrong_sequence");
+    }
+}
+
+fn projectile_travel_collision_sequence_value() -> &'static str {
+    PROJECTILE_DAMAGE_SEQUENCE_NEEDLE
+        .strip_prefix("sequence=")
+        .expect("projectile sequence needle carries field prefix")
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]

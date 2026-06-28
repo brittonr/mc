@@ -57,6 +57,14 @@ pub(crate) const COMBAT_REGULAR_ATTACK_LABEL: &str = "blue_spawn";
 pub(crate) const COMBAT_FLAG_CARRIER_ATTACK_LABEL: &str = "red_flag";
 pub(crate) const COMBAT_ATTACK_ENTITY_TYPE: i32 = 1;
 pub(crate) const COMBAT_ATTACK_HAND: i32 = 0;
+pub(crate) const PROJECTILE_PROBE_USE_TICK: u32 = 900;
+pub(crate) const PROJECTILE_PROBE_SWING_TICK: u32 = 920;
+pub(crate) const PROJECTILE_PROBE_SEQUENCE: i32 = 303;
+pub(crate) const PROJECTILE_PROBE_MAIN_HAND: i32 = 0;
+pub(crate) const PROJECTILE_PROBE_HOTBAR_SLOT: i16 = 0;
+pub(crate) const PROJECTILE_PROBE_ID: &str = "arrow_probe_sequence_303";
+pub(crate) const PROJECTILE_PROBE_WEAPON: &str = "Bow";
+pub(crate) const PROJECTILE_PROBE_PROOF_BASIS: &str = "bounded_fixture_not_entity_physics";
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub(crate) struct CombatProbePlan {

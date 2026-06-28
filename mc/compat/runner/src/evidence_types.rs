@@ -33,6 +33,24 @@ pub(crate) struct ProjectileDamageCausalityEvidence {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct ProjectileTravelCollisionEvidence {
+    pub(crate) selected: bool,
+    pub(crate) row_id: &'static str,
+    pub(crate) weapon_representative: &'static str,
+    pub(crate) projectile_representative: &'static str,
+    pub(crate) attacker_username: String,
+    pub(crate) target_username: String,
+    pub(crate) projectile_id: String,
+    pub(crate) required_steps: Vec<&'static str>,
+    pub(crate) observed_steps: Vec<&'static str>,
+    pub(crate) missing_steps: Vec<&'static str>,
+    pub(crate) order_violations: Vec<&'static str>,
+    pub(crate) identity_violations: Vec<&'static str>,
+    pub(crate) non_claims: Vec<&'static str>,
+    pub(crate) passed: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(crate) struct ArmorLoadoutEnchantmentStatusMatrixEvidence {
     pub(crate) selected: bool,
     pub(crate) row_id: &'static str,

@@ -103,6 +103,23 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
         scenario_behavior(cfg.scenario).uses_dynamic_projectile_health(),
         selected_projectile_damage_causality,
     );
+    let projectile_travel_collision =
+        client.and_then(|evidence| evidence.projectile_travel_collision.as_ref());
+    let fallback_projectile_travel_collision =
+        evaluate_projectile_travel_collision(&[], "", &cfg.client_username);
+    let projectile_travel_collision_selected = cfg.scenario == Scenario::ProjectileHit;
+    let selected_projectile_travel_collision = if projectile_travel_collision_selected {
+        Some(projectile_travel_collision.unwrap_or(&fallback_projectile_travel_collision))
+    } else {
+        None
+    };
+    let projectile_travel_collision_passed = selected_projectile_travel_collision
+        .map(|evidence| evidence.passed)
+        .unwrap_or(true);
+    let projectile_travel_collision_json = projectile_travel_collision_json(
+        projectile_travel_collision_selected,
+        selected_projectile_travel_collision,
+    );
     let scenario_required: Vec<&str> = scenario_required_milestones(cfg.scenario)
         .iter()
         .map(|(name, _)| *name)
@@ -689,9 +706,13 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
         "server_combat_damage",
         "server_combat_knockback",
         "projectile_use_sent",
+        "projectile_spawn_visible",
         "projectile_swing_sent",
+        "projectile_travel_observed",
         "projectile_damage_update",
         "server_projectile_use",
+        "server_projectile_travel_sample",
+        "server_projectile_collision",
         "server_projectile_hit",
         "flag_carrier_death",
         "flag_return",
@@ -856,6 +877,7 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
     }}
   }},
   "projectile_damage_causality": {projectile_damage_causality_json},
+  "projectile_travel_collision": {projectile_travel_collision_json},
   "client": {{
     "dir": {client_dir_json},
     "git_rev": {client_git_rev_json},
@@ -943,9 +965,12 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
         server_missing_json = json_string_array(&server_scenario.missing_milestones),
         server_forbidden_matches_json = json_string_array(&server_scenario.forbidden_matches),
         server_passed = server_scenario.passed,
-        correlation_passed =
-            scenario.passed && server_scenario.passed && projectile_damage_causality_passed,
+        correlation_passed = scenario.passed
+            && server_scenario.passed
+            && projectile_damage_causality_passed
+            && projectile_travel_collision_passed,
         projectile_damage_causality_json = projectile_damage_causality_json,
+        projectile_travel_collision_json = projectile_travel_collision_json,
         backend_json = json_string(backend_name(cfg.server_backend)),
         version_json = json_string(&cfg.server_version),
         protocol = cfg.server_protocol,
@@ -1105,6 +1130,68 @@ fn projectile_damage_causality_json(
         observed_steps_json = json_string_array(&evidence.observed_steps),
         missing_steps_json = json_string_array(&evidence.missing_steps),
         order_violations_json = json_string_array(&evidence.order_violations),
+        passed = evidence.passed,
+    )
+}
+
+fn projectile_travel_collision_json(
+    selected: bool,
+    evidence: Option<&ProjectileTravelCollisionEvidence>,
+) -> String {
+    let Some(evidence) = evidence else {
+        return format!(
+            r#"{{
+    "selected": {selected},
+    "row_id": null,
+    "weapon_representative": null,
+    "projectile_representative": null,
+    "attacker": null,
+    "target": null,
+    "projectile_id": null,
+    "required_steps": [],
+    "observed_steps": [],
+    "missing_steps": [],
+    "order_violations": [],
+    "identity_violations": [],
+    "proof_basis": "not-selected",
+    "non_claims": [],
+    "passed": {passed}
+  }}"#,
+            selected = selected,
+            passed = !selected,
+        );
+    };
+    format!(
+        r#"{{
+    "selected": {selected},
+    "row_id": {row_id_json},
+    "weapon_representative": {weapon_representative_json},
+    "projectile_representative": {projectile_representative_json},
+    "attacker": {attacker_json},
+    "target": {target_json},
+    "projectile_id": {projectile_id_json},
+    "required_steps": {required_steps_json},
+    "observed_steps": {observed_steps_json},
+    "missing_steps": {missing_steps_json},
+    "order_violations": {order_violations_json},
+    "identity_violations": {identity_violations_json},
+    "proof_basis": "attacker_client_use_spawn_swing_travel_markers_plus_valence_synthetic_use_travel_collision_hit_markers",
+    "non_claims": {non_claims_json},
+    "passed": {passed}
+  }}"#,
+        selected = evidence.selected && selected,
+        row_id_json = json_string(evidence.row_id),
+        weapon_representative_json = json_string(evidence.weapon_representative),
+        projectile_representative_json = json_string(evidence.projectile_representative),
+        attacker_json = json_string(&evidence.attacker_username),
+        target_json = json_string(&evidence.target_username),
+        projectile_id_json = json_string(&evidence.projectile_id),
+        required_steps_json = json_string_array(&evidence.required_steps),
+        observed_steps_json = json_string_array(&evidence.observed_steps),
+        missing_steps_json = json_string_array(&evidence.missing_steps),
+        order_violations_json = json_string_array(&evidence.order_violations),
+        identity_violations_json = json_string_array(&evidence.identity_violations),
+        non_claims_json = json_string_array(&evidence.non_claims),
         passed = evidence.passed,
     )
 }

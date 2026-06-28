@@ -17,7 +17,7 @@ aef4b478fdfcea04b9eff0bdd0fa2472c047674b9a6d3afe400e8b93aa9a89bd  docs/evidence/
 01b74ecc9549437887d911d73b23189f21f157580502d97eac144432b1fb360c  docs/evidence/block-entity-sign-packet-family-archive-dry-run-2026-06-06.run.log
 24341960ba75d14ddc45c8d6cb461e5bdb2301442406913d90c1e0db514cf462  docs/evidence/block-entity-sign-packet-family-archive-execute-2026-06-06.run.log
 0acde522edd63d3af370b9b7286416429e6053dcc115d5d8fb423f86d0a104ad  docs/evidence/block-entity-sign-packet-family-final-validation-2026-06-06.run.log
-4fff8baee922ca31ffb70b2190dac6708f32e1c8238c1edc1aae50dfb3caf0fb  cairn/specs/mc-compatibility/spec.md
+14d0488096336306d3c8f2612ed845c6ae25d57d4ef70a5d9ae2145742f0b242  cairn/specs/mc-compatibility/spec.md
 0c9c35021eab14cb956d3a30d2758d26a1b1f8d8c853e1cc84e96a85a88041cc  cairn/archive/1970-01-01-promote-block-entity-sign-packet-family/proposal.md
 f775b8a1cf46667b782f153682fe586ca5f953a5543c397bc10ef024fc7c2fd5  cairn/archive/1970-01-01-promote-block-entity-sign-packet-family/design.md
 f68679c92f1765b49a0581d885df212cad2fa0e75d468c419f91bb2ca6fef288  cairn/archive/1970-01-01-promote-block-entity-sign-packet-family/tasks.md
@@ -29,8 +29,8 @@ a231e413950433f15033344c861b40e628ca696058b99beaa0453d0323edb55f  docs/evidence/
 fd0d831f0ebda777ff2a0fc401136225eaba9c30bca356f29ac73f5cea06ae97  docs/evidence/survival-block-entity-persistence-valence-2026-06-04.evidence
 0f97c30af7301acd86cc62390bc601b48c13b12e259e7196b851f6024e472563  docs/evidence/survival-block-entity-persistence-row-parity-2026-06-04.run.log
 864fedc1f1f645058b9ca061829d7c42e3da8d088e8cc394ab0c8abf6b2f5150  docs/evidence/mc-compat-paper-survival-block-entity-fixture-2026-06-04.java
-08bca3daca99b1e61f8d139c7906e872ca5231b0624209e8dd88fa5ff808063a  docs/evidence/protocol-763-acceptance-matrix.md
-8ea2e7031210cdd778e2fb2a90bf86df8e4b6b1eca3b9c4f07fea5899e614784  docs/evidence/protocol-763-current-evidence-bundle.md
+2b55e9f5959a515a596b05636bf8a97b2f3832ce969cf534cc8a240f49ea82de  docs/evidence/protocol-763-acceptance-matrix.md
+15711d3b66b03194bf86344242b8f7e0323876fb68df5df9a37b8de2284ef81c  docs/evidence/protocol-763-current-evidence-bundle.md
 a43051a42f11c34af1c0e6adf73840c61542d102d2535fb52227e098a362c379  docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv
 fd74f5ad3477445ddc3736dbc6c293f5bf8bb02e2ae06e41bdb640a2e5e9cb91  tools/check_block_entity_sign_packet_family.rs
 47a06ffa163c700e085836a7d1458121da2de05b80cbfa450d4045ea07a74829  tools/checker_framework.rs
