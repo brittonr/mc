@@ -1,0 +1,151 @@
+## paired-reference dry-run shapes post-archive validation
+date_utc=2026-06-28T01:23:28Z
+
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 4,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+post_archive_cairn_validate_exit_status=0
+
+command=nix run .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/projectile-travel-collision-live-rail/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "projectile-travel-collision-live-rail",
+      "path": "./cairn/changes/projectile-travel-collision-live-rail",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/promote-biome-dimension-state-correlation/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "promote-biome-dimension-state-correlation",
+      "path": "./cairn/changes/promote-biome-dimension-state-correlation",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/promote-restart-persistence-typed-events/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "promote-restart-persistence-typed-events",
+      "path": "./cairn/changes/promote-restart-persistence-typed-events",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/ratchet-scenario-fallback-budget/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "ratchet-scenario-fallback-budget",
+      "path": "./cairn/changes/ratchet-scenario-fallback-budget",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 5,
+        "total": 5,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+post_archive_cairn_change_list_exit_status=0
+
+command=nix run .#evidence-manifest-refresh -- --check --root .
+evidence manifest refresh ok: mode=check; passes=0; manifests=514; entries=4635; current=4635; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+post_archive_evidence_manifest_check_exit_status=0
+
+command=nix build .#checks.x86_64-linux.mc-compat-paired-reference-dry-run-shapes .#checks.x86_64-linux.mc-compat-scenario-manifest .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 97 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 2 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server; retrying in 269 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 44 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server
+these 3 derivations will be built:
+  /nix/store/2pn8i7bcc6q2ryd9j5afizprfapckspl-mc-compat-paired-reference-dry-run-shapes.drv
+  /nix/store/cxbkjlrvvy71d08732d7zwj3n0lggcnn-mc-compat-generated-harness-surfaces.drv
+  /nix/store/x7in5pifm4iih90q8q0yhbjm9vd3fh7j-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/cxbkjlrvvy71d08732d7zwj3n0lggcnn-mc-compat-generated-harness-surfaces.drv'...
+building '/nix/store/2pn8i7bcc6q2ryd9j5afizprfapckspl-mc-compat-paired-reference-dry-run-shapes.drv'...
+building '/nix/store/x7in5pifm4iih90q8q0yhbjm9vd3fh7j-mc-compat-scenario-manifest.drv'...
+mc-compat-paired-reference-dry-run-shapes> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-paired-reference-dry-run-shapes> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-paired-reference-dry-run-shapes> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-paired-reference-dry-run-shapes> hint: call:
+mc-compat-paired-reference-dry-run-shapes> hint:
+mc-compat-paired-reference-dry-run-shapes> hint:        git config --global init.defaultBranch <name>
+mc-compat-paired-reference-dry-run-shapes> hint:
+mc-compat-paired-reference-dry-run-shapes> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-paired-reference-dry-run-shapes> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-paired-reference-dry-run-shapes> hint:
+mc-compat-paired-reference-dry-run-shapes> hint:        git branch -m <name>
+mc-compat-paired-reference-dry-run-shapes> hint:
+mc-compat-paired-reference-dry-run-shapes> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-paired-reference-dry-run-shapes> Initialized empty Git repository in /build/repo/fake-valence/.git/
+mc-compat-paired-reference-dry-run-shapes> [master (root-commit) 9ca5a1f] init
+mc-compat-paired-reference-dry-run-shapes>  1 file changed, 1 insertion(+)
+mc-compat-paired-reference-dry-run-shapes>  create mode 100644 README.md
+post_archive_focused_nix_checks_exit_status=0
+exit_status=0

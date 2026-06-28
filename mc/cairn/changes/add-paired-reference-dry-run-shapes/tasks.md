@@ -1,8 +1,0 @@
-# Tasks
-
-- [ ] [serial] Inventory current `vanilla-combat-reference-parity` and `vanilla-combat-armor-reference-parity` manifest entries, paired receipt fields, and dry-run exclusion rationale. r[mc_compatibility.paired_reference_dry_run_shapes.inventory]
-- [ ] [depends:mc_compatibility.paired_reference_dry_run_shapes.inventory] Define deterministic dry-run receipt shape fields for the selected paired-reference scenarios without reading live backend or source-tree state. r[mc_compatibility.paired_reference_dry_run_shapes.contract]
-- [ ] [depends:mc_compatibility.paired_reference_dry_run_shapes.contract] Implement or extend pure shape validation with positive fixtures for both reference scenarios and negative fixtures for missing backend fields, missing tolerance fields, wrong backend labels, and overbroad parity claims. r[mc_compatibility.paired_reference_dry_run_shapes.validation_core]
-- [ ] [depends:mc_compatibility.paired_reference_dry_run_shapes.validation_core] Wire scenario manifest dry-run checks and refresh generated scenario surfaces while preserving live comparator evidence as the only parity promotion source. r[mc_compatibility.paired_reference_dry_run_shapes.integration]
-- [ ] [depends:mc_compatibility.paired_reference_dry_run_shapes.integration] Update evidence docs with dry-run non-claims and refresh BLAKE3 manifests. r[mc_compatibility.paired_reference_dry_run_shapes.docs]
-- [ ] [depends:mc_compatibility.paired_reference_dry_run_shapes.docs] Run dry-run shape fixtures, scenario manifest checks, generated-surface freshness, evidence manifests, task-evidence validation, Cairn gates, Cairn validation, and record reviewable logs before archive. r[mc_compatibility.paired_reference_dry_run_shapes.closeout]

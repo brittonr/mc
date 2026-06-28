@@ -1,0 +1,27 @@
+## paired-reference dry-run shapes evidence validation
+date_utc=2026-06-28T01:17:35Z
+
+command=nix run .#evidence-manifest-refresh -- --check --root .
+evidence manifest refresh ok: mode=check; passes=0; manifests=514; entries=4633; current=4633; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+
+command=nix develop --no-update-lock-file . -c sh -c rustc/check_cairn_task_evidence active change
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task evidence gate passed: 5 completed tasks checked across 1 task files
+task_evidence_check_exit_status=0
+exit_status=0
+
+## final task-evidence after closeout
+date_utc=2026-06-28T01:19:04Z
+command=nix develop --no-update-lock-file . -c sh -c rustc/check_cairn_task_evidence active change after closeout
+/home/brittonr/git/mc
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task evidence gate passed: 6 completed tasks checked across 1 task files
+final_task_evidence_check_exit_status=0
+exit_status=0

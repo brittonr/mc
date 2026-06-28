@@ -740,6 +740,50 @@ in
         mkdir -p "$out"
         cp -r logs receipts "$out/"
       '';
+  mc-compat-paired-reference-dry-run-shapes =
+    pkgs.runCommand "mc-compat-paired-reference-dry-run-shapes"
+      {
+        nativeBuildInputs = [
+          pkgs.rustc
+          pkgs.gcc
+          pkgs.git
+        ];
+      }
+      ''
+        cp -R ${srcRoot} repo
+        chmod -R u+w repo
+        cd repo
+        rustc --edition=2021 tools/check_paired_reference_dry_run_shapes.rs -o ../check-paired-reference-dry-run-shapes
+        ../check-paired-reference-dry-run-shapes --self-test > ../paired-reference-dry-run-shapes-self-test.log
+        mkdir -p fake-stevenarella fake-valence receipts logs
+        printf '%s\n' '[package]' 'name = "stevenarella"' 'version = "0.0.0"' 'edition = "2021"' > fake-stevenarella/Cargo.toml
+        git -C fake-valence init
+        git -C fake-valence config user.email mc-compat@example.invalid
+        git -C fake-valence config user.name mc-compat
+        printf '%s\n' fake > fake-valence/README.md
+        git -C fake-valence add README.md
+        git -C fake-valence commit -m init
+        for scenario in \
+          vanilla-combat-reference-parity \
+          vanilla-combat-armor-reference-parity
+        do
+          receipt="$PWD/receipts/$scenario.json"
+          log="$PWD/logs/$scenario-dry-run.log"
+          shape_log="$PWD/logs/$scenario-shape-check.log"
+          ${
+            self.packages.${pkgs.stdenv.hostPlatform.system}.mc-compat-runner
+          }/bin/mc-compat-runner --dry-run --server-backend valence --client-dir "$PWD/fake-stevenarella" --valence-repo "$PWD/fake-valence" --valence-rev HEAD --scenario "$scenario" --receipt "$receipt" > "$log"
+          ../check-paired-reference-dry-run-shapes --receipt "$receipt" > "$shape_log"
+          grep -Fq "scenario '$scenario'" "$log"
+          grep -Fq '"paired_reference_dry_run_shape"' "$receipt"
+          grep -Fq '"claims_live_parity": false' "$receipt"
+          grep -Fq '"claims_exact_vanilla_parity": false' "$receipt"
+          grep -Fq '"not_live_paper_valence_evidence"' "$receipt"
+        done
+        mkdir -p "$out"
+        cp ../paired-reference-dry-run-shapes-self-test.log "$out/"
+        cp -r logs receipts "$out/"
+      '';
   mc-compat-valence-ctf-600s-soak-dry-run =
     pkgs.runCommand "mc-compat-valence-ctf-600s-soak-dry-run" { nativeBuildInputs = [ pkgs.git ]; }
       ''

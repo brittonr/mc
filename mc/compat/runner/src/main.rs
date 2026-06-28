@@ -4737,6 +4737,63 @@ mod tests {
     }
 
     #[test]
+    fn paired_reference_dry_run_receipts_record_shape_nonclaims() {
+        const PAIRED_REFERENCE_SCENARIOS: &[&str] = &[
+            "vanilla-combat-reference-parity",
+            "vanilla-combat-armor-reference-parity",
+        ];
+
+        for scenario in PAIRED_REFERENCE_SCENARIOS {
+            let scenario_arg = format!("--scenario={scenario}");
+            let cfg = test_config(&[scenario_arg.as_str()], &[])
+                .expect("paired-reference dry-run config parses");
+            let json = smoke_receipt_json(&cfg, Ok(&None));
+            let shape = json_object_slice(&json, "paired_reference_dry_run_shape")
+                .expect("paired reference shape block exists");
+
+            assert!(json_bool_field(shape, "selected").expect("selected parses"));
+            assert_eq!(
+                json_string_field(shape, "scenario").expect("scenario parses"),
+                *scenario
+            );
+            assert_eq!(
+                json_string_field(shape, "reference_backend").expect("reference backend parses"),
+                "paper-reference"
+            );
+            assert_eq!(
+                json_string_field(shape, "valence_backend").expect("valence backend parses"),
+                "valence"
+            );
+            assert_eq!(
+                json_string_field(shape, "reference_revision").expect("reference revision parses"),
+                GIT_REV_DRY_RUN_PLACEHOLDER
+            );
+            assert_eq!(
+                json_string_field(shape, "comparison_status").expect("status parses"),
+                "dry-run-shape-not-compared"
+            );
+            assert!(!json_bool_field(shape, "live_comparator_evidence").expect("live flag parses"));
+            assert!(!json_bool_field(shape, "claims_live_parity").expect("claim flag parses"));
+            assert!(!json_bool_field(shape, "claims_exact_vanilla_parity")
+                .expect("exact parity flag parses"));
+            assert!(shape.contains("damage_tolerance"), "{shape}");
+            assert!(shape.contains("knockback_tolerance"), "{shape}");
+            assert!(shape.contains("not_live_paper_valence_evidence"), "{shape}");
+            assert!(shape.contains("not_exact_mojang_vanilla_parity"), "{shape}");
+        }
+
+        let live_cfg = test_config(
+            &["--run", "--scenario=vanilla-combat-reference-parity"],
+            &[],
+        )
+        .expect("paired-reference live config parses");
+        let live_json = smoke_receipt_json(&live_cfg, Ok(&None));
+        let live_shape = json_object_slice(&live_json, "paired_reference_dry_run_shape")
+            .expect("paired reference shape block exists");
+        assert!(!json_bool_field(live_shape, "selected").expect("selected parses"));
+    }
+
+    #[test]
     fn mcp_controlled_dry_run_receipt_records_control_contract() {
         let cfg = test_config(&["--scenario", MCP_CONTROLLED_SMOKE_SCENARIO], &[])
             .expect("mcp-controlled config parses");

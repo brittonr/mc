@@ -1,0 +1,38 @@
+## paired-reference dry-run shapes focused Nix checks
+date_utc=2026-06-28T01:13:40Z
+
+command=nix build .#checks.x86_64-linux.mc-compat-paired-reference-dry-run-shapes .#checks.x86_64-linux.mc-compat-scenario-manifest .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+/home/brittonr/git/mc
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 62 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 29 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1058 ms: Could not connect to server; retrying in 305 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 381 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds
+these 3 derivations will be built:
+  /nix/store/88ir4wx260fd9vw7jb93cz5kv1m8zap5-mc-compat-paired-reference-dry-run-shapes.drv
+  /nix/store/nh99c99m5h1vsk45mn79vxq28s2ijqry-mc-compat-scenario-manifest.drv
+  /nix/store/qr7fghy96z367cccrbyqijbr9x1xvkqa-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/qr7fghy96z367cccrbyqijbr9x1xvkqa-mc-compat-generated-harness-surfaces.drv'...
+building '/nix/store/88ir4wx260fd9vw7jb93cz5kv1m8zap5-mc-compat-paired-reference-dry-run-shapes.drv'...
+building '/nix/store/nh99c99m5h1vsk45mn79vxq28s2ijqry-mc-compat-scenario-manifest.drv'...
+mc-compat-paired-reference-dry-run-shapes> hint: Using 'master' as the name for the initial branch. This default branch name
+mc-compat-paired-reference-dry-run-shapes> hint: will change to "main" in Git 3.0. To configure the initial branch name
+mc-compat-paired-reference-dry-run-shapes> hint: to use in all of your new repositories, which will suppress this warning,
+mc-compat-paired-reference-dry-run-shapes> hint: call:
+mc-compat-paired-reference-dry-run-shapes> hint:
+mc-compat-paired-reference-dry-run-shapes> hint:        git config --global init.defaultBranch <name>
+mc-compat-paired-reference-dry-run-shapes> hint:
+mc-compat-paired-reference-dry-run-shapes> hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+mc-compat-paired-reference-dry-run-shapes> hint: 'development'. The just-created branch can be renamed via this command:
+mc-compat-paired-reference-dry-run-shapes> hint:
+mc-compat-paired-reference-dry-run-shapes> hint:        git branch -m <name>
+mc-compat-paired-reference-dry-run-shapes> hint:
+mc-compat-paired-reference-dry-run-shapes> hint: Disable this message with "git config set advice.defaultBranchName false"
+mc-compat-paired-reference-dry-run-shapes> Initialized empty Git repository in /build/repo/fake-valence/.git/
+mc-compat-paired-reference-dry-run-shapes> [master (root-commit) 5dc7310] init
+mc-compat-paired-reference-dry-run-shapes>  1 file changed, 1 insertion(+)
+mc-compat-paired-reference-dry-run-shapes>  create mode 100644 README.md
+focused_nix_checks_exit_status=0
+exit_status=0

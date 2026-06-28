@@ -1,5 +1,47 @@
 use super::*;
 
+const PAIRED_REFERENCE_BACKEND_LABEL: &str = "paper-reference";
+const PAIRED_REFERENCE_COMPARISON_STATUS_PLACEHOLDER: &str = "dry-run-shape-not-compared";
+const PAIRED_REFERENCE_METRIC_NAMES: &[&str] = &[
+    "attacker_identity",
+    "victim_identity",
+    "weapon",
+    "armor_state",
+    "pre_health",
+    "post_health",
+    "damage_delta",
+    "knockback_metric",
+];
+const PAIRED_REFERENCE_TOLERANCE_FIELDS: &[&str] = &["damage_tolerance", "knockback_tolerance"];
+const PAIRED_REFERENCE_NON_CLAIMS: &[&str] = &[
+    "dry_run_shape_only",
+    "not_live_paper_valence_evidence",
+    "not_comparator_pass",
+    "not_exact_mojang_vanilla_parity",
+    "not_full_combat_parity",
+    "not_public_server_safety",
+    "not_production_readiness",
+];
+const EMPTY_SHAPE_STRINGS: &[&str] = &[];
+const PAIRED_REFERENCE_NOT_SELECTED_STATUS: &str = "not-selected";
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct PairedReferenceDryRunShape {
+    selected: bool,
+    scenario: Option<&'static str>,
+    reference_backend: Option<&'static str>,
+    valence_backend: Option<&'static str>,
+    reference_revision: Option<&'static str>,
+    valence_revision: Option<&'static str>,
+    metric_names: &'static [&'static str],
+    tolerance_fields: &'static [&'static str],
+    comparison_status: &'static str,
+    live_comparator_evidence: bool,
+    claims_live_parity: bool,
+    claims_exact_vanilla_parity: bool,
+    non_claims: &'static [&'static str],
+}
+
 #[cfg(test)]
 pub(crate) fn smoke_receipt_json(
     cfg: &Config,
@@ -693,6 +735,10 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
         "all_projectile_weapons",
         "enchantments_or_status_effects",
     ];
+    let paired_reference_dry_run_shape =
+        build_paired_reference_dry_run_shape(cfg.scenario, cfg.mode == Mode::DryRun);
+    let paired_reference_dry_run_shape_json =
+        paired_reference_dry_run_shape_json(&paired_reference_dry_run_shape);
     let client_git_rev_json = json_optional_string(child_revisions.client.resolved_rev.as_deref());
     let client_git_status_json = json_string(child_revisions.client.status);
     let client_git_diagnostics_json = json_string_vec(&child_revisions.client.diagnostics);
@@ -790,6 +836,7 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
     "requires_client_and_server_evidence_for_semantic_claims": true,
     "non_claims": {gameplay_non_claims_json}
   }},
+  "paired_reference_dry_run_shape": {paired_reference_dry_run_shape_json},
   "armor_loadout_enchantment_status_matrix": {armor_loadout_enchantment_status_matrix_json},
   "equipment_slot_item_matrix_expansion": {equipment_slot_item_matrix_expansion_json},
   "server": {{
@@ -890,6 +937,7 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
         proxy_forwarding_mode_json = json_string(proxy_forwarding_mode),
         gameplay_oracle_milestones_json = json_string_array(&gameplay_oracle_milestones),
         gameplay_non_claims_json = json_string_array(&gameplay_non_claims),
+        paired_reference_dry_run_shape_json = paired_reference_dry_run_shape_json,
         server_required_json = json_string_array(&server_required),
         server_observed_json = json_string_array(&server_scenario.observed_milestones),
         server_missing_json = json_string_array(&server_scenario.missing_milestones),
@@ -935,6 +983,85 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
         first_forbidden_source_json = json_optional_string(first_forbidden_source),
         suggested_boundary_json = json_string(suggested_boundary),
         enriched_triage_json = enriched_triage_json,
+    )
+}
+
+fn build_paired_reference_dry_run_shape(
+    scenario: Scenario,
+    dry_run: bool,
+) -> PairedReferenceDryRunShape {
+    if !dry_run || !is_paired_reference_scenario(scenario) {
+        return PairedReferenceDryRunShape {
+            selected: false,
+            scenario: None,
+            reference_backend: None,
+            valence_backend: None,
+            reference_revision: None,
+            valence_revision: None,
+            metric_names: EMPTY_SHAPE_STRINGS,
+            tolerance_fields: EMPTY_SHAPE_STRINGS,
+            comparison_status: PAIRED_REFERENCE_NOT_SELECTED_STATUS,
+            live_comparator_evidence: false,
+            claims_live_parity: false,
+            claims_exact_vanilla_parity: false,
+            non_claims: EMPTY_SHAPE_STRINGS,
+        };
+    }
+
+    PairedReferenceDryRunShape {
+        selected: true,
+        scenario: Some(scenario_name(scenario)),
+        reference_backend: Some(PAIRED_REFERENCE_BACKEND_LABEL),
+        valence_backend: Some(backend_name(ServerBackend::Valence)),
+        reference_revision: Some(GIT_REV_DRY_RUN_PLACEHOLDER),
+        valence_revision: Some(GIT_REV_DRY_RUN_PLACEHOLDER),
+        metric_names: PAIRED_REFERENCE_METRIC_NAMES,
+        tolerance_fields: PAIRED_REFERENCE_TOLERANCE_FIELDS,
+        comparison_status: PAIRED_REFERENCE_COMPARISON_STATUS_PLACEHOLDER,
+        live_comparator_evidence: false,
+        claims_live_parity: false,
+        claims_exact_vanilla_parity: false,
+        non_claims: PAIRED_REFERENCE_NON_CLAIMS,
+    }
+}
+
+fn is_paired_reference_scenario(scenario: Scenario) -> bool {
+    matches!(
+        scenario,
+        Scenario::VanillaCombatReferenceParity | Scenario::VanillaCombatArmorReferenceParity
+    )
+}
+
+fn paired_reference_dry_run_shape_json(shape: &PairedReferenceDryRunShape) -> String {
+    format!(
+        r#"{{
+    "selected": {selected},
+    "scenario": {scenario_json},
+    "reference_backend": {reference_backend_json},
+    "valence_backend": {valence_backend_json},
+    "reference_revision": {reference_revision_json},
+    "valence_revision": {valence_revision_json},
+    "metric_names": {metric_names_json},
+    "tolerance_fields": {tolerance_fields_json},
+    "comparison_status": {comparison_status_json},
+    "live_comparator_evidence": {live_comparator_evidence},
+    "claims_live_parity": {claims_live_parity},
+    "claims_exact_vanilla_parity": {claims_exact_vanilla_parity},
+    "non_claims": {non_claims_json}
+  }}"#,
+        selected = shape.selected,
+        scenario_json = json_optional_string(shape.scenario),
+        reference_backend_json = json_optional_string(shape.reference_backend),
+        valence_backend_json = json_optional_string(shape.valence_backend),
+        reference_revision_json = json_optional_string(shape.reference_revision),
+        valence_revision_json = json_optional_string(shape.valence_revision),
+        metric_names_json = json_string_array(shape.metric_names),
+        tolerance_fields_json = json_string_array(shape.tolerance_fields),
+        comparison_status_json = json_string(shape.comparison_status),
+        live_comparator_evidence = shape.live_comparator_evidence,
+        claims_live_parity = shape.claims_live_parity,
+        claims_exact_vanilla_parity = shape.claims_exact_vanilla_parity,
+        non_claims_json = json_string_array(shape.non_claims),
     )
 }
 

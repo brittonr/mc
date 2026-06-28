@@ -1,0 +1,85 @@
+## paired-reference dry-run shapes archive execute
+date_utc=2026-06-28T01:22:04Z
+
+command=CAIRN_ARCHIVE_DATE=2026-06-27 nix run .#cairn -- archive add-paired-reference-dry-run-shapes --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-paired-reference-dry-run-shapes",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-27-add-paired-reference-dry-run-shapes"
+    }
+  ],
+  "blocked": false,
+  "change": "add-paired-reference-dry-run-shapes",
+  "dry_run": false,
+  "input_hash": "53e53057115252d29a29b9d92d3975502adcfdd07c7c5267d346cc1f1986fc60",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "9b9f10eb5212526a73d263944167fc06ff8c6c95c69e3a85fe1b969c501c2822",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-27-add-paired-reference-dry-run-shapes/design.md"
+        },
+        {
+          "content_hash": "1537c6b4733c05a45cc40c71fd16b47a7b2cb13dda03be702a7547717662b15e",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-27-add-paired-reference-dry-run-shapes/proposal.md"
+        },
+        {
+          "content_hash": "00d912e3d7af13c3bef227b2eaadb88c4ab80c1f619ba5c22ae6196ade163f4d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-27-add-paired-reference-dry-run-shapes/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "4257c6533b9510c47913106de2d1914344b30c18c3175c63f582f450e02021e1",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-27-add-paired-reference-dry-run-shapes/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-paired-reference-dry-run-shapes"
+        }
+      ],
+      "manifest_hash": "6284c008939e7c1981363a7649424e8490bae6dca67ee8e15260b5b788efe099"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "9b9f10eb5212526a73d263944167fc06ff8c6c95c69e3a85fe1b969c501c2822",
+          "exists": true,
+          "path": "./cairn/changes/add-paired-reference-dry-run-shapes/design.md"
+        },
+        {
+          "content_hash": "1537c6b4733c05a45cc40c71fd16b47a7b2cb13dda03be702a7547717662b15e",
+          "exists": true,
+          "path": "./cairn/changes/add-paired-reference-dry-run-shapes/proposal.md"
+        },
+        {
+          "content_hash": "00d912e3d7af13c3bef227b2eaadb88c4ab80c1f619ba5c22ae6196ade163f4d",
+          "exists": true,
+          "path": "./cairn/changes/add-paired-reference-dry-run-shapes/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "4257c6533b9510c47913106de2d1914344b30c18c3175c63f582f450e02021e1",
+          "exists": true,
+          "path": "./cairn/changes/add-paired-reference-dry-run-shapes/tasks.md"
+        }
+      ],
+      "manifest_hash": "3cc1ff36f4a7fd3858a7378ef2053a7a852bf399e6eb1e574f636f901dcb5099"
+    },
+    "kind": "archive",
+    "manifest_hash": "62b19e8244add1dc9fa39807ae38c2fadf29f70b112e5e1cf6ffe9f9e90daa80"
+  },
+  "plan_hash": "7046f0359d0db1cc404b87f8b343d257cc33517a42a1fd0f74ef542f63723820",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "660bc72ffd945014bd43866ebaa0bbdeb321d2e767fe8e6f808cd632258f5505"
+}
+cairn_archive_execute_exit_status=0
+exit_status=0

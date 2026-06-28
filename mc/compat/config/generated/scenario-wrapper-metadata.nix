@@ -311,9 +311,9 @@
     {
       scenario = "vanilla-combat-reference-parity";
       aliases = [ "vanilla-combat-reference-parity" ];
-      appWrapper = "mc-compat-vanilla-combat-reference-parity";
-      dryRunCheck = "";
-      receiptShapeCheck = false;
+      appWrapper = "mc-compat-smoke";
+      dryRunCheck = "mc-compat-paired-reference-dry-run-shapes";
+      receiptShapeCheck = true;
       clientCount = 2;
       sessionCount = 1;
       migrationState = "substring-fallback";
@@ -322,8 +322,8 @@
       scenario = "vanilla-combat-armor-reference-parity";
       aliases = [ "vanilla-combat-armor-reference-parity" ];
       appWrapper = "mc-compat-smoke";
-      dryRunCheck = "";
-      receiptShapeCheck = false;
+      dryRunCheck = "mc-compat-paired-reference-dry-run-shapes";
+      receiptShapeCheck = true;
       clientCount = 2;
       sessionCount = 1;
       migrationState = "substring-fallback";
@@ -496,7 +496,6 @@
     "mc-compat-valence-survival-furnace-persistence"
     "mc-compat-valence-survival-furnace-smelting-breadth"
     "mc-compat-valence-survival-hunger-health-cycle"
-    "mc-compat-vanilla-combat-reference-parity"
   ];
   dryRunChecks = [
     "mc-compat-blue-flag-score-dry-run"
@@ -506,6 +505,7 @@
     "mc-compat-mcp-controlled-smoke-dry-run"
     "mc-compat-multi-client-scenario-dry-run"
     "mc-compat-open-cairns-dry-run"
+    "mc-compat-paired-reference-dry-run-shapes"
     "mc-compat-valence-ctf-armor-equipment-mitigation-dry-run"
     "mc-compat-valence-ctf-combat-damage-dry-run"
     "mc-compat-valence-ctf-combat-knockback-dry-run"
