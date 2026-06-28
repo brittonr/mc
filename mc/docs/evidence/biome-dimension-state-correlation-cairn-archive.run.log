@@ -1,0 +1,80 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: promote-biome-dimension-state-correlation",
+      "kind": "archive_change",
+      "path": "./cairn/archive/1970-01-01-promote-biome-dimension-state-correlation"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-biome-dimension-state-correlation",
+  "dry_run": false,
+  "input_hash": "3ebf0704ad8d76301c5e93536b2eb97af92de9b3336df921a579f3f7b4ba78d1",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "dd2698700c142c87de887a9c02d8d92e328b780d2e2a648a2798c191a1343e82",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-promote-biome-dimension-state-correlation/design.md"
+        },
+        {
+          "content_hash": "bcdbf84fcc0aa523805067bbd07b0dc755dcac16c08b4afdc0de42fe4e8d26b6",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-promote-biome-dimension-state-correlation/proposal.md"
+        },
+        {
+          "content_hash": "c4612baf74d19396011e398a6d1e414a7bae89be9c7204093f83e0335c176811",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-promote-biome-dimension-state-correlation/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "8cc2bb95f5a17d12935ce1d730b3718fc24bc56ef96c9d8bec228b39bb63e3db",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-promote-biome-dimension-state-correlation/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/promote-biome-dimension-state-correlation"
+        }
+      ],
+      "manifest_hash": "d64bd9bae8dd0f612ac1f9794a00ba07a623d93e72e388f8e13256efa08753a3"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "dd2698700c142c87de887a9c02d8d92e328b780d2e2a648a2798c191a1343e82",
+          "exists": true,
+          "path": "./cairn/changes/promote-biome-dimension-state-correlation/design.md"
+        },
+        {
+          "content_hash": "bcdbf84fcc0aa523805067bbd07b0dc755dcac16c08b4afdc0de42fe4e8d26b6",
+          "exists": true,
+          "path": "./cairn/changes/promote-biome-dimension-state-correlation/proposal.md"
+        },
+        {
+          "content_hash": "c4612baf74d19396011e398a6d1e414a7bae89be9c7204093f83e0335c176811",
+          "exists": true,
+          "path": "./cairn/changes/promote-biome-dimension-state-correlation/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "8cc2bb95f5a17d12935ce1d730b3718fc24bc56ef96c9d8bec228b39bb63e3db",
+          "exists": true,
+          "path": "./cairn/changes/promote-biome-dimension-state-correlation/tasks.md"
+        }
+      ],
+      "manifest_hash": "e7be2ccfd15e48601ac27fe6910c3cc4c2fbdcd41f19cf22a9efbc84ce22c9ad"
+    },
+    "kind": "archive",
+    "manifest_hash": "391ff9136ce45356419321fcfcd74e0223225af56d1ddfd72367ee54e3e3888d"
+  },
+  "plan_hash": "be201855063f518ce1e9161952080f7f8f1e5e4680dacfa5cb8ed41763aa1389",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "a0cd3ba1cf3da0315e0dd60443cb8ee1d3d5d2fc3431e0667159777cde3bdf7f"
+}
+exit_status=0

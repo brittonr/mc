@@ -42,15 +42,8 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
     },
     GeneratedScenarioRow {
         name: "valence-compat-bot-probe",
-        aliases: &[
-            "valence-compat-bot-probe",
-            "compat-bot-probe",
-        ],
-        client_milestones: &[
-            "protocol_detected",
-            "join_game",
-            "render_tick",
-        ],
+        aliases: &["valence-compat-bot-probe", "compat-bot-probe"],
+        client_milestones: &["protocol_detected", "join_game", "render_tick"],
         server_milestones: &[],
         forbidden_patterns: &[
             "panic",
@@ -78,10 +71,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
             "score_red_1",
             "score_red_2",
         ],
-        server_milestones: &[
-            "server_username_seen",
-            "server_flag_or_score",
-        ],
+        server_milestones: &["server_username_seen", "server_flag_or_score"],
         forbidden_patterns: &[
             "panic",
             "unexpected_eof",
@@ -107,10 +97,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
             "flag_capture",
             "score_blue_1",
         ],
-        server_milestones: &[
-            "server_username_seen",
-            "server_flag_or_score",
-        ],
+        server_milestones: &["server_username_seen", "server_flag_or_score"],
         forbidden_patterns: &[
             "panic",
             "unexpected_eof",
@@ -857,7 +844,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
         dry_run_check: "mc-compat-historical-scenario-dry-runs",
         dry_run_wrapper: "mc-compat-smoke",
         dry_run_exclusion_reason: "",
-        migration_state: "substring-fallback",
+        migration_state: "typed-event-ready",
     },
     GeneratedScenarioRow {
         name: "survival-biome-dimension-travel",
@@ -1295,10 +1282,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
             "ctf_invalid_pickup_attempted",
             "ctf_invalid_pickup_contained",
         ],
-        server_milestones: &[
-            "server_username_seen",
-            "server_invalid_pickup_rejected",
-        ],
+        server_milestones: &["server_username_seen", "server_invalid_pickup_rejected"],
         forbidden_patterns: &[
             "panic",
             "unexpected_eof",
@@ -1513,10 +1497,7 @@ pub(crate) const SCENARIO_MANIFEST_ROWS: &[GeneratedScenarioRow] = &[
             "score_red_1",
             "reconnect_session",
         ],
-        server_milestones: &[
-            "server_username_seen",
-            "server_flag_or_score",
-        ],
+        server_milestones: &["server_username_seen", "server_flag_or_score"],
         forbidden_patterns: &[
             "panic",
             "unexpected_eof",

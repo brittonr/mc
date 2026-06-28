@@ -22,6 +22,45 @@ pub(crate) struct ServerScenarioEvidence {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct BiomeDimensionJoinStateClientState {
+    pub(crate) spawn_environment: String,
+    pub(crate) environment_identifier: String,
+    pub(crate) client_environment_update: String,
+    pub(crate) normalized_identifier: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct BiomeDimensionJoinStateServerState {
+    pub(crate) username: String,
+    pub(crate) spawn_environment: String,
+    pub(crate) environment_identifier: String,
+    pub(crate) server_environment_state: String,
+    pub(crate) normalized_identifier: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct BiomeDimensionJoinStateRecord {
+    pub(crate) selected: bool,
+    pub(crate) scenario: String,
+    pub(crate) protocol: Option<u32>,
+    pub(crate) client_observed_state: Option<BiomeDimensionJoinStateClientState>,
+    pub(crate) server_configured_state: Option<BiomeDimensionJoinStateServerState>,
+    pub(crate) non_claims: Vec<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct BiomeDimensionJoinStateValidation {
+    pub(crate) passed: bool,
+    pub(crate) diagnostics: Vec<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct BiomeDimensionJoinStateEvidence {
+    pub(crate) record: BiomeDimensionJoinStateRecord,
+    pub(crate) validation: BiomeDimensionJoinStateValidation,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(crate) struct ProjectileDamageCausalityEvidence {
     pub(crate) required_steps: Vec<&'static str>,
     pub(crate) observed_steps: Vec<&'static str>,

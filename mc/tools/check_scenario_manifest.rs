@@ -34,6 +34,9 @@ const SELF_TEST_FLAG: &str = "--self-test";
 const CHECK_GENERATED_SURFACES_FLAG: &str = "--check-generated-surfaces";
 const WRITE_GENERATED_SURFACES_FLAG: &str = "--write-generated-surfaces";
 const MINIMUM_POSITIVE_COUNT: u32 = 1;
+const GENERATED_RUST_MAX_WIDTH: usize = 100;
+const GENERATED_RUST_COLLECTION_WIDTH: usize = 60;
+const GENERATED_RUST_TRAILING_COMMA_WIDTH: usize = 1;
 const STRING_QUOTE_OVERHEAD: usize = 2;
 const STRING_FIELD_DELIMITER: &str = " = \"";
 const ARRAY_START: &str = "[";
@@ -484,6 +487,16 @@ const SURVIVAL_CONTAINER_BLOCK_ENTITY_BREADTH_TYPED_EVENT_SERVER_EVENTS: &[&str]
     "server_survival_container_block_entity_metadata",
     "server_survival_container_block_entity_state",
 ];
+const SURVIVAL_BIOME_DIMENSION_STATE_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
+    "protocol_detected",
+    "join_game",
+    "render_tick",
+    "survival_biome_dimension_state",
+];
+const SURVIVAL_BIOME_DIMENSION_STATE_TYPED_EVENT_SERVER_EVENTS: &[&str] = &[
+    "server_username_seen",
+    "server_survival_biome_dimension_state",
+];
 const SURVIVAL_BIOME_DIMENSION_TRAVEL_TYPED_EVENT_CLIENT_EVENTS: &[&str] = &[
     "protocol_detected",
     "join_game",
@@ -737,6 +750,13 @@ const TYPED_EVENT_READINESS_FIXTURES: &[TypedEventReadinessFixture<'static>] = &
         scenario: "survival-container-block-entity-breadth",
         client_events: SURVIVAL_CONTAINER_BLOCK_ENTITY_BREADTH_TYPED_EVENT_CLIENT_EVENTS,
         server_events: SURVIVAL_CONTAINER_BLOCK_ENTITY_BREADTH_TYPED_EVENT_SERVER_EVENTS,
+        forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
+        derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
+    },
+    TypedEventReadinessFixture {
+        scenario: "survival-biome-dimension-state",
+        client_events: SURVIVAL_BIOME_DIMENSION_STATE_TYPED_EVENT_CLIENT_EVENTS,
+        server_events: SURVIVAL_BIOME_DIMENSION_STATE_TYPED_EVENT_SERVER_EVENTS,
         forbidden_events: TYPED_EVENT_COMMON_FORBIDDEN_EVENTS,
         derivation_rules: TYPED_EVENT_EMPTY_EVENTS,
     },
@@ -2284,19 +2304,31 @@ fn render_generated_rust(rows: &[ScenarioRow]) -> Result<String, Vec<String>> {
         output.push_str(&format!("        name: {},\n", rust_string(&row.name)));
         output.push_str(&format!(
             "        aliases: {},\n",
-            rust_string_array(&row.aliases, "        ")
+            rust_string_array(&row.aliases, "        ", "        aliases: ")
         ));
         output.push_str(&format!(
             "        client_milestones: {},\n",
-            rust_string_array(&row.client_milestones, "        ")
+            rust_string_array(
+                &row.client_milestones,
+                "        ",
+                "        client_milestones: ",
+            )
         ));
         output.push_str(&format!(
             "        server_milestones: {},\n",
-            rust_string_array(&row.server_milestones, "        ")
+            rust_string_array(
+                &row.server_milestones,
+                "        ",
+                "        server_milestones: ",
+            )
         ));
         output.push_str(&format!(
             "        forbidden_patterns: {},\n",
-            rust_string_array(&row.forbidden_patterns, "        ")
+            rust_string_array(
+                &row.forbidden_patterns,
+                "        ",
+                "        forbidden_patterns: ",
+            )
         ));
         output.push_str(&format!(
             "        client_count: {},\n",
@@ -2554,12 +2586,21 @@ fn rust_count_expr(count: u32, one: &str, two: &str) -> String {
     }
 }
 
-fn rust_string_array(values: &[String], indent: &str) -> String {
+fn rust_string_array(values: &[String], indent: &str, line_prefix: &str) -> String {
     if values.is_empty() {
         return "&[]".to_string();
     }
-    if values.len() <= MINIMUM_POSITIVE_COUNT as usize {
-        return format!("&[{}]", rust_string(&values[0]));
+    let rendered = values
+        .iter()
+        .map(|value| rust_string(value))
+        .collect::<Vec<_>>()
+        .join(", ");
+    let single_line = format!("&[{rendered}]");
+    let fits_max_width = line_prefix.len() + single_line.len() + GENERATED_RUST_TRAILING_COMMA_WIDTH
+        <= GENERATED_RUST_MAX_WIDTH;
+    let fits_collection_width = single_line.len() <= GENERATED_RUST_COLLECTION_WIDTH;
+    if fits_max_width && fits_collection_width {
+        return single_line;
     }
     let child_indent = format!("{indent}    ");
     let mut output = String::from("&[\n");

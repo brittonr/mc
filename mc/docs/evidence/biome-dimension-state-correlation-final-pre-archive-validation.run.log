@@ -1,0 +1,54 @@
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+## evidence_manifest_refresh_check
+command=bash -lc rustc\ --edition=2021\ tools/refresh_evidence_manifests.rs\ -o\ target/refresh-evidence-manifests\ \&\&\ target/refresh-evidence-manifests\ --check 
+evidence manifest refresh ok: mode=check; passes=0; manifests=516; entries=4670; current=4670; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_refresh_check_exit_status=0
+
+## evidence_manifest_check
+command=bash -lc rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests 
+evidence manifests ok: 516 manifests, 4670 entries, 141 receipts scanned
+evidence_manifest_check_exit_status=0
+
+## task_evidence_all_checked
+command=bash -lc rustc\ --edition=2021\ tools/check_cairn_task_evidence.rs\ -o\ target/check-cairn-task-evidence\ \&\&\ target/check-cairn-task-evidence\ cairn/changes/promote-biome-dimension-state-correlation/tasks.md 
+task evidence gate passed: 6 completed tasks checked across 1 task files
+task_evidence_all_checked_exit_status=0
+
+## cairn_validate
+command=nix run .#cairn -- validate --root . 
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+cairn_validate_exit_status=0
+
+## focused_nix_checks
+command=nix build --no-link .#checks.x86_64-linux.mc-compat-scenario-manifest .#checks.x86_64-linux.mc-compat-evidence-manifests .#checks.x86_64-linux.mc-compat-cairn-task-evidence .#checks.x86_64-linux.mc-cairn-policy-fresh 
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1062 ms: Could not connect to server; retrying in 13 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3058 ms: Could not connect to server; retrying in 33 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 264 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 526 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds
+these 4 derivations will be built:
+  /nix/store/0s3bhzgkinb9lhyqwljk3xa0b7ibwlgf-mc-cairn-policy-fresh.drv
+  /nix/store/73jv1yvkrb6lxxz4c90qix187wxq629v-mc-compat-scenario-manifest.drv
+  /nix/store/hmz9vj84x54jqyvmikpx2x5rzw0zpl2s-mc-compat-evidence-manifests.drv
+  /nix/store/l8ha1ncv7ckb21z49l9665xk9vk771v7-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/0s3bhzgkinb9lhyqwljk3xa0b7ibwlgf-mc-cairn-policy-fresh.drv'...
+building '/nix/store/l8ha1ncv7ckb21z49l9665xk9vk771v7-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/hmz9vj84x54jqyvmikpx2x5rzw0zpl2s-mc-compat-evidence-manifests.drv'...
+building '/nix/store/73jv1yvkrb6lxxz4c90qix187wxq629v-mc-compat-scenario-manifest.drv'...
+focused_nix_checks_exit_status=0
+
+]0;exit_status=0

@@ -1,0 +1,130 @@
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+## evidence_manifest_refresh_self_test
+command=bash -lc rustc\ --edition=2021\ tools/refresh_evidence_manifests.rs\ -o\ target/refresh-evidence-manifests\ \&\&\ target/refresh-evidence-manifests\ --self-test 
+evidence manifest refresh self-test ok: positive and negative fixtures exercised
+evidence_manifest_refresh_self_test_exit_status=0
+
+## evidence_manifest_refresh_check
+command=target/refresh-evidence-manifests --check 
+evidence manifest refresh ok: mode=check; passes=0; manifests=516; entries=4669; current=4669; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_refresh_check_exit_status=0
+
+## evidence_manifest_self_test
+command=bash -lc rustc\ --edition=2021\ tools/check_evidence_manifests.rs\ -o\ target/check-evidence-manifests\ \&\&\ target/check-evidence-manifests\ --self-test 
+evidence manifest self-test ok: positive and negative fixtures exercised
+evidence_manifest_self_test_exit_status=0
+
+## evidence_manifest_check
+command=target/check-evidence-manifests 
+evidence manifests ok: 516 manifests, 4669 entries, 141 receipts scanned
+evidence_manifest_check_exit_status=0
+
+## task_evidence_self_test
+command=bash -lc rustc\ --edition=2021\ tools/check_cairn_task_evidence.rs\ -o\ target/check-cairn-task-evidence\ \&\&\ target/check-cairn-task-evidence\ --self-test 
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task_evidence_self_test_exit_status=0
+
+## scoped_task_evidence
+command=target/check-cairn-task-evidence cairn/changes/promote-biome-dimension-state-correlation/tasks.md 
+task evidence gate passed: 5 completed tasks checked across 1 task files
+scoped_task_evidence_exit_status=0
+
+## cairn_change_list
+command=nix run .#cairn -- change list --root . 
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/promote-biome-dimension-state-correlation/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "promote-biome-dimension-state-correlation",
+      "path": "./cairn/changes/promote-biome-dimension-state-correlation",
+      "task_counts": {
+        "done": 5,
+        "in_progress": 0,
+        "todo": 1,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/promote-restart-persistence-typed-events/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "promote-restart-persistence-typed-events",
+      "path": "./cairn/changes/promote-restart-persistence-typed-events",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/ratchet-scenario-fallback-budget/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "ratchet-scenario-fallback-budget",
+      "path": "./cairn/changes/ratchet-scenario-fallback-budget",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 5,
+        "total": 5,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+cairn_change_list_exit_status=0
+
+## cairn_validate
+command=nix run .#cairn -- validate --root . 
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+cairn_validate_exit_status=0
+
+## cairn_policy_export_check
+command=nix run .#cairn -- policy export --check 
+policy fresh: cairn-policy/generated/cairn-policy.json
+cairn_policy_export_check_exit_status=0
+
+]0;exit_status=0

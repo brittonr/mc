@@ -1,8 +1,0 @@
-# Tasks
-
-- [ ] [serial] Inventory current `survival-biome-dimension-state` fallback behavior, fixture state, client/server evidence, and non-claims. r[mc_compatibility.biome_dimension_state_correlation.inventory]
-- [ ] [depends:mc_compatibility.biome_dimension_state_correlation.inventory] Define the typed join-state correlation contract for scenario identity, protocol context, client-observed state, server-configured state, correlation result, and non-claims. r[mc_compatibility.biome_dimension_state_correlation.contract]
-- [ ] [depends:mc_compatibility.biome_dimension_state_correlation.contract] Implement pure validation with positive matching-state fixtures and negative fixtures for client-only evidence, mismatched state, missing protocol context, and overbroad claims. r[mc_compatibility.biome_dimension_state_correlation.validator]
-- [ ] [depends:mc_compatibility.biome_dimension_state_correlation.validator] Wire runner/client/server typed fields for the join-state row while preserving existing scenario and wrapper behavior. r[mc_compatibility.biome_dimension_state_correlation.wiring]
-- [ ] [depends:mc_compatibility.biome_dimension_state_correlation.wiring] Update scenario manifest migration state, fallback budget baseline, generated surfaces, and evidence docs after typed validation passes. r[mc_compatibility.biome_dimension_state_correlation.manifest]
-- [ ] [depends:mc_compatibility.biome_dimension_state_correlation.manifest] Run focused scenario checks, scenario manifest checks, generated-surface freshness, evidence manifests, task-evidence validation, Cairn gates, Cairn validation, and record BLAKE3 manifests before archive. r[mc_compatibility.biome_dimension_state_correlation.closeout]

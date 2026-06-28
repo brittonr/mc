@@ -135,6 +135,217 @@ pub(crate) fn evaluate_server_scenario(
     }
 }
 
+const BIOME_DIMENSION_JOIN_STATE_SCENARIO: &str = "survival-biome-dimension-state";
+const BIOME_DIMENSION_JOIN_STATE_CLIENT_EVENT: &str = "survival_biome_dimension_state";
+const BIOME_DIMENSION_JOIN_STATE_SERVER_EVENT: &str = "server_survival_biome_dimension_state";
+const BIOME_DIMENSION_JOIN_STATE_MIN_PROTOCOL: u32 = 1;
+const BIOME_DIMENSION_JOIN_STATE_NON_CLAIMS: &[&str] = &[
+    "not_dimension_travel",
+    "not_portal_behavior",
+    "not_all_biome_semantics",
+    "not_all_dimensions",
+    "not_respawn_rules",
+    "not_world_persistence",
+    "not_full_survival_compatibility",
+    "not_broad_vanilla_parity",
+    "not_public_server_safety",
+    "not_production_readiness",
+];
+const BIOME_DIMENSION_JOIN_STATE_OVERBROAD_CLAIMS: &[&str] = &[
+    "dimension_travel",
+    "portal_behavior",
+    "all_biome_semantics",
+    "all_dimensions",
+    "respawn_rules",
+    "world_persistence",
+    "full_survival_compatibility",
+    "broad_vanilla_parity",
+    "public_server_safety",
+    "production_readiness",
+];
+const BIOME_DIMENSION_JOIN_STATE_MISSING_PROTOCOL: &str = "missing_protocol_context";
+const BIOME_DIMENSION_JOIN_STATE_MISSING_CLIENT: &str = "missing_client_observed_state";
+const BIOME_DIMENSION_JOIN_STATE_MISSING_SERVER: &str = "missing_server_configured_state";
+const BIOME_DIMENSION_JOIN_STATE_WRONG_SCENARIO: &str = "scenario_identity_mismatch";
+const BIOME_DIMENSION_JOIN_STATE_SPAWN_MISMATCH: &str = "mismatched_spawn_environment";
+const BIOME_DIMENSION_JOIN_STATE_ENVIRONMENT_MISMATCH: &str = "mismatched_environment_identifier";
+const BIOME_DIMENSION_JOIN_STATE_UPDATE_MISMATCH: &str = "mismatched_environment_update";
+const BIOME_DIMENSION_JOIN_STATE_NORMALIZED_MISMATCH: &str = "mismatched_normalized_identifier";
+const BIOME_DIMENSION_JOIN_STATE_MISSING_NON_CLAIM_PREFIX: &str = "missing_non_claim:";
+const BIOME_DIMENSION_JOIN_STATE_OVERBROAD_PREFIX: &str = "overbroad_claim:";
+
+pub(crate) fn biome_dimension_join_state_required_non_claims() -> &'static [&'static str] {
+    BIOME_DIMENSION_JOIN_STATE_NON_CLAIMS
+}
+
+pub(crate) fn evaluate_biome_dimension_join_state(
+    scenario: Scenario,
+    protocol: u32,
+    client: &ScenarioEvidence,
+    server: &ServerScenarioEvidence,
+) -> BiomeDimensionJoinStateEvidence {
+    let selected = scenario == Scenario::SurvivalBiomeDimensionState;
+    let record = BiomeDimensionJoinStateRecord {
+        selected,
+        scenario: scenario_name(scenario).to_string(),
+        protocol: selected.then_some(protocol),
+        client_observed_state: selected
+            .then(|| biome_dimension_client_state_from_milestones(client))
+            .flatten(),
+        server_configured_state: selected
+            .then(|| biome_dimension_server_state_from_milestones(server))
+            .flatten(),
+        non_claims: selected
+            .then(|| {
+                BIOME_DIMENSION_JOIN_STATE_NON_CLAIMS
+                    .iter()
+                    .map(|claim| (*claim).to_string())
+                    .collect()
+            })
+            .unwrap_or_default(),
+    };
+    let validation = validate_biome_dimension_join_state_record(&record);
+    BiomeDimensionJoinStateEvidence { record, validation }
+}
+
+pub(crate) fn validate_biome_dimension_join_state_record(
+    record: &BiomeDimensionJoinStateRecord,
+) -> BiomeDimensionJoinStateValidation {
+    if !record.selected {
+        return BiomeDimensionJoinStateValidation {
+            passed: true,
+            diagnostics: Vec::new(),
+        };
+    }
+
+    let mut diagnostics = Vec::new();
+    if record.scenario != BIOME_DIMENSION_JOIN_STATE_SCENARIO {
+        diagnostics.push(BIOME_DIMENSION_JOIN_STATE_WRONG_SCENARIO.to_string());
+    }
+    match record.protocol {
+        Some(protocol) if protocol >= BIOME_DIMENSION_JOIN_STATE_MIN_PROTOCOL => {}
+        _ => diagnostics.push(BIOME_DIMENSION_JOIN_STATE_MISSING_PROTOCOL.to_string()),
+    }
+
+    if record.client_observed_state.is_none() {
+        diagnostics.push(BIOME_DIMENSION_JOIN_STATE_MISSING_CLIENT.to_string());
+    }
+    if record.server_configured_state.is_none() {
+        diagnostics.push(BIOME_DIMENSION_JOIN_STATE_MISSING_SERVER.to_string());
+    }
+    if let (Some(client), Some(server)) = (
+        record.client_observed_state.as_ref(),
+        record.server_configured_state.as_ref(),
+    ) {
+        diagnostics.extend(biome_dimension_join_state_mismatch_diagnostics(
+            client, server,
+        ));
+    }
+    diagnostics.extend(biome_dimension_join_state_non_claim_diagnostics(
+        &record.non_claims,
+    ));
+
+    BiomeDimensionJoinStateValidation {
+        passed: diagnostics.is_empty(),
+        diagnostics,
+    }
+}
+
+fn biome_dimension_join_state_mismatch_diagnostics(
+    client: &BiomeDimensionJoinStateClientState,
+    server: &BiomeDimensionJoinStateServerState,
+) -> Vec<String> {
+    let mut diagnostics = Vec::new();
+    if client.spawn_environment != server.spawn_environment {
+        diagnostics.push(BIOME_DIMENSION_JOIN_STATE_SPAWN_MISMATCH.to_string());
+    }
+    if client.environment_identifier != server.environment_identifier {
+        diagnostics.push(BIOME_DIMENSION_JOIN_STATE_ENVIRONMENT_MISMATCH.to_string());
+    }
+    if client.client_environment_update != server.server_environment_state {
+        diagnostics.push(BIOME_DIMENSION_JOIN_STATE_UPDATE_MISMATCH.to_string());
+    }
+    if client.normalized_identifier != server.normalized_identifier {
+        diagnostics.push(BIOME_DIMENSION_JOIN_STATE_NORMALIZED_MISMATCH.to_string());
+    }
+    diagnostics
+}
+
+fn biome_dimension_join_state_non_claim_diagnostics(non_claims: &[String]) -> Vec<String> {
+    let mut diagnostics = Vec::new();
+    for required in BIOME_DIMENSION_JOIN_STATE_NON_CLAIMS {
+        if !non_claims.iter().any(|claim| claim == required) {
+            diagnostics.push(format!(
+                "{BIOME_DIMENSION_JOIN_STATE_MISSING_NON_CLAIM_PREFIX}{required}"
+            ));
+        }
+    }
+    for overbroad in BIOME_DIMENSION_JOIN_STATE_OVERBROAD_CLAIMS {
+        if non_claims.iter().any(|claim| claim == overbroad) {
+            diagnostics.push(format!(
+                "{BIOME_DIMENSION_JOIN_STATE_OVERBROAD_PREFIX}{overbroad}"
+            ));
+        }
+    }
+    diagnostics
+}
+
+fn biome_dimension_client_state_from_milestones(
+    client: &ScenarioEvidence,
+) -> Option<BiomeDimensionJoinStateClientState> {
+    client
+        .observed_milestones
+        .iter()
+        .any(|milestone| *milestone == BIOME_DIMENSION_JOIN_STATE_CLIENT_EVENT)
+        .then(|| {
+            biome_dimension_client_state_from_line(SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE)
+        })
+        .flatten()
+}
+
+fn biome_dimension_server_state_from_milestones(
+    server: &ServerScenarioEvidence,
+) -> Option<BiomeDimensionJoinStateServerState> {
+    server
+        .observed_milestones
+        .iter()
+        .any(|milestone| *milestone == BIOME_DIMENSION_JOIN_STATE_SERVER_EVENT)
+        .then(|| {
+            biome_dimension_server_state_from_line(SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE)
+        })
+        .flatten()
+}
+
+fn biome_dimension_client_state_from_line(
+    line: &str,
+) -> Option<BiomeDimensionJoinStateClientState> {
+    Some(BiomeDimensionJoinStateClientState {
+        spawn_environment: key_value_field(line, "spawn_environment")?,
+        environment_identifier: key_value_field(line, "environment_identifier")?,
+        client_environment_update: key_value_field(line, "client_environment_update")?,
+        normalized_identifier: key_value_field(line, "normalized_identifier")?,
+    })
+}
+
+fn biome_dimension_server_state_from_line(
+    line: &str,
+) -> Option<BiomeDimensionJoinStateServerState> {
+    Some(BiomeDimensionJoinStateServerState {
+        username: key_value_field(line, "username")?,
+        spawn_environment: key_value_field(line, "spawn_environment")?,
+        environment_identifier: key_value_field(line, "environment_identifier")?,
+        server_environment_state: key_value_field(line, "server_environment_state")?,
+        normalized_identifier: key_value_field(line, "normalized_identifier")?,
+    })
+}
+
+fn key_value_field(line: &str, key: &str) -> Option<String> {
+    let prefix = format!("{key}=");
+    line.split_whitespace()
+        .find_map(|token| token.strip_prefix(&prefix))
+        .map(str::to_string)
+}
+
 #[cfg(test)]
 pub(crate) fn parse_typed_event_line(line: &str) -> Result<TypedEvent, String> {
     let line = line.trim();
@@ -583,6 +794,7 @@ pub(crate) fn typed_event_oracle_contributes_to_pass_fail(scenario: Scenario) ->
             | Scenario::SurvivalRedstoneCircuitBreadth
             | Scenario::SurvivalWorldMultichunkDurability
             | Scenario::SurvivalContainerBlockEntityBreadth
+            | Scenario::SurvivalBiomeDimensionState
             | Scenario::SurvivalBiomeDimensionTravel
             | Scenario::SurvivalSignEditingLive
             | Scenario::FlagScoreRepeat

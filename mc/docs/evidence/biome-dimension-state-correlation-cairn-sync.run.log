@@ -1,0 +1,48 @@
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/promote-biome-dimension-state-correlation/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/promote-biome-dimension-state-correlation/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "promote-biome-dimension-state-correlation",
+  "delta_specs": [
+    "./cairn/changes/promote-biome-dimension-state-correlation/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "3ebf0704ad8d76301c5e93536b2eb97af92de9b3336df921a579f3f7b4ba78d1",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "14d0488096336306d3c8f2612ed845c6ae25d57d4ef70a5d9ae2145742f0b242",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "51e3504767e9b147fdd267ce7c3a5b843d7dc9a8df3ee4b58d3371ab78f92cf8"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "14d0488096336306d3c8f2612ed845c6ae25d57d4ef70a5d9ae2145742f0b242",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "51e3504767e9b147fdd267ce7c3a5b843d7dc9a8df3ee4b58d3371ab78f92cf8"
+    },
+    "kind": "sync",
+    "manifest_hash": "3ba46056b05dbe0fd24e50165ffc1eaace36f266e22391ba07f90988518594af"
+  },
+  "plan_hash": "777fb43dd8a62d19c0f43285fe2a8ee9b86b14ec8cfda78d7b1b300b49c405ed",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "2b4411c7684ed53519be86672fe78a7b83630043e0ab773666d58b37815ea525"
+}
+exit_status=0

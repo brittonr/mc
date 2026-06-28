@@ -24,7 +24,7 @@ let common_waiver = {
 {
   schema_version = 1,
   schema = "mc.compat.scenario-fallback-budget-baseline.v1",
-  typed_event_ready_rows = ["smoke", "inventory-interaction", "inventory-stack-split-merge", "inventory-drag-transactions", "survival-break-place-pickup", "survival-crafting-table"],
+  typed_event_ready_rows = ["smoke", "inventory-interaction", "inventory-stack-split-merge", "inventory-drag-transactions", "survival-break-place-pickup", "survival-crafting-table", "survival-biome-dimension-state"],
   fallback_rows = [
     { name = "valence-compat-bot-probe", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
     { name = "flag-score-repeat", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
@@ -44,7 +44,6 @@ let common_waiver = {
     { name = "survival-crash-recovery-parity", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
     { name = "survival-block-entity-persistence-parity", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
     { name = "survival-container-block-entity-breadth", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
-    { name = "survival-biome-dimension-state", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
     { name = "survival-biome-dimension-travel", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
     { name = "survival-sign-editing-live", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },
     { name = "mcp-controlled-smoke", owner = common_waiver.owner, reason = common_waiver.reason, non_claim = common_waiver.non_claim, next_action = common_waiver.next_action },

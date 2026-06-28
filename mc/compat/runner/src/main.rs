@@ -35,18 +35,20 @@ use client_driver::{
     world_persistence_state_dir,
 };
 use evidence_bundle::*;
-use evidence_core::{
-    evaluate_projectile_damage_causality, evaluate_projectile_damage_causality_for_damage,
-    evaluate_projectile_travel_collision, evaluate_scenario_for_config, evaluate_server_scenario,
-    evaluate_typed_event_graph, normalize_typed_event_timeline,
-    typed_event_oracle_contributes_to_pass_fail, typed_event_oracle_receipt_json,
-    typed_event_ordered_edges_for_scenario, typed_event_required_events_for_graph,
-    typed_event_timeline_blake3, typed_events_from_receipt_evidence,
-    validate_typed_event_oracle_for_migrated_scenario,
-};
 #[cfg(test)]
 use evidence_core::{
-    evaluate_scenario, evaluate_scenario_with_projectile_health, parse_typed_event_line,
+    biome_dimension_join_state_required_non_claims, evaluate_scenario,
+    evaluate_scenario_with_projectile_health, parse_typed_event_line,
+    validate_biome_dimension_join_state_record,
+};
+use evidence_core::{
+    evaluate_biome_dimension_join_state, evaluate_projectile_damage_causality,
+    evaluate_projectile_damage_causality_for_damage, evaluate_projectile_travel_collision,
+    evaluate_scenario_for_config, evaluate_server_scenario, evaluate_typed_event_graph,
+    normalize_typed_event_timeline, typed_event_oracle_contributes_to_pass_fail,
+    typed_event_oracle_receipt_json, typed_event_ordered_edges_for_scenario,
+    typed_event_required_events_for_graph, typed_event_timeline_blake3,
+    typed_events_from_receipt_evidence, validate_typed_event_oracle_for_migrated_scenario,
 };
 use evidence_receipts::*;
 use evidence_types::*;
@@ -1943,6 +1945,7 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                 | ScenarioBehaviorKind::WorldPersistenceRestart { .. }
                 | ScenarioBehaviorKind::SurvivalWorldMultichunkDurability
                 | ScenarioBehaviorKind::SurvivalContainerBlockEntityBreadth
+                | ScenarioBehaviorKind::SurvivalBiomeDimensionState
                 | ScenarioBehaviorKind::SurvivalBiomeDimensionTravel
                 | ScenarioBehaviorKind::SurvivalSignEditingLive
                 | ScenarioBehaviorKind::Combat { .. }
@@ -6249,6 +6252,9 @@ mod tests {
             Scenario::SurvivalContainerBlockEntityBreadth
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
+            Scenario::SurvivalBiomeDimensionState
+        ));
+        assert!(typed_event_oracle_contributes_to_pass_fail(
             Scenario::SurvivalBiomeDimensionTravel
         ));
         assert!(typed_event_oracle_contributes_to_pass_fail(
@@ -6288,6 +6294,150 @@ mod tests {
                 "{scenario:?} should stay substring fallback"
             );
         }
+    }
+
+    fn biome_dimension_join_state_matching_record() -> BiomeDimensionJoinStateRecord {
+        let client = evaluate_scenario(
+            Scenario::SurvivalBiomeDimensionState,
+            &format!(
+                "Detected server protocol version {DEFAULT_SERVER_PROTOCOL}\njoin_game\nrender_tick_with_player\n{SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE}\n"
+            ),
+        );
+        let server = evaluate_server_scenario(
+            Scenario::SurvivalBiomeDimensionState,
+            SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE,
+            TEST_USERNAME,
+        );
+        let evidence = evaluate_biome_dimension_join_state(
+            Scenario::SurvivalBiomeDimensionState,
+            DEFAULT_SERVER_PROTOCOL,
+            &client,
+            &server,
+        );
+        assert!(evidence.validation.passed, "{evidence:?}");
+        evidence.record
+    }
+
+    #[test]
+    fn biome_dimension_join_state_validator_accepts_matching_fixture() {
+        let record = biome_dimension_join_state_matching_record();
+        let validation = validate_biome_dimension_join_state_record(&record);
+        assert!(validation.passed, "{validation:?}");
+        assert_eq!(record.protocol, Some(DEFAULT_SERVER_PROTOCOL));
+        assert!(record
+            .non_claims
+            .iter()
+            .any(|claim| claim == "not_dimension_travel"));
+        let client = record
+            .client_observed_state
+            .as_ref()
+            .expect("client join-state fields are recorded");
+        let server = record
+            .server_configured_state
+            .as_ref()
+            .expect("server join-state fields are recorded");
+        assert_eq!(client.normalized_identifier, server.normalized_identifier);
+        assert_eq!(client.environment_identifier, server.environment_identifier);
+    }
+
+    #[test]
+    fn biome_dimension_join_state_validator_rejects_weak_evidence() {
+        let matching = biome_dimension_join_state_matching_record();
+
+        let mut client_only = matching.clone();
+        client_only.server_configured_state = None;
+        let client_only_validation = validate_biome_dimension_join_state_record(&client_only);
+        assert!(!client_only_validation.passed);
+        assert!(client_only_validation
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic == "missing_server_configured_state"));
+
+        let mut mismatch = matching.clone();
+        mismatch
+            .server_configured_state
+            .as_mut()
+            .expect("server fixture exists")
+            .normalized_identifier = "minecraft:the_nether".to_string();
+        let mismatch_validation = validate_biome_dimension_join_state_record(&mismatch);
+        assert!(!mismatch_validation.passed);
+        assert!(mismatch_validation
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic == "mismatched_normalized_identifier"));
+
+        let mut missing_protocol = matching.clone();
+        missing_protocol.protocol = None;
+        let missing_protocol_validation =
+            validate_biome_dimension_join_state_record(&missing_protocol);
+        assert!(!missing_protocol_validation.passed);
+        assert!(missing_protocol_validation
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic == "missing_protocol_context"));
+
+        let mut overbroad = matching;
+        overbroad.non_claims = biome_dimension_join_state_required_non_claims()
+            .iter()
+            .map(|claim| (*claim).to_string())
+            .collect();
+        overbroad.non_claims.push("dimension_travel".to_string());
+        let overbroad_validation = validate_biome_dimension_join_state_record(&overbroad);
+        assert!(!overbroad_validation.passed);
+        assert!(overbroad_validation
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic == "overbroad_claim:dimension_travel"));
+    }
+
+    #[test]
+    fn biome_dimension_join_state_receipt_records_typed_correlation() {
+        let cfg = test_config(
+            &[
+                "--scenario",
+                "survival-biome-dimension-state",
+                "--client-dir",
+                "/tmp/stevenarella",
+            ],
+            &[],
+        )
+        .expect("biome/dimension receipt config parses");
+        let client_scenario = evaluate_scenario(
+            Scenario::SurvivalBiomeDimensionState,
+            &format!(
+                "Detected server protocol version {DEFAULT_SERVER_PROTOCOL}\njoin_game\nrender_tick_with_player\n{SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE}\n"
+            ),
+        );
+        let server_scenario = evaluate_server_scenario(
+            Scenario::SurvivalBiomeDimensionState,
+            SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE,
+            TEST_USERNAME,
+        );
+        let client = Some(ClientRunEvidence {
+            log_path: Some(PathBuf::from("/tmp/client.log")),
+            log_paths: vec![PathBuf::from("/tmp/client.log")],
+            usernames: vec![TEST_USERNAME.to_string()],
+            exit_code: Some(0),
+            classification: "client-exited-success",
+            matched_success_pattern: Some("Detected server protocol version".to_string()),
+            scenario: Some(client_scenario),
+            server_scenario: Some(server_scenario),
+            projectile_damage_causality: None,
+            projectile_travel_collision: None,
+            mcp_control: None,
+            frame_artifacts: None,
+        });
+
+        let json = smoke_receipt_json(&cfg, Ok(&client));
+        assert!(json.contains("\"biome_dimension_join_state\""), "{json}");
+        assert!(json.contains("\"client_observed_state\""), "{json}");
+        assert!(json.contains("\"server_configured_state\""), "{json}");
+        assert!(json.contains("\"not_dimension_travel\""), "{json}");
+        assert!(
+            json.contains("\"not_full_survival_compatibility\""),
+            "{json}"
+        );
+        assert!(json.contains("\"diagnostics\": []"), "{json}");
     }
 
     #[test]
@@ -7139,6 +7289,27 @@ mod tests {
             ],
         );
         assert_typed_event_fixture_passes(
+            Scenario::SurvivalBiomeDimensionState,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_biome_dimension_state",
+                ),
+                ("server", Some(TEST_USERNAME), "server_username_seen"),
+                (
+                    "server",
+                    Some(TEST_USERNAME),
+                    "server_survival_biome_dimension_state",
+                ),
+            ],
+            &[],
+        );
+        assert_typed_event_fixture_passes(
             Scenario::SurvivalBiomeDimensionTravel,
             Some(TEST_USERNAME),
             &[
@@ -7530,6 +7701,22 @@ mod tests {
             "survival_container_block_entity_payload_seen",
         );
         assert_typed_event_fixture_rejects_missing_event(
+            Scenario::SurvivalBiomeDimensionState,
+            Some(TEST_USERNAME),
+            &[
+                ("client", Some(TEST_USERNAME), "protocol_detected"),
+                ("client", Some(TEST_USERNAME), "join_game"),
+                ("client", Some(TEST_USERNAME), "render_tick"),
+                (
+                    "client",
+                    Some(TEST_USERNAME),
+                    "survival_biome_dimension_state",
+                ),
+                ("server", Some(TEST_USERNAME), "server_username_seen"),
+            ],
+            "server_survival_biome_dimension_state",
+        );
+        assert_typed_event_fixture_rejects_missing_event(
             Scenario::SurvivalBiomeDimensionTravel,
             Some(TEST_USERNAME),
             &[(
@@ -7584,6 +7771,39 @@ mod tests {
             ],
             "survival_sign_editing_update_sent",
             "survival_sign_editing_post_update_seen",
+        );
+    }
+
+    #[test]
+    fn typed_event_oracle_validates_biome_dimension_join_state_graph() {
+        let scenario = Scenario::SurvivalBiomeDimensionState;
+        let cfg = test_config(
+            &[
+                "--run",
+                "--scenario",
+                "survival-biome-dimension-state",
+                "--client-dir",
+                "/tmp/stevenarella",
+            ],
+            &[],
+        )
+        .expect("biome/dimension join-state config parses");
+        let passing = typed_event_oracle_evidence_for_scenario(scenario);
+        validate_typed_event_oracle_for_migrated_scenario(&cfg, &passing)
+            .expect("complete biome/dimension join-state graph passes");
+
+        let mut missing_server = passing.clone();
+        missing_server
+            .server_scenario
+            .as_mut()
+            .expect("server scenario exists")
+            .observed_milestones
+            .retain(|name| *name != "server_survival_biome_dimension_state");
+        let err = validate_typed_event_oracle_for_migrated_scenario(&cfg, &missing_server)
+            .expect_err("missing typed join-state server event fails");
+        assert!(
+            err.contains("server_survival_biome_dimension_state"),
+            "{err}"
         );
     }
 

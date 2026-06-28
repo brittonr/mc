@@ -492,6 +492,14 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
     let frame_artifacts = evaluate_frame_artifacts_receipt(cfg, client);
     let frame_artifacts_json = render_frame_artifacts_receipt_json(&frame_artifacts);
     let typed_event_oracle_json = typed_event_oracle_receipt_json(typed_event_oracle);
+    let biome_dimension_join_state = evaluate_biome_dimension_join_state(
+        cfg.scenario,
+        cfg.server_protocol,
+        scenario,
+        server_scenario,
+    );
+    let biome_dimension_join_state_json =
+        biome_dimension_join_state_json(&biome_dimension_join_state);
     let latency_jitter_json = latency_jitter_receipt_json(cfg);
     let public_server_authorized_safety_json = public_server_authorized_safety_receipt_json(cfg);
     let load_network_safety = evaluate_load_network_safety(load_network_safety_inputs(
@@ -835,6 +843,7 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
     "triage_correlation": true
   }},
   "typed_event_oracle": {typed_event_oracle_json},
+  "biome_dimension_join_state": {biome_dimension_join_state_json},
   "mcp_control": {mcp_control_json},
   "frame_artifacts": {frame_artifacts_json},
   "latency_jitter_tolerance": {latency_jitter_json},
@@ -948,6 +957,7 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
         packet_capture_selected = packet_capture_selected,
         packet_capture_expected_packets_json = json_string_array(&packet_capture_expected_packets),
         typed_event_oracle_json = typed_event_oracle_json,
+        biome_dimension_join_state_json = biome_dimension_join_state_json,
         mcp_control_json = mcp_control_json,
         frame_artifacts_json = frame_artifacts_json,
         load_network_safety_json = load_network_safety_json,
@@ -967,6 +977,7 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
         server_passed = server_scenario.passed,
         correlation_passed = scenario.passed
             && server_scenario.passed
+            && biome_dimension_join_state.validation.passed
             && projectile_damage_causality_passed
             && projectile_travel_collision_passed,
         projectile_damage_causality_json = projectile_damage_causality_json,
@@ -1008,6 +1019,77 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
         first_forbidden_source_json = json_optional_string(first_forbidden_source),
         suggested_boundary_json = json_string(suggested_boundary),
         enriched_triage_json = enriched_triage_json,
+    )
+}
+
+fn biome_dimension_join_state_json(evidence: &BiomeDimensionJoinStateEvidence) -> String {
+    let record = &evidence.record;
+    let validation = &evidence.validation;
+    let protocol_json = record
+        .protocol
+        .map(|protocol| protocol.to_string())
+        .unwrap_or_else(|| "null".to_string());
+    format!(
+        r#"{{
+    "selected": {selected},
+    "scenario": {scenario_json},
+    "protocol": {protocol_json},
+    "client_observed_state": {client_state_json},
+    "server_configured_state": {server_state_json},
+    "correlation": {{
+      "passed": {passed},
+      "diagnostics": {diagnostics_json}
+    }},
+    "non_claims": {non_claims_json}
+  }}"#,
+        selected = record.selected,
+        scenario_json = json_string(&record.scenario),
+        protocol_json = protocol_json,
+        client_state_json =
+            biome_dimension_client_state_json(record.client_observed_state.as_ref()),
+        server_state_json =
+            biome_dimension_server_state_json(record.server_configured_state.as_ref()),
+        passed = validation.passed,
+        diagnostics_json = json_string_vec(&validation.diagnostics),
+        non_claims_json = json_string_vec(&record.non_claims),
+    )
+}
+
+fn biome_dimension_client_state_json(state: Option<&BiomeDimensionJoinStateClientState>) -> String {
+    let Some(state) = state else {
+        return "null".to_string();
+    };
+    format!(
+        r#"{{
+      "spawn_environment": {spawn_environment_json},
+      "environment_identifier": {environment_identifier_json},
+      "client_environment_update": {client_environment_update_json},
+      "normalized_identifier": {normalized_identifier_json}
+    }}"#,
+        spawn_environment_json = json_string(&state.spawn_environment),
+        environment_identifier_json = json_string(&state.environment_identifier),
+        client_environment_update_json = json_string(&state.client_environment_update),
+        normalized_identifier_json = json_string(&state.normalized_identifier),
+    )
+}
+
+fn biome_dimension_server_state_json(state: Option<&BiomeDimensionJoinStateServerState>) -> String {
+    let Some(state) = state else {
+        return "null".to_string();
+    };
+    format!(
+        r#"{{
+      "username": {username_json},
+      "spawn_environment": {spawn_environment_json},
+      "environment_identifier": {environment_identifier_json},
+      "server_environment_state": {server_environment_state_json},
+      "normalized_identifier": {normalized_identifier_json}
+    }}"#,
+        username_json = json_string(&state.username),
+        spawn_environment_json = json_string(&state.spawn_environment),
+        environment_identifier_json = json_string(&state.environment_identifier),
+        server_environment_state_json = json_string(&state.server_environment_state),
+        normalized_identifier_json = json_string(&state.normalized_identifier),
     )
 }
 
