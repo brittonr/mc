@@ -1,0 +1,25 @@
+## compile_evidence_partitions
+command=rustc --edition=2021 tools/check_evidence_partitions.rs -o /tmp/check-evidence-partitions
+compile_evidence_partitions_exit_status=0
+
+## evidence_manifest_refresh
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=2; manifests=526; entries=4887; current=4887; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=2; manifest_writes=1
+evidence_manifest_refresh_exit_status=0
+
+## evidence_partitions_write
+command=/tmp/check-evidence-partitions --write-generated
+evidence partitions generated surfaces refreshed: artifacts=4063
+evidence_partitions_write_exit_status=0
+
+## evidence_partitions_check
+command=/tmp/check-evidence-partitions --root .
+evidence partitions passed: artifacts=4063, manifests=526
+evidence_partitions_check_exit_status=0
+
+## evidence_manifest_check
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=526; entries=4887; current=4887; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+
+exit_status=0

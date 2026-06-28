@@ -191,23 +191,12 @@ fn control_key_to_stevenkey(key: control::ControlKey) -> settings::Stevenkey {
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-fn control_command_requires_connected(command: &control::ControlCommand) -> bool {
-    !matches!(
-        command,
-        control::ControlCommand::Status
-            | control::ControlCommand::Connect { .. }
-            | control::ControlCommand::Disconnect
-            | control::ControlCommand::CaptureScreenshot
-            | control::ControlCommand::CaptureLatestFrame
-    )
-}
-
-#[cfg(not(target_arch = "wasm32"))]
 fn disconnected_control_rejection(
     command: &control::ControlCommand,
 ) -> Option<control::ControlResponse> {
-    control_command_requires_connected(command)
-        .then(|| control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+    command
+        .requires_connection()
+        .then(|| control::ControlResponse::rejected(MCP_REQUIRES_CONNECTED_MESSAGE))
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -225,30 +214,6 @@ fn control_block_position_to_shared(position: control::BlockPosition) -> shared:
 #[cfg(not(target_arch = "wasm32"))]
 fn sign_editor_open_matches(open_position: shared::Position, expected: shared::Position) -> bool {
     open_position == expected
-}
-
-#[cfg(not(target_arch = "wasm32"))]
-fn control_applied_response(message: impl Into<String>) -> control::ControlResponse {
-    control::ControlResponse {
-        outcome: control::ControlOutcome::Applied,
-        message: Some(message.into()),
-    }
-}
-
-#[cfg(not(target_arch = "wasm32"))]
-fn control_rejected_response(message: impl Into<String>) -> control::ControlResponse {
-    control::ControlResponse {
-        outcome: control::ControlOutcome::Rejected,
-        message: Some(message.into()),
-    }
-}
-
-#[cfg(not(target_arch = "wasm32"))]
-fn control_deferred_response(message: impl Into<String>) -> control::ControlResponse {
-    control::ControlResponse {
-        outcome: control::ControlOutcome::Deferred,
-        message: Some(message.into()),
-    }
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -293,17 +258,17 @@ fn enqueue_mcp_capture_request(
     sequence_id: u64,
 ) -> control::ControlResponse {
     let Some(sender) = sender else {
-        return control_rejected_response(MCP_CAPTURE_QUEUE_UNAVAILABLE_MESSAGE);
+        return control::ControlResponse::rejected(MCP_CAPTURE_QUEUE_UNAVAILABLE_MESSAGE);
     };
     let output = one_shot_mcp_capture_output(policy, mode, sequence_id);
     match sender.enqueue_deferred(one_shot_mcp_capture_request(mode, output, sequence_id)) {
-        Ok(_) => control_deferred_response(MCP_CAPTURE_DEFERRED_MESSAGE),
+        Ok(_) => control::ControlResponse::deferred(MCP_CAPTURE_DEFERRED_MESSAGE),
         Err(capture::CaptureQueueError::QueueClosed) => {
-            control_rejected_response(MCP_CAPTURE_QUEUE_CLOSED_MESSAGE)
+            control::ControlResponse::rejected(MCP_CAPTURE_QUEUE_CLOSED_MESSAGE)
         }
         Err(capture::CaptureQueueError::RateLimitExceeded { .. })
         | Err(capture::CaptureQueueError::Validation(_)) => {
-            control_rejected_response(MCP_CAPTURE_REQUEST_INVALID_MESSAGE)
+            control::ControlResponse::rejected(MCP_CAPTURE_REQUEST_INVALID_MESSAGE)
         }
     }
 }
@@ -495,16 +460,18 @@ impl Game {
         }
 
         match command {
-            control::ControlCommand::Status => control_applied_response(control_status_message(
-                self.server.is_connected(),
-                self.connect_reply.is_some(),
-                self.focused,
-            )),
+            control::ControlCommand::Status => {
+                control::ControlResponse::applied(control_status_message(
+                    self.server.is_connected(),
+                    self.connect_reply.is_some(),
+                    self.focused,
+                ))
+            }
             control::ControlCommand::Connect { address } => self.apply_mcp_connect(&address),
             control::ControlCommand::Disconnect => self.apply_mcp_disconnect(),
             control::ControlCommand::Key { key, down } => {
                 self.server.key_press(down, control_key_to_stevenkey(key));
-                control_applied_response(MCP_KEY_APPLIED_MESSAGE)
+                control::ControlResponse::applied(MCP_KEY_APPLIED_MESSAGE)
             }
             control::ControlCommand::Look {
                 yaw_delta,
@@ -515,17 +482,17 @@ impl Game {
                 self.server.on_right_mouse_button(true);
                 self.server.on_right_click(&mut self.renderer);
                 self.server.on_right_mouse_button(false);
-                control_applied_response(MCP_USE_ITEM_APPLIED_MESSAGE)
+                control::ControlResponse::applied(MCP_USE_ITEM_APPLIED_MESSAGE)
             }
             control::ControlCommand::Attack => {
                 self.server.on_left_mouse_button(true);
                 self.mcp_release_left_after_server_tick = true;
-                control_applied_response(MCP_ATTACK_APPLIED_MESSAGE)
+                control::ControlResponse::applied(MCP_ATTACK_APPLIED_MESSAGE)
             }
             control::ControlCommand::Chat { message } => {
                 self.server
                     .write_packet(protocol::packet::play::serverbound::ChatMessage { message });
-                control_applied_response(MCP_CHAT_APPLIED_MESSAGE)
+                control::ControlResponse::applied(MCP_CHAT_APPLIED_MESSAGE)
             }
             control::ControlCommand::ResourcePackStatus(decision) => {
                 self.server
@@ -536,7 +503,7 @@ impl Game {
                     "MC-COMPAT-MILESTONE resource_pack_status_sent offer_id={} status=declined no_external_fetch=true",
                     decision.offer_id
                 );
-                control_applied_response(MCP_RESOURCE_PACK_STATUS_APPLIED_MESSAGE)
+                control::ControlResponse::applied(MCP_RESOURCE_PACK_STATUS_APPLIED_MESSAGE)
             }
             control::ControlCommand::SignEditorUpdate(decision) => {
                 self.apply_mcp_sign_editor_update(decision)
@@ -565,27 +532,27 @@ impl Game {
     #[cfg(not(target_arch = "wasm32"))]
     fn apply_mcp_connect(&mut self, address: &str) -> control::ControlResponse {
         if self.connect_reply.is_some() {
-            return control_rejected_response(MCP_CONNECT_ALREADY_ACTIVE_MESSAGE);
+            return control::ControlResponse::rejected(MCP_CONNECT_ALREADY_ACTIVE_MESSAGE);
         }
         if self.server.is_connected() {
-            return control_rejected_response(MCP_CONNECT_ALREADY_CONNECTED_MESSAGE);
+            return control::ControlResponse::rejected(MCP_CONNECT_ALREADY_CONNECTED_MESSAGE);
         }
         self.connect_to(address);
-        control_applied_response(MCP_CONNECT_STARTED_MESSAGE)
+        control::ControlResponse::applied(MCP_CONNECT_STARTED_MESSAGE)
     }
 
     #[cfg(not(target_arch = "wasm32"))]
     fn apply_mcp_disconnect(&mut self) -> control::ControlResponse {
         if self.connect_reply.is_some() {
             self.connect_reply = None;
-            return control_applied_response(MCP_DISCONNECT_APPLIED_MESSAGE);
+            return control::ControlResponse::applied(MCP_DISCONNECT_APPLIED_MESSAGE);
         }
         if !self.server.is_connected() {
-            return control_rejected_response(MCP_DISCONNECT_NOT_CONNECTED_MESSAGE);
+            return control::ControlResponse::rejected(MCP_DISCONNECT_NOT_CONNECTED_MESSAGE);
         }
         self.server.disconnect(None);
         self.focused = false;
-        control_applied_response(MCP_DISCONNECT_APPLIED_MESSAGE)
+        control::ControlResponse::applied(MCP_DISCONNECT_APPLIED_MESSAGE)
     }
 
     #[cfg(not(target_arch = "wasm32"))]
@@ -595,10 +562,12 @@ impl Game {
     ) -> control::ControlResponse {
         let expected_position = control_block_position_to_shared(decision.position);
         let Some(open_position) = self.server.sign_editor_open_position() else {
-            return control_rejected_response(MCP_SIGN_EDITOR_OPEN_MISSING_MESSAGE);
+            return control::ControlResponse::rejected(MCP_SIGN_EDITOR_OPEN_MISSING_MESSAGE);
         };
         if !sign_editor_open_matches(open_position, expected_position) {
-            return control_rejected_response(MCP_SIGN_EDITOR_OPEN_POSITION_MISMATCH_MESSAGE);
+            return control::ControlResponse::rejected(
+                MCP_SIGN_EDITOR_OPEN_POSITION_MISMATCH_MESSAGE,
+            );
         }
         self.server
             .write_packet(protocol::packet::play::serverbound::SetSign {
@@ -615,24 +584,24 @@ impl Game {
             expected_position.z,
             control::SIGN_EDITOR_LINE_COUNT
         );
-        control_applied_response(MCP_SIGN_EDITOR_UPDATE_APPLIED_MESSAGE)
+        control::ControlResponse::applied(MCP_SIGN_EDITOR_UPDATE_APPLIED_MESSAGE)
     }
 
     #[cfg(not(target_arch = "wasm32"))]
     fn apply_mcp_look(&mut self, yaw_delta: f64, pitch_delta: f64) -> control::ControlResponse {
         let Some(player) = self.server.player else {
-            return control_rejected_response(MCP_REQUIRES_PLAYER_MESSAGE);
+            return control::ControlResponse::rejected(MCP_REQUIRES_PLAYER_MESSAGE);
         };
         let Some(rotation) = self
             .server
             .entities
             .get_component_mut(player, self.server.rotation)
         else {
-            return control_rejected_response(MCP_REQUIRES_PLAYER_MESSAGE);
+            return control::ControlResponse::rejected(MCP_REQUIRES_PLAYER_MESSAGE);
         };
         rotation.yaw += yaw_delta;
         rotation.pitch = bounded_pitch(rotation.pitch + pitch_delta);
-        control_applied_response(MCP_LOOK_APPLIED_MESSAGE)
+        control::ControlResponse::applied(MCP_LOOK_APPLIED_MESSAGE)
     }
 
     #[cfg(not(target_arch = "wasm32"))]
@@ -650,7 +619,7 @@ impl Game {
                 }
             }
         }
-        control_applied_response(MCP_MOUSE_APPLIED_MESSAGE)
+        control::ControlResponse::applied(MCP_MOUSE_APPLIED_MESSAGE)
     }
 }
 
@@ -742,59 +711,59 @@ mod mcp_control_tests {
 
     #[test]
     fn status_connect_and_disconnect_do_not_require_an_existing_connection() {
-        assert!(!control_command_requires_connected(
+        assert!(!control::control_command_requires_connection(
             &control::ControlCommand::Status
         ));
-        assert!(!control_command_requires_connected(
+        assert!(!control::control_command_requires_connection(
             &control::ControlCommand::Connect {
                 address: "127.0.0.1:25565".to_owned(),
             }
         ));
-        assert!(!control_command_requires_connected(
+        assert!(!control::control_command_requires_connection(
             &control::ControlCommand::Disconnect
         ));
-        assert!(!control_command_requires_connected(
+        assert!(!control::control_command_requires_connection(
             &control::ControlCommand::CaptureScreenshot
         ));
-        assert!(!control_command_requires_connected(
+        assert!(!control::control_command_requires_connection(
             &control::ControlCommand::CaptureLatestFrame
         ));
-        assert!(control_command_requires_connected(
+        assert!(control::control_command_requires_connection(
             &control::ControlCommand::Key {
                 key: control::ControlKey::Forward,
                 down: true,
             }
         ));
-        assert!(control_command_requires_connected(
+        assert!(control::control_command_requires_connection(
             &control::ControlCommand::Look {
                 yaw_delta: TEST_YAW_DELTA,
                 pitch_delta: TEST_PITCH_DELTA,
             }
         ));
-        assert!(control_command_requires_connected(
+        assert!(control::control_command_requires_connection(
             &control::ControlCommand::Mouse {
                 button: control::MouseButton::Left,
                 down: true,
             }
         ));
-        assert!(control_command_requires_connected(
+        assert!(control::control_command_requires_connection(
             &control::ControlCommand::UseItem
         ));
-        assert!(control_command_requires_connected(
+        assert!(control::control_command_requires_connection(
             &control::ControlCommand::Attack
         ));
-        assert!(control_command_requires_connected(
+        assert!(control::control_command_requires_connection(
             &control::ControlCommand::Chat {
                 message: "hello".to_owned(),
             }
         ));
-        assert!(control_command_requires_connected(
+        assert!(control::control_command_requires_connection(
             &control::ControlCommand::ResourcePackStatus(control::ResourcePackStatusDecision {
                 offer_id: "mc-compat-local-resource-pack".to_owned(),
                 status: control::ResourcePackStatusResponse::Declined,
             })
         ));
-        assert!(control_command_requires_connected(
+        assert!(control::control_command_requires_connection(
             &control::ControlCommand::SignEditorUpdate(control::SignEditorUpdateDecision {
                 position: control::BlockPosition::new(TEST_SIGN_X, TEST_SIGN_Y, TEST_SIGN_Z),
                 lines: [
@@ -858,35 +827,47 @@ mod mcp_control_tests {
                 key: control::ControlKey::Forward,
                 down: true,
             }),
-            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+            Some(control::ControlResponse::rejected(
+                MCP_REQUIRES_CONNECTED_MESSAGE
+            ))
         );
         assert_eq!(
             disconnected_control_rejection(&control::ControlCommand::Look {
                 yaw_delta: TEST_YAW_DELTA,
                 pitch_delta: TEST_PITCH_DELTA,
             }),
-            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+            Some(control::ControlResponse::rejected(
+                MCP_REQUIRES_CONNECTED_MESSAGE
+            ))
         );
         assert_eq!(
             disconnected_control_rejection(&control::ControlCommand::Mouse {
                 button: control::MouseButton::Left,
                 down: true,
             }),
-            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+            Some(control::ControlResponse::rejected(
+                MCP_REQUIRES_CONNECTED_MESSAGE
+            ))
         );
         assert_eq!(
             disconnected_control_rejection(&control::ControlCommand::UseItem),
-            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+            Some(control::ControlResponse::rejected(
+                MCP_REQUIRES_CONNECTED_MESSAGE
+            ))
         );
         assert_eq!(
             disconnected_control_rejection(&control::ControlCommand::Attack),
-            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+            Some(control::ControlResponse::rejected(
+                MCP_REQUIRES_CONNECTED_MESSAGE
+            ))
         );
         assert_eq!(
             disconnected_control_rejection(&control::ControlCommand::Chat {
                 message: "hello".to_owned(),
             }),
-            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+            Some(control::ControlResponse::rejected(
+                MCP_REQUIRES_CONNECTED_MESSAGE
+            ))
         );
         assert_eq!(
             disconnected_control_rejection(&control::ControlCommand::ResourcePackStatus(
@@ -895,7 +876,9 @@ mod mcp_control_tests {
                     status: control::ResourcePackStatusResponse::Declined,
                 }
             )),
-            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+            Some(control::ControlResponse::rejected(
+                MCP_REQUIRES_CONNECTED_MESSAGE
+            ))
         );
         assert_eq!(
             disconnected_control_rejection(&control::ControlCommand::SignEditorUpdate(
@@ -909,7 +892,9 @@ mod mcp_control_tests {
                     ],
                 }
             )),
-            Some(control_rejected_response(MCP_REQUIRES_CONNECTED_MESSAGE))
+            Some(control::ControlResponse::rejected(
+                MCP_REQUIRES_CONNECTED_MESSAGE
+            ))
         );
     }
 

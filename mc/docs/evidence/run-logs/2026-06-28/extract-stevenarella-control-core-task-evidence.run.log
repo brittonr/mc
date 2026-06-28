@@ -1,0 +1,5 @@
+command=tools/check_cairn_task_evidence.rs cairn/changes/extract-stevenarella-control-core/tasks.md
+compile_exit_status=0
+task evidence gate passed: 7 completed tasks checked across 1 task files
+check_exit_status=0
+exit_status=0

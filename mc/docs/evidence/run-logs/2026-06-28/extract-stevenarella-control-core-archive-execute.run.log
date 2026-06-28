@@ -1,0 +1,82 @@
+command=CAIRN_ARCHIVE_DATE=2026-06-28 nix run --no-update-lock-file .#cairn -- archive extract-stevenarella-control-core --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: extract-stevenarella-control-core",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-28-extract-stevenarella-control-core"
+    }
+  ],
+  "blocked": false,
+  "change": "extract-stevenarella-control-core",
+  "dry_run": false,
+  "input_hash": "df4826bcbb8ceca624f1bfbf777110836b4d37b2ac57b704ef0f91ba9caf9290",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "d7da8c88ddaabd112e67d8d1963729a8f1add9550924838508a4286d3c4eeb54",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-28-extract-stevenarella-control-core/design.md"
+        },
+        {
+          "content_hash": "192f0685159b02a9bdae80c5702bf5de6413150c8464936da8c354467a6ba2fe",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-28-extract-stevenarella-control-core/proposal.md"
+        },
+        {
+          "content_hash": "86f51262441bebb653d0924c6add074916eb5e2e8ac76b75068081b0029cee54",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-28-extract-stevenarella-control-core/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "6c11d87c1fcbba471d917082cf16d74f310b3f2dbd4cf1829d2161db0be5622d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-28-extract-stevenarella-control-core/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/extract-stevenarella-control-core"
+        }
+      ],
+      "manifest_hash": "e0df4f359898f7d4f3d4cb953bf3ffa54bb36b8f43e0eec0844fbd11a02c9f9d"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "d7da8c88ddaabd112e67d8d1963729a8f1add9550924838508a4286d3c4eeb54",
+          "exists": true,
+          "path": "./cairn/changes/extract-stevenarella-control-core/design.md"
+        },
+        {
+          "content_hash": "192f0685159b02a9bdae80c5702bf5de6413150c8464936da8c354467a6ba2fe",
+          "exists": true,
+          "path": "./cairn/changes/extract-stevenarella-control-core/proposal.md"
+        },
+        {
+          "content_hash": "86f51262441bebb653d0924c6add074916eb5e2e8ac76b75068081b0029cee54",
+          "exists": true,
+          "path": "./cairn/changes/extract-stevenarella-control-core/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "6c11d87c1fcbba471d917082cf16d74f310b3f2dbd4cf1829d2161db0be5622d",
+          "exists": true,
+          "path": "./cairn/changes/extract-stevenarella-control-core/tasks.md"
+        }
+      ],
+      "manifest_hash": "fa066f3c66627e3be566b41872d891af3471f2f57d12b65a4ae5c1b30b6e6700"
+    },
+    "kind": "archive",
+    "manifest_hash": "4bb83d1b7046f1f6c897d0cbce5c40d6cc20c7d855e9f3e9e3e33bf222c21fe5"
+  },
+  "plan_hash": "a210d4067af504aad6dfa353f7cfad12b95d2f2be92cfcd7d6b2099082184f3f",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "47bc39e4bb96406d5364fd03346569aca1413a7b6a2e3ae3ba818785578b9f1f"
+}
+archive_execute_exit_status=0
+exit_status=0

@@ -1,0 +1,48 @@
+## compile_task_evidence
+command=rustc --edition=2021 tools/check_cairn_task_evidence.rs -o /tmp/check-cairn-task-evidence
+compile_task_evidence_exit_status=0
+
+## archived_task_evidence
+command=/tmp/check-cairn-task-evidence cairn/archive/2026-06-28-extract-stevenarella-control-core/tasks.md
+task evidence gate passed: 7 completed tasks checked across 1 task files
+archived_task_evidence_exit_status=0
+
+## cairn_validate
+command=nix run --no-update-lock-file .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 32,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 37,
+  "valid": true
+}
+cairn_validate_exit_status=0
+
+## evidence_manifest_refresh
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=526; entries=4887; current=4887; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=62
+evidence_manifest_refresh_exit_status=0
+
+## compile_evidence_partitions
+command=rustc --edition=2021 tools/check_evidence_partitions.rs -o /tmp/check-evidence-partitions
+compile_evidence_partitions_exit_status=0
+
+## evidence_partitions_write
+command=/tmp/check-evidence-partitions --write-generated
+evidence partitions generated surfaces refreshed: artifacts=4063
+evidence_partitions_write_exit_status=0
+
+## evidence_partitions_check
+command=/tmp/check-evidence-partitions --root .
+evidence partitions passed: artifacts=4063, manifests=526
+evidence_partitions_check_exit_status=0
+
+## evidence_manifest_check
+command=nix run --no-update-lock-file .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=526; entries=4887; current=4887; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+
+exit_status=0

@@ -1,0 +1,388 @@
+## cargo_test_control
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test control -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 | ...n| (instrument.offsets(protocol_version)
+     |       ^
+1053 | ... * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                       ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 | ...rsion| (variant.offsets(protocol_version)),
+     |           ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+   Compiling stevenarella v0.0.1 (/home/brittonr/git/mc/clients/stevenarella)
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|P...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_CO...
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 4 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (lib test) generated 2 warnings (2 duplicates)
+warning: `stevenarella` (bin "stevenarella" test) generated 2 warnings (2 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 4.79s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 41 tests
+test control::tests::classifies_command_facts_without_game_state ... ok
+test control::tests::classifies_response_vocabulary_without_mcp_transport ... ok
+test control::tests::parses_all_key_aliases ... ok
+test control::tests::parses_json_string_entrypoint ... ok
+test control::tests::parses_resource_pack_status_decline_for_owned_local_offer ... ok
+test control::tests::parses_sign_editor_update_for_matching_open_state ... ok
+test control::tests::parses_valid_initial_command_set ... ok
+test control::tests::rejects_blank_chat_message ... ok
+test control::tests::rejects_command_payload_schema_mismatches ... ok
+test control::tests::rejects_external_resource_pack_url_before_protocol_response ... ok
+test control::tests::rejects_invalid_key_name ... ok
+test control::tests::rejects_invalid_mouse_button ... ok
+test control::tests::rejects_malformed_json_entrypoint ... ok
+test control::tests::rejects_missing_action_field ... ok
+test control::tests::rejects_missing_payloads_for_commands ... ok
+test control::tests::rejects_missing_required_command_field ... ok
+test control::tests::rejects_non_object_and_action_schema_mismatches ... ok
+test control::tests::rejects_out_of_range_look_delta ... ok
+test control::tests::rejects_oversized_chat_message ... ok
+test control::tests::rejects_oversized_resource_pack_url_before_redaction_boundary ... ok
+test control::tests::rejects_resource_pack_offer_with_blank_identity ... ok
+test control::tests::rejects_resource_pack_status_without_offer_state ... ok
+test control::tests::rejects_sign_editor_malformed_payload ... ok
+test control::tests::rejects_sign_editor_overclaim ... ok
+test control::tests::rejects_sign_editor_overlong_line ... ok
+test control::tests::rejects_sign_editor_update_for_wrong_open_position ... ok
+test control::tests::rejects_sign_editor_update_without_open_state ... ok
+test control::tests::rejects_sign_editor_wrong_line_count ... ok
+test control::tests::rejects_unknown_action ... ok
+test control::tests::rejects_unsupported_resource_pack_status ... ok
+test mcp_control_tests::control_capture_enqueue_rejects_missing_capture_queue ... ok
+test mcp_control_tests::control_capture_enqueue_reaches_post_render_capture_queue ... ok
+test mcp_control_tests::disconnected_operations_return_rejected_response ... ok
+test mcp_control_tests::maps_control_block_position_to_protocol_position ... ok
+test mcp_control_tests::maps_control_keys_to_internal_steven_keys ... ok
+test mcp_control_tests::sign_editor_open_match_is_position_exact ... ok
+test mcp_control_tests::status_connect_and_disconnect_do_not_require_an_existing_connection ... ok
+test mcp_control_tests::pitch_bounds_match_window_input_clamp ... ok
+test mcp_control_tests::status_message_reports_connection_state ... ok
+test mcp_control_tests::control_capture_enqueue_uses_capture_dir_artifact_output ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_control_command_for_main_thread_drain ... ok
+
+test result: ok. 41 passed; 0 failed; 0 ignored; 0 measured; 170 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 41 tests
+test control::tests::classifies_command_facts_without_game_state ... ok
+test control::tests::classifies_response_vocabulary_without_mcp_transport ... ok
+test control::tests::parses_all_key_aliases ... ok
+test control::tests::parses_resource_pack_status_decline_for_owned_local_offer ... ok
+test control::tests::parses_json_string_entrypoint ... ok
+test control::tests::parses_sign_editor_update_for_matching_open_state ... ok
+test control::tests::parses_valid_initial_command_set ... ok
+test control::tests::rejects_blank_chat_message ... ok
+test control::tests::rejects_command_payload_schema_mismatches ... ok
+test control::tests::rejects_external_resource_pack_url_before_protocol_response ... ok
+test control::tests::rejects_invalid_key_name ... ok
+test control::tests::rejects_invalid_mouse_button ... ok
+test control::tests::rejects_malformed_json_entrypoint ... ok
+test control::tests::rejects_missing_action_field ... ok
+test control::tests::rejects_missing_payloads_for_commands ... ok
+test control::tests::rejects_missing_required_command_field ... ok
+test control::tests::rejects_non_object_and_action_schema_mismatches ... ok
+test control::tests::rejects_out_of_range_look_delta ... ok
+test control::tests::rejects_oversized_chat_message ... ok
+test control::tests::rejects_oversized_resource_pack_url_before_redaction_boundary ... ok
+test control::tests::rejects_resource_pack_offer_with_blank_identity ... ok
+test control::tests::rejects_resource_pack_status_without_offer_state ... ok
+test control::tests::rejects_sign_editor_malformed_payload ... ok
+test control::tests::rejects_sign_editor_overclaim ... ok
+test control::tests::rejects_sign_editor_overlong_line ... ok
+test control::tests::rejects_sign_editor_update_for_wrong_open_position ... ok
+test control::tests::rejects_sign_editor_update_without_open_state ... ok
+test control::tests::rejects_sign_editor_wrong_line_count ... ok
+test control::tests::rejects_unknown_action ... ok
+test control::tests::rejects_unsupported_resource_pack_status ... ok
+test mcp_control_tests::control_capture_enqueue_rejects_missing_capture_queue ... ok
+test mcp_control_tests::control_capture_enqueue_reaches_post_render_capture_queue ... ok
+test mcp_control_tests::status_connect_and_disconnect_do_not_require_an_existing_connection ... ok
+test mcp_control_tests::status_message_reports_connection_state ... ok
+test mcp_control_tests::sign_editor_open_match_is_position_exact ... ok
+test mcp_control_tests::maps_control_keys_to_internal_steven_keys ... ok
+test mcp_control_tests::maps_control_block_position_to_protocol_position ... ok
+test mcp_control_tests::disconnected_operations_return_rejected_response ... ok
+test mcp_control_tests::pitch_bounds_match_window_input_clamp ... ok
+test mcp_control_tests::control_capture_enqueue_uses_capture_dir_artifact_output ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_control_command_for_main_thread_drain ... ok
+
+test result: ok. 41 passed; 0 failed; 0 ignored; 0 measured; 170 filtered out; finished in 0.00s
+
+cargo_test_control_exit_status=0
+
+## cargo_test_mcp
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test mcp -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 | ...n| (instrument.offsets(protocol_version)
+     |       ^
+1053 | ... * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                       ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 | ...rsion| (variant.offsets(protocol_version)),
+     |           ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|P...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_CO...
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 4 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (lib test) generated 2 warnings (2 duplicates)
+warning: `stevenarella` (bin "stevenarella" test) generated 2 warnings (2 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.12s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 43 tests
+test compat_instrumentation::tests::default_options_disable_mcp_instrumentation ... ok
+test compat_instrumentation::tests::stdio_options_enable_mcp_instrumentation_and_reserve_stdout ... ok
+test mcp::tests::command_queue_drains_pending_command_with_main_thread_handler ... ok
+test control::tests::classifies_response_vocabulary_without_mcp_transport ... ok
+test compat_instrumentation::tests::tcp_options_enable_mcp_instrumentation_without_reserving_stdout ... ok
+test mcp::tests::command_queue_respects_per_frame_drain_limit ... ok
+test mcp::tests::command_queue_rejects_enqueue_after_receiver_drop ... ok
+test mcp::tests::ipv6_loopback_tcp_transport_is_accepted_without_token ... ok
+test mcp::tests::jsonrpc_capture_tool_rejects_invalid_format_before_enqueue ... ok
+test mcp::tests::jsonrpc_handler_rejects_malformed_json ... ok
+test mcp::tests::jsonrpc_handler_requires_matching_auth_token_when_configured ... ok
+test mcp::tests::jsonrpc_handler_supports_initialize_and_lists_empty_tools ... ok
+test mcp::tests::jsonrpc_tools_list_includes_queue_tool_when_sender_is_configured ... ok
+test mcp::tests::loopback_tcp_transport_is_accepted_without_token ... ok
+test mcp::tests::malformed_listen_address_is_rejected ... ok
+test mcp::tests::non_loopback_tcp_transport_is_accepted_with_token_env_and_value ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_empty_token_env_name ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_empty_token_value ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_missing_token_value ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_without_token_env ... ok
+test mcp::tests::stdio_transport_is_accepted_and_requires_clean_stdout ... ok
+test mcp::tests::stdio_transport_runs_jsonrpc_line_loop ... ok
+test mcp::tests::stdio_transport_runtime_keeps_command_sender_for_worker_threads ... ok
+test mcp_control_tests::status_message_reports_connection_state ... ok
+test mcp_control_tests::control_capture_enqueue_reaches_post_render_capture_queue ... ok
+test mcp::tests::tools_and_resources_list_include_capture_when_configured ... ok
+test mcp_control_tests::disconnected_operations_return_rejected_response ... ok
+test mcp_control_tests::maps_control_block_position_to_protocol_position ... ok
+test mcp_control_tests::pitch_bounds_match_window_input_clamp ... ok
+test mcp::tests::stdio_transport_runtime_starts_line_loop_thread ... ok
+test mcp_control_tests::status_connect_and_disconnect_do_not_require_an_existing_connection ... ok
+test mcp_control_tests::maps_control_keys_to_internal_steven_keys ... ok
+test mcp_control_tests::control_capture_enqueue_rejects_missing_capture_queue ... ok
+test mcp_control_tests::sign_editor_open_match_is_position_exact ... ok
+test mcp::tests::tcp_transport_binds_loopback_and_serves_jsonrpc ... ok
+test mcp_control_tests::control_capture_enqueue_uses_capture_dir_artifact_output ... ok
+test mcp::tests::command_queue_reports_timeout_when_main_thread_does_not_drain ... ok
+test mcp::tests::jsonrpc_capture_resource_read_returns_inline_blob ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_inline_image_and_metadata ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_capture_command_for_main_thread_drain ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_control_command_for_main_thread_drain ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_artifact_path_and_digest ... ok
+test mcp::tests::non_loopback_tcp_transport_requires_token_per_request ... ok
+
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 168 filtered out; finished in 0.01s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 43 tests
+test compat_instrumentation::tests::default_options_disable_mcp_instrumentation ... ok
+test compat_instrumentation::tests::stdio_options_enable_mcp_instrumentation_and_reserve_stdout ... ok
+test compat_instrumentation::tests::tcp_options_enable_mcp_instrumentation_without_reserving_stdout ... ok
+test control::tests::classifies_response_vocabulary_without_mcp_transport ... ok
+test mcp::tests::command_queue_rejects_enqueue_after_receiver_drop ... ok
+test mcp::tests::command_queue_drains_pending_command_with_main_thread_handler ... ok
+test mcp::tests::command_queue_respects_per_frame_drain_limit ... ok
+test mcp::tests::ipv6_loopback_tcp_transport_is_accepted_without_token ... ok
+test mcp::tests::jsonrpc_capture_tool_rejects_invalid_format_before_enqueue ... ok
+test mcp::tests::jsonrpc_handler_rejects_malformed_json ... ok
+test mcp::tests::jsonrpc_handler_requires_matching_auth_token_when_configured ... ok
+test mcp::tests::jsonrpc_handler_supports_initialize_and_lists_empty_tools ... ok
+test mcp::tests::loopback_tcp_transport_is_accepted_without_token ... ok
+test mcp::tests::jsonrpc_tools_list_includes_queue_tool_when_sender_is_configured ... ok
+test mcp::tests::malformed_listen_address_is_rejected ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_empty_token_env_name ... ok
+test mcp::tests::non_loopback_tcp_transport_is_accepted_with_token_env_and_value ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_empty_token_value ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_missing_token_value ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_without_token_env ... ok
+test mcp::tests::stdio_transport_is_accepted_and_requires_clean_stdout ... ok
+test mcp::tests::stdio_transport_runs_jsonrpc_line_loop ... ok
+test mcp::tests::stdio_transport_runtime_keeps_command_sender_for_worker_threads ... ok
+test mcp::tests::stdio_transport_runtime_starts_line_loop_thread ... ok
+test mcp::tests::tools_and_resources_list_include_capture_when_configured ... ok
+test mcp_control_tests::control_capture_enqueue_reaches_post_render_capture_queue ... ok
+test mcp_control_tests::control_capture_enqueue_rejects_missing_capture_queue ... ok
+test mcp_control_tests::sign_editor_open_match_is_position_exact ... ok
+test mcp_control_tests::maps_control_keys_to_internal_steven_keys ... ok
+test mcp_control_tests::disconnected_operations_return_rejected_response ... ok
+test mcp_control_tests::pitch_bounds_match_window_input_clamp ... ok
+test mcp_control_tests::maps_control_block_position_to_protocol_position ... ok
+test mcp_control_tests::status_connect_and_disconnect_do_not_require_an_existing_connection ... ok
+test mcp_control_tests::status_message_reports_connection_state ... ok
+test mcp_control_tests::control_capture_enqueue_uses_capture_dir_artifact_output ... ok
+test mcp::tests::command_queue_reports_timeout_when_main_thread_does_not_drain ... ok
+test mcp::tests::jsonrpc_capture_resource_read_returns_inline_blob ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_inline_image_and_metadata ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_capture_command_for_main_thread_drain ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_control_command_for_main_thread_drain ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_artifact_path_and_digest ... ok
+test mcp::tests::tcp_transport_binds_loopback_and_serves_jsonrpc ... ok
+test mcp::tests::non_loopback_tcp_transport_requires_token_per_request ... ok
+
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 168 filtered out; finished in 0.02s
+
+cargo_test_mcp_exit_status=0
+
+exit_status=0

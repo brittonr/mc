@@ -1,0 +1,24 @@
+command=nix run --no-update-lock-file .#cairn -- archive extract-stevenarella-control-core --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: extract-stevenarella-control-core",
+      "kind": "archive_change",
+      "path": "./cairn/changes/extract-stevenarella-control-core"
+    }
+  ],
+  "blocked": false,
+  "change": "extract-stevenarella-control-core",
+  "dry_run": true,
+  "input_hash": "df4826bcbb8ceca624f1bfbf777110836b4d37b2ac57b704ef0f91ba9caf9290",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "d5e8e9999e6af1d45cd616c2f3d5979cc1a99b2ba1340f4a15a95b412af8cc6b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "01681a9da58e19d16701f70799c9c6fe68b9a7a200283a3050306b94fa3ac788"
+}
+archive_dry_run_exit_status=0
+exit_status=0

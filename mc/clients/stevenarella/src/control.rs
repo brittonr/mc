@@ -96,6 +96,10 @@ const RESOURCE_PACK_LOCAL_HTTP_PREFIXES: &[&str] = &[
 ];
 const RESOURCE_PACK_LOCAL_FILE_PREFIX: &str = "file://";
 
+pub const CONTROL_OUTCOME_APPLIED_NAME: &str = "applied";
+pub const CONTROL_OUTCOME_REJECTED_NAME: &str = "rejected";
+pub const CONTROL_OUTCOME_DEFERRED_NAME: &str = "deferred";
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum ControlCommand {
     Status,
@@ -111,6 +115,30 @@ pub enum ControlCommand {
     SignEditorUpdate(SignEditorUpdateDecision),
     CaptureScreenshot,
     CaptureLatestFrame,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ControlShellAction {
+    ReportStatus,
+    Connect,
+    Disconnect,
+    Key,
+    Look,
+    Mouse,
+    UseItem,
+    Attack,
+    Chat,
+    ResourcePackStatus,
+    SignEditorUpdate,
+    CaptureScreenshot,
+    CaptureLatestFrame,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct ControlCommandFacts {
+    pub action_name: &'static str,
+    pub requires_connection: bool,
+    pub shell_action: ControlShellAction,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -268,6 +296,131 @@ impl BlockPosition {
     pub fn new(x: i32, y: i32, z: i32) -> Self {
         Self { x, y, z }
     }
+}
+
+impl ControlCommand {
+    pub fn facts(&self) -> ControlCommandFacts {
+        match self {
+            ControlCommand::Status => ControlCommandFacts {
+                action_name: ACTION_STATUS,
+                requires_connection: false,
+                shell_action: ControlShellAction::ReportStatus,
+            },
+            ControlCommand::Connect { .. } => ControlCommandFacts {
+                action_name: ACTION_CONNECT,
+                requires_connection: false,
+                shell_action: ControlShellAction::Connect,
+            },
+            ControlCommand::Disconnect => ControlCommandFacts {
+                action_name: ACTION_DISCONNECT,
+                requires_connection: false,
+                shell_action: ControlShellAction::Disconnect,
+            },
+            ControlCommand::Key { .. } => ControlCommandFacts {
+                action_name: ACTION_KEY,
+                requires_connection: true,
+                shell_action: ControlShellAction::Key,
+            },
+            ControlCommand::Look { .. } => ControlCommandFacts {
+                action_name: ACTION_LOOK,
+                requires_connection: true,
+                shell_action: ControlShellAction::Look,
+            },
+            ControlCommand::Mouse { .. } => ControlCommandFacts {
+                action_name: ACTION_MOUSE,
+                requires_connection: true,
+                shell_action: ControlShellAction::Mouse,
+            },
+            ControlCommand::UseItem => ControlCommandFacts {
+                action_name: ACTION_USE_ITEM,
+                requires_connection: true,
+                shell_action: ControlShellAction::UseItem,
+            },
+            ControlCommand::Attack => ControlCommandFacts {
+                action_name: ACTION_ATTACK,
+                requires_connection: true,
+                shell_action: ControlShellAction::Attack,
+            },
+            ControlCommand::Chat { .. } => ControlCommandFacts {
+                action_name: ACTION_CHAT,
+                requires_connection: true,
+                shell_action: ControlShellAction::Chat,
+            },
+            ControlCommand::ResourcePackStatus(_) => ControlCommandFacts {
+                action_name: ACTION_RESOURCE_PACK_STATUS,
+                requires_connection: true,
+                shell_action: ControlShellAction::ResourcePackStatus,
+            },
+            ControlCommand::SignEditorUpdate(_) => ControlCommandFacts {
+                action_name: ACTION_SIGN_EDITOR_UPDATE,
+                requires_connection: true,
+                shell_action: ControlShellAction::SignEditorUpdate,
+            },
+            ControlCommand::CaptureScreenshot => ControlCommandFacts {
+                action_name: ACTION_CAPTURE_SCREENSHOT,
+                requires_connection: false,
+                shell_action: ControlShellAction::CaptureScreenshot,
+            },
+            ControlCommand::CaptureLatestFrame => ControlCommandFacts {
+                action_name: ACTION_CAPTURE_LATEST_FRAME,
+                requires_connection: false,
+                shell_action: ControlShellAction::CaptureLatestFrame,
+            },
+        }
+    }
+
+    pub fn action_name(&self) -> &'static str {
+        self.facts().action_name
+    }
+
+    pub fn requires_connection(&self) -> bool {
+        self.facts().requires_connection
+    }
+}
+
+impl ControlOutcome {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ControlOutcome::Applied => CONTROL_OUTCOME_APPLIED_NAME,
+            ControlOutcome::Rejected => CONTROL_OUTCOME_REJECTED_NAME,
+            ControlOutcome::Deferred => CONTROL_OUTCOME_DEFERRED_NAME,
+        }
+    }
+}
+
+impl ControlResponse {
+    pub fn applied(message: impl Into<String>) -> Self {
+        Self {
+            outcome: ControlOutcome::Applied,
+            message: Some(message.into()),
+        }
+    }
+
+    pub fn rejected(message: impl Into<String>) -> Self {
+        Self {
+            outcome: ControlOutcome::Rejected,
+            message: Some(message.into()),
+        }
+    }
+
+    pub fn deferred(message: impl Into<String>) -> Self {
+        Self {
+            outcome: ControlOutcome::Deferred,
+            message: Some(message.into()),
+        }
+    }
+
+    pub fn is_error(&self) -> bool {
+        matches!(self.outcome, ControlOutcome::Rejected)
+    }
+}
+
+pub fn control_command_facts(command: &ControlCommand) -> ControlCommandFacts {
+    command.facts()
+}
+
+pub fn control_command_requires_connection(command: &ControlCommand) -> bool {
+    command.requires_connection()
 }
 
 fn parse_connect(object: &Map<String, Value>) -> Result<ControlCommand, ControlError> {
@@ -611,6 +764,9 @@ mod tests {
     const TEST_RESOURCE_PACK_OFFER_ID: &str = "mc-compat-local-resource-pack";
     const TEST_RESOURCE_PACK_LOCAL_URL: &str = "http://127.0.0.1:25565/resource-pack.zip";
     const TEST_RESOURCE_PACK_EXTERNAL_URL: &str = "https://example.com/resource-pack.zip";
+    const TEST_CONNECT_ADDRESS: &str = "127.0.0.1:25565";
+    const TEST_CHAT_MESSAGE: &str = "/help";
+    const TEST_RESPONSE_MESSAGE: &str = "ok";
     const TEST_SIGN_X: i32 = 28;
     const TEST_SIGN_Y: i32 = 64;
     const TEST_SIGN_Z: i32 = 0;
@@ -955,6 +1111,270 @@ mod tests {
         assert_eq!(ControlKey::from_name("sneak"), Ok(ControlKey::Sneak));
         assert_eq!(ControlKey::from_name("sprint"), Ok(ControlKey::Sprint));
         assert_eq!(ControlKey::from_name("jump"), Ok(ControlKey::Jump));
+    }
+
+    fn assert_command_facts(
+        command: ControlCommand,
+        action_name: &'static str,
+        requires_connection: bool,
+        shell_action: ControlShellAction,
+    ) {
+        let facts = command.facts();
+        assert_eq!(facts.action_name, action_name);
+        assert_eq!(facts.requires_connection, requires_connection);
+        assert_eq!(facts.shell_action, shell_action);
+        assert_eq!(command.action_name(), action_name);
+        assert_eq!(control_command_facts(&command), facts);
+        assert_eq!(
+            control_command_requires_connection(&command),
+            requires_connection
+        );
+    }
+
+    #[test]
+    fn classifies_command_facts_without_game_state() {
+        assert_command_facts(
+            ControlCommand::Status,
+            ACTION_STATUS,
+            false,
+            ControlShellAction::ReportStatus,
+        );
+        assert_command_facts(
+            ControlCommand::Connect {
+                address: TEST_CONNECT_ADDRESS.to_owned(),
+            },
+            ACTION_CONNECT,
+            false,
+            ControlShellAction::Connect,
+        );
+        assert_command_facts(
+            ControlCommand::Disconnect,
+            ACTION_DISCONNECT,
+            false,
+            ControlShellAction::Disconnect,
+        );
+        assert_command_facts(
+            ControlCommand::Key {
+                key: ControlKey::Forward,
+                down: true,
+            },
+            ACTION_KEY,
+            true,
+            ControlShellAction::Key,
+        );
+        assert_command_facts(
+            ControlCommand::Look {
+                yaw_delta: VALID_LOOK_YAW_DELTA,
+                pitch_delta: VALID_LOOK_PITCH_DELTA,
+            },
+            ACTION_LOOK,
+            true,
+            ControlShellAction::Look,
+        );
+        assert_command_facts(
+            ControlCommand::Mouse {
+                button: MouseButton::Left,
+                down: true,
+            },
+            ACTION_MOUSE,
+            true,
+            ControlShellAction::Mouse,
+        );
+        assert_command_facts(
+            ControlCommand::UseItem,
+            ACTION_USE_ITEM,
+            true,
+            ControlShellAction::UseItem,
+        );
+        assert_command_facts(
+            ControlCommand::Attack,
+            ACTION_ATTACK,
+            true,
+            ControlShellAction::Attack,
+        );
+        assert_command_facts(
+            ControlCommand::Chat {
+                message: TEST_CHAT_MESSAGE.to_owned(),
+            },
+            ACTION_CHAT,
+            true,
+            ControlShellAction::Chat,
+        );
+        assert_command_facts(
+            ControlCommand::ResourcePackStatus(ResourcePackStatusDecision {
+                offer_id: TEST_RESOURCE_PACK_OFFER_ID.to_owned(),
+                status: ResourcePackStatusResponse::Declined,
+            }),
+            ACTION_RESOURCE_PACK_STATUS,
+            true,
+            ControlShellAction::ResourcePackStatus,
+        );
+        assert_command_facts(
+            ControlCommand::SignEditorUpdate(SignEditorUpdateDecision {
+                position: BlockPosition::new(TEST_SIGN_X, TEST_SIGN_Y, TEST_SIGN_Z),
+                lines: [
+                    "MC".to_owned(),
+                    "Compat".to_owned(),
+                    "Sign".to_owned(),
+                    "Edit".to_owned(),
+                ],
+            }),
+            ACTION_SIGN_EDITOR_UPDATE,
+            true,
+            ControlShellAction::SignEditorUpdate,
+        );
+        assert_command_facts(
+            ControlCommand::CaptureScreenshot,
+            ACTION_CAPTURE_SCREENSHOT,
+            false,
+            ControlShellAction::CaptureScreenshot,
+        );
+        assert_command_facts(
+            ControlCommand::CaptureLatestFrame,
+            ACTION_CAPTURE_LATEST_FRAME,
+            false,
+            ControlShellAction::CaptureLatestFrame,
+        );
+    }
+
+    #[test]
+    fn classifies_response_vocabulary_without_mcp_transport() {
+        let applied = ControlResponse::applied(TEST_RESPONSE_MESSAGE);
+        let rejected = ControlResponse::rejected(TEST_RESPONSE_MESSAGE);
+        let deferred = ControlResponse::deferred(TEST_RESPONSE_MESSAGE);
+
+        assert_eq!(applied.outcome.as_str(), CONTROL_OUTCOME_APPLIED_NAME);
+        assert_eq!(rejected.outcome.as_str(), CONTROL_OUTCOME_REJECTED_NAME);
+        assert_eq!(deferred.outcome.as_str(), CONTROL_OUTCOME_DEFERRED_NAME);
+        assert!(!applied.is_error());
+        assert!(rejected.is_error());
+        assert!(!deferred.is_error());
+    }
+
+    #[test]
+    fn rejects_non_object_and_action_schema_mismatches() {
+        assert_eq!(
+            parse_control_command_value(&json!(null)),
+            Err(ControlError::ExpectedObject)
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({ "action": false })),
+            Err(ControlError::InvalidField {
+                field: FIELD_ACTION,
+                reason: REASON_EXPECTED_STRING,
+            })
+        );
+    }
+
+    #[test]
+    fn rejects_missing_payloads_for_commands() {
+        assert_eq!(
+            parse_control_command_value(&json!({ "action": "connect" })),
+            Err(ControlError::MissingField(FIELD_ADDRESS))
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "look",
+                "pitch_delta": VALID_LOOK_PITCH_DELTA,
+            })),
+            Err(ControlError::MissingField(FIELD_YAW_DELTA))
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({ "action": "mouse", "down": true })),
+            Err(ControlError::MissingField(FIELD_BUTTON))
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({ "action": "chat" })),
+            Err(ControlError::MissingField(FIELD_MESSAGE))
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "resource_pack_status",
+                "url": TEST_RESOURCE_PACK_LOCAL_URL,
+                "status": "declined",
+                "offer_received": true,
+            })),
+            Err(ControlError::MissingField(FIELD_OFFER_ID))
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "sign_editor_update",
+                "open_position": { "x": TEST_SIGN_X, "y": TEST_SIGN_Y, "z": TEST_SIGN_Z },
+                "open_observed": true,
+                "lines": ["MC", "Compat", "Sign", "Edit"],
+            })),
+            Err(ControlError::MissingField(FIELD_POSITION))
+        );
+    }
+
+    #[test]
+    fn rejects_command_payload_schema_mismatches() {
+        assert_eq!(
+            parse_control_command_value(&json!({ "action": "connect", "address": false })),
+            Err(ControlError::InvalidField {
+                field: FIELD_ADDRESS,
+                reason: REASON_EXPECTED_STRING,
+            })
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "key",
+                "key": "jump",
+                "down": "true",
+            })),
+            Err(ControlError::InvalidField {
+                field: FIELD_DOWN,
+                reason: REASON_EXPECTED_BOOL,
+            })
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "look",
+                "yaw_delta": VALID_LOOK_YAW_DELTA,
+                "pitch_delta": "north",
+            })),
+            Err(ControlError::InvalidField {
+                field: FIELD_PITCH_DELTA,
+                reason: REASON_EXPECTED_NUMBER,
+            })
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "mouse",
+                "button": "left",
+                "down": "true",
+            })),
+            Err(ControlError::InvalidField {
+                field: FIELD_DOWN,
+                reason: REASON_EXPECTED_BOOL,
+            })
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "resource_pack_status",
+                "offer_id": TEST_RESOURCE_PACK_OFFER_ID,
+                "url": false,
+                "status": "declined",
+                "offer_received": true,
+            })),
+            Err(ControlError::InvalidField {
+                field: FIELD_URL,
+                reason: REASON_EXPECTED_STRING,
+            })
+        );
+        assert_eq!(
+            parse_control_command_value(&json!({
+                "action": "sign_editor_update",
+                "position": [],
+                "open_position": { "x": TEST_SIGN_X, "y": TEST_SIGN_Y, "z": TEST_SIGN_Z },
+                "open_observed": true,
+                "lines": ["MC", "Compat", "Sign", "Edit"],
+            })),
+            Err(ControlError::InvalidField {
+                field: FIELD_POSITION,
+                reason: REASON_EXPECTED_OBJECT,
+            })
+        );
     }
 
     #[test]

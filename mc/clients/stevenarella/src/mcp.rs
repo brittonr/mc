@@ -8,7 +8,7 @@ use crate::capture::{
     self, CaptureFormat, CaptureMode, CaptureOutput, CapturePolicy, CaptureQueueError,
     CaptureRequest, CaptureRequestSender, ServicedCapture,
 };
-use crate::control::{ControlCommand, ControlOutcome, ControlResponse};
+use crate::control::{ControlCommand, ControlResponse};
 use serde_json::{json, Value};
 use std::io::{self, BufRead, BufReader, BufWriter, Write};
 use std::net::{SocketAddr, TcpListener, TcpStream};
@@ -54,9 +54,6 @@ const MCP_FIELD_RELATIVE_PATH: &str = "relative_path";
 const MCP_FIELD_URI: &str = "uri";
 const MCP_OUTPUT_ARTIFACT: &str = "artifact";
 const MCP_OUTPUT_INLINE: &str = "inline";
-const CONTROL_OUTCOME_APPLIED: &str = "applied";
-const CONTROL_OUTCOME_REJECTED: &str = "rejected";
-const CONTROL_OUTCOME_DEFERRED: &str = "deferred";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct McpTransportOptions {
@@ -810,12 +807,12 @@ fn control_tool_result(response: &ControlResponse) -> Value {
         "content": [{
             "type": MCP_CONTENT_TYPE_TEXT,
             "text": json!({
-                "outcome": control_outcome_name(response.outcome),
+                "outcome": response.outcome.as_str(),
                 "message": response.message.as_deref(),
             })
             .to_string(),
         }],
-        "isError": matches!(response.outcome, ControlOutcome::Rejected),
+        "isError": response.is_error(),
     })
 }
 
@@ -866,14 +863,6 @@ fn mcp_capture_error_response(id: Value, err: McpCaptureToolError) -> String {
         | McpCaptureToolError::MissingArtifactMetadata => JSONRPC_INTERNAL_ERROR,
     };
     jsonrpc_error(id, code, &format!("capture failed: {err:?}"))
-}
-
-fn control_outcome_name(outcome: ControlOutcome) -> &'static str {
-    match outcome {
-        ControlOutcome::Applied => CONTROL_OUTCOME_APPLIED,
-        ControlOutcome::Rejected => CONTROL_OUTCOME_REJECTED,
-        ControlOutcome::Deferred => CONTROL_OUTCOME_DEFERRED,
-    }
 }
 
 fn capture_request_from_arguments(
@@ -1298,6 +1287,9 @@ fn jsonrpc_error(id: Value, code: i64, message: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::control::{
+        ControlOutcome, CONTROL_OUTCOME_APPLIED_NAME, CONTROL_OUTCOME_DEFERRED_NAME,
+    };
     use std::io::Write;
 
     const LOOPBACK_LISTEN: &str = "127.0.0.1:4700";
@@ -1725,7 +1717,7 @@ mod tests {
         let response: Value = serde_json::from_str(&worker.join().unwrap()).unwrap();
         let text = response["result"]["content"][0]["text"].as_str().unwrap();
         let payload: Value = serde_json::from_str(text).unwrap();
-        assert_eq!(payload["outcome"], CONTROL_OUTCOME_APPLIED);
+        assert_eq!(payload["outcome"], CONTROL_OUTCOME_APPLIED_NAME);
         assert_eq!(payload["message"], QUEUE_TEST_RESPONSE);
     }
 
@@ -1763,7 +1755,7 @@ mod tests {
         let response: Value = serde_json::from_str(&worker.join().unwrap()).unwrap();
         let text = response["result"]["content"][0]["text"].as_str().unwrap();
         let payload: Value = serde_json::from_str(text).unwrap();
-        assert_eq!(payload["outcome"], CONTROL_OUTCOME_DEFERRED);
+        assert_eq!(payload["outcome"], CONTROL_OUTCOME_DEFERRED_NAME);
         assert_eq!(payload["message"], QUEUE_TEST_RESPONSE);
     }
 
