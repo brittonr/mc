@@ -1,0 +1,26 @@
+command=nix run .#cairn -- gate design data-drive-stevenarella-protocol-versions --root .
+cwd=/home/brittonr/git/mc
+started_at=2026-06-28T19:15:32Z
+{
+  "change": "data-drive-stevenarella-protocol-versions",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7456d4c7278abdddf1eea1202cbd253e68ac132f851a4803b4fa039817fe0671",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "2fb3c3460c51df5c357671c5b7ce65c95128362219764cb4a5a50b3fe5378a72",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+finished_at=2026-06-28T19:15:32Z
+exit_status=0

@@ -39,10 +39,8 @@ use std::io::{Read, Write};
 use std::net::TcpStream;
 use std::sync::atomic::{AtomicBool, AtomicI32, Ordering};
 
-pub const SUPPORTED_PROTOCOLS: [i32; 28] = [
-    763, 758, 757, 756, 754, 753, 751, 736, 735, 578, 575, 498, 490, 485, 480, 477, 452, 451, 404,
-    340, 316, 315, 210, 109, 107, 74, 47, 5,
-];
+pub const SUPPORTED_PROTOCOLS: [i32; versions::SUPPORTED_PROTOCOL_COUNT] =
+    versions::SUPPORTED_PROTOCOL_IDS;
 
 static CURRENT_PROTOCOL_VERSION: AtomicI32 = AtomicI32::new(SUPPORTED_PROTOCOLS[0]);
 static NETWORK_DEBUG: AtomicBool = AtomicBool::new(false);

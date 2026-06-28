@@ -1,4 +1,4 @@
-use super::*;
+use super::{Direction, State};
 
 mod v15w39c;
 mod v18w50a;
@@ -27,46 +27,598 @@ mod v1_9_2;
 // https://wiki.vg/Protocol_History
 // https://wiki.vg/Protocol_version_numbers#Versions_after_the_Netty_rewrite
 
-pub fn protocol_name_to_protocol_version(s: String) -> i32 {
-    match s.as_ref() {
-        "" => SUPPORTED_PROTOCOLS[0],
-        "1.20.1" => 763,
-        "1.18.2" => 758,
-        "1.18.1" => 757,
-        "1.17.1" => 756,
-        "1.16.5" => 754,
-        "1.16.4" => 754,
-        "1.16.3" => 753,
-        "1.16.2" => 751,
-        "1.16.1" => 736,
-        "1.16" => 735,
-        "1.15.2" => 578,
-        "1.15.1" => 575,
-        "1.14.4" => 498,
-        "1.14.3" => 490,
-        "1.14.2" => 485,
-        "1.14.1" => 480,
-        "1.14" => 477,
-        "19w02a" => 452,
-        "18w50a" => 451,
-        "1.13.2" => 404,
-        "1.12.2" => 340,
-        "1.11.2" => 316,
-        "1.11" => 315,
-        "1.10.2" => 210,
-        "1.9.2" => 109,
-        "1.9" => 107,
-        "15w39c" => 74,
-        "1.8.9" => 47,
-        "1.7.10" => 5,
-        _ => {
-            if let Ok(n) = s.parse::<i32>() {
-                n
-            } else {
-                panic!("Unrecognized protocol name: {}", s)
-            }
+const PROTOCOL_1_20_1: i32 = 763;
+const PROTOCOL_1_18_2: i32 = 758;
+const PROTOCOL_1_18_1: i32 = 757;
+const PROTOCOL_1_17_1: i32 = 756;
+const PROTOCOL_1_16_5: i32 = 754;
+const PROTOCOL_1_16_3: i32 = 753;
+const PROTOCOL_1_16_2: i32 = 751;
+const PROTOCOL_1_16_1: i32 = 736;
+const PROTOCOL_1_16: i32 = 735;
+const PROTOCOL_1_15_2: i32 = 578;
+const PROTOCOL_1_15_1: i32 = 575;
+const PROTOCOL_1_14_4: i32 = 498;
+const PROTOCOL_1_14_3: i32 = 490;
+const PROTOCOL_1_14_2: i32 = 485;
+const PROTOCOL_1_14_1: i32 = 480;
+const PROTOCOL_1_14: i32 = 477;
+const PROTOCOL_19W02A: i32 = 452;
+const PROTOCOL_18W50A: i32 = 451;
+const PROTOCOL_1_13_2: i32 = 404;
+const PROTOCOL_1_12_2: i32 = 340;
+const PROTOCOL_1_11_2: i32 = 316;
+const PROTOCOL_1_11: i32 = 315;
+const PROTOCOL_1_10_2: i32 = 210;
+const PROTOCOL_1_9_2: i32 = 109;
+const PROTOCOL_1_9: i32 = 107;
+const PROTOCOL_15W39C: i32 = 74;
+const PROTOCOL_1_8_9: i32 = 47;
+const PROTOCOL_1_7_10: i32 = 5;
+
+const NO_ALIASES: &[&str] = &[];
+const ALIASES_1_16_5: &[&str] = &["1.16.4"];
+
+pub const SUPPORTED_PROTOCOL_COUNT: usize = 28;
+pub const SUPPORTED_PROTOCOL_IDS: [i32; SUPPORTED_PROTOCOL_COUNT] = [
+    PROTOCOL_1_20_1,
+    PROTOCOL_1_18_2,
+    PROTOCOL_1_18_1,
+    PROTOCOL_1_17_1,
+    PROTOCOL_1_16_5,
+    PROTOCOL_1_16_3,
+    PROTOCOL_1_16_2,
+    PROTOCOL_1_16_1,
+    PROTOCOL_1_16,
+    PROTOCOL_1_15_2,
+    PROTOCOL_1_15_1,
+    PROTOCOL_1_14_4,
+    PROTOCOL_1_14_3,
+    PROTOCOL_1_14_2,
+    PROTOCOL_1_14_1,
+    PROTOCOL_1_14,
+    PROTOCOL_19W02A,
+    PROTOCOL_18W50A,
+    PROTOCOL_1_13_2,
+    PROTOCOL_1_12_2,
+    PROTOCOL_1_11_2,
+    PROTOCOL_1_11,
+    PROTOCOL_1_10_2,
+    PROTOCOL_1_9_2,
+    PROTOCOL_1_9,
+    PROTOCOL_15W39C,
+    PROTOCOL_1_8_9,
+    PROTOCOL_1_7_10,
+];
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum TranslationModule {
+    Version1_20_1,
+    Version1_18_2,
+    Version1_18_1,
+    Version1_17_1,
+    Version1_16_4,
+    Version1_16_1,
+    Version1_15,
+    Version1_14_4,
+    Version1_14_3,
+    Version1_14_2,
+    Version1_14_1,
+    Version1_14,
+    Snapshot19w02a,
+    Snapshot18w50a,
+    Version1_13_2,
+    Version1_12_2,
+    Version1_11_2,
+    Version1_10_2,
+    Version1_9_2,
+    Version1_9,
+    Snapshot15w39c,
+    Version1_8_9,
+    Version1_7_10,
+}
+
+impl TranslationModule {
+    pub const fn module_name(self) -> &'static str {
+        match self {
+            TranslationModule::Version1_20_1 => "v1_20_1",
+            TranslationModule::Version1_18_2 => "v1_18_2",
+            TranslationModule::Version1_18_1 => "v1_18_1",
+            TranslationModule::Version1_17_1 => "v1_17_1",
+            TranslationModule::Version1_16_4 => "v1_16_4",
+            TranslationModule::Version1_16_1 => "v1_16_1",
+            TranslationModule::Version1_15 => "v1_15",
+            TranslationModule::Version1_14_4 => "v1_14_4",
+            TranslationModule::Version1_14_3 => "v1_14_3",
+            TranslationModule::Version1_14_2 => "v1_14_2",
+            TranslationModule::Version1_14_1 => "v1_14_1",
+            TranslationModule::Version1_14 => "v1_14",
+            TranslationModule::Snapshot19w02a => "v19w02a",
+            TranslationModule::Snapshot18w50a => "v18w50a",
+            TranslationModule::Version1_13_2 => "v1_13_2",
+            TranslationModule::Version1_12_2 => "v1_12_2",
+            TranslationModule::Version1_11_2 => "v1_11_2",
+            TranslationModule::Version1_10_2 => "v1_10_2",
+            TranslationModule::Version1_9_2 => "v1_9_2",
+            TranslationModule::Version1_9 => "v1_9",
+            TranslationModule::Snapshot15w39c => "v15w39c",
+            TranslationModule::Version1_8_9 => "v1_8_9",
+            TranslationModule::Version1_7_10 => "v1_7_10",
         }
     }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum FallbackKind {
+    PacketFallback,
+    ReusesTranslationModule,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct FallbackRelationship {
+    pub target_protocol_id: i32,
+    pub kind: FallbackKind,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct ProtocolVersionRow {
+    pub canonical_name: &'static str,
+    pub aliases: &'static [&'static str],
+    pub protocol_id: i32,
+    pub translation_module: TranslationModule,
+    pub fallback: Option<FallbackRelationship>,
+}
+
+impl ProtocolVersionRow {
+    const fn own(
+        canonical_name: &'static str,
+        aliases: &'static [&'static str],
+        protocol_id: i32,
+        translation_module: TranslationModule,
+    ) -> Self {
+        Self {
+            canonical_name,
+            aliases,
+            protocol_id,
+            translation_module,
+            fallback: None,
+        }
+    }
+
+    const fn packet_fallback(
+        canonical_name: &'static str,
+        aliases: &'static [&'static str],
+        protocol_id: i32,
+        translation_module: TranslationModule,
+        target_protocol_id: i32,
+    ) -> Self {
+        Self {
+            canonical_name,
+            aliases,
+            protocol_id,
+            translation_module,
+            fallback: Some(FallbackRelationship {
+                target_protocol_id,
+                kind: FallbackKind::PacketFallback,
+            }),
+        }
+    }
+
+    const fn reuses_module(
+        canonical_name: &'static str,
+        aliases: &'static [&'static str],
+        protocol_id: i32,
+        translation_module: TranslationModule,
+        target_protocol_id: i32,
+    ) -> Self {
+        Self {
+            canonical_name,
+            aliases,
+            protocol_id,
+            translation_module,
+            fallback: Some(FallbackRelationship {
+                target_protocol_id,
+                kind: FallbackKind::ReusesTranslationModule,
+            }),
+        }
+    }
+
+    fn matches_name(&self, name: &str) -> bool {
+        self.canonical_name == name || self.aliases.iter().any(|alias| *alias == name)
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct DispatchVersionRow {
+    pub protocol_id: i32,
+    pub translation_module: TranslationModule,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ProtocolVersionTableError {
+    EmptyCanonicalName {
+        protocol_id: i32,
+    },
+    EmptyAlias {
+        protocol_id: i32,
+    },
+    DuplicateProtocolId {
+        protocol_id: i32,
+    },
+    DuplicateName {
+        name: &'static str,
+    },
+    MissingTranslationModule {
+        protocol_id: i32,
+        translation_module: TranslationModule,
+    },
+    UnknownFallbackTarget {
+        protocol_id: i32,
+        target_protocol_id: i32,
+    },
+    ReuseModuleMismatch {
+        protocol_id: i32,
+        target_protocol_id: i32,
+        translation_module: TranslationModule,
+        target_translation_module: TranslationModule,
+    },
+    SupportedProtocolLengthMismatch {
+        expected: usize,
+        actual: usize,
+    },
+    SupportedProtocolMismatch {
+        index: usize,
+        expected: i32,
+        actual: i32,
+    },
+    DispatchLengthMismatch {
+        expected: usize,
+        actual: usize,
+    },
+    DispatchProtocolMismatch {
+        index: usize,
+        expected: i32,
+        actual: i32,
+    },
+    DispatchModuleMismatch {
+        protocol_id: i32,
+        expected: TranslationModule,
+        actual: TranslationModule,
+    },
+}
+
+pub const PROTOCOL_VERSION_ROWS: [ProtocolVersionRow; SUPPORTED_PROTOCOL_COUNT] = [
+    ProtocolVersionRow::packet_fallback(
+        "1.20.1",
+        NO_ALIASES,
+        PROTOCOL_1_20_1,
+        TranslationModule::Version1_20_1,
+        PROTOCOL_1_18_2,
+    ),
+    ProtocolVersionRow::own(
+        "1.18.2",
+        NO_ALIASES,
+        PROTOCOL_1_18_2,
+        TranslationModule::Version1_18_2,
+    ),
+    ProtocolVersionRow::own(
+        "1.18.1",
+        NO_ALIASES,
+        PROTOCOL_1_18_1,
+        TranslationModule::Version1_18_1,
+    ),
+    ProtocolVersionRow::own(
+        "1.17.1",
+        NO_ALIASES,
+        PROTOCOL_1_17_1,
+        TranslationModule::Version1_17_1,
+    ),
+    ProtocolVersionRow::own(
+        "1.16.5",
+        ALIASES_1_16_5,
+        PROTOCOL_1_16_5,
+        TranslationModule::Version1_16_4,
+    ),
+    ProtocolVersionRow::reuses_module(
+        "1.16.3",
+        NO_ALIASES,
+        PROTOCOL_1_16_3,
+        TranslationModule::Version1_16_4,
+        PROTOCOL_1_16_5,
+    ),
+    ProtocolVersionRow::reuses_module(
+        "1.16.2",
+        NO_ALIASES,
+        PROTOCOL_1_16_2,
+        TranslationModule::Version1_16_4,
+        PROTOCOL_1_16_5,
+    ),
+    ProtocolVersionRow::own(
+        "1.16.1",
+        NO_ALIASES,
+        PROTOCOL_1_16_1,
+        TranslationModule::Version1_16_1,
+    ),
+    ProtocolVersionRow::reuses_module(
+        "1.16",
+        NO_ALIASES,
+        PROTOCOL_1_16,
+        TranslationModule::Version1_16_1,
+        PROTOCOL_1_16_1,
+    ),
+    ProtocolVersionRow::own(
+        "1.15.2",
+        NO_ALIASES,
+        PROTOCOL_1_15_2,
+        TranslationModule::Version1_15,
+    ),
+    ProtocolVersionRow::reuses_module(
+        "1.15.1",
+        NO_ALIASES,
+        PROTOCOL_1_15_1,
+        TranslationModule::Version1_15,
+        PROTOCOL_1_15_2,
+    ),
+    ProtocolVersionRow::own(
+        "1.14.4",
+        NO_ALIASES,
+        PROTOCOL_1_14_4,
+        TranslationModule::Version1_14_4,
+    ),
+    ProtocolVersionRow::own(
+        "1.14.3",
+        NO_ALIASES,
+        PROTOCOL_1_14_3,
+        TranslationModule::Version1_14_3,
+    ),
+    ProtocolVersionRow::own(
+        "1.14.2",
+        NO_ALIASES,
+        PROTOCOL_1_14_2,
+        TranslationModule::Version1_14_2,
+    ),
+    ProtocolVersionRow::own(
+        "1.14.1",
+        NO_ALIASES,
+        PROTOCOL_1_14_1,
+        TranslationModule::Version1_14_1,
+    ),
+    ProtocolVersionRow::own(
+        "1.14",
+        NO_ALIASES,
+        PROTOCOL_1_14,
+        TranslationModule::Version1_14,
+    ),
+    ProtocolVersionRow::own(
+        "19w02a",
+        NO_ALIASES,
+        PROTOCOL_19W02A,
+        TranslationModule::Snapshot19w02a,
+    ),
+    ProtocolVersionRow::own(
+        "18w50a",
+        NO_ALIASES,
+        PROTOCOL_18W50A,
+        TranslationModule::Snapshot18w50a,
+    ),
+    ProtocolVersionRow::own(
+        "1.13.2",
+        NO_ALIASES,
+        PROTOCOL_1_13_2,
+        TranslationModule::Version1_13_2,
+    ),
+    ProtocolVersionRow::own(
+        "1.12.2",
+        NO_ALIASES,
+        PROTOCOL_1_12_2,
+        TranslationModule::Version1_12_2,
+    ),
+    ProtocolVersionRow::own(
+        "1.11.2",
+        NO_ALIASES,
+        PROTOCOL_1_11_2,
+        TranslationModule::Version1_11_2,
+    ),
+    ProtocolVersionRow::reuses_module(
+        "1.11",
+        NO_ALIASES,
+        PROTOCOL_1_11,
+        TranslationModule::Version1_11_2,
+        PROTOCOL_1_11_2,
+    ),
+    ProtocolVersionRow::own(
+        "1.10.2",
+        NO_ALIASES,
+        PROTOCOL_1_10_2,
+        TranslationModule::Version1_10_2,
+    ),
+    ProtocolVersionRow::own(
+        "1.9.2",
+        NO_ALIASES,
+        PROTOCOL_1_9_2,
+        TranslationModule::Version1_9_2,
+    ),
+    ProtocolVersionRow::own(
+        "1.9",
+        NO_ALIASES,
+        PROTOCOL_1_9,
+        TranslationModule::Version1_9,
+    ),
+    ProtocolVersionRow::own(
+        "15w39c",
+        NO_ALIASES,
+        PROTOCOL_15W39C,
+        TranslationModule::Snapshot15w39c,
+    ),
+    ProtocolVersionRow::own(
+        "1.8.9",
+        NO_ALIASES,
+        PROTOCOL_1_8_9,
+        TranslationModule::Version1_8_9,
+    ),
+    ProtocolVersionRow::own(
+        "1.7.10",
+        NO_ALIASES,
+        PROTOCOL_1_7_10,
+        TranslationModule::Version1_7_10,
+    ),
+];
+
+const DISPATCH_VERSION_ROWS: [DispatchVersionRow; SUPPORTED_PROTOCOL_COUNT] = [
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_20_1,
+        translation_module: TranslationModule::Version1_20_1,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_18_2,
+        translation_module: TranslationModule::Version1_18_2,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_18_1,
+        translation_module: TranslationModule::Version1_18_1,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_17_1,
+        translation_module: TranslationModule::Version1_17_1,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_16_5,
+        translation_module: TranslationModule::Version1_16_4,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_16_3,
+        translation_module: TranslationModule::Version1_16_4,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_16_2,
+        translation_module: TranslationModule::Version1_16_4,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_16_1,
+        translation_module: TranslationModule::Version1_16_1,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_16,
+        translation_module: TranslationModule::Version1_16_1,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_15_2,
+        translation_module: TranslationModule::Version1_15,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_15_1,
+        translation_module: TranslationModule::Version1_15,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_14_4,
+        translation_module: TranslationModule::Version1_14_4,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_14_3,
+        translation_module: TranslationModule::Version1_14_3,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_14_2,
+        translation_module: TranslationModule::Version1_14_2,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_14_1,
+        translation_module: TranslationModule::Version1_14_1,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_14,
+        translation_module: TranslationModule::Version1_14,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_19W02A,
+        translation_module: TranslationModule::Snapshot19w02a,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_18W50A,
+        translation_module: TranslationModule::Snapshot18w50a,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_13_2,
+        translation_module: TranslationModule::Version1_13_2,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_12_2,
+        translation_module: TranslationModule::Version1_12_2,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_11_2,
+        translation_module: TranslationModule::Version1_11_2,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_11,
+        translation_module: TranslationModule::Version1_11_2,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_10_2,
+        translation_module: TranslationModule::Version1_10_2,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_9_2,
+        translation_module: TranslationModule::Version1_9_2,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_9,
+        translation_module: TranslationModule::Version1_9,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_15W39C,
+        translation_module: TranslationModule::Snapshot15w39c,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_8_9,
+        translation_module: TranslationModule::Version1_8_9,
+    },
+    DispatchVersionRow {
+        protocol_id: PROTOCOL_1_7_10,
+        translation_module: TranslationModule::Version1_7_10,
+    },
+];
+
+const AVAILABLE_TRANSLATION_MODULES: &[TranslationModule] = &[
+    TranslationModule::Version1_20_1,
+    TranslationModule::Version1_18_2,
+    TranslationModule::Version1_18_1,
+    TranslationModule::Version1_17_1,
+    TranslationModule::Version1_16_4,
+    TranslationModule::Version1_16_1,
+    TranslationModule::Version1_15,
+    TranslationModule::Version1_14_4,
+    TranslationModule::Version1_14_3,
+    TranslationModule::Version1_14_2,
+    TranslationModule::Version1_14_1,
+    TranslationModule::Version1_14,
+    TranslationModule::Snapshot19w02a,
+    TranslationModule::Snapshot18w50a,
+    TranslationModule::Version1_13_2,
+    TranslationModule::Version1_12_2,
+    TranslationModule::Version1_11_2,
+    TranslationModule::Version1_10_2,
+    TranslationModule::Version1_9_2,
+    TranslationModule::Version1_9,
+    TranslationModule::Snapshot15w39c,
+    TranslationModule::Version1_8_9,
+    TranslationModule::Version1_7_10,
+];
+
+pub fn protocol_name_to_protocol_version(s: String) -> i32 {
+    if s.is_empty() {
+        return SUPPORTED_PROTOCOL_IDS[0];
+    }
+
+    if let Some(row) = protocol_row_for_name(s.as_ref()) {
+        return row.protocol_id;
+    }
+
+    if let Ok(n) = s.parse::<i32>() {
+        return n;
+    }
+
+    panic!("Unrecognized protocol name: {}", s)
 }
 
 pub fn translate_internal_packet_id_for_version(
@@ -76,35 +628,330 @@ pub fn translate_internal_packet_id_for_version(
     id: i32,
     to_internal: bool,
 ) -> i32 {
-    match version {
-        763 => v1_20_1::translate_internal_packet_id(state, dir, id, to_internal),
-        758 => v1_18_2::translate_internal_packet_id(state, dir, id, to_internal),
-        757 => v1_18_1::translate_internal_packet_id(state, dir, id, to_internal),
-        756 => v1_17_1::translate_internal_packet_id(state, dir, id, to_internal),
-        754 | 753 | 751 => v1_16_4::translate_internal_packet_id(state, dir, id, to_internal),
-        736 => v1_16_1::translate_internal_packet_id(state, dir, id, to_internal),
-        735 => v1_16_1::translate_internal_packet_id(state, dir, id, to_internal),
-        578 => v1_15::translate_internal_packet_id(state, dir, id, to_internal),
-        575 => v1_15::translate_internal_packet_id(state, dir, id, to_internal),
-        498 => v1_14_4::translate_internal_packet_id(state, dir, id, to_internal),
-        490 => v1_14_3::translate_internal_packet_id(state, dir, id, to_internal),
-        485 => v1_14_2::translate_internal_packet_id(state, dir, id, to_internal),
-        480 => v1_14_1::translate_internal_packet_id(state, dir, id, to_internal),
-        477 => v1_14::translate_internal_packet_id(state, dir, id, to_internal),
-        452 => v19w02a::translate_internal_packet_id(state, dir, id, to_internal),
-        451 => v18w50a::translate_internal_packet_id(state, dir, id, to_internal),
-        404 => v1_13_2::translate_internal_packet_id(state, dir, id, to_internal),
-        340 => v1_12_2::translate_internal_packet_id(state, dir, id, to_internal),
-        316 => v1_11_2::translate_internal_packet_id(state, dir, id, to_internal),
-        315 => v1_11_2::translate_internal_packet_id(state, dir, id, to_internal),
-        210 => v1_10_2::translate_internal_packet_id(state, dir, id, to_internal),
-        109 => v1_9_2::translate_internal_packet_id(state, dir, id, to_internal),
-        107 => v1_9::translate_internal_packet_id(state, dir, id, to_internal),
-        74 => v15w39c::translate_internal_packet_id(state, dir, id, to_internal),
-        47 => v1_8_9::translate_internal_packet_id(state, dir, id, to_internal),
-        5 => v1_7_10::translate_internal_packet_id(state, dir, id, to_internal),
-        _ => panic!("unsupported protocol version: {}", version),
+    if let Some(row) = dispatch_row_for_protocol_id(version) {
+        return translate_with_module(row.translation_module, state, dir, id, to_internal);
     }
+
+    panic!("unsupported protocol version: {}", version)
+}
+
+pub fn validate_protocol_version_tables() -> Result<(), ProtocolVersionTableError> {
+    validate_protocol_version_manifest(
+        &PROTOCOL_VERSION_ROWS,
+        &SUPPORTED_PROTOCOL_IDS,
+        &DISPATCH_VERSION_ROWS,
+        AVAILABLE_TRANSLATION_MODULES,
+    )
+}
+
+fn protocol_row_for_name(name: &str) -> Option<&'static ProtocolVersionRow> {
+    PROTOCOL_VERSION_ROWS
+        .iter()
+        .find(|row| row.matches_name(name))
+}
+
+fn protocol_row_for_protocol_id<'a>(
+    rows: &'a [ProtocolVersionRow],
+    protocol_id: i32,
+) -> Option<&'a ProtocolVersionRow> {
+    rows.iter().find(|row| row.protocol_id == protocol_id)
+}
+
+fn dispatch_row_for_protocol_id(protocol_id: i32) -> Option<&'static DispatchVersionRow> {
+    DISPATCH_VERSION_ROWS
+        .iter()
+        .find(|row| row.protocol_id == protocol_id)
+}
+
+fn translate_with_module(
+    module: TranslationModule,
+    state: State,
+    dir: Direction,
+    id: i32,
+    to_internal: bool,
+) -> i32 {
+    match module {
+        TranslationModule::Version1_20_1 => {
+            v1_20_1::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_18_2 => {
+            v1_18_2::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_18_1 => {
+            v1_18_1::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_17_1 => {
+            v1_17_1::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_16_4 => {
+            v1_16_4::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_16_1 => {
+            v1_16_1::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_15 => {
+            v1_15::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_14_4 => {
+            v1_14_4::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_14_3 => {
+            v1_14_3::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_14_2 => {
+            v1_14_2::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_14_1 => {
+            v1_14_1::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_14 => {
+            v1_14::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Snapshot19w02a => {
+            v19w02a::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Snapshot18w50a => {
+            v18w50a::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_13_2 => {
+            v1_13_2::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_12_2 => {
+            v1_12_2::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_11_2 => {
+            v1_11_2::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_10_2 => {
+            v1_10_2::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_9_2 => {
+            v1_9_2::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_9 => {
+            v1_9::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Snapshot15w39c => {
+            v15w39c::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_8_9 => {
+            v1_8_9::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+        TranslationModule::Version1_7_10 => {
+            v1_7_10::translate_internal_packet_id(state, dir, id, to_internal)
+        }
+    }
+}
+
+fn validate_protocol_version_manifest(
+    rows: &[ProtocolVersionRow],
+    supported_protocol_ids: &[i32],
+    dispatch_rows: &[DispatchVersionRow],
+    available_modules: &[TranslationModule],
+) -> Result<(), ProtocolVersionTableError> {
+    validate_supported_protocol_ids(rows, supported_protocol_ids)?;
+    validate_unique_protocol_ids(rows)?;
+    validate_names(rows)?;
+    validate_available_modules(rows, available_modules)?;
+    validate_fallbacks(rows)?;
+    validate_dispatch_rows(rows, dispatch_rows)?;
+
+    Ok(())
+}
+
+fn validate_supported_protocol_ids(
+    rows: &[ProtocolVersionRow],
+    supported_protocol_ids: &[i32],
+) -> Result<(), ProtocolVersionTableError> {
+    if rows.len() != supported_protocol_ids.len() {
+        return Err(ProtocolVersionTableError::SupportedProtocolLengthMismatch {
+            expected: rows.len(),
+            actual: supported_protocol_ids.len(),
+        });
+    }
+
+    for (index, row) in rows.iter().enumerate() {
+        let actual = supported_protocol_ids[index];
+        if row.protocol_id != actual {
+            return Err(ProtocolVersionTableError::SupportedProtocolMismatch {
+                index,
+                expected: row.protocol_id,
+                actual,
+            });
+        }
+    }
+
+    Ok(())
+}
+
+fn validate_unique_protocol_ids(
+    rows: &[ProtocolVersionRow],
+) -> Result<(), ProtocolVersionTableError> {
+    for (left_index, left) in rows.iter().enumerate() {
+        for right in rows.iter().skip(left_index + 1) {
+            if left.protocol_id == right.protocol_id {
+                return Err(ProtocolVersionTableError::DuplicateProtocolId {
+                    protocol_id: left.protocol_id,
+                });
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn validate_names(rows: &[ProtocolVersionRow]) -> Result<(), ProtocolVersionTableError> {
+    for (left_index, left) in rows.iter().enumerate() {
+        validate_row_names(left)?;
+        validate_names_against_following_rows(left_index, left, rows)?;
+    }
+
+    Ok(())
+}
+
+fn validate_row_names(row: &ProtocolVersionRow) -> Result<(), ProtocolVersionTableError> {
+    if row.canonical_name.is_empty() {
+        return Err(ProtocolVersionTableError::EmptyCanonicalName {
+            protocol_id: row.protocol_id,
+        });
+    }
+
+    for (left_index, left_alias) in row.aliases.iter().enumerate() {
+        if left_alias.is_empty() {
+            return Err(ProtocolVersionTableError::EmptyAlias {
+                protocol_id: row.protocol_id,
+            });
+        }
+
+        if *left_alias == row.canonical_name {
+            return Err(ProtocolVersionTableError::DuplicateName { name: left_alias });
+        }
+
+        for right_alias in row.aliases.iter().skip(left_index + 1) {
+            if left_alias == right_alias {
+                return Err(ProtocolVersionTableError::DuplicateName { name: left_alias });
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn validate_names_against_following_rows(
+    left_index: usize,
+    left: &ProtocolVersionRow,
+    rows: &[ProtocolVersionRow],
+) -> Result<(), ProtocolVersionTableError> {
+    for right in rows.iter().skip(left_index + 1) {
+        if left.canonical_name == right.canonical_name {
+            return Err(ProtocolVersionTableError::DuplicateName {
+                name: left.canonical_name,
+            });
+        }
+
+        for right_alias in right.aliases {
+            if left.canonical_name == *right_alias {
+                return Err(ProtocolVersionTableError::DuplicateName {
+                    name: left.canonical_name,
+                });
+            }
+        }
+
+        for left_alias in left.aliases {
+            if *left_alias == right.canonical_name {
+                return Err(ProtocolVersionTableError::DuplicateName { name: left_alias });
+            }
+
+            for right_alias in right.aliases {
+                if left_alias == right_alias {
+                    return Err(ProtocolVersionTableError::DuplicateName { name: left_alias });
+                }
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn validate_available_modules(
+    rows: &[ProtocolVersionRow],
+    available_modules: &[TranslationModule],
+) -> Result<(), ProtocolVersionTableError> {
+    for row in rows {
+        if !available_modules
+            .iter()
+            .any(|module| *module == row.translation_module)
+        {
+            return Err(ProtocolVersionTableError::MissingTranslationModule {
+                protocol_id: row.protocol_id,
+                translation_module: row.translation_module,
+            });
+        }
+    }
+
+    Ok(())
+}
+
+fn validate_fallbacks(rows: &[ProtocolVersionRow]) -> Result<(), ProtocolVersionTableError> {
+    for row in rows {
+        if let Some(fallback) = row.fallback {
+            let target = match protocol_row_for_protocol_id(rows, fallback.target_protocol_id) {
+                Some(target) => target,
+                None => {
+                    return Err(ProtocolVersionTableError::UnknownFallbackTarget {
+                        protocol_id: row.protocol_id,
+                        target_protocol_id: fallback.target_protocol_id,
+                    });
+                }
+            };
+
+            if fallback.kind == FallbackKind::ReusesTranslationModule
+                && row.translation_module != target.translation_module
+            {
+                return Err(ProtocolVersionTableError::ReuseModuleMismatch {
+                    protocol_id: row.protocol_id,
+                    target_protocol_id: fallback.target_protocol_id,
+                    translation_module: row.translation_module,
+                    target_translation_module: target.translation_module,
+                });
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn validate_dispatch_rows(
+    rows: &[ProtocolVersionRow],
+    dispatch_rows: &[DispatchVersionRow],
+) -> Result<(), ProtocolVersionTableError> {
+    if rows.len() != dispatch_rows.len() {
+        return Err(ProtocolVersionTableError::DispatchLengthMismatch {
+            expected: rows.len(),
+            actual: dispatch_rows.len(),
+        });
+    }
+
+    for (index, row) in rows.iter().enumerate() {
+        let dispatch_row = dispatch_rows[index];
+        if row.protocol_id != dispatch_row.protocol_id {
+            return Err(ProtocolVersionTableError::DispatchProtocolMismatch {
+                index,
+                expected: row.protocol_id,
+                actual: dispatch_row.protocol_id,
+            });
+        }
+
+        if row.translation_module != dispatch_row.translation_module {
+            return Err(ProtocolVersionTableError::DispatchModuleMismatch {
+                protocol_id: row.protocol_id,
+                expected: row.translation_module,
+                actual: dispatch_row.translation_module,
+            });
+        }
+    }
+
+    Ok(())
 }
 
 #[cfg(test)]
@@ -124,6 +971,218 @@ mod tests {
             .expect("spawn packet parse test")
             .join()
             .expect("packet parse test passes");
+    }
+
+    const EMPTY_PROTOCOL_NAME: &str = "";
+    const NUMERIC_PROTOCOL_INPUT_1_20_1: &str = "763";
+    const UNKNOWN_PROTOCOL_NAME: &str = "definitely-not-a-protocol";
+    const UNSUPPORTED_PROTOCOL_ID: i32 = 999_999;
+    const PROTOCOL_1_18_2_INDEX: usize = 1;
+    const PROTOCOL_1_16_3_INDEX: usize = 5;
+    const PROTOCOL_1_16_INDEX: usize = 8;
+    const HANDSHAKE_WIRE_ID: i32 = 0x00;
+
+    #[test]
+    fn current_protocol_version_tables_validate_against_metadata() {
+        assert_eq!(validate_protocol_version_tables(), Ok(()));
+        assert_eq!(crate::protocol::SUPPORTED_PROTOCOLS, SUPPORTED_PROTOCOL_IDS);
+    }
+
+    #[test]
+    fn metadata_resolves_supported_names_aliases_and_numeric_inputs() {
+        assert_eq!(
+            protocol_name_to_protocol_version(EMPTY_PROTOCOL_NAME.to_string()),
+            PROTOCOL_1_20_1,
+        );
+        assert_eq!(
+            protocol_name_to_protocol_version(NUMERIC_PROTOCOL_INPUT_1_20_1.to_string()),
+            PROTOCOL_1_20_1,
+        );
+
+        for row in PROTOCOL_VERSION_ROWS {
+            assert_eq!(
+                protocol_name_to_protocol_version(row.canonical_name.to_string()),
+                row.protocol_id,
+                "canonical name {} should resolve to protocol {}",
+                row.canonical_name,
+                row.protocol_id,
+            );
+
+            for alias in row.aliases {
+                assert_eq!(
+                    protocol_name_to_protocol_version(alias.to_string()),
+                    row.protocol_id,
+                    "alias {alias} should resolve to protocol {}",
+                    row.protocol_id,
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn metadata_records_explicit_fallback_and_reuse_relationships() {
+        let row_1_20_1 = protocol_row_for_protocol_id(&PROTOCOL_VERSION_ROWS, PROTOCOL_1_20_1)
+            .expect("1.20.1 metadata is present");
+        assert_eq!(
+            row_1_20_1.fallback,
+            Some(FallbackRelationship {
+                target_protocol_id: PROTOCOL_1_18_2,
+                kind: FallbackKind::PacketFallback,
+            }),
+        );
+
+        let row_1_16_3 = protocol_row_for_protocol_id(&PROTOCOL_VERSION_ROWS, PROTOCOL_1_16_3)
+            .expect("1.16.3 metadata is present");
+        assert_eq!(
+            row_1_16_3.fallback,
+            Some(FallbackRelationship {
+                target_protocol_id: PROTOCOL_1_16_5,
+                kind: FallbackKind::ReusesTranslationModule,
+            }),
+        );
+        assert_eq!(row_1_16_3.translation_module.module_name(), "v1_16_4");
+    }
+
+    #[test]
+    fn dispatch_surface_matches_metadata_modules() {
+        for row in PROTOCOL_VERSION_ROWS {
+            let dispatch_row = dispatch_row_for_protocol_id(row.protocol_id)
+                .expect("dispatch row exists for metadata row");
+            assert_eq!(dispatch_row.translation_module, row.translation_module);
+        }
+
+        assert_eq!(
+            translate_internal_packet_id_for_version(
+                PROTOCOL_1_16_3,
+                State::Handshaking,
+                Direction::Serverbound,
+                HANDSHAKE_WIRE_ID,
+                true,
+            ),
+            translate_internal_packet_id_for_version(
+                PROTOCOL_1_16_5,
+                State::Handshaking,
+                Direction::Serverbound,
+                HANDSHAKE_WIRE_ID,
+                true,
+            ),
+        );
+    }
+
+    #[test]
+    fn duplicate_alias_is_rejected() {
+        const DUPLICATE_ALIAS: &[&str] = &["1.18.2"];
+        let mut rows = PROTOCOL_VERSION_ROWS;
+        rows[PROTOCOL_1_16_3_INDEX].aliases = DUPLICATE_ALIAS;
+
+        assert_eq!(
+            validate_protocol_version_manifest(
+                &rows,
+                &SUPPORTED_PROTOCOL_IDS,
+                &DISPATCH_VERSION_ROWS,
+                AVAILABLE_TRANSLATION_MODULES,
+            ),
+            Err(ProtocolVersionTableError::DuplicateName { name: "1.18.2" }),
+        );
+    }
+
+    #[test]
+    fn missing_translation_module_is_rejected() {
+        const MODULES_WITHOUT_1_20_1: &[TranslationModule] = &[TranslationModule::Version1_18_2];
+
+        assert_eq!(
+            validate_protocol_version_manifest(
+                &PROTOCOL_VERSION_ROWS,
+                &SUPPORTED_PROTOCOL_IDS,
+                &DISPATCH_VERSION_ROWS,
+                MODULES_WITHOUT_1_20_1,
+            ),
+            Err(ProtocolVersionTableError::MissingTranslationModule {
+                protocol_id: PROTOCOL_1_20_1,
+                translation_module: TranslationModule::Version1_20_1,
+            }),
+        );
+    }
+
+    #[test]
+    fn unknown_fallback_target_is_rejected() {
+        const UNKNOWN_FALLBACK_PROTOCOL_ID: i32 = 1_000_001;
+        let mut rows = PROTOCOL_VERSION_ROWS;
+        rows[PROTOCOL_1_16_INDEX].fallback = Some(FallbackRelationship {
+            target_protocol_id: UNKNOWN_FALLBACK_PROTOCOL_ID,
+            kind: FallbackKind::ReusesTranslationModule,
+        });
+
+        assert_eq!(
+            validate_protocol_version_manifest(
+                &rows,
+                &SUPPORTED_PROTOCOL_IDS,
+                &DISPATCH_VERSION_ROWS,
+                AVAILABLE_TRANSLATION_MODULES,
+            ),
+            Err(ProtocolVersionTableError::UnknownFallbackTarget {
+                protocol_id: PROTOCOL_1_16,
+                target_protocol_id: UNKNOWN_FALLBACK_PROTOCOL_ID,
+            }),
+        );
+    }
+
+    #[test]
+    fn protocol_number_mismatch_is_rejected() {
+        let mut supported_protocol_ids = SUPPORTED_PROTOCOL_IDS;
+        supported_protocol_ids[PROTOCOL_1_18_2_INDEX] = PROTOCOL_1_18_1;
+
+        assert_eq!(
+            validate_protocol_version_manifest(
+                &PROTOCOL_VERSION_ROWS,
+                &supported_protocol_ids,
+                &DISPATCH_VERSION_ROWS,
+                AVAILABLE_TRANSLATION_MODULES,
+            ),
+            Err(ProtocolVersionTableError::SupportedProtocolMismatch {
+                index: PROTOCOL_1_18_2_INDEX,
+                expected: PROTOCOL_1_18_2,
+                actual: PROTOCOL_1_18_1,
+            }),
+        );
+    }
+
+    #[test]
+    fn stale_dispatch_surface_is_rejected() {
+        let mut dispatch_rows = DISPATCH_VERSION_ROWS;
+        dispatch_rows[PROTOCOL_1_18_2_INDEX].translation_module = TranslationModule::Version1_18_1;
+
+        assert_eq!(
+            validate_protocol_version_manifest(
+                &PROTOCOL_VERSION_ROWS,
+                &SUPPORTED_PROTOCOL_IDS,
+                &dispatch_rows,
+                AVAILABLE_TRANSLATION_MODULES,
+            ),
+            Err(ProtocolVersionTableError::DispatchModuleMismatch {
+                protocol_id: PROTOCOL_1_18_2,
+                expected: TranslationModule::Version1_18_2,
+                actual: TranslationModule::Version1_18_1,
+            }),
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "Unrecognized protocol name: definitely-not-a-protocol")]
+    fn unsupported_protocol_name_still_panics() {
+        protocol_name_to_protocol_version(UNKNOWN_PROTOCOL_NAME.to_string());
+    }
+
+    #[test]
+    #[should_panic(expected = "unsupported protocol version: 999999")]
+    fn unsupported_translation_version_still_panics() {
+        translate_internal_packet_id_for_version(
+            UNSUPPORTED_PROTOCOL_ID,
+            State::Handshaking,
+            Direction::Serverbound,
+            HANDSHAKE_WIRE_ID,
+            true,
+        );
     }
 
     #[test]

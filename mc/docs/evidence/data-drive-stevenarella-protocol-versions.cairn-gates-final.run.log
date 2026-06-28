@@ -1,0 +1,68 @@
+command=nix run .#cairn -- gate proposal data-drive-stevenarella-protocol-versions --root . && nix run .#cairn -- gate design data-drive-stevenarella-protocol-versions --root . && nix run .#cairn -- gate tasks data-drive-stevenarella-protocol-versions --root .
+cwd=/home/brittonr/git/mc
+started_at=2026-06-28T19:27:58Z
+{
+  "change": "data-drive-stevenarella-protocol-versions",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6039310462774e4880ac21077d62c7341ae568c5f713782953576460fe08ec25",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "a45720e478dbd60d7f445d4f9ce554bdee3c80260f83b419891b6833204f6053",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "data-drive-stevenarella-protocol-versions",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4b4878dc414f830d668d38643f6227f572a781c90952a3cbde6f7cc98e3fd490",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "3d49c1c29476a686bef50895c7fec5ab626301c5111c81a1ea63b93c8f3ae762",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+{
+  "change": "data-drive-stevenarella-protocol-versions",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "93b0b3dd82419386e6673a7f56c7859cb0554ba0d53ce0b6d102cfc5ed99b2d2",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "f9c4f32ad637d0fae93c5eb84563f941ac89c52a16413571fcfb352e454dd9f8",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+finished_at=2026-06-28T19:27:59Z
+exit_status=0

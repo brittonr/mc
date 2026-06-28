@@ -1,0 +1,17 @@
+command=rg stevenarella_protocol_versions cairn/specs/mc-compatibility/spec.md
+cwd=/home/brittonr/git/mc
+started_at=2026-06-28T19:30:17Z
+r[mc_compatibility.stevenarella_protocol_versions.version_manifest] Stevenarella protocol version support SHOULD be represented by typed metadata that records canonical names, aliases, numeric protocol ids, translation module owners, and explicit reuse or fallback relationships.
+r[mc_compatibility.stevenarella_protocol_versions.version_manifest.row]
+r[mc_compatibility.stevenarella_protocol_versions.generated_dispatch] The protocol-version dispatch functions SHOULD be generated from or validated against the typed protocol-version metadata while preserving existing public APIs.
+r[mc_compatibility.stevenarella_protocol_versions.generated_dispatch.fresh]
+r[mc_compatibility.stevenarella_protocol_versions.version_parity] Data-driving protocol versions MUST preserve current protocol-name parsing, numeric protocol input behavior, translation dispatch behavior, unsupported-input behavior, packet-boundary behavior, and evidence non-claims.
+r[mc_compatibility.stevenarella_protocol_versions.version_parity.stable]
+r[mc_compatibility.stevenarella_protocol_versions.positive_tests] The change MUST include positive tests for supported names, numeric protocol inputs, alias rows, translation module dispatch, and explicit fallback or reuse relationships.
+r[mc_compatibility.stevenarella_protocol_versions.positive_tests.coverage]
+r[mc_compatibility.stevenarella_protocol_versions.negative_tests] The change MUST include negative tests for duplicate aliases, missing translation modules, unknown fallback targets, protocol-number mismatches, unsupported names, and stale generated surfaces.
+r[mc_compatibility.stevenarella_protocol_versions.negative_tests.fail_closed]
+r[mc_compatibility.stevenarella_protocol_versions.validation] The change MUST record focused Stevenarella protocol tests, generated-surface freshness checks, affected mc-compat dry-runs, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+r[mc_compatibility.stevenarella_protocol_versions.validation.logs]
+finished_at=2026-06-28T19:30:17Z
+exit_status=0
