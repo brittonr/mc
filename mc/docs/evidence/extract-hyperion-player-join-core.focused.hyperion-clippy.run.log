@@ -1,0 +1,7 @@
+command=nix develop --no-update-lock-file . -c cargo clippy -p hyperion --lib --all-features -- -D warnings
+cwd=/home/brittonr/git/mc/hyperion
+started_at=2026-06-28T22:12:30Z
+    Checking hyperion v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.92s
+finished_at=2026-06-28T22:12:38Z
+exit_status=0

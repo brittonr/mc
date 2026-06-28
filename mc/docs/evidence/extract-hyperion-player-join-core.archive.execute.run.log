@@ -1,0 +1,84 @@
+command=CAIRN_ARCHIVE_DATE=2026-06-28 nix run .#cairn -- archive extract-hyperion-player-join-core --root . --execute
+cwd=/home/brittonr/git/mc
+started_at=2026-06-28T22:19:46Z
+{
+  "actions": [
+    {
+      "description": "move active change to archive: extract-hyperion-player-join-core",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-28-extract-hyperion-player-join-core"
+    }
+  ],
+  "blocked": false,
+  "change": "extract-hyperion-player-join-core",
+  "dry_run": false,
+  "input_hash": "ce673888251037883c863bd0f9fb702b2d57bb1935a6f120b96e74dce01002af",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "2bdd5d31032c563edbe5cba9a181a863208883e1fbd4c02dbb8e605cb4176038",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-28-extract-hyperion-player-join-core/design.md"
+        },
+        {
+          "content_hash": "f40dcebfc1adbe803fb567faedd0ab0ac67b649b4f5e4e5660638935b97f9428",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-28-extract-hyperion-player-join-core/proposal.md"
+        },
+        {
+          "content_hash": "2971b58c948dce61adc2ac12bc5971f1afa5443bc3233c1da38aab5a17c68b64",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-28-extract-hyperion-player-join-core/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "d4b27d4d91ade7fdf7fe560f378f3511ef823ab1be438588d163ba9b7bf7dd4f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-28-extract-hyperion-player-join-core/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/extract-hyperion-player-join-core"
+        }
+      ],
+      "manifest_hash": "b840575aca96fc6daecf056824e38745af3722b9be1978cd9b0aea223dd5aa01"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "2bdd5d31032c563edbe5cba9a181a863208883e1fbd4c02dbb8e605cb4176038",
+          "exists": true,
+          "path": "./cairn/changes/extract-hyperion-player-join-core/design.md"
+        },
+        {
+          "content_hash": "f40dcebfc1adbe803fb567faedd0ab0ac67b649b4f5e4e5660638935b97f9428",
+          "exists": true,
+          "path": "./cairn/changes/extract-hyperion-player-join-core/proposal.md"
+        },
+        {
+          "content_hash": "2971b58c948dce61adc2ac12bc5971f1afa5443bc3233c1da38aab5a17c68b64",
+          "exists": true,
+          "path": "./cairn/changes/extract-hyperion-player-join-core/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "d4b27d4d91ade7fdf7fe560f378f3511ef823ab1be438588d163ba9b7bf7dd4f",
+          "exists": true,
+          "path": "./cairn/changes/extract-hyperion-player-join-core/tasks.md"
+        }
+      ],
+      "manifest_hash": "a46748193f2e7c8470c43fd19ad9e8acc5630b75e0691eb25ad5d2374d08a0fd"
+    },
+    "kind": "archive",
+    "manifest_hash": "288dac54f7f01ad3436dca9fad8dfb27340c2b1372a4663bae9546674a2e6e9e"
+  },
+  "plan_hash": "ca1c33937e3197188f4fbbfe12a099eb36bc008f32f4b5616ccca19cc3129125",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "a8cc60debc31e614d9d38326ccae21fc69e069b84be1c72f2f9e6b8e3014bf19"
+}
+finished_at=2026-06-28T22:19:46Z
+exit_status=0

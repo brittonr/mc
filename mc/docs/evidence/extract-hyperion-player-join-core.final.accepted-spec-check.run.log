@@ -1,0 +1,17 @@
+command=rg --color=never --line-number hyperion_player_join cairn/specs/valence-hyperion-integration/spec.md
+cwd=/home/brittonr/git/mc
+started_at=2026-06-28T22:19:13Z
+148:r[valence_hyperion_integration.hyperion_player_join.scope] Hyperion player-join modularity work MUST be scoped as Hyperion-owned nested-repo work unless a separate integration Cairn classifies specific code or concepts for Valence adoption, porting, or reference use.
+152:r[valence_hyperion_integration.hyperion_player_join.scope.owned]
+160:r[valence_hyperion_integration.hyperion_player_join.core] Hyperion player-join egress SHOULD expose pure cores for initial packet selection, packet ordering, state summaries, chunk/view facts, and diagnostics.
+164:r[valence_hyperion_integration.hyperion_player_join.core.testable]
+171:r[valence_hyperion_integration.hyperion_player_join.shell_boundary] Hyperion player-join extraction MUST keep ECS reads, packet sends, network/proxy state, tracing, scheduling, and runtime side effects outside pure join cores.
+175:r[valence_hyperion_integration.hyperion_player_join.shell_boundary.effects]
+182:r[valence_hyperion_integration.hyperion_player_join.parity] Hyperion player-join extraction MUST preserve Hyperion join behavior, packet order, public APIs, performance-sensitive boundaries, and non-claims.
+186:r[valence_hyperion_integration.hyperion_player_join.parity.stable]
+193:r[valence_hyperion_integration.hyperion_player_join.tests] The change MUST include positive and negative tests for valid join plans, missing player state, invalid chunk/view facts, packet-order regressions, and rejected join inputs.
+197:r[valence_hyperion_integration.hyperion_player_join.tests.coverage]
+204:r[valence_hyperion_integration.hyperion_player_join.validation] The change MUST record focused Hyperion tests run from the Hyperion root, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+208:r[valence_hyperion_integration.hyperion_player_join.validation.logs]
+finished_at=2026-06-28T22:19:13Z
+exit_status=0

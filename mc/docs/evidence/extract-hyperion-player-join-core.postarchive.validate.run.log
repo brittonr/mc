@@ -1,0 +1,15 @@
+command=nix run .#cairn -- validate --root .
+cwd=/home/brittonr/git/mc
+started_at=2026-06-28T22:20:15Z
+{
+  "change_issues": [],
+  "changes": 33,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 38,
+  "valid": true
+}
+finished_at=2026-06-28T22:20:15Z
+exit_status=0

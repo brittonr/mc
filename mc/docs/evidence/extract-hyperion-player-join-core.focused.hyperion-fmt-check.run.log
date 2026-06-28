@@ -1,0 +1,5 @@
+command=nix develop --no-update-lock-file . -c cargo fmt --check
+cwd=/home/brittonr/git/mc/hyperion
+started_at=2026-06-28T22:12:48Z
+finished_at=2026-06-28T22:12:49Z
+exit_status=0

@@ -1,0 +1,22 @@
+command=nix develop --no-update-lock-file . -c cargo test -p hyperion --lib player_join -- --nocapture
+cwd=/home/brittonr/git/mc/hyperion
+started_at=2026-06-28T22:13:02Z
+   Compiling hyperion v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion)
+   Compiling hyperion-genmap v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-genmap)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 32.07s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/hyperion-79ef2d42d76861e2)
+
+running 8 tests
+test egress::player_join::core::tests::empty_peer_name_is_rejected ... ok
+test egress::player_join::core::tests::empty_target_name_is_rejected ... ok
+test egress::player_join::core::tests::missing_player_state_fails_closed ... ok
+test egress::player_join::core::tests::invalid_chunk_position_fails_closed ... ok
+test egress::player_join::core::tests::invalid_view_distance_fails_closed ... ok
+test egress::player_join::core::tests::packet_order_regressions_are_visible ... ok
+test egress::player_join::core::tests::valid_join_plan_contains_expected_packet_order_and_facts ... ok
+test egress::player_join::core::tests::valid_join_plan_summarizes_existing_and_target_players ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 25 filtered out; finished in 0.00s
+
+finished_at=2026-06-28T22:13:34Z
+exit_status=0
