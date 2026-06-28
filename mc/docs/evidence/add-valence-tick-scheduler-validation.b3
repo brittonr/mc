@@ -1,7 +1,7 @@
 bc1467d316f53614081fd2604b17117b6766d89f50e0819e1ecc26b72ba3f6bc  servers/valence/crates/valence_server/src/lib.rs
 bd37f4ddd9accdae51d82ae4e16f00585c72494393dd3836a77cf43af1a6acad  servers/valence/crates/valence_server/src/tick_scheduler.rs
 132a2163f4623f8ed862fbf373c7f680b21ebafb3ecc7492b69be92bdf96f9e4  servers/valence/crates/valence_server/README.md
-8dd671f055e2b5952978f3bce1b42649438281d8de1dc04a331999c86d14309c  cairn/specs/valence-hyperion-integration/spec.md
+aa3adff05b7ae9931b7c38e4fa93977adfa4f4dfb8efcaaf1c508e14e031ca41  cairn/specs/valence-hyperion-integration/spec.md
 0a6b99550bc39656e47d0a5242f4025869607de3d7dab23220e0c4865a9302e4  cairn/archive/2026-06-23-add-valence-tick-scheduler/tasks.md
 f99734c691d43e2e8e3cf92961b601aad20b895dd18c8f35763bc022b5ca943b  cairn/archive/2026-06-23-add-valence-tick-scheduler/specs/valence-hyperion-integration/spec.md
 c83eacbe031a16fb5fe6f862f3be0ffc72a098244808e598def4851926a01c01  docs/evidence/add-valence-tick-scheduler-scope.md

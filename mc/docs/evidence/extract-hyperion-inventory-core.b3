@@ -1,0 +1,8 @@
+f003aad33ae2ac90c922d611f4abf48707a2aa0a34df67ee846836f89fdcfc63  docs/evidence/extract-hyperion-inventory-core.pre-gates.run.log
+d05fb8a83775e7d137ea4233fd9f0b7e0ee7686a3933448328fa3e299b3d5f20  docs/evidence/extract-hyperion-inventory-core.post-gates.run.log
+115baf2b1e57158a595488a65bf75d2b6683b88abb004b6d1933a007ae8972f2  docs/evidence/extract-hyperion-inventory-core.task-evidence.run.log
+93472d79b5a832cc4e38223ccde4749dec2ec892fb1a19702a6a5968276156c9  docs/evidence/extract-hyperion-inventory-core.sync-archive.run.log
+7de8617f6736a64737cb23f691d49c091b5a893b7063ee23fc974cedb4ba95dc  docs/evidence/extract-hyperion-inventory-core.hyperion-baseline.run.log
+f39d498bd95f85d82effc856b72d24cf5c3220b19c3d410b96dbfa3b84050518  docs/evidence/extract-hyperion-inventory-core.hyperion-final.run.log
+b668d88c67d5b15eef5f85b138f3f5fc36a590d35dcdf1cd96f542dd92c4d26b  docs/evidence/extract-hyperion-inventory-core.oracle.md
+aa3adff05b7ae9931b7c38e4fa93977adfa4f4dfb8efcaaf1c508e14e031ca41  cairn/specs/valence-hyperion-integration/spec.md

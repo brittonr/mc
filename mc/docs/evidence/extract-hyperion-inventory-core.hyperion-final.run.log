@@ -1,0 +1,52 @@
+## cwd: /home/brittonr/git/mc/hyperion
+## command: nix develop --no-update-lock-file . -c cargo fmt --check -p hyperion-inventory -p hyperion
+exit_status=0
+
+## cwd: /home/brittonr/git/mc/hyperion
+## command: nix develop --no-update-lock-file . -c cargo test -p hyperion-inventory
+   Compiling hyperion-inventory v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-inventory)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.58s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/hyperion_inventory-72e0919c27cf03b9)
+
+running 14 tests
+test transaction::tests::boundary_stack_size_leaves_overflow_on_cursor ... ok
+test transaction::tests::changed_slot_summaries_return_packet_indices_and_stacks ... ok
+test transaction::tests::drag_rejects_armor_slot_in_player_inventory ... ok
+test transaction::tests::hotbar_swap_rejects_non_helmet_into_helmet_slot ... ok
+test transaction::tests::drop_key_emits_drop_summary_and_removes_one_item ... ok
+test transaction::tests::empty_inventory_rejects_transition_without_resync_after ... ok
+test transaction::tests::left_click_places_cursor_stack_into_empty_slot ... ok
+test transaction::tests::left_click_rejects_invalid_slot_without_mutating_cursor ... ok
+test transaction::tests::malformed_drag_button_fails_closed ... ok
+test transaction::tests::right_click_splits_slot_stack_into_empty_cursor ... ok
+test transaction::tests::shift_click_moves_item_from_open_inventory_to_hotbar ... ok
+test transaction::tests::validation_accepts_matching_window_and_state ... ok
+test transaction::tests::validation_accepts_stale_state_with_pre_resync ... ok
+test transaction::tests::validation_rejects_malformed_window_with_resync ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests hyperion_inventory
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0
+
+## cwd: /home/brittonr/git/mc/hyperion
+## command: nix develop --no-update-lock-file . -c cargo test -p hyperion --lib simulation::inventory
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.26s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/hyperion-79ef2d42d76861e2)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 25 filtered out; finished in 0.00s
+
+exit_status=0
+
+## cwd: /home/brittonr/git/mc/hyperion
+## command: nix develop --no-update-lock-file . -c cargo clippy -p hyperion-inventory -p hyperion --all-targets --all-features -- -D warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.25s
+exit_status=0
+

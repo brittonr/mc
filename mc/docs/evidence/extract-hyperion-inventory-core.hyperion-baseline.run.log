@@ -1,0 +1,630 @@
+## cwd: /home/brittonr/git/mc/hyperion
+## command: nix develop --no-update-lock-file . -c cargo test -p hyperion-inventory
+   Compiling serde_core v1.0.228
+   Compiling serde v1.0.228
+   Compiling equivalent v1.0.2
+   Compiling autocfg v1.4.0
+   Compiling libc v0.2.186
+   Compiling getrandom v0.3.2
+   Compiling crossbeam-utils v0.8.21
+   Compiling hashbrown v0.15.2
+   Compiling toml_datetime v0.6.8
+   Compiling parking v2.2.1
+   Compiling futures-core v0.3.31
+   Compiling parking_lot_core v0.9.10
+   Compiling smallvec v1.14.0
+   Compiling libm v0.2.11
+   Compiling scopeguard v1.2.0
+   Compiling unicode-xid v0.2.6
+   Compiling futures-io v0.3.31
+   Compiling syn v2.0.101
+   Compiling winnow v0.7.4
+   Compiling bytemuck v1.23.0
+   Compiling fastrand v2.3.0
+   Compiling typeid v1.0.3
+   Compiling spin v0.9.8
+   Compiling async-task v4.7.1
+   Compiling foldhash v0.1.5
+   Compiling stable_deref_trait v1.2.0
+   Compiling thiserror v2.0.12
+   Compiling nonmax v0.5.5
+   Compiling cfg_aliases v0.2.1
+   Compiling bitflags v2.13.0
+   Compiling futures-lite v2.6.0
+   Compiling lock_api v0.4.12
+   Compiling slab v0.4.9
+   Compiling bevy_ptr v0.16.1
+   Compiling disqualified v1.0.0
+   Compiling nix v0.30.1
+   Compiling downcast-rs v2.0.1
+   Compiling memchr v2.7.4
+   Compiling indexmap v2.9.0
+   Compiling version_check v0.9.5
+   Compiling atomic-waker v1.1.2
+   Compiling litemap v0.7.5
+   Compiling fixedbitset v0.5.7
+   Compiling writeable v0.5.5
+   Compiling bumpalo v3.17.0
+   Compiling arrayvec v0.7.6
+   Compiling thiserror v1.0.69
+   Compiling concurrent-queue v2.5.0
+   Compiling crossbeam-queue v0.3.12
+   Compiling serde_json v1.0.140
+   Compiling icu_locid_transform_data v1.5.0
+   Compiling anyhow v1.0.102
+   Compiling heck v0.5.0
+   Compiling ryu v1.0.20
+   Compiling ahash v0.8.11
+   Compiling either v1.15.0
+   Compiling event-listener v5.4.0
+   Compiling icu_properties_data v1.5.0
+   Compiling async-executor v1.13.1
+   Compiling tracing-log v0.2.0
+   Compiling utf8_iter v1.0.4
+   Compiling winnow v0.5.40
+   Compiling utf16_iter v1.0.5
+   Compiling bytes v1.12.0
+   Compiling zerocopy v0.7.35
+   Compiling uuid v1.16.0
+   Compiling parking_lot v0.12.3
+   Compiling itertools v0.14.0
+   Compiling icu_normalizer_data v1.5.0
+   Compiling event-listener-strategy v0.5.3
+   Compiling write16 v1.0.0
+   Compiling aho-corasick v1.1.3
+   Compiling crossbeam-channel v0.5.15
+   Compiling event-listener v2.5.3
+   Compiling async-channel v2.3.1
+   Compiling fastrand v1.9.0
+   Compiling rustc-hash v1.1.0
+   Compiling allocator-api2 v0.2.21
+   Compiling fixedbitset v0.4.2
+   Compiling waker-fn v1.2.0
+   Compiling regex-syntax v0.8.11
+   Compiling async-channel v1.9.0
+   Compiling toml_edit v0.22.24
+   Compiling instant v0.1.13
+   Compiling valence_bytes v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling futures-lite v1.13.0
+   Compiling percent-encoding v2.3.1
+   Compiling byteorder v1.5.0
+   Compiling const-fnv1a-hash v1.1.0
+   Compiling cesu8 v1.1.0
+   Compiling adler2 v2.0.0
+   Compiling slotmap v1.0.7
+   Compiling crc32fast v1.4.2
+   Compiling downcast-rs v1.2.1
+   Compiling bevy_ptr v0.12.1
+   Compiling form_urlencoded v1.2.1
+   Compiling unicode-segmentation v1.12.0
+   Compiling miniz_oxide v0.8.5
+   Compiling base64 v0.22.1
+   Compiling getrandom v0.2.15
+   Compiling convert_case v0.10.0
+   Compiling flate2 v1.1.1
+   Compiling bevy_tasks v0.12.1
+   Compiling toml_edit v0.20.7
+   Compiling regex-automata v0.4.14
+   Compiling ctrlc v3.4.7
+   Compiling synstructure v0.13.1
+   Compiling bevy_macro_utils v0.16.1
+   Compiling valence_build_utils v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling serde_derive v1.0.228
+   Compiling derive_more-impl v1.0.0
+   Compiling zerovec-derive v0.10.3
+   Compiling thiserror-impl v2.0.12
+   Compiling bevy_reflect_derive v0.16.1
+   Compiling variadics_please v1.1.0
+   Compiling displaydoc v0.2.5
+   Compiling assert_type_match v0.1.1
+   Compiling bevy_ecs_macros v0.16.1
+   Compiling tracing-attributes v0.1.31
+   Compiling icu_provider_macros v1.5.0
+   Compiling bevy_derive v0.16.1
+   Compiling thiserror-impl v1.0.69
+   Compiling valence_ident_macros v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling bevy_utils_proc_macros v0.12.1
+   Compiling valence_protocol_macros v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling bitfield-struct v0.9.5
+   Compiling zerofrom-derive v0.1.6
+   Compiling yoke-derive v0.7.5
+   Compiling bevy_macro_utils v0.12.1
+   Compiling snafu-derive v0.8.5
+   Compiling derive_more-impl v2.1.1
+   Compiling bevy_ecs_macros v0.12.1
+   Compiling zerofrom v0.1.6
+   Compiling tracing v0.1.44
+   Compiling yoke v0.7.5
+   Compiling tracing-subscriber v0.3.23
+   Compiling zerovec v0.10.4
+   Compiling regex v1.12.4
+   Compiling snafu v0.8.5
+   Compiling Inflector v0.11.4
+   Compiling derive_more v1.0.0
+   Compiling derive-build v0.1.1
+   Compiling tinystr v0.7.6
+   Compiling icu_collections v1.5.0
+   Compiling icu_locid v1.5.0
+   Compiling derive_more v2.1.1
+   Compiling icu_provider v1.5.0
+   Compiling glam v0.29.3
+   Compiling erased-serde v0.4.6
+   Compiling hashbrown v0.14.5
+   Compiling valence_ident v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling icu_locid_transform v1.5.0
+   Compiling valence_nbt v0.8.0 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling bevy_platform v0.16.1
+   Compiling icu_properties v1.5.1
+   Compiling bevy_utils v0.16.1
+   Compiling bevy_tasks v0.16.1
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling valence_text v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling petgraph v0.6.5
+   Compiling icu_normalizer v1.5.0
+   Compiling idna_adapter v1.2.0
+   Compiling idna v1.0.3
+   Compiling bevy_utils v0.12.1
+   Compiling url v2.5.4
+   Compiling bevy_ecs v0.12.1
+   Compiling bevy_reflect v0.16.1
+   Compiling valence_math v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling bevy_ecs v0.16.1
+   Compiling bevy_math v0.16.1
+   Compiling bevy_app v0.16.1
+   Compiling bevy_time v0.16.1
+   Compiling bevy_log v0.16.1
+   Compiling bevy_input v0.16.1
+   Compiling bevy_transform v0.16.1
+   Compiling bevy_diagnostic v0.16.1
+   Compiling bevy_internal v0.16.1
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling bevy v0.16.1
+   Compiling hyperion-crafting v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-crafting)
+   Compiling hyperion-inventory v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-inventory)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 26.95s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/hyperion_inventory-72e0919c27cf03b9)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests hyperion_inventory
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0
+
+## cwd: /home/brittonr/git/mc/hyperion
+## command: nix develop --no-update-lock-file . -c cargo test -p hyperion --lib simulation::inventory
+   Compiling serde_core v1.0.228
+   Compiling serde v1.0.228
+   Compiling portable-atomic v1.11.0
+   Compiling critical-section v1.2.0
+   Compiling smallvec v1.14.0
+   Compiling crossbeam-utils v0.8.21
+   Compiling scopeguard v1.2.0
+   Compiling parking_lot_core v0.9.10
+   Compiling rayon-core v1.12.1
+   Compiling lock_api v0.4.12
+   Compiling indexmap v2.9.0
+   Compiling zeroize v1.9.0
+   Compiling getrandom v0.2.15
+   Compiling displaydoc v0.2.5
+   Compiling getrandom v0.3.2
+   Compiling futures-lite v2.6.0
+   Compiling bytemuck_derive v1.9.2
+   Compiling derive_more-impl v1.0.0
+   Compiling thiserror v2.0.12
+   Compiling winnow v0.7.4
+   Compiling regex-syntax v0.8.11
+   Compiling tokio-macros v2.6.1
+   Compiling mio v1.0.3
+   Compiling rand_core v0.6.4
+   Compiling socket2 v0.6.4
+   Compiling signal-hook-registry v1.4.2
+   Compiling futures-sink v0.3.31
+   Compiling futures-macro v0.3.31
+   Compiling futures-channel v0.3.31
+   Compiling generic-array v0.14.7
+   Compiling parking_lot v0.12.3
+   Compiling pin-utils v0.1.0
+   Compiling futures-task v0.3.31
+   Compiling typenum v1.20.1
+   Compiling percent-encoding v2.3.1
+   Compiling fnv v1.0.7
+   Compiling subtle v2.6.1
+   Compiling tinystr v0.7.6
+   Compiling icu_collections v1.5.0
+   Compiling aho-corasick v1.1.3
+   Compiling tokio v1.50.0
+   Compiling form_urlencoded v1.2.1
+   Compiling ring v0.17.14
+   Compiling crossbeam-epoch v0.9.18
+   Compiling concurrent-queue v2.5.0
+   Compiling icu_locid v1.5.0
+   Compiling once_cell v1.21.3
+   Compiling toml_edit v0.20.7
+   Compiling futures-util v0.3.31
+   Compiling serde_json v1.0.140
+   Compiling async-executor v1.13.1
+   Compiling uuid v1.16.0
+   Compiling event-listener v5.4.0
+   Compiling crossbeam-deque v0.8.6
+   Compiling tracing-core v0.1.36
+   Compiling bytemuck v1.23.0
+   Compiling thread_local v1.1.8
+   Compiling crossbeam-queue v0.3.12
+   Compiling http v1.3.1
+   Compiling rustls-pki-types v1.12.0
+   Compiling cmake v0.1.54
+   Compiling icu_provider v1.5.0
+   Compiling num-traits v0.2.19
+   Compiling arrayvec v0.7.6
+   Compiling tracing v0.1.44
+   Compiling rayon v1.10.0
+   Compiling toml_edit v0.22.24
+   Compiling icu_locid_transform v1.5.0
+   Compiling ahash v0.8.11
+   Compiling libz-ng-sys v1.1.22
+   Compiling regex-automata v0.4.14
+   Compiling event-listener-strategy v0.5.3
+   Compiling cpufeatures v0.2.17
+   Compiling untrusted v0.9.0
+   Compiling async-channel v1.9.0
+   Compiling async-channel v2.3.1
+   Compiling httparse v1.10.1
+   Compiling vcpkg v0.2.15
+   Compiling paste v1.0.15
+   Compiling crypto-common v0.1.6
+   Compiling bevy_macro_utils v0.12.1
+   Compiling icu_properties v1.5.1
+   Compiling block-buffer v0.10.4
+   Compiling pkg-config v0.3.32
+   Compiling bevy_tasks v0.12.1
+   Compiling digest v0.10.7
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling rand_chacha v0.3.1
+   Compiling bitflags v2.13.0
+   Compiling derive_more v1.0.0
+   Compiling rustix v1.0.3
+   Compiling rand v0.8.5
+   Compiling openssl-sys v0.9.117
+   Compiling nix v0.30.1
+   Compiling bevy_macro_utils v0.16.1
+   Compiling http-body v1.0.1
+   Compiling crossbeam-channel v0.5.15
+   Compiling bevy_ecs_macros v0.12.1
+   Compiling httpdate v1.0.3
+   Compiling try-lock v0.2.5
+   Compiling hashbrown v0.15.2
+   Compiling glam v0.29.3
+   Compiling erased-serde v0.4.6
+   Compiling hashbrown v0.14.5
+   Compiling valence_ident v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling linux-raw-sys v0.9.3
+   Compiling rustls v0.23.40
+   Compiling want v0.3.1
+   Compiling rand_core v0.9.3
+   Compiling tower-service v0.3.3
+   Compiling valence_nbt v0.8.0 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling tinyvec_macros v0.1.1
+   Compiling icu_normalizer v1.5.0
+   Compiling regex-lite v0.1.6
+   Compiling bevy_reflect_derive v0.16.1
+   Compiling bevy_ecs_macros v0.16.1
+   Compiling bevy_platform v0.16.1
+   Compiling bevy_derive v0.16.1
+   Compiling tinyvec v1.11.0
+   Compiling bevy_utils v0.16.1
+   Compiling bevy_tasks v0.16.1
+   Compiling rand_chacha v0.9.0
+   Compiling idna_adapter v1.2.0
+   Compiling regex v1.12.4
+   Compiling ctrlc v3.4.7
+   Compiling valence_text v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling idna v1.0.3
+   Compiling ucd-parse v0.1.13
+   Compiling time-macros v0.2.22
+   Compiling petgraph v0.6.5
+   Compiling ipnet v2.12.0
+   Compiling rustls-webpki v0.103.13
+   Compiling foreign-types-shared v0.1.1
+   Compiling semver v1.0.28
+   Compiling url v2.5.4
+   Compiling base64ct v1.8.3
+   Compiling tokio-util v0.7.15
+   Compiling openssl v0.10.81
+   Compiling pem-rfc7468 v0.7.0
+   Compiling rustc_version v0.4.1
+   Compiling precis-tools v0.1.9
+   Compiling foreign-types v0.3.2
+   Compiling rand v0.9.4
+   Compiling tracing-log v0.2.0
+   Compiling der_derive v0.7.3
+   Compiling openssl-macros v0.1.1
+   Compiling time v0.3.41
+   Compiling itertools v0.14.0
+   Compiling native-tls v0.2.14
+   Compiling siphasher v1.0.1
+   Compiling const-oid v0.9.6
+   Compiling h2 v0.4.15
+   Compiling phf_shared v0.11.3
+   Compiling curve25519-dalek v4.1.3
+   Compiling http-body-util v0.1.3
+   Compiling openssl-probe v0.1.6
+   Compiling rustversion v1.0.22
+   Compiling ucd-trie v0.1.7
+   Compiling futures-executor v0.3.31
+   Compiling proc-macro-crate v3.3.0
+   Compiling curve25519-dalek-derive v0.1.1
+   Compiling bevy_utils v0.12.1
+   Compiling der v0.7.10
+   Compiling pest v2.8.6
+   Compiling phf_generator v0.11.3
+   Compiling iroh-quinn-udp v0.5.7
+   Compiling simdutf8 v0.1.5
+   Compiling matchers v0.2.0
+   Compiling bevy_ecs v0.12.1
+   Compiling minimal-lexical v0.2.1
+   Compiling rustc-hash v2.1.1
+   Compiling tracing-subscriber v0.3.23
+   Compiling spin v0.10.0
+   Compiling diatomic-waker v0.2.3
+   Compiling cordyceps v0.3.4
+   Compiling tower-layer v0.3.3
+   Compiling nom v7.1.3
+   Compiling phf_macros v0.11.3
+   Compiling futures v0.3.31
+   Compiling futures-buffered v0.2.13
+   Compiling snafu v0.8.5
+   Compiling precis-core v0.1.11
+   Compiling bevy_reflect v0.16.1
+   Compiling valence_math v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling spki v0.7.3
+   Compiling netlink-packet-utils v0.5.2
+   Compiling bevy_derive v0.12.1
+   Compiling pest_meta v2.8.6
+   Compiling pkcs8 v0.10.2
+   Compiling sha2 v0.10.9
+   Compiling inout v0.1.4
+   Compiling webpki-roots v0.26.8
+   Compiling ptr_meta_derive v0.3.0
+   Compiling async-trait v0.1.88
+   Compiling socket2 v0.5.8
+   Compiling n0-future v0.1.3
+   Compiling sync_wrapper v1.0.2
+   Compiling signature v2.2.0
+   Compiling data-encoding v2.11.0
+   Compiling tower v0.5.2
+   Compiling cipher v0.4.4
+   Compiling ptr_meta v0.3.0
+   Compiling ed25519 v2.2.3
+   Compiling pest_generator v2.8.6
+   Compiling rusticata-macros v4.1.0
+   Compiling netlink-packet-core v0.7.0
+   Compiling phf v0.11.3
+   Compiling precis-profiles v0.1.13
+   Compiling unicode-normalization v0.1.25
+   Compiling serde_urlencoded v0.7.1
+   Compiling num-integer v0.1.46
+   Compiling rustls-pemfile v2.2.0
+   Compiling tokio-rustls v0.26.2
+   Compiling asn1-rs-derive v0.5.1
+   Compiling asn1-rs-impl v0.2.0
+   Compiling encoding_rs v0.8.35
+   Compiling litrs v0.4.1
+   Compiling ident_case v1.0.1
+   Compiling moka v0.12.10
+   Compiling mime v0.3.17
+   Compiling no-std-net v0.6.0
+   Compiling darling_core v0.20.10
+   Compiling pest_derive v2.8.6
+   Compiling doxygen-rs v0.4.2
+   Compiling pnet_base v0.34.0
+   Compiling ed25519-dalek v2.2.0
+   Compiling tokio-native-tls v0.3.1
+   Compiling document-features v0.2.11
+   Compiling asn1-rs v0.6.2
+   Compiling rancor v0.1.0
+   Compiling num_enum_derive v0.7.3
+   Compiling netlink-sys v0.8.8
+   Compiling sha1 v0.10.6
+   Compiling hmac v0.12.1
+   Compiling universal-hash v0.5.1
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling iroh-metrics-derive v0.2.0
+   Compiling enum-as-inner v0.6.1
+   Compiling bytecheck_derive v0.8.1
+   Compiling enumflags2_derive v0.7.11
+   Compiling iroh-quinn v0.13.0
+   Compiling netwatch v0.5.0
+   Compiling hyper v1.10.1
+   Compiling pkarr v3.10.0
+   Compiling xml-rs v0.8.25
+   Compiling base32 v0.5.1
+   Compiling opaque-debug v0.3.1
+   Compiling oid-registry v0.7.1
+   Compiling crc-catalog v2.5.0
+   Compiling radium v0.7.0
+   Compiling tagptr v0.2.0
+   Compiling num_enum v0.7.3
+   Compiling crc v3.4.0
+   Compiling ntimestamp v1.0.0
+   Compiling poly1305 v0.8.0
+   Compiling enumflags2 v0.7.11
+   Compiling xmltree v0.10.3
+   Compiling bytecheck v0.8.1
+   Compiling hickory-proto v0.25.2
+   Compiling iroh-metrics v0.34.0
+   Compiling hmac-sha1 v0.2.2
+   Compiling netlink-proto v0.11.5
+   Compiling lmdb-master-sys v0.2.5
+   Compiling quoted-string-parser v0.1.0
+   Compiling pnet_macros_support v0.34.0
+   Compiling num-bigint v0.4.6
+   Compiling iroh-quinn-proto v0.13.0
+   Compiling netlink-packet-route v0.23.0
+   Compiling chacha20 v0.9.1
+   Compiling salsa20 v0.10.2
+   Compiling strum_macros v0.26.4
+   Compiling hyper-util v0.1.20
+   Compiling darling_macro v0.20.10
+   Compiling nested_enum_utils v0.2.3
+   Compiling tempfile v3.19.1
+   Compiling attohttpc v0.30.1
+   Compiling pnet_macros v0.34.0
+   Compiling async-compat v0.2.5
+   Compiling netdev v0.31.0
+   Compiling Inflector v0.11.4
+   Compiling bevy_app v0.12.1
+   Compiling lru v0.12.5
+   Compiling simple-dns v0.9.3
+   Compiling aead v0.5.2
+   Compiling cobs v0.3.0
+   Compiling munge_macro v0.4.3
+   Compiling pin-project-internal v1.1.10
+   Compiling postcard-derive v0.2.2
+   Compiling iroh-relay v0.35.0
+   Compiling wait-timeout v0.2.1
+   Compiling matrixmultiply v0.3.9
+   Compiling geometry v0.1.0 (/home/brittonr/git/mc/hyperion/crates/geometry)
+   Compiling hyper-rustls v0.27.5
+   Compiling hyper-tls v0.6.0
+   Compiling self_cell v1.2.2
+   Compiling hmac-sha256 v1.1.14
+   Compiling hex v0.4.3
+   Compiling lru v0.13.0
+   Compiling reqwest v0.12.15
+   Compiling hostname-validator v1.1.1
+   Compiling bit-vec v0.8.0
+   Compiling base16ct v0.2.0
+   Compiling sha1_smol v1.0.1
+   Compiling option-ext v0.2.0
+   Compiling resolv-conf v0.7.6
+   Compiling bounded-integer v0.5.8
+   Compiling dyn-clone v1.0.20
+   Compiling quick-error v1.2.3
+   Compiling md5 v0.7.0
+   Compiling fallible-iterator v0.3.0
+   Compiling tap v1.0.1
+   Compiling bit-set v0.8.0
+   Compiling dirs-sys v0.5.0
+   Compiling rusty-fork v0.3.0
+   Compiling pin-project v1.1.10
+   Compiling wyz v0.5.1
+   Compiling serdect v0.2.0
+   Compiling strum v0.26.3
+   Compiling postcard v1.1.3
+   Compiling munge v0.4.3
+   Compiling hickory-resolver v0.25.2
+   Compiling bevy_ecs v0.16.1
+   Compiling bevy_math v0.16.1
+   Compiling igd-next v0.16.2
+   Compiling pnet_packet v0.34.0
+   Compiling der-parser v9.0.0
+   Compiling derive-build v0.1.1
+   Compiling crypto_secretbox v0.1.1
+   Compiling darling v0.20.10
+   Compiling rend v0.5.2
+   Compiling iroh-base v0.35.0
+   Compiling tokio-websockets v0.11.4
+   Compiling yasna v0.5.2
+   Compiling xattr v1.5.0
+   Compiling rustls-webpki v0.102.8
+   Compiling serde_spanned v0.6.8
+   Compiling toml_datetime v0.6.8
+   Compiling bincode v1.3.3
+   Compiling ordered-float v5.0.0
+   Compiling pem v3.0.6
+   Compiling stun-rs v0.1.11
+   Compiling rand_xorshift v0.3.0
+   Compiling rkyv_derive v0.8.16
+   Compiling filetime v0.2.25
+   Compiling iroh v0.35.0
+   Compiling heed v0.21.0
+   Compiling hashbrown v0.17.1
+   Compiling heapless v0.8.0
+   Compiling rawpointer v0.2.1
+   Compiling z32 v1.3.0
+   Compiling funty v2.0.0
+   Compiling heed-traits v0.20.0
+   Compiling unarray v0.1.4
+   Compiling tar v0.4.46
+   Compiling surge-ping v0.8.4
+   Compiling heed-types v0.21.0
+   Compiling proptest v1.6.0
+   Compiling portmapper v0.5.0
+   Compiling rcgen v0.13.2
+   Compiling bitvec v1.0.1
+   Compiling x509-parser v0.16.0
+   Compiling enumset_derive v0.11.0
+   Compiling crypto_box v0.9.1
+   Compiling directories v6.0.0
+   Compiling rkyv v0.8.16
+   Compiling arc-swap v1.9.1
+   Compiling terminal_size v0.4.2
+   Compiling tokio-stream v0.1.18
+   Compiling backon v1.6.0
+   Compiling num-complex v0.4.6
+   Compiling synchronoise v1.0.1
+   Compiling roaring v0.10.12
+   Compiling hash32 v0.3.1
+   Compiling cblas-sys v0.1.4
+   Compiling page_size v0.6.0
+   Compiling anstyle v1.0.10
+   Compiling more-asserts v0.3.1
+   Compiling clap_lex v0.7.4
+   Compiling ndarray v0.16.1
+   Compiling enumset v1.1.6
+   Compiling clap_builder v4.5.38
+   Compiling bitfield-struct v0.10.1
+   Compiling memmap2 v0.9.5
+   Compiling hyperion-packet-macros v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-packet-macros)
+   Compiling hyperion-nerd-font v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-nerd-font)
+   Compiling boxcar v0.2.13
+   Compiling colored v3.0.0
+   Compiling toml v0.8.20
+   Compiling sdd v3.0.8
+   Compiling divan-macros v0.1.21 (https://github.com/nvzqz/divan#bca5c967)
+   Compiling serial_test_derive v3.2.0
+   Compiling condtype v1.3.0
+   Compiling bvh-region v0.1.0 (/home/brittonr/git/mc/hyperion/crates/bvh-region)
+   Compiling scc v2.3.4
+   Compiling approx v0.5.1
+   Compiling hyperion-proto v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-proto)
+   Compiling clap v4.5.38
+   Compiling divan v0.1.21 (https://github.com/nvzqz/divan#bca5c967)
+   Compiling serial_test v3.2.0
+   Compiling flate2 v1.1.1
+   Compiling bevy_app v0.16.1
+   Compiling bevy_time v0.16.1
+   Compiling bevy_log v0.16.1
+   Compiling bevy_input v0.16.1
+   Compiling bevy_transform v0.16.1
+   Compiling bevy_diagnostic v0.16.1
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling bevy_internal v0.16.1
+   Compiling bevy v0.16.1
+   Compiling hyperion-utils v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-utils)
+   Compiling valence_server_common v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling hyperion-crafting v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-crafting)
+   Compiling hyperion-text v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-text)
+   Compiling hyperion-palette v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-palette)
+   Compiling packet-channel v0.1.0 (/home/brittonr/git/mc/hyperion/crates/packet-channel)
+   Compiling valence_registry v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling hyperion-inventory v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-inventory)
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling valence_anvil v0.1.0 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling hyperion v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion)
+   Compiling hyperion-genmap v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-genmap)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 56.66s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/hyperion-79ef2d42d76861e2)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 25 filtered out; finished in 0.00s
+
+exit_status=0
+

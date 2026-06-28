@@ -1,0 +1,89 @@
+## cwd: /home/brittonr/git/mc
+## command: nix run .#cairn -- gate proposal extract-hyperion-inventory-core --root .
+{
+  "change": "extract-hyperion-inventory-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "68b6135443ee33ad9467e67b01a2cca21f52dceee2822684c4a09bcb9240f039",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "3958af794f0f31a7329f447f111f07754f1bd098da8bffac64e91d46c39e0662",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## cwd: /home/brittonr/git/mc
+## command: nix run .#cairn -- gate design extract-hyperion-inventory-core --root .
+{
+  "change": "extract-hyperion-inventory-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "dad97a3d7b69d8a93ea4e6bada0789068ad58431e5de5393e60cb67516c08437",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "b44751397c907b5e6652b8f3640e503f93caf07f6c48489a5a8a0ecbb557ce1a",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## cwd: /home/brittonr/git/mc
+## command: nix run .#cairn -- gate tasks extract-hyperion-inventory-core --root .
+{
+  "change": "extract-hyperion-inventory-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "0600d9600832cf23e04a8787b90131b66098dda27945b363683a269e76ac8fc4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "f6d28d0d18fe0edee8db847dfa8dd30739f65e96fda9520141bc556269d74bd7",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+
+## cwd: /home/brittonr/git/mc
+## command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 35,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 40,
+  "valid": true
+}
+exit_status=0
+
