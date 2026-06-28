@@ -36,6 +36,7 @@ use std::sync::{Arc, RwLock};
 use std::thread;
 use steven_protocol::item;
 
+mod login;
 pub mod plugin_messages;
 mod probes;
 mod scenario_contracts_generated;
@@ -355,24 +356,17 @@ impl Server {
         let mut conn = protocol::Conn::new(address, protocol_version)?;
         info!("MC-COMPAT-MILESTONE tcp_connected");
 
-        let tag = match fml_network_version {
-            Some(1) => "\0FML\0",
-            Some(2) => "\0FML2\0",
-            None => "",
-            _ => panic!("unsupported FML network version: {:?}", fml_network_version),
-        };
-
-        let host = conn.host.clone() + tag;
+        let host = conn.host.clone() + login::fml_handshake_tag(fml_network_version);
         let port = conn.port;
         conn.write_packet(protocol::packet::handshake::serverbound::Handshake {
             protocol_version: protocol::VarInt(protocol_version),
             host,
             port,
-            next: protocol::VarInt(2),
+            next: protocol::VarInt(login::LOGIN_HANDSHAKE_NEXT_STATE),
         })?;
         info!("MC-COMPAT-MILESTONE handshake_sent next=login");
         conn.state = protocol::State::Login;
-        if protocol_version >= 759 {
+        if login::login_start_uses_optional_uuid(protocol_version) {
             conn.write_packet(
                 protocol::packet::login::serverbound::LoginStart_WithOptionalUuid {
                     username: profile.username.clone(),
@@ -386,113 +380,58 @@ impl Server {
         }
         info!("MC-COMPAT-MILESTONE login_start_sent");
 
-        use std::rc::Rc;
-        let (server_id, public_key, verify_token);
-        loop {
-            match conn.read_packet()? {
-                protocol::packet::Packet::SetInitialCompression(val) => {
-                    info!(
-                        "MC-COMPAT-MILESTONE login_compression threshold={}",
-                        val.threshold.0
-                    );
-                    conn.set_compresssion(val.threshold.0);
+        let encryption_request = loop {
+            let event = login::login_event_from_packet(conn.read_packet()?);
+            match login::decide_login_event(login::LoginPhase::Initial, event) {
+                login::LoginDecision::ApplyCompression(compression) => {
+                    Self::log_login_compression(compression.threshold);
+                    conn.set_compresssion(compression.threshold);
                 }
-                protocol::packet::Packet::EncryptionRequest(val) => {
-                    server_id = Rc::new(val.server_id);
-                    public_key = Rc::new(val.public_key.data);
-                    verify_token = Rc::new(val.verify_token.data);
-                    break;
-                }
-                protocol::packet::Packet::EncryptionRequest_i16(val) => {
-                    server_id = Rc::new(val.server_id);
-                    public_key = Rc::new(val.public_key.data);
-                    verify_token = Rc::new(val.verify_token.data);
-                    break;
-                }
-                protocol::packet::Packet::LoginSuccess_String(val) => {
-                    warn!("Server is running in offline mode");
-                    info!(
-                        "MC-COMPAT-MILESTONE login_success state=play protocol={} username={}",
-                        protocol_version, val.username
-                    );
-                    debug!("Login: {} {}", val.username, val.uuid);
-                    let mut read = conn.clone();
-                    let mut write = conn;
-                    read.state = protocol::State::Play;
-                    write.state = protocol::State::Play;
-                    let rx = Self::spawn_reader(read);
-                    return Ok(Server::new(
+                login::LoginDecision::BeginEncryption(request) => break request,
+                login::LoginDecision::Complete(outcome) => {
+                    Self::log_login_success(protocol_version, &outcome, true);
+                    let uuid = outcome.protocol_uuid();
+                    return Ok(Self::finish_login_session(
                         protocol_version,
                         forge_mods,
-                        protocol::UUID::from_str(&val.uuid).unwrap(),
+                        uuid,
                         resources,
-                        Arc::new(RwLock::new(Some(write))),
-                        Some(rx),
+                        conn.clone(),
+                        conn,
                     ));
                 }
-                protocol::packet::Packet::LoginSuccess_UUID(val) => {
-                    warn!("Server is running in offline mode");
-                    info!(
-                        "MC-COMPAT-MILESTONE login_success state=play protocol={} username={}",
-                        protocol_version, val.username
-                    );
-                    debug!("Login: {} {:?}", val.username, val.uuid);
-                    let mut read = conn.clone();
-                    let mut write = conn;
-                    read.state = protocol::State::Play;
-                    write.state = protocol::State::Play;
-                    let rx = Self::spawn_reader(read);
-                    return Ok(Server::new(
-                        protocol_version,
-                        forge_mods,
-                        val.uuid,
-                        resources,
-                        Arc::new(RwLock::new(Some(write))),
-                        Some(rx),
-                    ));
+                login::LoginDecision::Disconnect(reason) => {
+                    return Err(protocol::Error::Disconnect(reason));
                 }
-                protocol::packet::Packet::LoginSuccess_UUID_WithProperties(val) => {
-                    warn!("Server is running in offline mode");
-                    info!(
-                        "MC-COMPAT-MILESTONE login_success state=play protocol={} username={} properties={}",
-                        protocol_version,
-                        val.username,
-                        val.properties.data.len()
-                    );
-                    debug!("Login: {} {:?}", val.username, val.uuid);
-                    let mut read = conn.clone();
-                    let mut write = conn;
-                    read.state = protocol::State::Play;
-                    write.state = protocol::State::Play;
-                    let rx = Self::spawn_reader(read);
-                    return Ok(Server::new(
-                        protocol_version,
-                        forge_mods,
-                        val.uuid,
-                        resources,
-                        Arc::new(RwLock::new(Some(write))),
-                        Some(rx),
-                    ));
-                }
-                protocol::packet::Packet::LoginDisconnect(val) => {
-                    return Err(protocol::Error::Disconnect(val.reason))
-                }
-                val => return Err(protocol::Error::Err(format!("Wrong packet 1: {:?}", val))),
+                login::LoginDecision::Fail(failure) => return Err(failure.into_protocol_error()),
+                login::LoginDecision::HandlePluginRequest(request) => panic!(
+                    "login core returned plugin handling during initial phase: {:?}",
+                    request
+                ),
             };
-        }
+        };
 
-        let mut shared = [0; 16];
+        let mut shared = [0; login::SHARED_SECRET_BYTES];
         rand::thread_rng().fill(&mut shared);
 
-        let shared_e = rsa_public_encrypt_pkcs1::encrypt(&public_key, &shared).unwrap();
-        let token_e = rsa_public_encrypt_pkcs1::encrypt(&public_key, &verify_token).unwrap();
+        let shared_e =
+            rsa_public_encrypt_pkcs1::encrypt(&encryption_request.public_key, &shared).unwrap();
+        let token_e = rsa_public_encrypt_pkcs1::encrypt(
+            &encryption_request.public_key,
+            &encryption_request.verify_token,
+        )
+        .unwrap();
 
         #[cfg(not(target_arch = "wasm32"))]
         {
-            profile.join_server(&server_id, &shared, &public_key)?;
+            profile.join_server(
+                &encryption_request.server_id,
+                &shared,
+                &encryption_request.public_key,
+            )?;
         }
 
-        if protocol_version >= 47 {
+        if login::encryption_response_uses_varint(protocol_version) {
             conn.write_packet(protocol::packet::login::serverbound::EncryptionResponse {
                 shared_secret: protocol::LenPrefixedBytes::new(shared_e),
                 verify_token: protocol::LenPrefixedBytes::new(token_e),
@@ -512,136 +451,164 @@ impl Server {
         read.enable_encyption(&shared, true);
         write.enable_encyption(&shared, false);
 
-        let uuid;
         let compression_threshold = read.compression_threshold;
-        loop {
-            match read.read_packet()? {
-                protocol::packet::Packet::SetInitialCompression(val) => {
-                    info!(
-                        "MC-COMPAT-MILESTONE login_compression threshold={}",
-                        val.threshold.0
-                    );
-                    read.set_compresssion(val.threshold.0);
-                    write.set_compresssion(val.threshold.0);
+        let login_outcome = loop {
+            let event = login::login_event_from_packet(read.read_packet()?);
+            match login::decide_login_event(login::LoginPhase::Encrypted, event) {
+                login::LoginDecision::ApplyCompression(compression) => {
+                    Self::log_login_compression(compression.threshold);
+                    read.set_compresssion(compression.threshold);
+                    write.set_compresssion(compression.threshold);
                 }
-                protocol::packet::Packet::LoginSuccess_String(val) => {
-                    info!(
-                        "MC-COMPAT-MILESTONE login_success state=play protocol={} username={}",
-                        protocol_version, val.username
-                    );
-                    debug!("Login: {} {}", val.username, val.uuid);
-                    uuid = protocol::UUID::from_str(&val.uuid).unwrap();
-                    read.state = protocol::State::Play;
-                    write.state = protocol::State::Play;
-                    break;
+                login::LoginDecision::Complete(outcome) => {
+                    Self::log_login_success(protocol_version, &outcome, false);
+                    break outcome;
                 }
-                protocol::packet::Packet::LoginSuccess_UUID(val) => {
-                    info!(
-                        "MC-COMPAT-MILESTONE login_success state=play protocol={} username={}",
-                        protocol_version, val.username
-                    );
-                    debug!("Login: {} {:?}", val.username, val.uuid);
-                    uuid = val.uuid;
-                    read.state = protocol::State::Play;
-                    write.state = protocol::State::Play;
-                    break;
+                login::LoginDecision::Disconnect(reason) => {
+                    return Err(protocol::Error::Disconnect(reason));
                 }
-                protocol::packet::Packet::LoginSuccess_UUID_WithProperties(val) => {
-                    info!(
-                        "MC-COMPAT-MILESTONE login_success state=play protocol={} username={} properties={}",
-                        protocol_version,
-                        val.username,
-                        val.properties.data.len()
-                    );
-                    debug!("Login: {} {:?}", val.username, val.uuid);
-                    uuid = val.uuid;
-                    read.state = protocol::State::Play;
-                    write.state = protocol::State::Play;
-                    break;
+                login::LoginDecision::HandlePluginRequest(request) => {
+                    Self::handle_login_plugin_request(&mut write, compression_threshold, request)?;
                 }
-                protocol::packet::Packet::LoginDisconnect(val) => {
-                    return Err(protocol::Error::Disconnect(val.reason))
-                }
-                protocol::packet::Packet::LoginPluginRequest(req) => {
-                    match req.channel.as_ref() {
-                        "fml:loginwrapper" => {
-                            let mut cursor = std::io::Cursor::new(req.data);
-                            let channel: String = protocol::Serializable::read_from(&mut cursor)?;
-
-                            let (id, mut data) = protocol::Conn::read_raw_packet_from(
-                                &mut cursor,
-                                compression_threshold,
-                            )?;
-
-                            match channel.as_ref() {
-                                "fml:handshake" => {
-                                    let packet =
-                                        forge::fml2::FmlHandshake::packet_by_id(id, &mut data)?;
-                                    use forge::fml2::FmlHandshake::*;
-                                    match packet {
-                                        ModList {
-                                            mod_names,
-                                            channels,
-                                            registries,
-                                        } => {
-                                            info!("ModList mod_names={:?} channels={:?} registries={:?}", mod_names, channels, registries);
-                                            write.write_fml2_handshake_plugin_message(
-                                                req.message_id,
-                                                Some(&ModListReply {
-                                                    mod_names,
-                                                    channels,
-                                                    registries,
-                                                }),
-                                            )?;
-                                        }
-                                        ServerRegistry {
-                                            name,
-                                            snapshot_present: _,
-                                            snapshot: _,
-                                        } => {
-                                            info!("ServerRegistry {:?}", name);
-                                            write.write_fml2_handshake_plugin_message(
-                                                req.message_id,
-                                                Some(&Acknowledgement),
-                                            )?;
-                                        }
-                                        ConfigurationData { filename, contents } => {
-                                            info!(
-                                                "ConfigurationData filename={:?} contents={}",
-                                                filename,
-                                                String::from_utf8_lossy(&contents)
-                                            );
-                                            write.write_fml2_handshake_plugin_message(
-                                                req.message_id,
-                                                Some(&Acknowledgement),
-                                            )?;
-                                        }
-                                        _ => unimplemented!(),
-                                    }
-                                }
-                                _ => panic!(
-                                    "unknown LoginPluginRequest fml:loginwrapper channel: {:?}",
-                                    channel
-                                ),
-                            }
-                        }
-                        _ => panic!("unsupported LoginPluginRequest channel: {:?}", req.channel),
-                    }
-                }
-                val => return Err(protocol::Error::Err(format!("Wrong packet 2: {:?}", val))),
+                login::LoginDecision::Fail(failure) => return Err(failure.into_protocol_error()),
+                login::LoginDecision::BeginEncryption(request) => panic!(
+                    "login core returned encryption request after encryption response: {:?}",
+                    request
+                ),
             }
+        };
+
+        Ok(Self::finish_login_session(
+            protocol_version,
+            forge_mods,
+            login_outcome.protocol_uuid(),
+            resources,
+            read,
+            write,
+        ))
+    }
+
+    fn log_login_compression(threshold: i32) {
+        info!(
+            "MC-COMPAT-MILESTONE login_compression threshold={}",
+            threshold
+        );
+    }
+
+    fn log_login_success(protocol_version: i32, outcome: &login::LoginOutcome, offline_mode: bool) {
+        if offline_mode {
+            warn!("Server is running in offline mode");
         }
+        match outcome.property_count() {
+            Some(properties) => info!(
+                "MC-COMPAT-MILESTONE login_success state=play protocol={} username={} properties={}",
+                protocol_version,
+                outcome.username(),
+                properties
+            ),
+            None => info!(
+                "MC-COMPAT-MILESTONE login_success state=play protocol={} username={}",
+                protocol_version,
+                outcome.username()
+            ),
+        }
+        debug!("Login: {} {}", outcome.username(), outcome.uuid_log_value());
+    }
 
+    fn handle_login_plugin_request(
+        write: &mut protocol::Conn,
+        compression_threshold: i32,
+        request: login::LoginPluginRequest,
+    ) -> Result<(), protocol::Error> {
+        match request.channel.as_ref() {
+            login::FML_LOGIN_WRAPPER_CHANNEL => {
+                let mut cursor = std::io::Cursor::new(request.data);
+                let channel: String = protocol::Serializable::read_from(&mut cursor)?;
+
+                let (id, mut data) =
+                    protocol::Conn::read_raw_packet_from(&mut cursor, compression_threshold)?;
+
+                match channel.as_ref() {
+                    login::FML_HANDSHAKE_CHANNEL => {
+                        let packet = forge::fml2::FmlHandshake::packet_by_id(id, &mut data)?;
+                        use forge::fml2::FmlHandshake::*;
+                        match packet {
+                            ModList {
+                                mod_names,
+                                channels,
+                                registries,
+                            } => {
+                                info!(
+                                    "ModList mod_names={:?} channels={:?} registries={:?}",
+                                    mod_names, channels, registries
+                                );
+                                write.write_fml2_handshake_plugin_message(
+                                    request.message_id,
+                                    Some(&ModListReply {
+                                        mod_names,
+                                        channels,
+                                        registries,
+                                    }),
+                                )?;
+                            }
+                            ServerRegistry {
+                                name,
+                                snapshot_present: _,
+                                snapshot: _,
+                            } => {
+                                info!("ServerRegistry {:?}", name);
+                                write.write_fml2_handshake_plugin_message(
+                                    request.message_id,
+                                    Some(&Acknowledgement),
+                                )?;
+                            }
+                            ConfigurationData { filename, contents } => {
+                                info!(
+                                    "ConfigurationData filename={:?} contents={}",
+                                    filename,
+                                    String::from_utf8_lossy(&contents)
+                                );
+                                write.write_fml2_handshake_plugin_message(
+                                    request.message_id,
+                                    Some(&Acknowledgement),
+                                )?;
+                            }
+                            _ => unimplemented!(),
+                        }
+                    }
+                    _ => panic!(
+                        "unknown LoginPluginRequest fml:loginwrapper channel: {:?}",
+                        channel
+                    ),
+                }
+            }
+            _ => panic!(
+                "unsupported LoginPluginRequest channel: {:?}",
+                request.channel
+            ),
+        }
+        Ok(())
+    }
+
+    fn finish_login_session(
+        protocol_version: i32,
+        forge_mods: Vec<forge::ForgeMod>,
+        uuid: protocol::UUID,
+        resources: resources::SharedManager,
+        mut read: protocol::Conn,
+        mut write: protocol::Conn,
+    ) -> Server {
+        read.state = protocol::State::Play;
+        write.state = protocol::State::Play;
         let rx = Self::spawn_reader(read);
-
-        Ok(Server::new(
+        Server::new(
             protocol_version,
             forge_mods,
             uuid,
             resources,
             Arc::new(RwLock::new(Some(write))),
             Some(rx),
-        ))
+        )
     }
 
     fn spawn_reader(

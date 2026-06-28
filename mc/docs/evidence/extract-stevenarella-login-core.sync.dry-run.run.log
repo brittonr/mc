@@ -1,0 +1,29 @@
+command=nix run .#cairn -- sync extract-stevenarella-login-core --root .
+cwd=/home/brittonr/git/mc
+started_at=2026-06-28T19:30:14-04:00
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/extract-stevenarella-login-core/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/extract-stevenarella-login-core/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "extract-stevenarella-login-core",
+  "delta_specs": [
+    "./cairn/changes/extract-stevenarella-login-core/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "340314fc526ee95bff9590b2c5fe134d6265bb818f698e1c8115c8f4042974ff",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "1bb406ac1f37da8595e7b0fba307e84b895e05c3a08bc8e820ad604863c21e9c",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "7d5d471b4653494cbdcc2b4c213e9db4ca069aa25e6a4a3725741961bdbf1bf9"
+}
+finished_at=2026-06-28T19:30:15-04:00
+exit_status=0
