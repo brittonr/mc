@@ -1,0 +1,89 @@
+
+## nix run .#cairn -- gate proposal consolidate-mc-checker-framework --root .
+{
+  "change": "consolidate-mc-checker-framework",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7c851a5128e88e3b42a38c3c8a18a7cfc682482cc647fe1097a90cea200c2d75",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "b9e3c45b2e370a8b6b2c01620c333b5988f5926d8e40f3556f2838d6eeaa9280",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command=nix run .#cairn -- gate proposal consolidate-mc-checker-framework --root .
+exit_status=0
+
+## nix run .#cairn -- gate design consolidate-mc-checker-framework --root .
+{
+  "change": "consolidate-mc-checker-framework",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f02a01c73393e2981def216be8b328f9c8ca21015ddf2d352465c744ff9f540c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "00527ed4472dfdace9255939a398ce64e31790ff0b5e2ddaaa5885607be730f1",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command=nix run .#cairn -- gate design consolidate-mc-checker-framework --root .
+exit_status=0
+
+## nix run .#cairn -- gate tasks consolidate-mc-checker-framework --root .
+{
+  "change": "consolidate-mc-checker-framework",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8d4b35bf1c95695c4577d246cc3c6f00281ccb379317aabbc8ba4d8c3fd0551c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "a2ead247365cdcd2c61ca7019aacee053c6f020afefa5ef3296002efb0b88c43",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command=nix run .#cairn -- gate tasks consolidate-mc-checker-framework --root .
+exit_status=0
+
+## nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 40,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 45,
+  "valid": true
+}
+command=nix run .#cairn -- validate --root .
+exit_status=0

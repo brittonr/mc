@@ -12,6 +12,8 @@
 let
   system = pkgs.stdenv.hostPlatform.system;
   allowedNewChecks = [
+    "mc-compat-checker-framework"
+    "mc-compat-paired-reference-dry-run-shapes"
     "mc-compat-scenario-contracts"
     "mc-flake-output-inventory"
     "mc-octet-monorepo"
@@ -90,6 +92,32 @@ in
     mkdir -p "$out"
     cp policy-stale.out policy-stale.err "$out/"
   '';
+  mc-compat-checker-framework =
+    pkgs.runCommand "mc-compat-checker-framework"
+      {
+        nativeBuildInputs = [
+          pkgs.rustc
+          pkgs.gcc
+        ];
+      }
+      ''
+        cp -R ${srcRoot} repo
+        chmod -R u+w repo
+        cd repo
+        rustc --edition=2021 --test tools/checker_framework.rs -o ../checker-framework-tests
+        ../checker-framework-tests > ../checker-framework-tests.log
+        rustc --edition=2021 tools/check_checker_framework_usage.rs -o ../check-checker-framework-usage
+        ../check-checker-framework-usage --self-test > ../checker-framework-usage-self-test.log
+        ../check-checker-framework-usage --root . > ../checker-framework-usage.log
+        rustc --edition=2021 tools/check_scoreboard_team_packet_family.rs -o ../check-scoreboard-team-packet-family
+        ../check-scoreboard-team-packet-family --self-test > ../scoreboard-team-packet-family-self-test.log
+        ../check-scoreboard-team-packet-family docs/evidence/scoreboard-team-packet-family-2026-06-06.kv > ../scoreboard-team-packet-family-evidence.log
+        rustc --edition=2021 tools/check_movement_packet_family.rs -o ../check-movement-packet-family
+        ../check-movement-packet-family --self-test > ../movement-packet-family-self-test.log
+        ../check-movement-packet-family docs/evidence/movement-packet-family-2026-06-06.kv > ../movement-packet-family-evidence.log
+        mkdir -p "$out"
+        cp ../checker-framework-tests.log ../checker-framework-usage-self-test.log ../checker-framework-usage.log ../scoreboard-team-packet-family-self-test.log ../scoreboard-team-packet-family-evidence.log ../movement-packet-family-self-test.log ../movement-packet-family-evidence.log "$out/"
+      '';
   mc-compat-layout-boundaries =
     pkgs.runCommand "mc-compat-layout-boundaries"
       {

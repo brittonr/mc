@@ -1,0 +1,19 @@
+
+## nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=519; entries=4739; current=4739; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+command=nix run .#evidence-manifest-refresh -- --check
+exit_status=0
+
+## nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 28 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4127 ms: Could not connect to server; retrying in 191 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 316 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1018 ms: Could not connect to server; retrying in 412 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/0fq2jvwz8llwbhja2cbbgq8mjs5i21g7-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/0fq2jvwz8llwbhja2cbbgq8mjs5i21g7-mc-compat-cairn-task-evidence.drv'...
+command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+exit_status=0

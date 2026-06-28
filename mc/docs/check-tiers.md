@@ -51,6 +51,7 @@ Use the smallest tier that covers the files and claim boundary you changed, then
 | `tools/check_octet_monorepo.rs --self-test` | `tier.component` | Aggregate Octet checker, workspace metadata, consumer `dylint.toml`, reviewed baseline, or exception documentation changes | Positive inventory plus negative lint-drift, missing-config, and new-finding fixture output |
 | `tools/check_octet_monorepo.rs --root . --octet-source <pinned-octet> --run-octet` | `tier.component` | Octet enforced-scope code changes, reviewed baseline updates, or dynamic gate behavior changes | Per-workspace Octet status, finding counts, new/stale stable-ID comparison, and artifact paths |
 | `nix build .#checks.x86_64-linux.mc-octet-monorepo --no-link -L` | `tier.component` | Octet lint inventory, workspace metadata, consumer `dylint.toml`, reviewed baseline, or flake wiring changes | Static lint-inventory/config/baseline drift output plus checker self-test output |
+| `nix build .#checks.x86_64-linux.mc-compat-checker-framework --no-link -L` | `tier.component` | Checker framework helpers, framework-backed checker migrations, or checker framework usage guard changes | Framework unit tests, usage guard self-test/current-tree output, and representative checker parity logs |
 | `nix build .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L` | `tier.evidence` | Current evidence bundle, promoted receipt, or index changes | Flake check build log |
 | `nix build .#checks.x86_64-linux.mc-compat-full-survival-gate --no-link -L` | `tier.evidence` | Survival aggregate gate or row matrix changes | Flake check build log |
 | `nix build .#checks.x86_64-linux.mc-compat-aggregate-claim-gates --no-link -L` | `tier.evidence` | Aggregate claim-boundary checker changes | Flake check build log |
@@ -63,6 +64,7 @@ Use the smallest tier that covers the files and claim boundary you changed, then
 - Generated surfaces or Nickel exports: run `tier.generated`; add `tier.component` dry-runs if command shape changed.
 - Runner code or scenario logic: run `tier.component`; add `tier.generated` when generated tables or manifest-derived docs change.
 - Component code: run `tier.component` and the subtree-local affected Cargo tests; add `tier.live-manual` only when the Cairn task claims live evidence.
+- Checker framework or framework-backed checker migrations: run `nix build .#checks.x86_64-linux.mc-compat-checker-framework --no-link -L` plus the affected checker flake checks when an existing gate is migrated.
 - Valence Bevy schedule-impacting changes: run `tools/check_valence_schedule_hygiene.rs --root .` or the `mc-valence-schedule-hygiene` flake check, plus the smallest affected Valence package check.
 - Evidence manifests, receipts, or task citations: run `tier.evidence`; add `tier.archive` when tasks/specs move.
 - Live/reference parity rows: run `tier.live-manual`, then `tier.evidence` and `tier.archive` for promoted artifacts.

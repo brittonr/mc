@@ -1,0 +1,45 @@
+
+## rustc --edition=2021 --test tools/checker_framework.rs -o target/consolidate-mc-checker-framework-baseline/checker-framework-tests
+command=rustc --edition=2021 --test tools/checker_framework.rs -o target/consolidate-mc-checker-framework-baseline/checker-framework-tests
+exit_status=0
+
+## target/consolidate-mc-checker-framework-baseline/checker-framework-tests
+
+running 4 tests
+test tests::key_value_record_parses_valid_rows_and_ignores_comments ... ok
+test tests::helpers_accept_valid_records_and_reject_weak_evidence ... ok
+test tests::key_value_record_rejects_malformed_empty_and_duplicate_keys ... ok
+test tests::sequence_helpers_parse_and_reject_invalid_state_ids ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+command=target/consolidate-mc-checker-framework-baseline/checker-framework-tests
+exit_status=0
+
+## rustc --edition=2021 tools/check_scoreboard_team_packet_family.rs -o target/consolidate-mc-checker-framework-baseline/check-scoreboard-team-packet-family
+command=rustc --edition=2021 tools/check_scoreboard_team_packet_family.rs -o target/consolidate-mc-checker-framework-baseline/check-scoreboard-team-packet-family
+exit_status=0
+
+## target/consolidate-mc-checker-framework-baseline/check-scoreboard-team-packet-family --self-test
+self-test ok
+command=target/consolidate-mc-checker-framework-baseline/check-scoreboard-team-packet-family --self-test
+exit_status=0
+
+## target/consolidate-mc-checker-framework-baseline/check-scoreboard-team-packet-family docs/evidence/scoreboard-team-packet-family-2026-06-06.kv
+docs/evidence/scoreboard-team-packet-family-2026-06-06.kv: ok
+command=target/consolidate-mc-checker-framework-baseline/check-scoreboard-team-packet-family docs/evidence/scoreboard-team-packet-family-2026-06-06.kv
+exit_status=0
+
+## rustc --edition=2021 tools/check_movement_packet_family.rs -o target/consolidate-mc-checker-framework-baseline/check-movement-packet-family
+command=rustc --edition=2021 tools/check_movement_packet_family.rs -o target/consolidate-mc-checker-framework-baseline/check-movement-packet-family
+exit_status=0
+
+## target/consolidate-mc-checker-framework-baseline/check-movement-packet-family --self-test
+movement packet family self-test passed: positive and negative fixtures exercised
+command=target/consolidate-mc-checker-framework-baseline/check-movement-packet-family --self-test
+exit_status=0
+
+## target/consolidate-mc-checker-framework-baseline/check-movement-packet-family docs/evidence/movement-packet-family-2026-06-06.kv
+movement packet family evidence ok: docs/evidence/movement-packet-family-2026-06-06.kv; inventory ok: docs/evidence/protocol-763-packet-inventory-2026-05-28.tsv
+command=target/consolidate-mc-checker-framework-baseline/check-movement-packet-family docs/evidence/movement-packet-family-2026-06-06.kv
+exit_status=0

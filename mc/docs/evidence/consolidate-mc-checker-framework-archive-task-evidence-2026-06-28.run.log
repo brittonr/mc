@@ -1,0 +1,9 @@
+
+## rustc --edition=2021 tools/check_cairn_task_evidence.rs -o target/consolidate-mc-checker-framework-archive-task-evidence/check-cairn-task-evidence
+command=rustc --edition=2021 tools/check_cairn_task_evidence.rs -o target/consolidate-mc-checker-framework-archive-task-evidence/check-cairn-task-evidence
+exit_status=0
+
+## target/consolidate-mc-checker-framework-archive-task-evidence/check-cairn-task-evidence cairn/archive/2026-06-28-consolidate-mc-checker-framework/tasks.md
+task evidence gate passed: 7 completed tasks checked across 1 task files
+command=target/consolidate-mc-checker-framework-archive-task-evidence/check-cairn-task-evidence cairn/archive/2026-06-28-consolidate-mc-checker-framework/tasks.md
+exit_status=0

@@ -3,7 +3,7 @@
 2154f26e1c728c47207294964f6519481b52aeb442ef09412a8dcede7bb3b63f  cairn/archive/2026-06-25-add-schedule-hygiene-gates/tasks.md
 8f2619e38386c3254e1e6d8f9df1f8309327b77b7d10a9b7967f1e9d845856a8  cairn/archive/2026-06-25-add-schedule-hygiene-gates/specs/valence-bevy-ecs/spec.md
 a8e8b9061778dfda13e42add0604c0bdb82508337ce6f83b41384b23bf8dce62  cairn/specs/valence-bevy-ecs/spec.md
-3eea78db2c25861521b6a44655e6b0d9797792ecf57e4649172fe602f828948b  docs/check-tiers.md
+6e504b76e64f39e851265a03e93b4836ece3cfb505df259ae8f3c4842be65f7d  docs/check-tiers.md
 de2e4abdcced75735213b164c7db70e2d35e74bb094e4756b7791f0728cade74  docs/evidence/add-schedule-hygiene-gates.inventory.md
 5a7e122b65d08282749183208e853cd8db4c5c052d5666b1f3f58eee876b496b  docs/evidence/add-schedule-hygiene-gates.change-list.pre.run.log
 c6c745be28abbbc89bb3b07e171d06a406a048426811ddfccfd0b9e275fb4da9  docs/evidence/add-schedule-hygiene-gates.gate-proposal.pre.run.log
@@ -29,6 +29,6 @@ caa51a3929ce57833273bc5dcf5e21beeeb878737a119d91025975b1993703c7  docs/evidence/
 3951d83a222548cc9fd9396bdbe5b54cbd37ade9d021e233e59561d54e27e6ba  docs/evidence/add-schedule-hygiene-gates.archived-task-evidence.run.log
 be7c466abfc392c061052e7eb45351719dbbac01f946235cba1d167028056ec3  docs/evidence/add-schedule-hygiene-gates.post-archive-validate.run.log
 d275e98073096a87f8e6f045f2571e97e47f760d934b2d7e7ef03e2fab72e689  docs/evidence/add-schedule-hygiene-gates.post-archive-change-list.run.log
-0007e52625ec7c9572effd75a59c0369a28e4dbab3d35687e9fbdbfb009aabcd  nix/checks.nix
+1a011fedfd7998411c2d36056de5b99ca68c57492be1dc4e8cdeb3f01d92a585  nix/checks.nix
 56cc1888eab19fbfa6a0986b51861d0ea90fdf8f2df11c398a83c3d6f3bb2aa1  servers/valence/tools/dump_schedule/README.md
 05d10594eff74e39a87a14099575c8f73254efc558be27a220dbaeb4e8c4da2d  tools/check_valence_schedule_hygiene.rs

@@ -40,6 +40,7 @@ const REQUIRED_COMMANDS: &[&str] = &[
     "nix run .#stevenarella -- --dry-run",
     "nix run .#valence -- --dry-run",
     "nix run .#mc-compat-smoke -- --dry-run --server-backend valence --scenario smoke",
+    "nix build .#checks.x86_64-linux.mc-compat-checker-framework --no-link -L",
     "nix build .#checks.x86_64-linux.mc-compat-current-evidence-bundle --no-link -L",
     "nix run .#mc-compat-smoke -- --run --server-backend paper --scenario <scenario>",
     "nix run .#mc-compat-smoke -- --run --server-backend valence --scenario <scenario>",

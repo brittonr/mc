@@ -1,0 +1,42 @@
+
+## nix build .#checks.x86_64-linux.mc-compat-scoreboard-team-packet-family-check --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2067 ms: Could not connect to server; retrying in 3 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server; retrying in 191 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server; retrying in 27 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4115 ms: Could not connect to server; retrying in 326 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/05r2w0l5sc7krw7ap8sr78nz1k8gf7m3-mc-compat-scoreboard-team-packet-family-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/05r2w0l5sc7krw7ap8sr78nz1k8gf7m3-mc-compat-scoreboard-team-packet-family-check.drv'...
+command=nix build .#checks.x86_64-linux.mc-compat-scoreboard-team-packet-family-check --no-link -L
+exit_status=0
+
+## nix build .#checks.x86_64-linux.mc-compat-movement-packet-family-check --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server; retrying in 29 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3078 ms: Could not connect to server; retrying in 198 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 280 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 623 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/c7738nmcp3kvqs2qbyy49vqz3yrq03yp-mc-compat-movement-packet-family-check.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/c7738nmcp3kvqs2qbyy49vqz3yrq03yp-mc-compat-movement-packet-family-check.drv'...
+command=nix build .#checks.x86_64-linux.mc-compat-movement-packet-family-check --no-link -L
+exit_status=0
+
+## rustc --edition=2021 tools/check_check_tiers.rs -o target/consolidate-mc-checker-framework-affected/check-check-tiers
+command=rustc --edition=2021 tools/check_check_tiers.rs -o target/consolidate-mc-checker-framework-affected/check-check-tiers
+exit_status=0
+
+## target/consolidate-mc-checker-framework-affected/check-check-tiers --self-test
+check tier docs self-test passed
+command=target/consolidate-mc-checker-framework-affected/check-check-tiers --self-test
+exit_status=0
+
+## target/consolidate-mc-checker-framework-affected/check-check-tiers --root .
+check tier docs passed
+command=target/consolidate-mc-checker-framework-affected/check-check-tiers --root .
+exit_status=0

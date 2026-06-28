@@ -1,7 +1,13 @@
-use std::collections::BTreeMap;
+mod checker_framework;
+
 use std::env;
 use std::fs;
 use std::process;
+
+use checker_framework::{
+    reject_truthy_overclaims, require_clean_child_revision, require_exact, require_ok,
+    KeyValueRecord,
+};
 
 const SELF_TEST_FLAG: &str = "--self-test";
 const ROW_ID_KEY: &str = "row.id";
@@ -34,10 +40,6 @@ const CLIENT_REV_KEY: &str = "child.stevenarella.rev";
 const CLIENT_STATUS_KEY: &str = "child.stevenarella.status";
 const VALENCE_REV_KEY: &str = "child.valence.rev";
 const VALENCE_STATUS_KEY: &str = "child.valence.status";
-const CLEAN_STATUS: &str = "clean";
-const UNKNOWN_REV: &str = "unknown";
-const DRY_RUN_REV: &str = "dry-run";
-const PENDING_REVIEW_REV: &str = "pending-review";
 const ACTOR_KEY: &str = "actor.username";
 const ACTOR: &str = "compatbota";
 const START_KEY: &str = "movement.start";
@@ -50,7 +52,6 @@ const ON_GROUND_KEY: &str = "movement.on_ground";
 const ON_GROUND: &str = "true";
 const TOLERANCE_KEY: &str = "movement.tolerance";
 const TOLERANCE: &str = "exact_logged_values";
-const OK_VALUE: &str = "ok";
 const REQUIRED_OK_METRICS: &[&str] = &[
     "metric.client.full_position_look_sent",
     "metric.client.portal_entry_logged",
@@ -111,83 +112,7 @@ const NEIGHBOR_MOVEMENT_VARIANTS: &[(&str, &str)] = &[
     ("0x18", "VehicleMoveC2SPacket"),
 ];
 
-#[derive(Debug, Clone)]
-struct Evidence {
-    values: BTreeMap<String, String>,
-}
-
-impl Evidence {
-    fn parse(text: &str) -> Result<Self, String> {
-        let mut values = BTreeMap::new();
-        for (index, raw_line) in text.lines().enumerate() {
-            let line = raw_line.trim();
-            if line.is_empty() || line.starts_with('#') {
-                continue;
-            }
-            let Some((key, value)) = line.split_once('=') else {
-                return Err(format!("line {} is not key=value", index + 1));
-            };
-            let key = key.trim();
-            let value = value.trim();
-            if key.is_empty() {
-                return Err(format!("line {} has empty key", index + 1));
-            }
-            if values.insert(key.to_string(), value.to_string()).is_some() {
-                return Err(format!("duplicate key {key}"));
-            }
-        }
-        Ok(Self { values })
-    }
-
-    fn value(&self, key: &str) -> Option<&str> {
-        self.values.get(key).map(String::as_str)
-    }
-}
-
-fn require_exact(evidence: &Evidence, diagnostics: &mut Vec<String>, key: &str, expected: &str) {
-    match evidence.value(key) {
-        Some(actual) if actual == expected => {}
-        Some(actual) => diagnostics.push(format!("{key} expected {expected}, got {actual}")),
-        None => diagnostics.push(format!("missing {key}")),
-    }
-}
-
-fn require_ok(evidence: &Evidence, diagnostics: &mut Vec<String>, key: &str) {
-    require_exact(evidence, diagnostics, key, OK_VALUE);
-}
-
-fn require_clean_child_revision(
-    evidence: &Evidence,
-    diagnostics: &mut Vec<String>,
-    rev_key: &str,
-    status_key: &str,
-) {
-    match evidence.value(rev_key) {
-        Some(rev)
-            if !rev.is_empty()
-                && rev != UNKNOWN_REV
-                && rev != DRY_RUN_REV
-                && rev != PENDING_REVIEW_REV => {}
-        Some(rev) => diagnostics.push(format!("{rev_key} must be concrete, got {rev}")),
-        None => diagnostics.push(format!("missing {rev_key}")),
-    }
-    require_exact(evidence, diagnostics, status_key, CLEAN_STATUS);
-}
-
-fn reject_broad_overclaims(evidence: &Evidence, diagnostics: &mut Vec<String>) {
-    for key in BROAD_OVERCLAIM_KEYS {
-        if let Some(value) = evidence.value(key) {
-            if TRUTHY_OVERCLAIM_VALUES
-                .iter()
-                .any(|truthy| value.eq_ignore_ascii_case(truthy))
-            {
-                diagnostics.push(format!("broad overclaim {key}={value}"));
-            }
-        }
-    }
-}
-
-fn validate_evidence(evidence: &Evidence) -> Result<(), Vec<String>> {
+fn validate_evidence(evidence: &KeyValueRecord) -> Result<(), Vec<String>> {
     let mut diagnostics = Vec::new();
     require_exact(evidence, &mut diagnostics, ROW_ID_KEY, ROW_ID);
     require_exact(evidence, &mut diagnostics, SCENARIO_KEY, SCENARIO);
@@ -244,7 +169,12 @@ fn validate_evidence(evidence: &Evidence) -> Result<(), Vec<String>> {
     for key in REQUIRED_NONCLAIMS {
         require_exact(evidence, &mut diagnostics, key, "true");
     }
-    reject_broad_overclaims(evidence, &mut diagnostics);
+    reject_truthy_overclaims(
+        evidence,
+        &mut diagnostics,
+        BROAD_OVERCLAIM_KEYS,
+        TRUTHY_OVERCLAIM_VALUES,
+    );
 
     if diagnostics.is_empty() {
         Ok(())
@@ -474,7 +404,7 @@ fn inventory_fixture_with_replacement(old: &str, new: &str) -> String {
 }
 
 fn run_self_test() -> Result<(), String> {
-    let valid = Evidence::parse(&valid_fixture())?;
+    let valid = KeyValueRecord::parse(&valid_fixture())?;
     validate_evidence(&valid).map_err(|diagnostics| diagnostics.join("; "))?;
     validate_inventory_text(&valid_inventory_fixture())
         .map_err(|diagnostics| diagnostics.join("; "))?;
@@ -535,7 +465,7 @@ fn run_self_test() -> Result<(), String> {
     ];
 
     for (name, text, expected) in negative_fixtures {
-        let evidence = Evidence::parse(text).map_err(|error| format!("{name}: {error}"))?;
+        let evidence = KeyValueRecord::parse(text).map_err(|error| format!("{name}: {error}"))?;
         let Err(diagnostics) = validate_evidence(&evidence) else {
             return Err(format!("negative fixture {name} unexpectedly passed"));
         };
@@ -634,7 +564,7 @@ fn main() {
             process::exit(1);
         }
     };
-    let evidence = match Evidence::parse(&text) {
+    let evidence = match KeyValueRecord::parse(&text) {
         Ok(evidence) => evidence,
         Err(error) => {
             eprintln!("failed to parse {path}: {error}");
