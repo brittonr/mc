@@ -1,0 +1,14 @@
+ratchet-scenario-fallback-budget checker self-test after pure evaluator fixtures
+
+$ nix develop --no-update-lock-file . -c rustc --edition=2021 tools/check_scenario_manifest.rs -o target/ratchet-check-scenario-manifest
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+command_exit_status=0
+
+$ target/ratchet-check-scenario-manifest --self-test
+scenario manifest self-test passed: positive and negative fixtures exercised, including wrapper metadata, README links, generated command docs, and stale-output rejection
+command_exit_status=0
+
+exit_status=0

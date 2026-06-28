@@ -1,0 +1,29 @@
+ratchet-scenario-fallback-budget focused flake checks
+
+$ nix build .#checks.x86_64-linux.mc-compat-scenario-manifest --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1056 ms: Could not connect to server; retrying in 38 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 15 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1024 ms: Could not connect to server; retrying in 8 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 154 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds
+this derivation will be built:
+  /nix/store/vwnh0988faqfbvmg6wgcxmvyyz00nidi-mc-compat-scenario-manifest.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/vwnh0988faqfbvmg6wgcxmvyyz00nidi-mc-compat-scenario-manifest.drv'...
+command_exit_status=0
+
+$ nix build .#checks.x86_64-linux.mc-compat-generated-harness-surfaces --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2051 ms: Could not connect to server; retrying in 18 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3118 ms: Could not connect to server; retrying in 34 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2079 ms: Could not connect to server; retrying in 79 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 518 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/ywp0hga1sk74bj221dqn0dip4mq63xi0-mc-compat-generated-harness-surfaces.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ywp0hga1sk74bj221dqn0dip4mq63xi0-mc-compat-generated-harness-surfaces.drv'...
+command_exit_status=0
+
+exit_status=0

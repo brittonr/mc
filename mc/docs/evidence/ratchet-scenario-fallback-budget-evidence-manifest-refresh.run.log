@@ -1,0 +1,11 @@
+ratchet-scenario-fallback-budget evidence manifest refresh
+
+$ nix run .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=2; manifests=517; entries=4693; current=4693; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=2; manifest_writes=27
+command_exit_status=0
+
+$ nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=517; entries=4693; current=4693; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+command_exit_status=0
+
+exit_status=0

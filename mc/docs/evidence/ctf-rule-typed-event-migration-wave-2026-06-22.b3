@@ -1,5 +1,5 @@
 02e1b66a137cc932a81ed33d7c85ec7870e60317309267a03a3b53fde7b416aa  README.md
-1bb5aa8b9086f919faa2ae13809b278f66f6076e2c3bdac07222c2a92c84cbeb  cairn/specs/mc-compatibility/spec.md
+28d4277288601ca40cc44a773f100b45e3328d0a871b9f6fd2cb424b7c731511  cairn/specs/mc-compatibility/spec.md
 79ccef7780c47b04176dd2d405ba761ea4676d392e78acd623d387e1bada4130  cairn/archive/1970-01-01-ctf-rule-typed-event-migration-wave/proposal.md
 a0c25dc177a9b77e9e0a58de8bab47adc67fac06131fa80ab50f808ae7362600  cairn/archive/1970-01-01-ctf-rule-typed-event-migration-wave/design.md
 58a0a6d6417d396d539aaf542050613d5e370cfc7e85699fd101e1d61ce04279  cairn/archive/1970-01-01-ctf-rule-typed-event-migration-wave/tasks.md
@@ -7,7 +7,7 @@ a0c25dc177a9b77e9e0a58de8bab47adc67fac06131fa80ab50f808ae7362600  cairn/archive/
 f1600c9059d5d98fb217a14fd9801c7d508d5f2bbc89f5d7e96c6659d037c0e9  compat/config/scenario-manifest.ncl
 a6c3efca6e8046b67f2efa5ce43e5d35f0128beed73d21cfea24841bce784b15  compat/runner/src/main.rs
 24fc3b15fae95e333634118eca6398d275f6630a067f6f427d1dcc058f21b08c  compat/runner/src/scenario_manifest_generated.rs
-6ca7a57e601322cf3712f98c4a1cfed5a4769235cd06965fc920fc1f1d12333f  tools/check_scenario_manifest.rs
+85cf6bfc6680ca2ca754276ff27be8a29c14b4b9473cf91cfadb2ae30b9cbc43  tools/check_scenario_manifest.rs
 c53a2241b42d59b11a50e619c4e63bfd2b55ebbad74a768eccb5a0043e36b9eb  docs/evidence/mc-compat-scenario-index.generated.md
 ead0e36f5ac6c631d0883c85a8fbd278d41936740506cf335d4305c9b2b7b89f  docs/evidence/ctf-rule-typed-event-baseline-v2.run.log
 868214cc8e9e519700e2aab1112cb75b2f55ff2a281352d6025f931b328156c8  docs/evidence/ctf-rule-typed-event-post-change-v2.run.log

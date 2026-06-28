@@ -3,7 +3,7 @@
 fed89c9aae7a973930b08beb8e687cebcb4dcd8bd58e1e9658c0a53121f11e47  cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/design.md
 bb6471b6732954340790da4847b78e4d3919e48943847b509bcd9d74c03af871  cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/tasks.md
 5ebe979dd5f6dcb99b26d85f7d336658875c958d13f5413698781a96310c027d  cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/specs/mc-compatibility/spec.md
-1bb5aa8b9086f919faa2ae13809b278f66f6076e2c3bdac07222c2a92c84cbeb  cairn/specs/mc-compatibility/spec.md
+28d4277288601ca40cc44a773f100b45e3328d0a871b9f6fd2cb424b7c731511  cairn/specs/mc-compatibility/spec.md
 f1600c9059d5d98fb217a14fd9801c7d508d5f2bbc89f5d7e96c6659d037c0e9  compat/config/scenario-manifest.ncl
 a6c3efca6e8046b67f2efa5ce43e5d35f0128beed73d21cfea24841bce784b15  compat/runner/src/main.rs
 24fc3b15fae95e333634118eca6398d275f6630a067f6f427d1dcc058f21b08c  compat/runner/src/scenario_manifest_generated.rs
@@ -26,4 +26,4 @@ e3d4f6397d015a7d0af47b93d412e43566fe8ebd4770193531869ecd4d9b7657  docs/evidence/
 8f196a189846529eddb79a98893234c563c439e8c39547d6e9a7a7b89d8de985  docs/evidence/mcp-controlled-smoke-typed-event-refresh-evidence-manifests.run.log
 931572fbfd9e170f4f69fea8eff0b02b096b521b371757ad5205226e225480d0  docs/evidence/mcp-controlled-smoke-typed-event-refresh-evidence-manifests-2.run.log
 4891d5477c38c587b4378dccd4d705f87723db81ee3f44af0fa8c128566bd7cc  docs/evidence/mcp-controlled-smoke-typed-event-task-evidence-preclose.run.log
-6ca7a57e601322cf3712f98c4a1cfed5a4769235cd06965fc920fc1f1d12333f  tools/check_scenario_manifest.rs
+85cf6bfc6680ca2ca754276ff27be8a29c14b4b9473cf91cfadb2ae30b9cbc43  tools/check_scenario_manifest.rs

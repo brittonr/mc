@@ -1,7 +1,0 @@
-# Tasks
-
-- [ ] [serial] Inventory current scenario migration states against the checked fallback baseline and record which fallback approvals are stale. r[mc_compatibility.scenario_fallback_budget_ratchet.inventory]
-- [ ] [depends:mc_compatibility.scenario_fallback_budget_ratchet.inventory] Ratchet `compat/config/scenario-fallback-budget-baseline.ncl` so only current substring-fallback rows remain approved and migrated rows stay protected from regression. r[mc_compatibility.scenario_fallback_budget_ratchet.baseline]
-- [ ] [depends:mc_compatibility.scenario_fallback_budget_ratchet.baseline] Confirm or extend the pure fallback-budget evaluator with positive fixtures for the ratcheted baseline and negative fixtures for removed-row reintroduction and typed-event regression. r[mc_compatibility.scenario_fallback_budget_ratchet.gate]
-- [ ] [depends:mc_compatibility.scenario_fallback_budget_ratchet.gate] Refresh generated scenario indexes and fallback-budget documentation without changing scenario wrapper behavior or receipt claims. r[mc_compatibility.scenario_fallback_budget_ratchet.surfaces]
-- [ ] [depends:mc_compatibility.scenario_fallback_budget_ratchet.surfaces] Run scenario manifest checks, generated-surface freshness, evidence manifest checks, task-evidence validation, Cairn gates, Cairn validation, and record BLAKE3 manifests before archive. r[mc_compatibility.scenario_fallback_budget_ratchet.validation]

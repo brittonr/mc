@@ -1,0 +1,22 @@
+ratchet-scenario-fallback-budget baseline checks
+
+$ nix develop --no-update-lock-file . -c rustc --edition=2021 tools/check_scenario_manifest.rs -o target/ratchet-check-scenario-manifest-baseline
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+command_exit_status=0
+
+$ target/ratchet-check-scenario-manifest-baseline --self-test
+scenario manifest self-test passed: positive and negative fixtures exercised, including wrapper metadata, README links, generated command docs, and stale-output rejection
+command_exit_status=0
+
+$ target/ratchet-check-scenario-manifest-baseline
+scenario manifest check passed: 46 rows validated; dry-run coverage: 46 covered, 0 waived, 0 unmaintained; typed-event readiness: 43 ready, 3 fallback; fallback budget: approved=[valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[armor-equipment-mitigation,blue-flag-score,combat-damage,combat-knockback,ctf-invalid-pickup-ownership,ctf-invalid-return-drop,ctf-score-limit-win-condition,ctf-simultaneous-pickup-capture-race,ctf-spawn-team-balance-reset,equipment-update-observation,flag-carrier-death-return,flag-score-repeat,mcp-controlled-smoke,multi-client-load-score,projectile-damage-attribution,projectile-hit,reconnect-flag-score,reconnect-flag-state,survival-biome-dimension-travel,survival-chest-persistence,survival-container-block-entity-breadth,survival-crafting-recipe-breadth,survival-furnace-persistence,survival-furnace-smelting-breadth,survival-hunger-food,survival-hunger-health-cycle,survival-mob-ai-loot-breadth,survival-mob-drop,survival-redstone-circuit-breadth,survival-redstone-toggle,survival-sign-editing-live,survival-world-multichunk-durability]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+command_exit_status=0
+
+$ target/ratchet-check-scenario-manifest-baseline --check-generated-surfaces
+generated surface check passed: 4 generated surfaces current; fallback budget: approved=[valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[armor-equipment-mitigation,blue-flag-score,combat-damage,combat-knockback,ctf-invalid-pickup-ownership,ctf-invalid-return-drop,ctf-score-limit-win-condition,ctf-simultaneous-pickup-capture-race,ctf-spawn-team-balance-reset,equipment-update-observation,flag-carrier-death-return,flag-score-repeat,mcp-controlled-smoke,multi-client-load-score,projectile-damage-attribution,projectile-hit,reconnect-flag-score,reconnect-flag-state,survival-biome-dimension-travel,survival-chest-persistence,survival-container-block-entity-breadth,survival-crafting-recipe-breadth,survival-furnace-persistence,survival-furnace-smelting-breadth,survival-hunger-food,survival-hunger-health-cycle,survival-mob-ai-loot-breadth,survival-mob-drop,survival-redstone-circuit-breadth,survival-redstone-toggle,survival-sign-editing-live,survival-world-multichunk-durability]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+command_exit_status=0
+
+exit_status=0

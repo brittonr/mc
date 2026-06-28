@@ -88,6 +88,7 @@ const STALE_DRY_RUN_EXCLUSION_MARKERS: &[&str] = &[
     "instead of a dry-run wrapper",
 ];
 const TYPED_EVENT_FALLBACK_WAIVER_FIELD: &str = "typed_event_fallback_waiver";
+const RATCHETED_READY_FIXTURE_ROW: &str = "ratcheted-ready-row";
 const TYPED_EVENT_COMMON_FORBIDDEN_EVENTS: &[&str] = &[
     "panic",
     "unexpected_eof",
@@ -2991,6 +2992,39 @@ fn run_self_tests() -> Result<String, Vec<String>> {
     {
         errors.push("self-test case fallback budget removal expected pass=true".to_string());
     }
+    let mut ratcheted_rows = manifest.rows.clone();
+    let mut ratcheted_ready_row = ready_manifest
+        .rows
+        .first()
+        .expect("ready fixture contains row")
+        .clone();
+    ratcheted_ready_row.name = RATCHETED_READY_FIXTURE_ROW.to_string();
+    ratcheted_rows.push(ratcheted_ready_row);
+    let ratcheted_baseline = ratcheted_fallback_budget_baseline_fixture();
+    let ratcheted_report = evaluate_fallback_budget(&ratcheted_rows, &ratcheted_baseline);
+    if !ratcheted_report.is_complete()
+        || ratcheted_report.approved_fallback_rows != vec!["smoke".to_string()]
+        || !ratcheted_report.removed_fallback_rows.is_empty()
+    {
+        errors.push("self-test case fallback budget ratcheted baseline expected pass=true".to_string());
+    }
+    let mut reintroduced_rows = ratcheted_rows.clone();
+    let reintroduced_row = reintroduced_rows
+        .iter_mut()
+        .find(|row| row.name == RATCHETED_READY_FIXTURE_ROW)
+        .expect("ratcheted fixture row exists");
+    reintroduced_row.migration_state = SUBSTRING_FALLBACK_MIGRATION.to_string();
+    let reintroduced_report = evaluate_fallback_budget(&reintroduced_rows, &ratcheted_baseline);
+    if reintroduced_report.is_complete()
+        || !reintroduced_report
+            .typed_event_regressions
+            .iter()
+            .any(|row| row == RATCHETED_READY_FIXTURE_ROW)
+    {
+        errors.push(
+            "self-test case fallback budget removed row reintroduced expected pass=false".to_string(),
+        );
+    }
     let new_fallback =
         evaluate_fallback_budget(&manifest.rows, &empty_fallback_budget_baseline_fixture());
     if new_fallback.is_complete()
@@ -3331,6 +3365,14 @@ fn empty_fallback_budget_baseline_fixture() -> FallbackBudgetBaseline {
         schema: FALLBACK_BUDGET_BASELINE_SCHEMA.to_string(),
         fallback_rows: Vec::new(),
         typed_event_ready_rows: Vec::new(),
+    }
+}
+
+fn ratcheted_fallback_budget_baseline_fixture() -> FallbackBudgetBaseline {
+    FallbackBudgetBaseline {
+        schema: FALLBACK_BUDGET_BASELINE_SCHEMA.to_string(),
+        fallback_rows: vec![fallback_budget_entry("smoke")],
+        typed_event_ready_rows: vec![RATCHETED_READY_FIXTURE_ROW.to_string()],
     }
 }
 

@@ -1,0 +1,7 @@
+ratchet-scenario-fallback-budget task evidence after final citations
+
+$ target/ratchet-check-cairn-task-evidence cairn/changes/ratchet-scenario-fallback-budget/tasks.md
+task evidence gate passed: 5 completed tasks checked across 1 task files
+command_exit_status=0
+
+exit_status=0

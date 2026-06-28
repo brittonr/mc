@@ -1,0 +1,108 @@
+ratchet-scenario-fallback-budget validation prearchive
+
+$ target/ratchet-check-scenario-manifest --self-test
+scenario manifest self-test passed: positive and negative fixtures exercised, including wrapper metadata, README links, generated command docs, and stale-output rejection
+command_exit_status=0
+
+$ target/ratchet-check-scenario-manifest
+scenario manifest check passed: 46 rows validated; dry-run coverage: 46 covered, 0 waived, 0 unmaintained; typed-event readiness: 43 ready, 3 fallback; fallback budget: approved=[valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+command_exit_status=0
+
+$ target/ratchet-check-scenario-manifest --check-generated-surfaces
+generated surface check passed: 4 generated surfaces current; fallback budget: approved=[valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+command_exit_status=0
+
+$ nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=517; entries=4693; current=4693; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+command_exit_status=0
+
+$ target/ratchet-check-cairn-task-evidence cairn/changes/ratchet-scenario-fallback-budget/tasks.md
+task evidence gate passed: 4 completed tasks checked across 1 task files
+command_exit_status=0
+
+$ nix run .#cairn -- gate proposal ratchet-scenario-fallback-budget --root .
+{
+  "change": "ratchet-scenario-fallback-budget",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "143ac43d5001fa4fe6fed62b9fed05fab5750867bb73d98fc5d5f3feca9d9afe",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "1411a1094b44f545d0df8a2b70b04ccd7ee4c652beaed2c69a368d3570c00e5b",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+$ nix run .#cairn -- gate design ratchet-scenario-fallback-budget --root .
+{
+  "change": "ratchet-scenario-fallback-budget",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1e3d259151eac4442169d739ce9235468006620e0a61f8809777c81c5692edf3",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "8e917af90ef7189354aec11027a67282a0030858e9197befa4e97b5aa4ce20dd",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+$ nix run .#cairn -- gate tasks ratchet-scenario-fallback-budget --root .
+{
+  "change": "ratchet-scenario-fallback-budget",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d25d82679f79fdf7eb229cfc76b5ae64e8915574c54d0c1ae2821c3f23f969b5",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "101117dd1f4114575de99bfd0fa952ec825ca97441294afac9e70f1f2b50199d",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 6,
+  "valid": true
+}
+command_exit_status=0
+
+exit_status=0

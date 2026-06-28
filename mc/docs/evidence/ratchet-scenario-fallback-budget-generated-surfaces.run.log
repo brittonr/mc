@@ -1,0 +1,11 @@
+ratchet-scenario-fallback-budget generated surface refresh
+
+$ target/ratchet-check-scenario-manifest --write-generated-surfaces
+generated surface write passed: 4 generated surfaces written; fallback budget: approved=[valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+command_exit_status=0
+
+$ target/ratchet-check-scenario-manifest --check-generated-surfaces
+generated surface check passed: 4 generated surfaces current; fallback budget: approved=[valence-compat-bot-probe,vanilla-combat-armor-reference-parity,vanilla-combat-reference-parity]; removed=[]; new=[]; typed_event_regressions=[]; missing_waiver_metadata=[]
+command_exit_status=0
+
+exit_status=0

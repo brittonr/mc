@@ -1,0 +1,30 @@
+ratchet-scenario-fallback-budget sync dry-run
+
+$ nix run .#cairn -- sync ratchet-scenario-fallback-budget --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/ratchet-scenario-fallback-budget/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/ratchet-scenario-fallback-budget/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "ratchet-scenario-fallback-budget",
+  "delta_specs": [
+    "./cairn/changes/ratchet-scenario-fallback-budget/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "1681ed9463bac17a98ba391ea08b0163af9d2feac35dbe2084d6a56ac428fe8d",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "e7c472fd17e23c9dc4bb3bd97daab809b1dd4b744714a759228e789e7d486930",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "e42915d3ec9f51ba79cfe9ce538f909964aab4e6fc5b4ce612e524f6cc09f544"
+}
+command_exit_status=0
+
+exit_status=0
