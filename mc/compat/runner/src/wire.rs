@@ -62,3 +62,7 @@ pub(crate) trait McRead: Read {
 }
 
 impl<T> McRead for T where T: Read + ?Sized {}
+
+#[cfg(test)]
+#[path = "wire_colocated_tests.rs"]
+mod root_colocated_tests;

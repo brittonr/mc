@@ -489,3 +489,7 @@ mod tests {
         assert!(err.contains("paper receipt port"), "{err}");
     }
 }
+
+#[cfg(test)]
+#[path = "receipt_validation_colocated_tests.rs"]
+mod root_colocated_tests;

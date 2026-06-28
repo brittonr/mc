@@ -747,3 +747,7 @@ pub(crate) fn read_status(port: u16, protocol: u32) -> Result<String, String> {
     }
     stream.read_mc_string()
 }
+
+#[cfg(test)]
+#[path = "backend_shell_colocated_tests.rs"]
+mod root_colocated_tests;

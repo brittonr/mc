@@ -388,3 +388,7 @@ fn plan_backend_display_name(backend: &str) -> &str {
         _ => backend,
     }
 }
+
+#[cfg(test)]
+#[path = "planning_colocated_tests.rs"]
+mod root_colocated_tests;

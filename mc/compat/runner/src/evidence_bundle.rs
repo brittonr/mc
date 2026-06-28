@@ -326,3 +326,7 @@ mod tests {
         );
     }
 }
+
+#[cfg(test)]
+#[path = "evidence_bundle_colocated_tests.rs"]
+mod root_colocated_tests;

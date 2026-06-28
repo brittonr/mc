@@ -3827,3 +3827,7 @@ mod tests {
             .unwrap_or_else(|| panic!("missing scenario {scenario:?}"))
     }
 }
+
+#[cfg(test)]
+#[path = "scenario_core_colocated_tests.rs"]
+mod root_colocated_tests;

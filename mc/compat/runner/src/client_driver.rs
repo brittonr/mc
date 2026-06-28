@@ -1354,3 +1354,7 @@ pub(crate) fn read_paper_log(cfg: &Config) -> Result<String, String> {
 pub(crate) fn requires_server_correlation(cfg: &Config) -> bool {
     scenario_behavior(cfg.scenario).requires_server_correlation()
 }
+
+#[cfg(test)]
+#[path = "client_driver_colocated_tests.rs"]
+mod root_colocated_tests;

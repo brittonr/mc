@@ -2529,3 +2529,7 @@ fn field_value<'a>(line: &'a str, field: &str) -> Option<&'a str> {
 fn client_health_needle(health_after: &str) -> String {
     format!("update_health health={health_after}")
 }
+
+#[cfg(test)]
+#[path = "evidence_core_colocated_tests.rs"]
+mod root_colocated_tests;

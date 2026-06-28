@@ -1439,3 +1439,7 @@ fn enriched_triage_json(triage: &EnrichedTriage) -> String {
         boundary_confidence_json = json_string(triage.boundary_confidence),
     )
 }
+
+#[cfg(test)]
+#[path = "receipts_colocated_tests.rs"]
+mod root_colocated_tests;
