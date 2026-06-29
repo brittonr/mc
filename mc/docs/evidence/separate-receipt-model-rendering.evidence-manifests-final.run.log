@@ -1,0 +1,86 @@
+## refresh-check
+command=nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh failed: docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3:26: stale digest for servers/valence/crates/valence_network/src/proxy_broadcast.rs: expected 6042f0ca7c0b0d6f094eb1776cfd5d1fdf4376d7f341abc69effad08190640ae, found 3ad50bbf7f0f8dea53dbe4afe7b278176fc9f6ef78747c8a363b6262b782a3ac
+evidence manifest refresh failed: docs/evidence/profile-cache-rate-limiter-validation.b3:4: stale digest for servers/valence/crates/valence_network/src/profile_cache.rs: expected 9c3f0df6a1e8a8ea96f0684afc033dbbd24c8a970759d75f946bd7be99795c0f, found 637bd52e767612caf9513b7bd84497115982ddbef34ce19bea807669404738a6
+exit_status=1
+
+## manifest-check
+command=nix develop --no-update-lock-file . -c bash -lc rustc --edition=2021 tools/check_evidence_manifests.rs -o target/check-evidence-manifests && target/check-evidence-manifests
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+evidence manifest check failed: ./docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3: b3sum --check failed:
+docs/evidence/introduce-valence-proxy-broadcast-backend-scope.md: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-contract.md: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-pre-implementation-cairn-gates.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-baseline-packet-compose-tests.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-baseline-valence-network-tests.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-broadcast-tests.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-valence-network-fmt-clippy.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-direct-mode-and-dry-runs.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-final-cairn-gates.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-assess-cairn-gates.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-drain-verification.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-sync-dry-run.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-sync-execute.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-post-sync-validate.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-archive-dry-run.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-archive-execute.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-post-archive-validate.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-evidence-manifest-refresh.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-focused-task-evidence-final.run.log: OK
+docs/evidence/introduce-valence-proxy-broadcast-backend-proxy-only-commit-state-tests.run.log: OK
+cairn/specs/valence-hyperion-integration/spec.md: OK
+cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/proposal.md: OK
+cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/design.md: OK
+cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/tasks.md: OK
+cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/specs/valence-hyperion-integration/spec.md: OK
+servers/valence/crates/valence_network/src/proxy_broadcast.rs: FAILED
+b3sum: WARNING: 1 computed checksum did NOT match
+evidence manifest check failed: ./docs/evidence/profile-cache-rate-limiter-validation.b3: b3sum --check failed:
+.gitignore: OK
+servers/valence/crates/valence_network/README.md: OK
+servers/valence/crates/valence_network/src/lib.rs: OK
+servers/valence/crates/valence_network/src/profile_cache.rs: FAILED
+cairn/specs/valence-hyperion-integration/spec.md: OK
+cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/proposal.md: OK
+cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/design.md: OK
+cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/tasks.md: OK
+cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/specs/valence-hyperion-integration/spec.md: OK
+docs/evidence/profile-cache-rate-limiter-scope.md: OK
+docs/evidence/profile-cache-rate-limiter-baseline-gate-proposal.run.log: OK
+docs/evidence/profile-cache-rate-limiter-baseline-gate-design.run.log: OK
+docs/evidence/profile-cache-rate-limiter-baseline-gate-tasks.run.log: OK
+docs/evidence/profile-cache-rate-limiter-baseline-cairn-validate.run.log: OK
+docs/evidence/profile-cache-rate-limiter-baseline-valence-network-auth-digest.run.log: OK
+docs/evidence/profile-cache-rate-limiter-profile-cache-tests.run.log: OK
+docs/evidence/profile-cache-rate-limiter-valence-network-tests.run.log: OK
+docs/evidence/profile-cache-rate-limiter-valence-network-fmt-rerun.run.log: OK
+docs/evidence/profile-cache-rate-limiter-valence-network-clippy-nodeps.run.log: OK
+docs/evidence/profile-cache-rate-limiter-valence-network-clippy-lib-nodeps.run.log: OK
+docs/evidence/profile-cache-rate-limiter-valence-dry-run.run.log: OK
+docs/evidence/profile-cache-rate-limiter-pre-closeout-change-list.run.log: OK
+docs/evidence/profile-cache-rate-limiter-pre-closeout-gate-proposal.run.log: OK
+docs/evidence/profile-cache-rate-limiter-pre-closeout-gate-design.run.log: OK
+docs/evidence/profile-cache-rate-limiter-pre-closeout-gate-tasks.run.log: OK
+docs/evidence/profile-cache-rate-limiter-pre-closeout-validate.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-profile-cache-tests.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-valence-network-tests.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-valence-network-clippy-nodeps.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-valence-dry-run.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-gate-proposal.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-gate-design.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-gate-tasks.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-cairn-validate.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-b3-check.run.log: OK
+docs/evidence/profile-cache-rate-limiter-final-task-evidence.run.log: OK
+docs/evidence/profile-cache-rate-limiter-sync-dry-run.run.log: OK
+docs/evidence/profile-cache-rate-limiter-sync-execute.run.log: OK
+docs/evidence/profile-cache-rate-limiter-post-sync-manual-validate.run.log: OK
+docs/evidence/profile-cache-rate-limiter-archive-dry-run.run.log: OK
+docs/evidence/profile-cache-rate-limiter-archive-execute.run.log: OK
+docs/evidence/profile-cache-rate-limiter-post-archive-cairn-validate.run.log: OK
+docs/evidence/profile-cache-rate-limiter-post-archive-change-list.run.log: OK
+b3sum: WARNING: 1 computed checksum did NOT match
+exit_status=1

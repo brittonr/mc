@@ -24,6 +24,19 @@ const PAIRED_REFERENCE_NON_CLAIMS: &[&str] = &[
 ];
 const EMPTY_SHAPE_STRINGS: &[&str] = &[];
 const PAIRED_REFERENCE_NOT_SELECTED_STATUS: &str = "not-selected";
+const LEGACY_SMOKE_RECEIPT_SCHEMA: &str = "mc.compat.smoke.receipt.v1";
+const RECEIPT_BLAKE3_HEX_CHARS: usize = 64;
+const SCENARIO_RECEIPT_GAMEPLAY_NON_CLAIMS: &[&str] = &[
+    "full_ctf_correctness",
+    "full_survival_compatibility",
+    "vanilla_parity",
+    "broad_minecraft_compatibility",
+    "unbounded_soak",
+    "production_load",
+    "full_projectile_physics",
+    "all_projectile_weapons",
+    "enchantments_or_status_effects",
+];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct PairedReferenceDryRunShape {
@@ -42,6 +55,98 @@ struct PairedReferenceDryRunShape {
     non_claims: &'static [&'static str],
 }
 
+#[derive(Clone, Debug)]
+pub(crate) struct ScenarioReceiptInput<'a> {
+    pub(crate) cfg: &'a Config,
+    pub(crate) result: Result<&'a Option<ClientRunEvidence>, &'a str>,
+    pub(crate) typed_event_oracle: Option<&'a TypedEventOracleArtifact>,
+    pub(crate) child_revisions: &'a ChildRevisionEvidence,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct ScenarioReceiptModel {
+    pub(crate) cfg: Config,
+    pub(crate) result: ScenarioReceiptRunResult,
+    pub(crate) typed_event_oracle: Option<TypedEventOracleArtifact>,
+    pub(crate) child_revisions: ChildRevisionEvidence,
+    pub(crate) schema: &'static str,
+    pub(crate) legacy_schema: &'static str,
+    pub(crate) status: ScenarioReceiptStatus,
+    pub(crate) receipt_path: Option<String>,
+    pub(crate) scenario: ScenarioReceiptScenarioModel,
+    pub(crate) selected_sections: ScenarioReceiptSelectedSections,
+    pub(crate) mcp_control: McpControlReceiptEvidence,
+    pub(crate) frame_artifacts: FrameArtifactsReceiptEvidence,
+    pub(crate) gameplay_non_claims: Vec<&'static str>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) enum ScenarioReceiptRunResult {
+    Pass(Option<ClientRunEvidence>),
+    Fail(String),
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ScenarioReceiptStatus {
+    Pass,
+    Fail,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct ScenarioReceiptScenarioModel {
+    pub(crate) name: String,
+    pub(crate) client: ScenarioEvidence,
+    pub(crate) server: ServerScenarioEvidence,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct ScenarioReceiptSelectedSections {
+    pub(crate) typed_event_oracle: bool,
+    pub(crate) mcp_control: bool,
+    pub(crate) frame_artifacts: bool,
+    pub(crate) projectile_damage_causality: bool,
+    pub(crate) projectile_travel_collision: bool,
+}
+
+impl ScenarioReceiptRunResult {
+    fn from_borrowed(result: Result<&Option<ClientRunEvidence>, &str>) -> Self {
+        match result {
+            Ok(client) => Self::Pass(client.clone()),
+            Err(error) => Self::Fail(error.to_string()),
+        }
+    }
+
+    fn as_borrowed(&self) -> Result<&Option<ClientRunEvidence>, &str> {
+        match self {
+            Self::Pass(client) => Ok(client),
+            Self::Fail(error) => Err(error.as_str()),
+        }
+    }
+
+    fn client(&self) -> Option<&ClientRunEvidence> {
+        match self {
+            Self::Pass(client) => client.as_ref(),
+            Self::Fail(_) => None,
+        }
+    }
+
+    fn status(&self) -> ScenarioReceiptStatus {
+        match self {
+            Self::Pass(_) => ScenarioReceiptStatus::Pass,
+            Self::Fail(_) => ScenarioReceiptStatus::Fail,
+        }
+    }
+}
+
+impl ScenarioReceiptStatus {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Pass => "pass",
+            Self::Fail => "fail",
+        }
+    }
+}
+
 #[cfg(test)]
 pub(crate) fn smoke_receipt_json(
     cfg: &Config,
@@ -50,12 +155,247 @@ pub(crate) fn smoke_receipt_json(
     smoke_receipt_json_with_typed_event_oracle(cfg, result, None)
 }
 
+#[cfg(test)]
 pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
     cfg: &Config,
     result: Result<&Option<ClientRunEvidence>, &str>,
     typed_event_oracle: Option<&TypedEventOracleArtifact>,
 ) -> String {
-    let status = if result.is_ok() { "pass" } else { "fail" };
+    let child_revisions = child_revision_evidence_for_receipt(cfg);
+    let input = ScenarioReceiptInput {
+        cfg,
+        result,
+        typed_event_oracle,
+        child_revisions: &child_revisions,
+    };
+    let model = build_scenario_receipt_model(input);
+    render_scenario_receipt_model_json(&model)
+}
+
+pub(crate) fn build_scenario_receipt_model(
+    input: ScenarioReceiptInput<'_>,
+) -> ScenarioReceiptModel {
+    let result = ScenarioReceiptRunResult::from_borrowed(input.result);
+    let client = result.client();
+    let fallback_scenario = evaluate_scenario_for_config(input.cfg, "");
+    let scenario = client
+        .and_then(|evidence| evidence.scenario.clone())
+        .unwrap_or(fallback_scenario);
+    let fallback_server =
+        evaluate_server_scenario(input.cfg.scenario, "", &input.cfg.client_username);
+    let server = client
+        .and_then(|evidence| evidence.server_scenario.clone())
+        .unwrap_or(fallback_server);
+    let mcp_control =
+        evaluate_mcp_control_receipt(input.cfg, &input.child_revisions.client, client);
+    let frame_artifacts = evaluate_frame_artifacts_receipt(input.cfg, client);
+    let selected_sections = ScenarioReceiptSelectedSections {
+        typed_event_oracle: input.typed_event_oracle.is_some(),
+        mcp_control: mcp_control.selected,
+        frame_artifacts: frame_artifacts.selected,
+        projectile_damage_causality: scenario_behavior(input.cfg.scenario)
+            .uses_dynamic_projectile_health(),
+        projectile_travel_collision: input.cfg.scenario == Scenario::ProjectileHit,
+    };
+    let status = result.status();
+
+    ScenarioReceiptModel {
+        cfg: input.cfg.clone(),
+        result,
+        typed_event_oracle: input.typed_event_oracle.cloned(),
+        child_revisions: input.child_revisions.clone(),
+        schema: SCENARIO_RECEIPT_SCHEMA,
+        legacy_schema: LEGACY_SMOKE_RECEIPT_SCHEMA,
+        status,
+        receipt_path: input
+            .cfg
+            .receipt_path
+            .as_ref()
+            .map(|path| path.display().to_string()),
+        scenario: ScenarioReceiptScenarioModel {
+            name: scenario_name(input.cfg.scenario).to_string(),
+            client: scenario,
+            server,
+        },
+        selected_sections,
+        mcp_control,
+        frame_artifacts,
+        gameplay_non_claims: SCENARIO_RECEIPT_GAMEPLAY_NON_CLAIMS.to_vec(),
+    }
+}
+
+pub(crate) fn render_scenario_receipt_model_json(model: &ScenarioReceiptModel) -> String {
+    render_scenario_receipt_model_json_unvalidated(model)
+}
+
+pub(crate) fn validate_scenario_receipt_model(model: &ScenarioReceiptModel) -> Result<(), String> {
+    if model.schema != SCENARIO_RECEIPT_SCHEMA {
+        return Err(format!(
+            "unexpected scenario receipt schema {}",
+            model.schema
+        ));
+    }
+    if model.legacy_schema != LEGACY_SMOKE_RECEIPT_SCHEMA {
+        return Err(format!(
+            "unexpected legacy receipt schema {}",
+            model.legacy_schema
+        ));
+    }
+    validate_scenario_receipt_non_claims(&model.gameplay_non_claims)?;
+    validate_scenario_receipt_identity(model)?;
+    validate_scenario_receipt_status(model)?;
+    validate_typed_event_model_artifact(model)?;
+    validate_frame_artifact_model_evidence(&model.frame_artifacts)?;
+    validate_mcp_control_model_evidence(&model.mcp_control)?;
+    Ok(())
+}
+
+pub(crate) fn validate_rendered_scenario_receipt_json(text: &str) -> Result<(), String> {
+    ensure_unique_json_field(text, "schema", "scenario receipt")?;
+    ensure_unique_json_field(text, "legacy_schema", "scenario receipt")?;
+    ensure_unique_json_field(text, "status", "scenario receipt")?;
+    ensure_unique_json_field(text, "dry_run", "scenario receipt")?;
+    let contract = json_object_slice(text, "contract")?;
+    ensure_unique_json_field(contract, "claims_correctness", "scenario receipt contract")?;
+    ensure_unique_json_field(
+        contract,
+        "claims_semantic_equivalence",
+        "scenario receipt contract",
+    )?;
+    Ok(())
+}
+
+fn validate_scenario_receipt_non_claims(non_claims: &[&str]) -> Result<(), String> {
+    for required in SCENARIO_RECEIPT_GAMEPLAY_NON_CLAIMS {
+        if !non_claims.iter().any(|claim| claim == required) {
+            return Err(format!("scenario receipt missing non_claim {required}"));
+        }
+    }
+    Ok(())
+}
+
+fn validate_scenario_receipt_identity(model: &ScenarioReceiptModel) -> Result<(), String> {
+    let expected_name = scenario_name(model.cfg.scenario);
+    if model.scenario.name != expected_name {
+        return Err(format!(
+            "scenario receipt model name mismatch: expected {expected_name}, found {}",
+            model.scenario.name
+        ));
+    }
+    if let Some(path) = &model.receipt_path {
+        validate_receipt_artifact_path_str("receipt", path)?;
+    }
+    let _client_passed = model.scenario.client.passed;
+    let _server_passed = model.scenario.server.passed;
+    Ok(())
+}
+
+fn validate_scenario_receipt_status(model: &ScenarioReceiptModel) -> Result<(), String> {
+    if model.status == ScenarioReceiptStatus::Fail {
+        return Ok(());
+    }
+    if model.cfg.mode == Mode::DryRun {
+        return Ok(());
+    }
+    let Some(client) = model.result.client() else {
+        return Err("passing live receipt missing client evidence".to_string());
+    };
+    if client.classification.is_empty() {
+        return Err("passing live receipt missing client classification".to_string());
+    }
+    if client.matched_success_pattern.is_none() {
+        return Err("passing live receipt missing matched success pattern".to_string());
+    }
+    Ok(())
+}
+
+fn validate_typed_event_model_artifact(model: &ScenarioReceiptModel) -> Result<(), String> {
+    if !model.selected_sections.typed_event_oracle {
+        return Ok(());
+    }
+    let Some(artifact) = &model.typed_event_oracle else {
+        return Err("typed event oracle selected without artifact evidence".to_string());
+    };
+    validate_receipt_artifact_path("typed event oracle", &artifact.event_log_path)?;
+    validate_receipt_blake3_hex("typed event oracle", &artifact.timeline_blake3)?;
+    if artifact.event_count == 0 {
+        return Err("typed event oracle selected with zero events".to_string());
+    }
+    Ok(())
+}
+
+fn validate_frame_artifact_model_evidence(
+    frame_artifacts: &FrameArtifactsReceiptEvidence,
+) -> Result<(), String> {
+    if !frame_artifacts.selected {
+        return Ok(());
+    }
+    if !frame_artifacts.path_containment_checked {
+        return Err("frame artifacts missing path containment check".to_string());
+    }
+    if frame_artifacts.artifact_count == 0 || frame_artifacts.artifacts.is_empty() {
+        return Err("frame artifacts selected without artifact evidence".to_string());
+    }
+    if frame_artifacts.artifact_count != frame_artifacts.artifacts.len() {
+        return Err("frame artifact count does not match artifact evidence".to_string());
+    }
+    for artifact in &frame_artifacts.artifacts {
+        validate_receipt_artifact_path_str("frame artifacts", &artifact.path)?;
+        validate_receipt_artifact_path_str("frame artifacts", &artifact.relative_path)?;
+        validate_receipt_blake3_hex("frame artifacts", &artifact.blake3)?;
+    }
+    Ok(())
+}
+
+fn validate_mcp_control_model_evidence(mcp: &McpControlReceiptEvidence) -> Result<(), String> {
+    if !mcp.selected {
+        return Ok(());
+    }
+    if !mcp.dry_run_fixture && !mcp.live_receipt {
+        return Err("mcp_control selected without dry-run or live evidence".to_string());
+    }
+    if !mcp.handshake_success {
+        return Err("mcp_control selected without handshake success".to_string());
+    }
+    if !mcp.stdout_clean {
+        return Err("mcp_control selected without clean stdout".to_string());
+    }
+    Ok(())
+}
+
+fn validate_receipt_artifact_path(label: &str, path: &Path) -> Result<(), String> {
+    let Some(value) = path.to_str() else {
+        return Err(format!("{label} artifact path is not UTF-8"));
+    };
+    validate_receipt_artifact_path_str(label, value)
+}
+
+fn validate_receipt_artifact_path_str(label: &str, value: &str) -> Result<(), String> {
+    if value.is_empty() || value.contains('\0') {
+        return Err(format!("{label} artifact path is empty or contains NUL"));
+    }
+    if Path::new(value)
+        .components()
+        .any(|component| matches!(component, std::path::Component::ParentDir))
+    {
+        return Err(format!("{label} artifact path escapes evidence root"));
+    }
+    Ok(())
+}
+
+fn validate_receipt_blake3_hex(label: &str, value: &str) -> Result<(), String> {
+    if value.len() == RECEIPT_BLAKE3_HEX_CHARS && value.chars().all(|ch| ch.is_ascii_hexdigit()) {
+        return Ok(());
+    }
+    Err(format!("{label} has malformed BLAKE3 digest"))
+}
+
+fn render_scenario_receipt_model_json_unvalidated(model: &ScenarioReceiptModel) -> String {
+    let cfg = &model.cfg;
+    let result = model.result.as_borrowed();
+    let typed_event_oracle = model.typed_event_oracle.as_ref();
+    let child_revisions = &model.child_revisions;
+    let status = model.status.as_str();
     let error = result.err();
     let client = result.ok().and_then(|client| client.as_ref());
     let receipt_path = cfg
@@ -80,12 +420,8 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
     let matched_pattern = client.and_then(|evidence| evidence.matched_success_pattern.as_deref());
     let classification = client.map(|evidence| evidence.classification);
     let exit_code = client.and_then(|evidence| evidence.exit_code);
-    let scenario_evidence = client.and_then(|evidence| evidence.scenario.as_ref());
-    let fallback_scenario = evaluate_scenario_for_config(cfg, "");
-    let scenario = scenario_evidence.unwrap_or(&fallback_scenario);
-    let server_evidence = client.and_then(|evidence| evidence.server_scenario.as_ref());
-    let fallback_server = evaluate_server_scenario(cfg.scenario, "", &cfg.client_username);
-    let server_scenario = server_evidence.unwrap_or(&fallback_server);
+    let scenario = &model.scenario.client;
+    let server_scenario = &model.scenario.server;
     let projectile_damage_causality =
         client.and_then(|evidence| evidence.projectile_damage_causality.as_ref());
     let fallback_projectile_damage_causality =
@@ -486,11 +822,10 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
             "resource_reset_state",
         ],
     };
-    let child_revisions = child_revision_evidence_for_receipt(cfg);
-    let mcp_control = evaluate_mcp_control_receipt(cfg, &child_revisions.client, client);
-    let mcp_control_json = render_mcp_control_receipt_json(&mcp_control);
-    let frame_artifacts = evaluate_frame_artifacts_receipt(cfg, client);
-    let frame_artifacts_json = render_frame_artifacts_receipt_json(&frame_artifacts);
+    let mcp_control = &model.mcp_control;
+    let mcp_control_json = render_mcp_control_receipt_json(mcp_control);
+    let frame_artifacts = &model.frame_artifacts;
+    let frame_artifacts_json = render_frame_artifacts_receipt_json(frame_artifacts);
     let typed_event_oracle_json = typed_event_oracle_receipt_json(typed_event_oracle);
     let biome_dimension_join_state = evaluate_biome_dimension_join_state(
         cfg.scenario,
@@ -753,17 +1088,7 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
         "mcp_stdout_clean",
         "mcp_command_outcome",
     ];
-    let gameplay_non_claims: Vec<&str> = vec![
-        "full_ctf_correctness",
-        "full_survival_compatibility",
-        "vanilla_parity",
-        "broad_minecraft_compatibility",
-        "unbounded_soak",
-        "production_load",
-        "full_projectile_physics",
-        "all_projectile_weapons",
-        "enchantments_or_status_effects",
-    ];
+    let gameplay_non_claims = model.gameplay_non_claims.clone();
     let paired_reference_dry_run_shape =
         build_paired_reference_dry_run_shape(cfg.scenario, cfg.mode == Mode::DryRun);
     let paired_reference_dry_run_shape_json =
@@ -788,17 +1113,19 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
     let exit_code_json = exit_code
         .map(|code| code.to_string())
         .unwrap_or_else(|| "null".to_string());
+    let schema_json = json_string(model.schema);
+    let legacy_schema_json = json_string(model.legacy_schema);
 
     format!(
         r#"{{
-  "schema": "mc.compat.scenario.receipt.v2",
-  "legacy_schema": "mc.compat.smoke.receipt.v1",
+  "schema": {schema_json},
+  "legacy_schema": {legacy_schema_json},
   "status": {status_json},
   "mode": {mode_json},
   "dry_run": {dry_run},
   "contract": {{
-    "cairn_contract": "mc.compat.scenario.receipt.v2",
-    "legacy_cairn_contract": "mc.compat.smoke.receipt.v1",
+    "cairn_contract": {schema_json},
+    "legacy_cairn_contract": {legacy_schema_json},
     "octet_producer_surface": "compat/runner/src/main.rs",
     "claims_correctness": false,
     "claims_semantic_equivalence": false
@@ -935,6 +1262,8 @@ pub(crate) fn smoke_receipt_json_with_typed_event_oracle(
   "error": {error_json}
 }}
 "#,
+        schema_json = schema_json,
+        legacy_schema_json = legacy_schema_json,
         status_json = json_string(status),
         mode_json = json_string(mode_name(cfg.mode)),
         dry_run = cfg.mode == Mode::DryRun,

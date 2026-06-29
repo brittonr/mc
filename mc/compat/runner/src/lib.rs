@@ -61,9 +61,12 @@ use json_support::*;
 use planning::{
     format_plan_diagnostics, harness_plan_from_config, log_harness_plan, scenario_route_non_claims,
 };
-use receipts::smoke_receipt_json_with_typed_event_oracle;
 #[cfg(test)]
 use receipts::{build_enriched_triage, smoke_receipt_json, EnrichedTriageInput};
+use receipts::{
+    build_scenario_receipt_model, render_scenario_receipt_model_json,
+    validate_rendered_scenario_receipt_json, validate_scenario_receipt_model, ScenarioReceiptInput,
+};
 use wire::{McRead, McWrite};
 
 use layout::{resolve_repository_layout, resolve_valence_source_dir, LayoutResolutionMode};
@@ -3387,26 +3390,40 @@ fn write_smoke_receipt(
     let Some(path) = &cfg.receipt_path else {
         return Ok(());
     };
-    if let Some(parent) = path
-        .parent()
-        .filter(|parent| !parent.as_os_str().is_empty())
-    {
-        fs::create_dir_all(parent)
-            .map_err(|e| format!("create receipt dir {}: {e}", parent.display()))?;
-    }
+    ensure_receipt_parent_dir(path)?;
     let client = match result {
         Ok(client) => client.as_ref(),
         Err(_) => None,
     };
     let typed_event_oracle = write_typed_event_oracle_artifact(cfg, client, path)?;
-    let json = smoke_receipt_json_with_typed_event_oracle(
+    let child_revisions = child_revision_evidence_for_receipt(cfg);
+    let model = build_scenario_receipt_model(ScenarioReceiptInput {
         cfg,
-        result.map_err(|err| err.as_str()),
-        typed_event_oracle.as_ref(),
-    );
-    fs::write(path, json).map_err(|e| format!("write receipt {}: {e}", path.display()))?;
+        result: result.map_err(|err| err.as_str()),
+        typed_event_oracle: typed_event_oracle.as_ref(),
+        child_revisions: &child_revisions,
+    });
+    validate_scenario_receipt_model(&model)?;
+    let json = render_scenario_receipt_model_json(&model);
+    validate_rendered_scenario_receipt_json(&json)?;
+    write_receipt_json_file(path, &json)?;
     log(format_args!("wrote smoke receipt {}", path.display()));
     Ok(())
+}
+
+fn ensure_receipt_parent_dir(path: &Path) -> Result<(), String> {
+    let Some(parent) = path
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+    else {
+        return Ok(());
+    };
+    fs::create_dir_all(parent)
+        .map_err(|err| format!("create receipt dir {}: {err}", parent.display()))
+}
+
+fn write_receipt_json_file(path: &Path, json: &str) -> Result<(), String> {
+    fs::write(path, json).map_err(|err| format!("write receipt {}: {err}", path.display()))
 }
 
 fn write_typed_event_oracle_artifact(

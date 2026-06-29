@@ -1,0 +1,26 @@
+command=nix run .#cairn -- sync separate-receipt-model-rendering --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/separate-receipt-model-rendering/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/separate-receipt-model-rendering/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "separate-receipt-model-rendering",
+  "delta_specs": [
+    "./cairn/changes/separate-receipt-model-rendering/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "90eeb18d488d95fa2dca036b849898dc3ff7d6dd5379e9a9bd47f3c594a03157",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "cffc3cbd9bb09deed82deaba5c53cc8fdf75d758ccbf264561c3065adbb9c6b4",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "0c6fac6d15f2ab4a0891998e8733c32bd041c03f6a53efad7b31e27a16c12bd1"
+}
+exit_status=0

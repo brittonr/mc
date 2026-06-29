@@ -90,6 +90,10 @@ const RECEIPT_REQUIRED_MCP_NON_CLAIM: &str = "semantic_equivalence";
 const RECEIPT_REQUIRED_FRAME_NON_CLAIM: &str = "semantic_equivalence";
 const RECEIPT_BLAKE3_HEX_CHARS: usize = 64;
 const RECEIPT_PARSE_ERROR_PREVIEW_CHARS: usize = 240;
+const RECEIPT_VALID_BLAKE3_HEX: &str =
+    "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+const RECEIPT_TEST_CLIENT_REV: &str = "test-client-revision";
+const RECEIPT_TEST_VALENCE_REV: &str = "test-valence-revision";
 
 fn parse_structured_receipt_summary(text: &str) -> Result<StructuredReceiptSummary, String> {
     ensure_unique_receipt_field(text, "schema", "receipt")?;
@@ -465,6 +469,282 @@ fn structured_receipt_from_text(text: &str) -> Result<StructuredReceiptSummary, 
     let summary = parse_structured_receipt_summary(text)?;
     validate_structured_receipt_summary(&summary)?;
     Ok(summary)
+}
+
+fn dry_run_child_revisions(cfg: &Config) -> ChildRevisionEvidence {
+    ChildRevisionEvidence {
+        client: GitRevisionEvidence::dry_run(None),
+        valence: GitRevisionEvidence::dry_run(Some(cfg.valence_rev.clone())),
+    }
+}
+
+fn clean_child_revisions(cfg: &Config) -> ChildRevisionEvidence {
+    ChildRevisionEvidence {
+        client: GitRevisionEvidence {
+            requested_rev: None,
+            resolved_rev: Some(RECEIPT_TEST_CLIENT_REV.to_string()),
+            status: GIT_STATUS_CLEAN,
+            dirty: false,
+            diagnostics: Vec::new(),
+        },
+        valence: GitRevisionEvidence {
+            requested_rev: Some(cfg.valence_rev.clone()),
+            resolved_rev: Some(RECEIPT_TEST_VALENCE_REV.to_string()),
+            status: GIT_STATUS_CLEAN,
+            dirty: false,
+            diagnostics: Vec::new(),
+        },
+    }
+}
+
+fn receipt_model_for_test(
+    cfg: &Config,
+    result: Result<&Option<ClientRunEvidence>, &str>,
+    typed_event_oracle: Option<&TypedEventOracleArtifact>,
+    child_revisions: &ChildRevisionEvidence,
+) -> ScenarioReceiptModel {
+    build_scenario_receipt_model(ScenarioReceiptInput {
+        cfg,
+        result,
+        typed_event_oracle,
+        child_revisions,
+    })
+}
+
+fn assert_receipt_model_renders(model: &ScenarioReceiptModel, expected_scenario: &str) -> String {
+    validate_scenario_receipt_model(model).expect("typed receipt model validates");
+    let json = render_scenario_receipt_model_json(model);
+    validate_rendered_scenario_receipt_json(&json).expect("rendered receipt validates");
+    assert!(json.contains(expected_scenario), "{json}");
+    json
+}
+
+#[test]
+fn scenario_receipt_model_captures_structural_inputs_before_rendering() {
+    let cfg = test_config(&["--scenario=survival-break-place-pickup"], &[])
+        .expect("dry-run config parses");
+    let child_revisions = dry_run_child_revisions(&cfg);
+    let model = receipt_model_for_test(&cfg, Ok(&None), None, &child_revisions);
+
+    assert_eq!(model.schema, RECEIPT_SCHEMA_V2);
+    assert_eq!(model.legacy_schema, "mc.compat.smoke.receipt.v1");
+    assert_eq!(model.status, ScenarioReceiptStatus::Pass);
+    assert_eq!(model.scenario.name, "survival-break-place-pickup");
+    assert!(!model.scenario.client.passed);
+    assert!(!model.scenario.server.passed);
+    assert!(!model.selected_sections.typed_event_oracle);
+    assert!(!model.selected_sections.mcp_control);
+    assert!(!model.selected_sections.frame_artifacts);
+    assert!(!model.selected_sections.projectile_damage_causality);
+    assert!(model
+        .gameplay_non_claims
+        .iter()
+        .any(|claim| *claim == RECEIPT_REQUIRED_GAMEPLAY_NON_CLAIM));
+
+    let json = assert_receipt_model_renders(&model, "survival-break-place-pickup");
+    let receipt = structured_receipt_from_text(&json).expect("rendered dry receipt validates");
+    assert_eq!(receipt.schema, RECEIPT_SCHEMA_V2);
+    assert!(receipt.dry_run);
+}
+
+#[test]
+fn scenario_receipt_model_positive_paths_cover_required_shapes() {
+    let dry_cfg = test_config(&["--scenario=survival-break-place-pickup"], &[])
+        .expect("dry-run config parses");
+    let dry_revisions = dry_run_child_revisions(&dry_cfg);
+    let dry_model = receipt_model_for_test(&dry_cfg, Ok(&None), None, &dry_revisions);
+    let dry_json = assert_receipt_model_renders(&dry_model, "survival-break-place-pickup");
+    assert!(dry_json.contains("\"dry_run\": true"), "{dry_json}");
+
+    let fail_cfg =
+        test_config(&["--receipt=/tmp/receipt.json"], &[]).expect("failure receipt config parses");
+    let fail_revisions = dry_run_child_revisions(&fail_cfg);
+    let fail_model = receipt_model_for_test(&fail_cfg, Err("preflight"), None, &fail_revisions);
+    let fail_json = assert_receipt_model_renders(&fail_model, "smoke");
+    assert!(fail_json.contains("\"status\": \"fail\""), "{fail_json}");
+
+    let multi_cfg = test_config(&["--run", "--scenario", "multi-client-load-score"], &[])
+        .expect("multi-client config parses");
+    let multi_client = Some(ClientRunEvidence {
+        log_path: Some(PathBuf::from("/tmp/multi-client.log")),
+        log_paths: vec![
+            PathBuf::from("/tmp/multi-client-a.log"),
+            PathBuf::from("/tmp/multi-client-b.log"),
+        ],
+        usernames: vec!["compatbota".to_string(), "compatbotb".to_string()],
+        exit_code: Some(124),
+        classification: "multi-client-load-evidence",
+        matched_success_pattern: Some("Detected server protocol version".to_string()),
+        scenario: Some(evaluate_scenario(
+            Scenario::MultiClientLoadScore,
+            "mc_compat_multi_client_count=2\nDetected server protocol version 763\njoin_game\nrender_tick_with_player\nYou are on team RED!\nYou have the flag!\nYou captured the flag!\nRED: 1\n",
+        )),
+        server_scenario: Some(evaluate_server_scenario(
+            Scenario::MultiClientLoadScore,
+            "compatbota joined\ncompatbotb joined\nred flag captured\n",
+            "compatbot",
+        )),
+        projectile_damage_causality: None,
+        projectile_travel_collision: None,
+        mcp_control: None,
+        frame_artifacts: None,
+    });
+    let multi_revisions = clean_child_revisions(&multi_cfg);
+    let multi_model = receipt_model_for_test(&multi_cfg, Ok(&multi_client), None, &multi_revisions);
+    let multi_json = assert_receipt_model_renders(&multi_model, "multi-client-load-score");
+    let multi_receipt =
+        structured_receipt_from_text(&multi_json).expect("multi-client rendered receipt validates");
+    assert_eq!(
+        multi_receipt.client_classification.as_deref(),
+        Some("multi-client-load-evidence")
+    );
+
+    let projectile_cfg = test_config(&["--scenario", "projectile-damage-attribution"], &[])
+        .expect("projectile config parses");
+    let projectile_client = Some(projectile_damage_dry_run_evidence(&projectile_cfg));
+    let projectile_revisions = dry_run_child_revisions(&projectile_cfg);
+    let projectile_model = receipt_model_for_test(
+        &projectile_cfg,
+        Ok(&projectile_client),
+        None,
+        &projectile_revisions,
+    );
+    assert!(
+        projectile_model
+            .selected_sections
+            .projectile_damage_causality
+    );
+    let projectile_json =
+        assert_receipt_model_renders(&projectile_model, "projectile-damage-attribution");
+    assert!(
+        projectile_json.contains("\"projectile_damage_causality\""),
+        "{projectile_json}"
+    );
+
+    let mcp_cfg = test_config(&["--scenario", MCP_CONTROLLED_SMOKE_SCENARIO], &[])
+        .expect("mcp-controlled config parses");
+    let mcp_client = Some(mcp_controlled_dry_run_evidence(&mcp_cfg));
+    let mcp_revisions = dry_run_child_revisions(&mcp_cfg);
+    let mcp_model = receipt_model_for_test(&mcp_cfg, Ok(&mcp_client), None, &mcp_revisions);
+    assert!(mcp_model.selected_sections.mcp_control);
+    let mcp_json = assert_receipt_model_renders(&mcp_model, MCP_CONTROLLED_SMOKE_SCENARIO);
+    assert!(mcp_json.contains("\"mcp_control\""), "{mcp_json}");
+
+    let events = typed_event_fixture();
+    let timeline = normalize_typed_event_timeline(&events);
+    let typed_artifact = TypedEventOracleArtifact {
+        event_log_path: PathBuf::from("/tmp/mc-compat.typed-events.log"),
+        timeline_blake3: typed_event_timeline_blake3(&timeline),
+        event_count: events.len(),
+        contributes_to_pass_fail: true,
+    };
+    let typed_model =
+        receipt_model_for_test(&dry_cfg, Ok(&None), Some(&typed_artifact), &dry_revisions);
+    assert!(typed_model.selected_sections.typed_event_oracle);
+    let typed_json = assert_receipt_model_renders(&typed_model, "survival-break-place-pickup");
+    assert!(
+        typed_json.contains("\"typed_event_oracle\""),
+        "{typed_json}"
+    );
+    assert!(typed_json.contains("\"event_count\": 3"), "{typed_json}");
+}
+
+#[test]
+fn failure_bundle_model_rendering_path_remains_diagnostic_only() {
+    let cfg = test_config(&["--scenario", "smoke"], &[]).expect("failure bundle config parses");
+    let artifact = FailureBundleArtifact {
+        kind: FAILURE_BUNDLE_ARTIFACT_RECEIPT.to_string(),
+        path: "docs/evidence/failure-receipt.json".to_string(),
+        blake3: RECEIPT_VALID_BLAKE3_HEX.to_string(),
+    };
+    let bundle =
+        failure_bundle_from_config(&cfg, "scenario missing required milestone", vec![artifact]);
+
+    validate_failure_evidence_bundle(&bundle).expect("failure bundle model validates");
+    let json = render_failure_evidence_bundle_json(&bundle);
+
+    assert!(json.contains("\"diagnostic_only\": true"), "{json}");
+    assert!(
+        json.contains("\"claims_scenario_success\": false"),
+        "{json}"
+    );
+    assert!(
+        json.contains(FAILURE_BUNDLE_NON_CLAIM_SEMANTIC_EQUIVALENCE),
+        "{json}"
+    );
+}
+
+#[test]
+fn scenario_receipt_model_negative_inputs_fail_closed() {
+    let live_cfg =
+        test_config(&["--run", "--scenario", "smoke"], &[]).expect("live smoke config parses");
+    let clean_revisions = clean_child_revisions(&live_cfg);
+    let missing_client = receipt_model_for_test(&live_cfg, Ok(&None), None, &clean_revisions);
+    let err = validate_scenario_receipt_model(&missing_client)
+        .expect_err("passing live receipt without client evidence fails closed");
+    assert!(err.contains("client evidence"), "{err}");
+
+    let dry_cfg = test_config(&["--scenario=survival-break-place-pickup"], &[])
+        .expect("dry-run config parses");
+    let dry_revisions = dry_run_child_revisions(&dry_cfg);
+    let valid_model = receipt_model_for_test(&dry_cfg, Ok(&None), None, &dry_revisions);
+    let json = render_scenario_receipt_model_json(&valid_model);
+    let duplicate_status = json.replacen(
+        "\"status\": \"pass\",",
+        "\"status\": \"pass\",\n  \"status\": \"pass\",",
+        1,
+    );
+    let err = validate_rendered_scenario_receipt_json(&duplicate_status)
+        .expect_err("duplicate rendered fields fail closed");
+    assert!(err.contains("duplicate field status"), "{err}");
+
+    let malformed_path_artifact = TypedEventOracleArtifact {
+        event_log_path: PathBuf::from("../escape.log"),
+        timeline_blake3: RECEIPT_VALID_BLAKE3_HEX.to_string(),
+        event_count: typed_event_fixture().len(),
+        contributes_to_pass_fail: true,
+    };
+    let malformed_path_model = receipt_model_for_test(
+        &dry_cfg,
+        Ok(&None),
+        Some(&malformed_path_artifact),
+        &dry_revisions,
+    );
+    let err = validate_scenario_receipt_model(&malformed_path_model)
+        .expect_err("malformed artifact path fails closed");
+    assert!(err.contains("escapes"), "{err}");
+
+    let invalid_digest_artifact = TypedEventOracleArtifact {
+        event_log_path: PathBuf::from("/tmp/mc-compat.typed-events.log"),
+        timeline_blake3: "not-a-blake3-digest".to_string(),
+        event_count: typed_event_fixture().len(),
+        contributes_to_pass_fail: true,
+    };
+    let invalid_digest_model = receipt_model_for_test(
+        &dry_cfg,
+        Ok(&None),
+        Some(&invalid_digest_artifact),
+        &dry_revisions,
+    );
+    let err = validate_scenario_receipt_model(&invalid_digest_model)
+        .expect_err("invalid artifact digest fails closed");
+    assert!(err.contains("BLAKE3"), "{err}");
+
+    let mut unsupported_selected = valid_model.clone();
+    unsupported_selected.frame_artifacts = FrameArtifactsReceiptEvidence {
+        selected: true,
+        capture_requested: true,
+        artifact_count: 0,
+        artifacts: Vec::new(),
+        missing_digests: Vec::new(),
+        path_containment_checked: true,
+        promotion_ready: false,
+        non_claims: FRAME_ARTIFACT_NON_CLAIMS.to_vec(),
+    };
+    unsupported_selected.selected_sections.frame_artifacts = true;
+    let err = validate_scenario_receipt_model(&unsupported_selected)
+        .expect_err("selected frame artifact without evidence fails closed");
+    assert!(err.contains("without artifact evidence"), "{err}");
 }
 
 #[test]
