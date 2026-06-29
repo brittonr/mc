@@ -1,0 +1,15 @@
+command=rg mc_compatibility\.stevenarella_modularity cairn/specs/mc-compatibility/spec.md
+cwd=/home/brittonr/git/mc
+r[mc_compatibility.stevenarella_modularity.server_boundaries] Stevenarella server session code SHOULD be split into cohesive modules for session lifecycle, packet dispatch, world and dimension state, chunks, entities, inventory/window behavior, plugin messages, and compat-probe shells.
+r[mc_compatibility.stevenarella_modularity.server_boundaries.ownership]
+r[mc_compatibility.stevenarella_modularity.handler_functional_core] Non-trivial Stevenarella packet-handler decisions SHOULD live in pure deterministic cores that take explicit inputs and return decisions or state updates for the shell to apply.
+r[mc_compatibility.stevenarella_modularity.handler_functional_core.testable]
+r[mc_compatibility.stevenarella_modularity.server_parity] Stevenarella server modularization MUST preserve the public `Server` API, protocol behavior, compat milestone vocabulary, typed-event hooks, MCP/control boundaries, and evidence non-claims.
+r[mc_compatibility.stevenarella_modularity.server_parity.stable]
+r[mc_compatibility.stevenarella_modularity.server_positive_tests] The change MUST include positive tests for representative packet-family decisions, dispatch routing, dimension/world updates, inventory/window behavior, plugin-message routing, and compat-probe scheduling.
+r[mc_compatibility.stevenarella_modularity.server_positive_tests.coverage]
+r[mc_compatibility.stevenarella_modularity.server_negative_tests] The change MUST include negative tests for unsupported packets, malformed state summaries, invalid inventory/window actions, unknown plugin channels, missing dimension data, and disabled compat probes.
+r[mc_compatibility.stevenarella_modularity.server_negative_tests.fail_closed]
+r[mc_compatibility.stevenarella_modularity.server_validation] The change MUST record focused Stevenarella tests, affected mc-compat dry-runs, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+r[mc_compatibility.stevenarella_modularity.server_validation.logs]
+exit_status=0

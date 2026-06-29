@@ -36,12 +36,19 @@ use std::sync::{Arc, RwLock};
 use std::thread;
 use steven_protocol::item;
 
+mod chunks;
+mod compat_probes;
+mod dispatch;
+mod entities;
+mod inventory;
 mod login;
 pub mod plugin_messages;
 mod probes;
 mod scenario_contracts_generated;
+mod session;
 mod sun;
 pub mod target;
+mod world_state;
 
 use self::probes::*;
 
@@ -327,19 +334,6 @@ pub struct PlayerInfo {
     gamemode: Gamemode,
 }
 
-macro_rules! handle_packet {
-    ($s:ident $pck:ident {
-        $($packet:ident => $func:ident,)*
-    }) => (
-        match $pck {
-        $(
-            protocol::packet::Packet::$packet(val) => $s.$func(val),
-        )*
-            _ => {},
-        }
-    )
-}
-
 impl Server {
     pub fn connect(
         resources: resources::SharedManager,
@@ -356,12 +350,12 @@ impl Server {
         let mut conn = protocol::Conn::new(address, protocol_version)?;
         info!("MC-COMPAT-MILESTONE tcp_connected");
 
-        let host = conn.host.clone() + login::fml_handshake_tag(fml_network_version);
-        let port = conn.port;
+        let handshake_target =
+            session::handshake_target(&conn.host, conn.port, fml_network_version);
         conn.write_packet(protocol::packet::handshake::serverbound::Handshake {
             protocol_version: protocol::VarInt(protocol_version),
-            host,
-            port,
+            host: handshake_target.host,
+            port: handshake_target.port,
             next: protocol::VarInt(login::LOGIN_HANDSHAKE_NEXT_STATE),
         })?;
         info!("MC-COMPAT-MILESTONE handshake_sent next=login");
@@ -779,15 +773,9 @@ impl Server {
                 .filter(|probe| !probe.is_empty() && probe != "0"),
             negative_probe_sent: false,
             negative_probe_outcome_logged: false,
-            active_probe_enabled: std::env::var("MC_COMPAT_ACTIVE_PROBE")
-                .map(|value| value != "0")
-                .unwrap_or(false),
-            team_probe_enabled: std::env::var("MC_COMPAT_TEAM_PROBE")
-                .map(|value| value != "0")
-                .unwrap_or(false),
-            combat_probe_enabled: std::env::var("MC_COMPAT_COMBAT_PROBE")
-                .map(|value| value != "0")
-                .unwrap_or(false),
+            active_probe_enabled: session::env_flag_from_env("MC_COMPAT_ACTIVE_PROBE"),
+            team_probe_enabled: session::env_flag_from_env("MC_COMPAT_TEAM_PROBE"),
+            combat_probe_enabled: session::env_flag_from_env("MC_COMPAT_COMBAT_PROBE"),
             stationary_combat_probe_enabled: std::env::var(STATIONARY_COMBAT_PROBE_ENV)
                 .map(|value| value != "0")
                 .unwrap_or(false),
@@ -1124,36 +1112,38 @@ impl Server {
     }
 
     fn apply_mc_compat_active_probe(&mut self) {
-        if !self.active_probe_enabled
-            && !self.team_probe_enabled
-            && !self.combat_probe_enabled
-            && !self.respawn_probe_enabled
-            && !self.inventory_probe_enabled
-            && !self.inventory_stack_split_merge_probe_enabled
-            && !self.inventory_drag_transactions_probe_enabled
-            && !self.equipment_probe_enabled
-            && !self.projectile_probe_enabled
-            && !self.flag_probe_enabled
-            && !self.score_limit_probe_enabled
-            && !self.survival_probe_enabled
-            && !self.survival_chest_probe_enabled
-            && !self.survival_crafting_probe_enabled
-            && !self.survival_crafting_breadth_probe_enabled
-            && !self.survival_furnace_probe_enabled
-            && !self.survival_furnace_smelting_breadth_probe_enabled
-            && !self.survival_hunger_food_probe_enabled
-            && !self.survival_hunger_health_probe_enabled
-            && !self.survival_mob_drop_probe_enabled
-            && !self.survival_mob_ai_loot_probe_enabled
-            && !self.survival_redstone_toggle_probe_enabled
-            && !self.survival_redstone_circuit_probe_enabled
-            && !self.survival_world_persistence_probe_enabled
-            && !self.survival_block_entity_probe_enabled
-            && !self.survival_world_multichunk_probe_enabled
-            && !self.survival_container_block_entity_probe_enabled
-            && !self.survival_biome_dimension_travel_probe_enabled
-            && !self.survival_sign_editing_probe_enabled
-        {
+        let probe_enablement = compat_probes::ProbeEnablement {
+            active: self.active_probe_enabled,
+            team: self.team_probe_enabled,
+            combat: self.combat_probe_enabled,
+            respawn: self.respawn_probe_enabled,
+            inventory: self.inventory_probe_enabled,
+            inventory_stack_split_merge: self.inventory_stack_split_merge_probe_enabled,
+            inventory_drag_transactions: self.inventory_drag_transactions_probe_enabled,
+            equipment: self.equipment_probe_enabled,
+            projectile: self.projectile_probe_enabled,
+            flag: self.flag_probe_enabled,
+            score_limit: self.score_limit_probe_enabled,
+            survival: self.survival_probe_enabled,
+            survival_chest: self.survival_chest_probe_enabled,
+            survival_crafting: self.survival_crafting_probe_enabled,
+            survival_crafting_breadth: self.survival_crafting_breadth_probe_enabled,
+            survival_furnace: self.survival_furnace_probe_enabled,
+            survival_furnace_smelting_breadth: self.survival_furnace_smelting_breadth_probe_enabled,
+            survival_hunger_food: self.survival_hunger_food_probe_enabled,
+            survival_hunger_health: self.survival_hunger_health_probe_enabled,
+            survival_mob_drop: self.survival_mob_drop_probe_enabled,
+            survival_mob_ai_loot: self.survival_mob_ai_loot_probe_enabled,
+            survival_redstone_toggle: self.survival_redstone_toggle_probe_enabled,
+            survival_redstone_circuit: self.survival_redstone_circuit_probe_enabled,
+            survival_world_persistence: self.survival_world_persistence_probe_enabled,
+            survival_block_entity: self.survival_block_entity_probe_enabled,
+            survival_world_multichunk: self.survival_world_multichunk_probe_enabled,
+            survival_container_block_entity: self.survival_container_block_entity_probe_enabled,
+            survival_biome_dimension_travel: self.survival_biome_dimension_travel_probe_enabled,
+            survival_sign_editing: self.survival_sign_editing_probe_enabled,
+        };
+        if !probe_enablement.any_enabled() {
             return;
         }
 
@@ -1165,18 +1155,8 @@ impl Server {
 
         let stationary_combat_probe_enabled =
             self.combat_probe_enabled && self.stationary_combat_probe_enabled;
-        let movement_probe_enabled = !stationary_combat_probe_enabled
-            && (self.active_probe_enabled
-                || self.team_probe_enabled
-                || self.combat_probe_enabled
-                || self.respawn_probe_enabled
-                || self.inventory_probe_enabled
-                || self.inventory_stack_split_merge_probe_enabled
-                || self.inventory_drag_transactions_probe_enabled
-                || self.equipment_probe_enabled
-                || self.projectile_probe_enabled
-                || self.flag_probe_enabled
-                || self.score_limit_probe_enabled);
+        let movement_probe_enabled =
+            probe_enablement.movement_probe_enabled(stationary_combat_probe_enabled);
         if movement_probe_enabled {
             if let Some(movement) = self
                 .entities
@@ -1727,7 +1707,7 @@ impl Server {
             && !self.inventory_drag_transactions_probe_enabled
             && self.active_probe_ticks >= 680
             && self.inventory_probe_block_place_sent
-            && self.inventory_probe_state_id > 0
+            && inventory::window_state_is_ready(self.inventory_probe_state_id)
             && !self.negative_probe_sent
             && self.negative_probe_is("inventory_stale_state")
         {
@@ -1764,7 +1744,7 @@ impl Server {
             && !self.inventory_drag_transactions_probe_enabled
             && self.active_probe_ticks >= 680
             && self.inventory_probe_block_place_sent
-            && self.inventory_probe_state_id > 0
+            && inventory::window_state_is_ready(self.inventory_probe_state_id)
             && !self.negative_probe_sent
             && self.negative_probe_is("inventory_invalid_click")
         {
@@ -1792,7 +1772,7 @@ impl Server {
             && !self.inventory_drag_transactions_probe_enabled
             && self.active_probe_ticks >= 680
             && self.inventory_probe_block_place_sent
-            && self.inventory_probe_state_id > 0
+            && inventory::window_state_is_ready(self.inventory_probe_state_id)
             && !self.inventory_probe_click_sent
             && !self.negative_inventory_probe_selected()
         {
@@ -2088,127 +2068,7 @@ impl Server {
             .unwrap()
             .delta = delta;
 
-        // Packets modify entities so need to handled here
-        if let Some(rx) = self.read_queue.take() {
-            while let Ok(pck) = rx.try_recv() {
-                match pck {
-                    Ok(pck) => handle_packet! {
-                        self pck {
-                            PluginMessageClientbound_i16 => on_plugin_message_clientbound_i16,
-                            PluginMessageClientbound => on_plugin_message_clientbound_1,
-                            JoinGame_WorldNames_IsHard_SimDist_LastDeath_PortalCooldown => on_game_join_worldnames_ishard_simdist_lastdeath_portal,
-                            JoinGame_WorldNames_IsHard_SimDist => on_game_join_worldnames_ishard_simdist,
-                            JoinGame_WorldNames_IsHard => on_game_join_worldnames_ishard,
-                            JoinGame_WorldNames => on_game_join_worldnames,
-                            JoinGame_HashedSeed_Respawn => on_game_join_hashedseed_respawn,
-                            JoinGame_i32_ViewDistance => on_game_join_i32_viewdistance,
-                            JoinGame_i32 => on_game_join_i32,
-                            JoinGame_i8 => on_game_join_i8,
-                            JoinGame_i8_NoDebug => on_game_join_i8_nodebug,
-                            Respawn_Gamemode => on_respawn_gamemode,
-                            Respawn_HashedSeed => on_respawn_hashedseed,
-                            Respawn_WorldName => on_respawn_worldname,
-                            Respawn_WorldNames_LastDeath_PortalCooldown => on_respawn_worldnames_lastdeath_portal,
-                            Respawn_NBT => on_respawn_nbt,
-                            KeepAliveClientbound_i64 => on_keep_alive_i64,
-                            KeepAliveClientbound_VarInt => on_keep_alive_varint,
-                            KeepAliveClientbound_i32 => on_keep_alive_i32,
-                            ChunkData_AndLight => on_chunk_data_and_light,
-                            ChunkData_AndLight_NoTrustEdges => on_chunk_data_and_light_no_trust_edges,
-                            ChunkData_Biomes3D_Bitmasks => on_chunk_data_biomes3d_bitmasks,
-                            ChunkData_Biomes3D_VarInt => on_chunk_data_biomes3d_varint,
-                            ChunkData_Biomes3D_bool => on_chunk_data_biomes3d_bool,
-                            ChunkData => on_chunk_data,
-                            ChunkData_Biomes3D => on_chunk_data_biomes3d,
-                            ChunkData_HeightMap => on_chunk_data_heightmap,
-                            ChunkData_NoEntities => on_chunk_data_no_entities,
-                            ChunkData_NoEntities_u16 => on_chunk_data_no_entities_u16,
-                            ChunkData_17 => on_chunk_data_17,
-                            ChunkDataBulk => on_chunk_data_bulk,
-                            ChunkDataBulk_17 => on_chunk_data_bulk_17,
-                            ChunkUnload => on_chunk_unload,
-                            BlockChange_VarInt => on_block_change_varint,
-                            BlockChange_u8 => on_block_change_u8,
-                            MultiBlockChange_Packed => on_multi_block_change_packed,
-                            MultiBlockChange_VarInt => on_multi_block_change_varint,
-                            MultiBlockChange_u16 => on_multi_block_change_u16,
-                            TeleportPlayer_WithDismount => on_teleport_player_withdismount,
-                            TeleportPlayer_WithConfirm => on_teleport_player_withconfirm,
-                            TeleportPlayer_NoConfirm => on_teleport_player_noconfirm,
-                            TeleportPlayer_OnGround => on_teleport_player_onground,
-                            TimeUpdate => on_time_update,
-                            ChangeGameState => on_game_state_change,
-                            UpdateHealth => on_update_health,
-                            WindowOpen_VarInt => on_window_open_varint,
-                            WindowItems_StateCarry => on_window_items_state_carry,
-                            WindowSetSlot_State => on_window_set_slot_state,
-                            CollectItem => on_collect_item,
-                            SetCurrentHotbarSlot => on_set_current_hotbar_slot,
-                            DeathMessage_VarInt => on_death_message_varint,
-                            PlayerRemove_UUIDs => on_player_remove_uuids,
-                            UpdateBlockEntity_VarInt => on_block_entity_update_varint,
-                            UpdateBlockEntity_u8 => on_block_entity_update_u8,
-                            UpdateBlockEntity_Data => on_block_entity_update_data,
-                            UpdateLight_Arrays => on_update_light_arrays,
-                            SignEditorOpen => on_sign_editor_open,
-                            SignEditorOpen_i32 => on_sign_editor_open_i32,
-                            UpdateSign => on_sign_update,
-                            UpdateSign_u16 => on_sign_update_u16,
-                            PlayerInfo => on_player_info,
-                            PlayerInfo_BitSet => on_player_info_bit_set,
-                            PlayerInfo_String => on_player_info_string,
-                            ServerMessage_NoPosition => on_servermessage_noposition,
-                            ServerMessage_Position => on_servermessage_position,
-                            ServerMessage_Sender => on_servermessage_sender,
-                            Disconnect => on_disconnect,
-                            // Entities
-                            EntityDestroy => on_entity_destroy,
-                            EntityDestroy_u8 => on_entity_destroy_u8,
-                            SpawnObject_VarInt_HeadYaw => on_spawn_object_varint_head_yaw,
-                            SpawnObject_VarInt => on_spawn_object_varint,
-                            SpawnMob_NoMeta => on_spawn_mob_no_meta,
-                            SpawnPlayer_f64_NoMeta => on_player_spawn_f64_nometa,
-                            SpawnPlayer_f64 => on_player_spawn_f64,
-                            SpawnPlayer_i32 => on_player_spawn_i32,
-                            SpawnPlayer_i32_HeldItem => on_player_spawn_i32_helditem,
-                            SpawnPlayer_i32_HeldItem_String => on_player_spawn_i32_helditem_string,
-                            EntityEquipment_Array => on_entity_equipment_array,
-                            EntityVelocity => on_entity_velocity,
-                            EntityVelocity_i32 => on_entity_velocity_i32,
-                            EntityTeleport_f64 => on_entity_teleport_f64,
-                            EntityTeleport_i32 => on_entity_teleport_i32,
-                            EntityTeleport_i32_i32_NoGround => on_entity_teleport_i32_i32_noground,
-                            EntityMove_i16 => on_entity_move_i16,
-                            EntityMove_i8 => on_entity_move_i8,
-                            EntityMove_i8_i32_NoGround => on_entity_move_i8_i32_noground,
-                            EntityLook_VarInt => on_entity_look_varint,
-                            EntityLook_i32_NoGround => on_entity_look_i32_noground,
-                            EntityLookAndMove_i16 => on_entity_look_and_move_i16,
-                            EntityLookAndMove_i8 => on_entity_look_and_move_i8,
-                            EntityLookAndMove_i8_i32_NoGround => on_entity_look_and_move_i8_i32_noground,
-                        }
-                    },
-                    Err(err) => {
-                        if std::env::var("MC_COMPAT_IGNORE_DECODE_ERRORS")
-                            .map(|value| value != "0")
-                            .unwrap_or(false)
-                        {
-                            warn!("MC-COMPAT-NONFATAL packet_parse_ignored");
-                            continue;
-                        }
-                        panic!("Err: {:?}", err)
-                    }
-                }
-                // Disconnected
-                if self.conn.read().unwrap().is_none() {
-                    break;
-                }
-            }
-
-            if self.conn.read().unwrap().is_some() {
-                self.read_queue = Some(rx);
-            }
-        }
+        dispatch::drain_read_queue(self);
 
         if self.is_connected() || self.just_disconnected {
             // Allow an extra tick when disconnected to clean up
@@ -2546,10 +2406,10 @@ impl Server {
             );
         }
 
-        match channel {
-            "REGISTER" => {}   // TODO
-            "UNREGISTER" => {} // TODO
-            "FML|HS" => {
+        match plugin_messages::classify_clientbound_channel(channel) {
+            plugin_messages::ClientboundPluginChannel::Register => {} // TODO
+            plugin_messages::ClientboundPluginChannel::Unregister => {} // TODO
+            plugin_messages::ClientboundPluginChannel::ForgeHandshake => {
                 let msg = crate::protocol::Serializable::read_from(&mut std::io::Cursor::new(data))
                     .unwrap();
                 //debug!("FML|HS msg={:?}", msg);
@@ -2635,7 +2495,7 @@ impl Server {
                     _ => (),
                 }
             }
-            _ => (),
+            plugin_messages::ClientboundPluginChannel::Unknown => (),
         }
     }
 
@@ -2666,6 +2526,12 @@ impl Server {
             "MC-COMPAT-MILESTONE join_game_763_shape dimension_type={} world={} portal_cooldown={}",
             join.dimension_type_name, join.world_name, join.portal_cooldown.0
         );
+        if !world_state::has_dimension_codec_selection(
+            join.dimension_type_name.as_str(),
+            join.world_name.as_str(),
+        ) {
+            warn!("MC-COMPAT-NONFATAL missing_dimension_selection");
+        }
         self.world.load_dimension_type_from_registry(
             join.dimension_codec.as_ref(),
             join.dimension_type_name.as_str(),
@@ -2718,10 +2584,13 @@ impl Server {
     }
 
     fn log_survival_biome_dimension_state(&self, dimension_type_name: &str, world_name: &str) {
-        let normalized_identifier = derive_survival_environment_id(dimension_type_name, world_name);
+        let state = world_state::survival_dimension_state(dimension_type_name, world_name);
         info!(
             "MC-COMPAT-MILESTONE survival_biome_dimension_state spawn_environment={} environment_identifier={} client_environment_update={} normalized_identifier={}",
-            normalized_identifier, world_name, dimension_type_name, normalized_identifier
+            state.spawn_environment,
+            state.environment_identifier,
+            state.client_environment_update,
+            state.normalized_identifier
         );
     }
 
@@ -2919,7 +2788,9 @@ impl Server {
         velocity_y: i16,
         velocity_z: i16,
     ) {
-        if self.combat_probe_enabled && (velocity_x != 0 || velocity_y != 0 || velocity_z != 0) {
+        if self.combat_probe_enabled
+            && entities::has_observable_velocity(velocity_x, velocity_y, velocity_z)
+        {
             info!(
                 "MC-COMPAT-MILESTONE combat_probe_velocity_observed entity_id={} vx={} vy={} vz={}",
                 entity_id, velocity_x, velocity_y, velocity_z
@@ -2927,11 +2798,8 @@ impl Server {
         }
         if let Some(entity) = self.entity_map.get(&entity_id) {
             if let Some(velocity) = self.entities.get_component_mut(*entity, self.velocity) {
-                velocity.velocity = cgmath::Vector3::new(
-                    f64::from(velocity_x) / 8000.0,
-                    f64::from(velocity_y) / 8000.0,
-                    f64::from(velocity_z) / 8000.0,
-                );
+                velocity.velocity =
+                    entities::entity_velocity_blocks_per_tick(velocity_x, velocity_y, velocity_z);
             }
         }
     }
@@ -6099,7 +5967,7 @@ impl Server {
         &mut self,
         chunk_data: packet::play::clientbound::ChunkData_AndLight,
     ) {
-        if !self.logged_first_chunk {
+        if chunks::should_log_first_chunk(self.logged_first_chunk) {
             info!(
                 "MC-COMPAT-MILESTONE first_chunk_data chunk_x={} chunk_z={}",
                 chunk_data.chunk_x, chunk_data.chunk_z
@@ -6159,7 +6027,7 @@ impl Server {
         &mut self,
         chunk_data: packet::play::clientbound::ChunkData_AndLight_NoTrustEdges,
     ) {
-        if !self.logged_first_chunk {
+        if chunks::should_log_first_chunk(self.logged_first_chunk) {
             info!(
                 "MC-COMPAT-MILESTONE first_chunk_data chunk_x={} chunk_z={}",
                 chunk_data.chunk_x, chunk_data.chunk_z

@@ -2,6 +2,23 @@ use crate::protocol::packet::play::serverbound::PluginMessageServerbound;
 use crate::protocol::packet::play::serverbound::PluginMessageServerbound_i16;
 use crate::protocol::{Serializable, VarShort};
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum ClientboundPluginChannel {
+    Register,
+    Unregister,
+    ForgeHandshake,
+    Unknown,
+}
+
+pub(crate) fn classify_clientbound_channel(channel: &str) -> ClientboundPluginChannel {
+    match channel {
+        "REGISTER" => ClientboundPluginChannel::Register,
+        "UNREGISTER" => ClientboundPluginChannel::Unregister,
+        "FML|HS" => ClientboundPluginChannel::ForgeHandshake,
+        _ => ClientboundPluginChannel::Unknown,
+    }
+}
+
 pub struct Brand {
     pub brand: String,
 }
@@ -32,5 +49,34 @@ impl Brand {
             channel: "MC|Brand".into(),
             data: crate::protocol::LenPrefixedBytes::<VarShort>::new(data),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const REGISTER_CHANNEL: &str = "REGISTER";
+    const FORGE_CHANNEL: &str = "FML|HS";
+    const UNKNOWN_CHANNEL: &str = "mc_compat:unknown";
+
+    #[test]
+    fn classifies_supported_plugin_channels() {
+        assert_eq!(
+            classify_clientbound_channel(REGISTER_CHANNEL),
+            ClientboundPluginChannel::Register
+        );
+        assert_eq!(
+            classify_clientbound_channel(FORGE_CHANNEL),
+            ClientboundPluginChannel::ForgeHandshake
+        );
+    }
+
+    #[test]
+    fn unknown_plugin_channel_fails_closed() {
+        assert_eq!(
+            classify_clientbound_channel(UNKNOWN_CHANNEL),
+            ClientboundPluginChannel::Unknown
+        );
     }
 }

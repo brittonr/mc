@@ -1,0 +1,5 @@
+command=nix run .#evidence-manifest-refresh -- --check
+cwd=/home/brittonr/git/mc
+evidence manifest refresh failed: docs/evidence/extract-stevenarella-login-core.evidence.b3:1: stale digest for clients/stevenarella/src/server/mod.rs: expected 7a319f0f8e552660683840c3ffe7262c771554124e8ab70ab8d170d78c97608c, found 566daa03c9ada900266ebcaffe72044b8ab337c046d4b538b8110ff8a8587ca3
+evidence manifest refresh failed: docs/evidence/protocol-763-ctf-invalid-action-live-breadth-2026-06-22.b3:35: stale digest for clients/stevenarella/src/server/mod.rs: expected 7a319f0f8e552660683840c3ffe7262c771554124e8ab70ab8d170d78c97608c, found 566daa03c9ada900266ebcaffe72044b8ab337c046d4b538b8110ff8a8587ca3
+exit_status=1

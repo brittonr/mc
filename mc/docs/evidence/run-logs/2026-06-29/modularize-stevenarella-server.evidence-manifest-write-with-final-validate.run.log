@@ -1,0 +1,34 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c bash -lc b3sum \
+  docs/evidence/oracles/2026-06-29/modularize-stevenarella-server.md \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.preflight-gate-proposal.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.preflight-gate-design.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.preflight-gate-tasks.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.preflight-validate.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.baseline-server-tests.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.post-module-split-server-tests.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.post-cargo-fmt.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.post-fmt-server-tests.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.post-stevenarella-cargo-check.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.post-stevenarella-wrapper-dry-run.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.post-mc-compat-smoke-valence-dry-run.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.final-cairn-gates-validate.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.task-evidence-active.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.sync-dry-run.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.sync-execute.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.accepted-spec-verify.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.post-sync-validate.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.archive-dry-run.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.archive-execute.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.post-archive-validate.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.change-list-post-archive.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.task-evidence-archive.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.evidence-manifest-refresh-final.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.evidence-manifest-check-final.run.log \
+  docs/evidence/run-logs/2026-06-29/modularize-stevenarella-server.final-validate.run.log \
+  > docs/evidence/manifests/2026-06-29/modularize-stevenarella-server.b3
+cwd=/home/brittonr/git/mc
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+exit_status=0
