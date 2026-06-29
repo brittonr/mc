@@ -1,0 +1,25 @@
+command=refresh docs/evidence/*.b3 rows that cite other docs/evidence/*.b3 files without nix
+cwd=/home/brittonr/git/mc
+refreshed=docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.b3 target=docs/evidence/protocol-763-armor-loadout-enchantment-status-validation-2026-05-29.b3 pass=1
+refreshed=docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.b3 target=docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.b3 pass=1
+refreshed=docs/evidence/extract-stevenarella-login-core.evidence.b3 target=docs/evidence/protocol-763-ctf-invalid-action-live-breadth-2026-06-22.b3 pass=1
+refreshed=docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.b3 target=docs/evidence/protocol-763-equipment-slot-item-expansion-validation-2026-05-29.b3 pass=1
+refreshed=docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.b3 target=docs/evidence/protocol-763-production-network-safety-gate-2026-05-28.b3 pass=1
+refreshed=docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.b3 target=docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.b3 pass=1
+refreshed=docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.b3 target=docs/evidence/protocol-763-survival-coverage-reference-parity-sync-2026-05-28.b3 pass=1
+refreshed=docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.b3 target=docs/evidence/protocol-763-survival-coverage-reference-parity-sync-2026-05-28.b3 pass=1
+refreshed=docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.b3 target=docs/evidence/protocol-763-survival-reference-paper-fixture-gate-2026-05-28.b3 pass=1
+refreshed=docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.b3 target=docs/evidence/protocol-763-survival-reference-parity-gate-2026-05-28.b3 pass=1
+refreshed=docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.b3 target=docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.b3 pass=1
+refreshed=docs/evidence/stevenarella-frame-post-archive-provenance-2026-05-31.b3 target=docs/evidence/stevenarella-frame-archive-validation-2026-05-31.b3 pass=1
+refreshed=docs/evidence/survival-mob-drop-post-archive-validation-2026-06-02.b3 target=docs/evidence/survival-mob-drop-archive-2026-06-02.b3 pass=1
+refreshed=docs/evidence/targeted-packet-promotions-archive-2026-06-06.b3 target=docs/evidence/targeted-packet-promotions-spec-sync-2026-06-06.b3 pass=1
+refreshed=docs/evidence/targeted-packet-promotions-post-sync-checks-2026-06-06.b3 target=docs/evidence/targeted-packet-promotions-spec-sync-2026-06-06.b3 pass=1
+refreshed=docs/evidence/vanilla-combat-armor-reference-post-archive-validation-2026-06-04.b3 target=docs/evidence/vanilla-combat-armor-reference-archive-2026-06-04.b3 pass=1
+pass=1 changed=1
+refreshed=docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.b3 target=docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.b3 pass=2
+refreshed=docs/evidence/targeted-packet-promotions-post-archive-checks-2026-06-06.b3 target=docs/evidence/targeted-packet-promotions-archive-2026-06-06.b3 pass=2
+refreshed=docs/evidence/targeted-packet-promotions-post-archive-checks-2026-06-06.b3 target=docs/evidence/targeted-packet-promotions-post-sync-checks-2026-06-06.b3 pass=2
+pass=2 changed=1
+pass=3 changed=0
+exit_status=0

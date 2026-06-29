@@ -1,0 +1,82 @@
+command=CAIRN_ARCHIVE_DATE=2026-06-29 nix run .#cairn -- archive split-stevenarella-renderer-core --root . --execute
+cwd=/home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: split-stevenarella-renderer-core",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-29-split-stevenarella-renderer-core"
+    }
+  ],
+  "blocked": false,
+  "change": "split-stevenarella-renderer-core",
+  "dry_run": false,
+  "input_hash": "b9554b8acdfda4f8d593af15ec70eeedb4437b847c55657eb0b4b245dd49bfd4",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "6ecabf07ba0865e6989883fee3b0ca4d752257c60ddc4719c107042a1145efe3",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-split-stevenarella-renderer-core/design.md"
+        },
+        {
+          "content_hash": "f2f72bb9547a64c02979987584b36dcb00fe2ef5a95091c98328c758a10d3ed8",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-split-stevenarella-renderer-core/proposal.md"
+        },
+        {
+          "content_hash": "13aecc616fd15c0806dcc84037ad06765b2cb8627bf7ce315b907b2550d7dcf2",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-split-stevenarella-renderer-core/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "1459ff5c9ec25a3b9e9137c316b12f5f0a6291aea027d98a2f5306588256295f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-split-stevenarella-renderer-core/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/split-stevenarella-renderer-core"
+        }
+      ],
+      "manifest_hash": "765ee45ac8371763dad913235398e9940bce44422777c870f270353fa3fbb84d"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "6ecabf07ba0865e6989883fee3b0ca4d752257c60ddc4719c107042a1145efe3",
+          "exists": true,
+          "path": "./cairn/changes/split-stevenarella-renderer-core/design.md"
+        },
+        {
+          "content_hash": "f2f72bb9547a64c02979987584b36dcb00fe2ef5a95091c98328c758a10d3ed8",
+          "exists": true,
+          "path": "./cairn/changes/split-stevenarella-renderer-core/proposal.md"
+        },
+        {
+          "content_hash": "13aecc616fd15c0806dcc84037ad06765b2cb8627bf7ce315b907b2550d7dcf2",
+          "exists": true,
+          "path": "./cairn/changes/split-stevenarella-renderer-core/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "1459ff5c9ec25a3b9e9137c316b12f5f0a6291aea027d98a2f5306588256295f",
+          "exists": true,
+          "path": "./cairn/changes/split-stevenarella-renderer-core/tasks.md"
+        }
+      ],
+      "manifest_hash": "4bae268010d338572480fbe06b7dd64264645e3d385753a69b2a5cd1f2cab0cd"
+    },
+    "kind": "archive",
+    "manifest_hash": "10473bf12b5d5ea7994aae8215b9fe1e7ef7733bdfb64c28582820d46ae91684"
+  },
+  "plan_hash": "ae75cbcba6e2d32efb2bc7f6f06596d2feb651e2e9013f0c4ba6e8373d466123",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "bde1d3458614a1accdd39439fdc131e1598b899b5ceefb4d98e4530ec288b9f1"
+}
+exit_status=0

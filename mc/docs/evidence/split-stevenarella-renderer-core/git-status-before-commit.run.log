@@ -1,0 +1,164 @@
+ M mc/cairn/specs/mc-compatibility/spec.md
+ M mc/clients/stevenarella/src/game_shell/capture_startup.rs
+ M mc/clients/stevenarella/src/render/mod.rs
+ M mc/docs/evidence/block-entity-sign-packet-family-2026-06-06.b3
+ M mc/docs/evidence/canonical-evidence-gate-wording-2026-06-19.b3
+ M mc/docs/evidence/ctf-rule-typed-event-migration-wave-2026-06-22.b3
+ M mc/docs/evidence/data-drive-scenario-behavior.b3
+ M mc/docs/evidence/data-drive-stevenarella-protocol-versions.b3
+ M mc/docs/evidence/decouple-mc-compat-runner-shell-validation.b3
+ M mc/docs/evidence/evidence-manifest-refresh-2026-06-06.b3
+ M mc/docs/evidence/extract-client-driver-core-validation.b3
+ M mc/docs/evidence/extract-stevenarella-login-core.evidence.b3
+ M mc/docs/evidence/extract-valence-entity-attribute-core.evidence.b3
+ M mc/docs/evidence/introduce-scenario-command-router-2026-06-24.b3
+ M mc/docs/evidence/inventory-drag-transactions-2026-06-06.b3
+ M mc/docs/evidence/inventory-stack-split-merge-2026-06-05.b3
+ M mc/docs/evidence/manifests/2026-06-29/introduce-runner-env-patches.b3
+ M mc/docs/evidence/manifests/2026-06-29/modularize-stevenarella-ui-widgets.b3
+ M mc/docs/evidence/manifests/2026-06-29/modularize-survival-compat-fixture.validation.b3
+ M mc/docs/evidence/manifests/2026-06-29/modularize-valence-ctf-fixture.validation.b3
+ M mc/docs/evidence/manifests/2026-06-29/separate-stevenarella-block-registry.b3
+ M mc/docs/evidence/mcp-controlled-compat-rail-manifest-refresh-2026-05-31.b3
+ M mc/docs/evidence/mcp-controlled-smoke-typed-event-migration-2026-06-22.b3
+ M mc/docs/evidence/modularize-valence-network-session.b3
+ M mc/docs/evidence/movement-packet-family-2026-06-06.b3
+ M mc/docs/evidence/projectile-travel-collision-live-rail-2026-06-27.b3
+ M mc/docs/evidence/protocol-763-armor-loadout-enchantment-status-validation-2026-05-29.b3
+ M mc/docs/evidence/protocol-763-broad-coverage-ledger-gate-2026-05-28.b3
+ M mc/docs/evidence/protocol-763-ctf-invalid-action-live-breadth-2026-06-22.b3
+ M mc/docs/evidence/protocol-763-ctf-simultaneous-pickup-capture-race-validation-2026-06-01.b3
+ M mc/docs/evidence/protocol-763-equipment-slot-item-expansion-validation-2026-05-29.b3
+ M mc/docs/evidence/protocol-763-production-network-safety-gate-2026-05-28.b3
+ M mc/docs/evidence/protocol-763-public-server-authorized-safety-2026-05-30.b3
+ M mc/docs/evidence/protocol-763-python-gate-rust-migration-2026-05-31.b3
+ M mc/docs/evidence/protocol-763-survival-coverage-reference-parity-sync-2026-05-28.b3
+ M mc/docs/evidence/protocol-763-survival-reference-paper-fixture-gate-2026-05-28.b3
+ M mc/docs/evidence/protocol-763-survival-reference-parity-gate-2026-05-28.b3
+ M mc/docs/evidence/protocol-763-wan-tolerance-bounded-telemetry-2026-05-29.b3
+ M mc/docs/evidence/ratchet-scenario-fallback-budget-2026-06-28.b3
+ M mc/docs/evidence/runner-scenario-modules-2026-06-06.b3
+ M mc/docs/evidence/scenario-behavior-traits-2026-06-06.b3
+ M mc/docs/evidence/scoreboard-team-packet-family-2026-06-06.b3
+ M mc/docs/evidence/separate-compat-instrumentation-validation-2026-06-23.b3
+ M mc/docs/evidence/separate-receipt-model-rendering.b3
+ M mc/docs/evidence/server-correlation-rail-2026-06-18.b3
+ M mc/docs/evidence/sign-editor-live-rail-2026-06-07.b3
+ M mc/docs/evidence/split-stevenarella-capture-service-validation-2026-06-29.b3
+ M mc/docs/evidence/stevenarella-frame-archive-validation-2026-05-31.b3
+ M mc/docs/evidence/stevenarella-frame-post-archive-provenance-2026-05-31.b3
+ M mc/docs/evidence/survival-biome-dimension-archive-2026-06-01.b3
+ M mc/docs/evidence/survival-block-entity-persistence-archive-2026-06-04.b3
+ M mc/docs/evidence/survival-chest-typed-event-2026-06-22.b3
+ M mc/docs/evidence/survival-crafting-recipe-breadth-typed-event-2026-06-22.b3
+ M mc/docs/evidence/survival-crash-recovery-archive-2026-06-04.b3
+ M mc/docs/evidence/survival-furnace-smelting-typed-event-2026-06-22.b3
+ M mc/docs/evidence/survival-furnace-typed-event-2026-06-22.b3
+ M mc/docs/evidence/survival-hunger-food-typed-event-2026-06-25.b3
+ M mc/docs/evidence/survival-hunger-health-cycle-typed-event-2026-06-22.b3
+ M mc/docs/evidence/survival-mob-drop-archive-2026-06-02.b3
+ M mc/docs/evidence/survival-mob-drop-post-archive-validation-2026-06-02.b3
+ M mc/docs/evidence/survival-mob-drop-typed-event-2026-06-25.b3
+ M mc/docs/evidence/survival-redstone-toggle-typed-event-2026-06-25.b3
+ M mc/docs/evidence/survival-remaining-breadth-typed-event-migration-2026-06-22.b3
+ M mc/docs/evidence/targeted-packet-live-kv-schema-2026-06-07.b3
+ M mc/docs/evidence/targeted-packet-live-parity-2026-06-06.b3
+ M mc/docs/evidence/targeted-packet-promotions-archive-2026-06-06.b3
+ M mc/docs/evidence/targeted-packet-promotions-post-archive-checks-2026-06-06.b3
+ M mc/docs/evidence/targeted-packet-promotions-post-sync-checks-2026-06-06.b3
+ M mc/docs/evidence/targeted-packet-promotions-spec-sync-2026-06-06.b3
+ M mc/docs/evidence/vanilla-combat-armor-reference-archive-2026-06-04.b3
+ M mc/docs/evidence/vanilla-combat-armor-reference-post-archive-validation-2026-06-04.b3
+ M mc/servers/valence/crates/valence_network/src/profile_cache.rs
+ M mc/servers/valence/crates/valence_network/src/proxy_broadcast.rs
+?? mc/cairn/archive/2026-06-28-extract-stevenarella-world-core/design.md
+?? mc/cairn/archive/2026-06-28-extract-stevenarella-world-core/proposal.md
+?? mc/cairn/archive/2026-06-28-extract-stevenarella-world-core/specs/mc-compatibility/spec.md
+?? mc/cairn/archive/2026-06-28-extract-stevenarella-world-core/tasks.md
+?? mc/cairn/archive/2026-06-29-split-stevenarella-renderer-core/design.md
+?? mc/cairn/archive/2026-06-29-split-stevenarella-renderer-core/proposal.md
+?? mc/cairn/archive/2026-06-29-split-stevenarella-renderer-core/specs/mc-compatibility/spec.md
+?? mc/cairn/archive/2026-06-29-split-stevenarella-renderer-core/tasks.md
+?? mc/cairn/changes/split-stevenarella-resource-manager/design.md
+?? mc/cairn/changes/split-stevenarella-resource-manager/proposal.md
+?? mc/cairn/changes/split-stevenarella-resource-manager/specs/mc-compatibility/spec.md
+?? mc/cairn/changes/split-stevenarella-resource-manager/tasks.md
+?? mc/cairn/changes/split-valence-anvil-snapshot-core/design.md
+?? mc/cairn/changes/split-valence-anvil-snapshot-core/proposal.md
+?? mc/cairn/changes/split-valence-anvil-snapshot-core/specs/mc-compatibility/spec.md
+?? mc/cairn/changes/split-valence-anvil-snapshot-core/tasks.md
+?? mc/cairn/changes/split-valence-command-example/design.md
+?? mc/cairn/changes/split-valence-command-example/proposal.md
+?? mc/cairn/changes/split-valence-command-example/specs/valence-bevy-ecs/spec.md
+?? mc/cairn/changes/split-valence-command-example/tasks.md
+?? mc/cairn/changes/split-valence-observability-core/design.md
+?? mc/cairn/changes/split-valence-observability-core/proposal.md
+?? mc/cairn/changes/split-valence-observability-core/specs/valence-bevy-ecs/spec.md
+?? mc/cairn/changes/split-valence-observability-core/tasks.md
+?? mc/clients/stevenarella/src/render/camera.rs
+?? mc/clients/stevenarella/src/render/capture_readback.rs
+?? mc/clients/stevenarella/src/render/chunk_buffers.rs
+?? mc/clients/stevenarella/src/render/frame.rs
+?? mc/clients/stevenarella/src/render/skin_cache.rs
+?? mc/clients/stevenarella/src/render/texture_manager.rs
+?? mc/clients/stevenarella/src/render/upload_queue.rs
+?? mc/clients/stevenarella/src/world/core.rs
+?? mc/docs/evidence/manifests/2026-06-29/split-stevenarella-renderer-core.b3
+?? mc/docs/evidence/split-stevenarella-renderer-core/accepted-spec-b3-banner-repair-2.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/accepted-spec-b3-banner-repair.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/accepted-spec-b3-refresh.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/archive-dry-run.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/archive-execute.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/baseline-stevenarella-capture-tests.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/baseline-stevenarella-render-tests.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/evidence-b3-graph-refresh-2.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/evidence-b3-graph-refresh-3.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/evidence-b3-graph-refresh.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/evidence-manifest-check-after-b3-graph.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/evidence-manifest-check-after-scoped-refresh.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/evidence-manifest-check-after-spec-refresh.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/evidence-manifest-check.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/evidence-manifest-scoped-check-after-refresh-2.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/evidence-manifest-scoped-check-after-refresh.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/evidence-manifest-scoped-check.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-date-manifest-check.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-gate-design-after-spec.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-gate-design.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-gate-proposal-after-spec.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-gate-proposal.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-gate-tasks-after-spec.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-gate-tasks.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-global-manifest-check.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-manifest-refresh.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-scoped-manifest-check.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-task-evidence-after-manifest.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-task-evidence-after-spec.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-task-evidence-post-archive-manifest.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-task-evidence.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-validate-after-spec.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-validate-post-archive-manifest.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/final-validate.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/git-status-before-commit.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/mid-gate-tasks.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/mid-task-evidence.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/post-archive-scoped-manifest-check.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/post-archive-task-evidence.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/post-archive-validate.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/post-gate-design.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/post-gate-proposal.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/post-gate-tasks-open.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/post-mc-compat-smoke-dry-run.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/post-stevenarella-capture-tests.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/post-stevenarella-render-tests.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/post-stevenarella-wrapper-dry-run.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/post-validate-open.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/pre-gate-design.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/pre-gate-proposal.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/pre-gate-tasks.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/pre-validate.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/renderer-core.b3
+?? mc/docs/evidence/split-stevenarella-renderer-core/renderer-responsibility-map.md
+?? mc/docs/evidence/split-stevenarella-renderer-core/sync-dry-run.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/sync-execute.run.log
+?? mc/docs/evidence/split-stevenarella-renderer-core/tool-availability-no-nix.run.log
+exit_status=0

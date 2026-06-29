@@ -1,0 +1,7 @@
+command=command -v b3sum rg perl awk
+cwd=/home/brittonr/git/mc
+/nix/store/3h8493rmrgpflf7yxg9913bn6wmp2mkb-b3sum-1.8.5/bin/b3sum
+/etc/profiles/per-user/brittonr/bin/rg
+/run/current-system/sw/bin/perl
+/nix/store/wp1cshqv98i8abs8rcx91s54igqgll0f-gawk-5.4.0/bin/awk
+exit_status=0

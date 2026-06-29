@@ -1,0 +1,5 @@
+command=nix run .#evidence-manifest-refresh -- --check
+cwd=/home/brittonr/git/mc
+evidence manifest refresh failed: docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3:26: stale digest for servers/valence/crates/valence_network/src/proxy_broadcast.rs: expected 6042f0ca7c0b0d6f094eb1776cfd5d1fdf4376d7f341abc69effad08190640ae, found 3ad50bbf7f0f8dea53dbe4afe7b278176fc9f6ef78747c8a363b6262b782a3ac
+evidence manifest refresh failed: docs/evidence/profile-cache-rate-limiter-validation.b3:4: stale digest for servers/valence/crates/valence_network/src/profile_cache.rs: expected 9c3f0df6a1e8a8ea96f0684afc033dbbd24c8a970759d75f946bd7be99795c0f, found 637bd52e767612caf9513b7bd84497115982ddbef34ce19bea807669404738a6
+exit_status=1

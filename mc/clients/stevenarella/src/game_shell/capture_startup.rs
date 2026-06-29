@@ -131,11 +131,9 @@ impl Game {
     }
 
     fn current_capture_frame_context(&self) -> capture::CaptureFrameContext {
-        capture::CaptureFrameContext {
-            width_px: self.renderer.width,
-            height_px: self.renderer.height,
-            frame_id: self.renderer.frame_id as u64,
-        }
+        self.renderer
+            .capture_frame_context()
+            .expect("renderer capture context should be available after frame setup")
     }
 }
 

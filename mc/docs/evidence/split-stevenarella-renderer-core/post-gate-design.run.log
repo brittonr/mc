@@ -1,0 +1,24 @@
+command=nix run .#cairn -- gate design split-stevenarella-renderer-core --root .
+cwd=/home/brittonr/git/mc
+{
+  "change": "split-stevenarella-renderer-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "633cfafdfc927e7184a15b4cac77ef9026111902a2ff252c934a89ad301170b0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e69407aed4526d1d9baed616bd9f5141321131f8758eb23b69be5eec02ab6b35",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

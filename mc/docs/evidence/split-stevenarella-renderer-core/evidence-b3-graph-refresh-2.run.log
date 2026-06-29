@@ -1,0 +1,4 @@
+command=refresh docs/evidence/*.b3 rows that cite other docs/evidence/*.b3 files using rg --no-filename
+cwd=/home/brittonr/git/mc
+error: creating temporary file '/tmp/nix-shell.652CW4': Disk quota exceeded
+exit_status=1

@@ -13,51 +13,36 @@
 // limitations under the License.
 
 mod atlas;
+mod camera;
+pub(crate) mod capture_readback;
+mod chunk_buffers;
+mod frame;
 pub mod glsl;
 #[macro_use]
 pub mod shaders;
 pub mod clouds;
 pub mod model;
+mod skin_cache;
+mod texture_manager;
 pub mod ui;
+mod upload_queue;
+
+pub use camera::Camera;
+pub use chunk_buffers::ChunkBuffer;
+pub use texture_manager::{Texture, TextureManager};
 
 use crate::gl;
 use crate::resources;
 use crate::world;
 use byteorder::{NativeEndian, WriteBytesExt};
 use cgmath::prelude::*;
-use image::{GenericImage, GenericImageView};
-use log::{error, trace};
-use std::collections::HashMap;
-use std::io::Write;
-use std::sync::{Arc, RwLock};
-
-use crate::types::hash::FNVHash;
-use std::hash::BuildHasherDefault;
-use std::sync::atomic::{AtomicIsize, Ordering};
-use std::sync::mpsc;
-use std::thread;
+use log::trace;
+use std::sync::atomic::Ordering;
+use std::sync::{mpsc, Arc, RwLock};
 
 const ATLAS_SIZE: usize = 1024;
-const SKIN_CACHE_PREFIX_LEN: usize = 2;
-const MINECRAFT_TEXTURE_HTTP_PREFIX: &str = "http://textures.minecraft.net/texture/";
-const MINECRAFT_TEXTURE_HTTPS_PREFIX: &str = "https://textures.minecraft.net/texture/";
-
-fn minecraft_texture_hash(url: &str) -> Option<&str> {
-    let hash = url
-        .strip_prefix(MINECRAFT_TEXTURE_HTTPS_PREFIX)
-        .or_else(|| url.strip_prefix(MINECRAFT_TEXTURE_HTTP_PREFIX))?;
-    if hash.is_empty() {
-        None
-    } else {
-        Some(hash)
-    }
-}
-
-pub struct Camera {
-    pub pos: cgmath::Point3<f64>,
-    pub yaw: f64,
-    pub pitch: f64,
-}
+const RGBA_BYTES_PER_TEXEL: usize = 4;
+const ANIMATION_DELTA_DIVISOR: f64 = 3.0;
 
 pub struct Renderer {
     resource_version: usize,
@@ -96,25 +81,6 @@ pub struct Renderer {
     pub sky_offset: f32,
     skin_request: mpsc::Sender<String>,
     skin_reply: mpsc::Receiver<(String, Option<image::DynamicImage>)>,
-}
-
-#[derive(Default)]
-pub struct ChunkBuffer {
-    solid: Option<ChunkRenderInfo>,
-    trans: Option<ChunkRenderInfo>,
-}
-
-impl ChunkBuffer {
-    pub fn new() -> ChunkBuffer {
-        Default::default()
-    }
-}
-
-struct ChunkRenderInfo {
-    array: gl::VertexArray,
-    buffer: gl::Buffer,
-    buffer_size: usize,
-    count: usize,
 }
 
 init_shader! {
@@ -174,7 +140,7 @@ impl Renderer {
             1,
             gl::RGBA,
             gl::UNSIGNED_BYTE,
-            &[0; ATLAS_SIZE * ATLAS_SIZE * 4],
+            &[0; ATLAS_SIZE * ATLAS_SIZE * RGBA_BYTES_PER_TEXEL],
         );
         tex.set_parameter(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_MAG_FILTER, gl::NEAREST);
         tex.set_parameter(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_MIN_FILTER, gl::NEAREST);
@@ -234,17 +200,13 @@ impl Renderer {
             width: 0,
             height: 0,
 
-            camera: Camera {
-                pos: cgmath::Point3::new(0.0, 0.0, 0.0),
-                yaw: 0.0,
-                pitch: ::std::f64::consts::PI,
-            },
+            camera: Camera::default(),
             perspective_matrix: cgmath::Matrix4::identity(),
             camera_matrix: cgmath::Matrix4::identity(),
             frustum: collision::Frustum::from_matrix4(cgmath::Matrix4::identity()).unwrap(),
             view_vector: cgmath::Vector3::zero(),
 
-            frame_id: 1,
+            frame_id: frame::INITIAL_FRAME_ID,
 
             trans: None,
 
@@ -256,7 +218,6 @@ impl Renderer {
     }
 
     pub fn update_camera(&mut self, width: u32, height: u32) {
-        use std::f64::consts::PI as PI64;
         // Not a sane place to put this but it works
         {
             let rm = self.resources.read().unwrap();
@@ -274,43 +235,20 @@ impl Renderer {
         }
 
         if self.height != height || self.width != width {
+            let Ok(perspective_matrix) = camera::perspective_matrix(width, height) else {
+                return;
+            };
             self.width = width;
             self.height = height;
             gl::viewport(0, 0, width as i32, height as i32);
-
-            let fovy = cgmath::Rad::from(cgmath::Deg(90.0_f32));
-            let aspect = (width as f32 / height as f32).max(1.0);
-
-            self.perspective_matrix = cgmath::Matrix4::from(cgmath::PerspectiveFov {
-                fovy,
-                aspect,
-                near: 0.1f32,
-                far: 500.0f32,
-            });
-
+            self.perspective_matrix = perspective_matrix;
             self.init_trans(width, height);
         }
 
-        self.view_vector = cgmath::Vector3::new(
-            ((self.camera.yaw - PI64 / 2.0).cos() * -self.camera.pitch.cos()) as f32,
-            (-self.camera.pitch.sin()) as f32,
-            (-(self.camera.yaw - PI64 / 2.0).sin() * -self.camera.pitch.cos()) as f32,
-        );
-        let camera = cgmath::Point3::new(
-            -self.camera.pos.x as f32,
-            -self.camera.pos.y as f32,
-            self.camera.pos.z as f32,
-        );
-        let camera_matrix = cgmath::Matrix4::look_at(
-            camera,
-            camera
-                + cgmath::Point3::new(-self.view_vector.x, -self.view_vector.y, self.view_vector.z)
-                    .to_vec(),
-            cgmath::Vector3::new(0.0, -1.0, 0.0),
-        );
-        self.camera_matrix = camera_matrix * cgmath::Matrix4::from_nonuniform_scale(-1.0, 1.0, 1.0);
-        self.frustum =
-            collision::Frustum::from_matrix4(self.perspective_matrix * self.camera_matrix).unwrap();
+        let matrices = camera::camera_matrices(&self.camera, self.perspective_matrix);
+        self.view_vector = matrices.view_vector;
+        self.camera_matrix = matrices.camera_matrix;
+        self.frustum = matrices.frustum;
     }
 
     pub fn tick(
@@ -322,6 +260,18 @@ impl Renderer {
         physical_width: u32,
         physical_height: u32,
     ) {
+        let frame_plan = match frame::plan_frame(
+            frame::FrameDimensions {
+                logical_width: width,
+                logical_height: height,
+                physical_width,
+                physical_height,
+            },
+            self.frame_id,
+        ) {
+            Ok(plan) => plan,
+            Err(_) => return,
+        };
         self.update_textures(delta);
 
         let trans = self.trans.as_mut().unwrap();
@@ -355,20 +305,26 @@ impl Renderer {
         self.chunk_shader.light_level.set_float(self.light_level);
         self.chunk_shader.sky_offset.set_float(self.sky_offset);
 
-        for (pos, info) in world.get_render_list() {
-            if let Some(solid) = info.solid.as_ref() {
-                if solid.count > 0 {
-                    self.chunk_shader
-                        .offset
-                        .set_int3(pos.0, pos.1 * 4096, pos.2);
-                    solid.array.bind();
-                    gl::draw_elements(
-                        gl::TRIANGLES,
-                        solid.count as i32,
-                        self.element_buffer_type,
-                        0,
-                    );
-                }
+        let solid_render_list = world.get_render_list();
+        for (pos, info) in &solid_render_list {
+            let counts = info.layer_counts();
+            if counts.solid_count > 0 {
+                let solid = info
+                    .solid
+                    .as_ref()
+                    .expect("solid count requires solid chunk info");
+                self.chunk_shader.offset.set_int3(
+                    pos.0,
+                    chunk_buffers::chunk_offset_y(pos.1),
+                    pos.2,
+                );
+                solid.array.bind();
+                gl::draw_elements(
+                    gl::TRIANGLES,
+                    solid.count as i32,
+                    self.element_buffer_type,
+                    0,
+                );
             }
         }
 
@@ -417,12 +373,12 @@ impl Renderer {
         gl::blit_framebuffer(
             0,
             0,
-            physical_width as i32,
-            physical_height as i32,
+            frame_plan.dimensions.physical_width as i32,
+            frame_plan.dimensions.physical_height as i32,
             0,
             0,
-            physical_width as i32,
-            physical_height as i32,
+            frame_plan.dimensions.physical_width as i32,
+            frame_plan.dimensions.physical_height as i32,
             gl::ClearFlags::Depth,
             gl::NEAREST,
         );
@@ -441,20 +397,26 @@ impl Renderer {
             gl::ONE_MINUS_SRC_ALPHA,
         );
 
-        for (pos, info) in world.get_render_list().iter().rev() {
-            if let Some(trans) = info.trans.as_ref() {
-                if trans.count > 0 {
-                    self.chunk_shader_alpha
-                        .offset
-                        .set_int3(pos.0, pos.1 * 4096, pos.2);
-                    trans.array.bind();
-                    gl::draw_elements(
-                        gl::TRIANGLES,
-                        trans.count as i32,
-                        self.element_buffer_type,
-                        0,
-                    );
-                }
+        let translucent_render_list = world.get_render_list();
+        for (pos, info) in translucent_render_list.iter().rev() {
+            let counts = info.layer_counts();
+            if counts.translucent_count > 0 {
+                let trans = info
+                    .trans
+                    .as_ref()
+                    .expect("translucent count requires translucent chunk info");
+                self.chunk_shader_alpha.offset.set_int3(
+                    pos.0,
+                    chunk_buffers::chunk_offset_y(pos.1),
+                    pos.2,
+                );
+                trans.array.bind();
+                gl::draw_elements(
+                    gl::TRIANGLES,
+                    trans.count as i32,
+                    self.element_buffer_type,
+                    0,
+                );
             }
         }
 
@@ -476,7 +438,7 @@ impl Renderer {
 
         gl::check_gl_error();
 
-        self.frame_id = self.frame_id.wrapping_add(1);
+        self.frame_id = frame_plan.next_frame_id;
     }
 
     fn ensure_element_buffer(&mut self, size: usize) {
@@ -500,12 +462,7 @@ impl Renderer {
         }
         let new = buffer.solid.is_none();
         if buffer.solid.is_none() {
-            buffer.solid = Some(ChunkRenderInfo {
-                array: gl::VertexArray::new(),
-                buffer: gl::Buffer::new(),
-                buffer_size: 0,
-                count: 0,
-            });
+            buffer.solid = Some(chunk_buffers::ChunkRenderInfo::empty());
         }
         let info = buffer.solid.as_mut().unwrap();
 
@@ -556,12 +513,7 @@ impl Renderer {
         }
         let new = buffer.trans.is_none();
         if buffer.trans.is_none() {
-            buffer.trans = Some(ChunkRenderInfo {
-                array: gl::VertexArray::new(),
-                buffer: gl::Buffer::new(),
-                buffer_size: 0,
-                count: 0,
-            });
+            buffer.trans = Some(chunk_buffers::ChunkRenderInfo::empty());
         }
         let info = buffer.trans.as_mut().unwrap();
 
@@ -604,55 +556,58 @@ impl Renderer {
 
     #[allow(clippy::uninit_vec)] // TODO: fix uninitialized memory, use MaybeUninit on Vec below
     fn do_pending_textures(&mut self) {
-        let len = {
+        let plan = {
             let tex = self.textures.read().unwrap();
-            // Rebuild the texture if it needs resizing
-            if self.texture_layers != tex.atlases.len() {
-                let len = ATLAS_SIZE * ATLAS_SIZE * 4 * tex.atlases.len();
-                let mut data = Vec::with_capacity(len);
-                unsafe {
-                    data.set_len(len);
-                }
-                self.gl_texture.get_pixels(
-                    gl::TEXTURE_2D_ARRAY,
-                    0,
-                    gl::RGBA,
-                    gl::UNSIGNED_BYTE,
-                    &mut data[..],
-                );
-                self.gl_texture.image_3d(
-                    gl::TEXTURE_2D_ARRAY,
-                    0,
-                    ATLAS_SIZE as u32,
-                    ATLAS_SIZE as u32,
-                    tex.atlases.len() as u32,
-                    gl::RGBA,
-                    gl::UNSIGNED_BYTE,
-                    &data[..],
-                );
-                self.texture_layers = tex.atlases.len();
-            }
-            tex.pending_uploads.len()
+            upload_queue::plan_texture_uploads(
+                self.texture_layers,
+                tex.atlases.len(),
+                tex.pending_uploads.len(),
+            )
         };
-        if len > 0 {
+
+        if let Some(resize) = plan.resize {
+            // Rebuild the texture if it needs resizing
+            let len = ATLAS_SIZE * ATLAS_SIZE * RGBA_BYTES_PER_TEXEL * resize.required_layers;
+            let mut data = Vec::with_capacity(len);
+            unsafe {
+                data.set_len(len);
+            }
+            self.gl_texture.get_pixels(
+                gl::TEXTURE_2D_ARRAY,
+                0,
+                gl::RGBA,
+                gl::UNSIGNED_BYTE,
+                &mut data[..],
+            );
+            self.gl_texture.image_3d(
+                gl::TEXTURE_2D_ARRAY,
+                0,
+                ATLAS_SIZE as u32,
+                ATLAS_SIZE as u32,
+                resize.required_layers as u32,
+                gl::RGBA,
+                gl::UNSIGNED_BYTE,
+                &data[..],
+            );
+            self.texture_layers = resize.required_layers;
+        }
+
+        if plan.has_pending_uploads() {
             // Upload pending changes
             let mut tex = self.textures.write().unwrap();
             for upload in &tex.pending_uploads {
-                let atlas = upload.0;
-                let rect = upload.1;
-                let img = &upload.2;
                 self.gl_texture.sub_image_3d(
                     gl::TEXTURE_2D_ARRAY,
                     0,
-                    rect.x as u32,
-                    rect.y as u32,
-                    atlas as u32,
-                    rect.width as u32,
-                    rect.height as u32,
+                    upload.rect.x as u32,
+                    upload.rect.y as u32,
+                    upload.atlas as u32,
+                    upload.rect.width as u32,
+                    upload.rect.height as u32,
                     1,
                     gl::RGBA,
                     gl::UNSIGNED_BYTE,
-                    &img[..],
+                    &upload.data[..],
                 );
             }
             tex.pending_uploads.clear();
@@ -685,9 +640,9 @@ impl Renderer {
             if ani.remaining_time <= 0.0 {
                 ani.current_frame = (ani.current_frame + 1) % ani.frames.len();
                 ani.remaining_time += ani.frames[ani.current_frame].time as f64;
-                let offset =
-                    ani.texture.width * ani.texture.width * ani.frames[ani.current_frame].index * 4;
-                let offset2 = offset + ani.texture.width * ani.texture.width * 4;
+                let frame_bytes = ani.texture.width * ani.texture.width * RGBA_BYTES_PER_TEXEL;
+                let offset = frame_bytes * ani.frames[ani.current_frame].index;
+                let offset2 = offset + frame_bytes;
                 self.gl_texture.sub_image_3d(
                     gl::TEXTURE_2D_ARRAY,
                     0,
@@ -702,7 +657,7 @@ impl Renderer {
                     &ani.data[offset..offset2],
                 );
             } else {
-                ani.remaining_time -= delta / 3.0;
+                ani.remaining_time -= delta / ANIMATION_DELTA_DIVISOR;
             }
         }
     }
@@ -723,6 +678,16 @@ impl Renderer {
 
     pub fn get_textures_ref(&self) -> &RwLock<TextureManager> {
         &self.textures
+    }
+
+    pub(crate) fn capture_frame_context(
+        &self,
+    ) -> Result<crate::capture::CaptureFrameContext, capture_readback::CaptureFramePlanError> {
+        capture_readback::plan_capture_frame(capture_readback::available_capture_state(
+            self.width,
+            self.height,
+            self.frame_id as u64,
+        ))
     }
 
     pub fn check_texture(&self, tex: Texture) -> Texture {
@@ -959,649 +924,6 @@ impl TransInfo {
         shader.color.set_int(2);
         self.array.bind();
         gl::draw_arrays(gl::TRIANGLES, 0, 6);
-    }
-}
-
-pub struct TextureManager {
-    textures: HashMap<String, Texture, BuildHasherDefault<FNVHash>>,
-    version: usize,
-    resources: resources::SharedManager,
-    atlases: Vec<atlas::Atlas>,
-
-    animated_textures: Vec<AnimatedTexture>,
-    pending_uploads: Vec<(i32, atlas::Rect, Vec<u8>)>,
-
-    dynamic_textures: HashMap<String, (Texture, image::DynamicImage), BuildHasherDefault<FNVHash>>,
-    free_dynamics: Vec<Texture>,
-
-    skins: HashMap<String, AtomicIsize, BuildHasherDefault<FNVHash>>,
-
-    _skin_thread: Option<thread::JoinHandle<()>>,
-}
-
-impl TextureManager {
-    #[allow(clippy::let_and_return)]
-    #[allow(clippy::type_complexity)]
-    fn new(
-        res: resources::SharedManager,
-    ) -> (
-        TextureManager,
-        mpsc::Sender<String>,
-        mpsc::Receiver<(String, Option<image::DynamicImage>)>,
-    ) {
-        let (tx, rx) = mpsc::channel();
-        let (stx, srx) = mpsc::channel();
-
-        #[cfg(target_arch = "wasm32")]
-        let skin_thread = None;
-
-        #[cfg(not(target_arch = "wasm32"))]
-        let skin_thread = Some(thread::spawn(|| Self::process_skins(srx, tx)));
-
-        let mut tm = TextureManager {
-            textures: HashMap::with_hasher(BuildHasherDefault::default()),
-            version: {
-                // TODO: fix borrow and remove clippy::let_and_return above
-                let ver = res.read().unwrap().version();
-                ver
-            },
-            resources: res,
-            atlases: Vec::new(),
-            animated_textures: Vec::new(),
-            pending_uploads: Vec::new(),
-
-            dynamic_textures: HashMap::with_hasher(BuildHasherDefault::default()),
-            free_dynamics: Vec::new(),
-            skins: HashMap::with_hasher(BuildHasherDefault::default()),
-
-            _skin_thread: skin_thread,
-        };
-        tm.add_defaults();
-        (tm, stx, rx)
-    }
-
-    fn add_defaults(&mut self) {
-        self.put_texture(
-            "steven",
-            "missing_texture",
-            2,
-            2,
-            vec![
-                0, 0, 0, 255, 255, 0, 255, 255, 255, 0, 255, 255, 0, 0, 0, 255,
-            ],
-        );
-        self.put_texture("steven", "solid", 1, 1, vec![255, 255, 255, 255]);
-    }
-
-    #[cfg(target_arch = "wasm32")]
-    fn process_skins(
-        recv: mpsc::Receiver<String>,
-        reply: mpsc::Sender<(String, Option<image::DynamicImage>)>,
-    ) {
-    }
-
-    #[cfg(not(target_arch = "wasm32"))]
-    fn process_skins(
-        recv: mpsc::Receiver<String>,
-        reply: mpsc::Sender<(String, Option<image::DynamicImage>)>,
-    ) {
-        let client = reqwest::blocking::Client::new();
-        loop {
-            let hash = match recv.recv() {
-                Ok(val) => val,
-                Err(_) => return, // Most likely shutting down
-            };
-            match Self::obtain_skin(&client, &hash) {
-                Ok(img) => {
-                    let _ = reply.send((hash, Some(img)));
-                }
-                Err(err) => {
-                    error!("Failed to get skin {:?}: {}", hash, err);
-                    let _ = reply.send((hash, None));
-                }
-            }
-        }
-    }
-
-    #[cfg(not(target_arch = "wasm32"))]
-    fn obtain_skin(
-        client: &::reqwest::blocking::Client,
-        hash: &str,
-    ) -> Result<image::DynamicImage, ::std::io::Error> {
-        use std::io::Read;
-        use std::io::{Error, ErrorKind};
-        use std::path::Path;
-        use std_or_web::fs;
-        if hash.len() < SKIN_CACHE_PREFIX_LEN {
-            return Err(Error::new(ErrorKind::InvalidInput, "short skin hash"));
-        }
-        let path = format!("skin-cache/{}/{}.png", &hash[..SKIN_CACHE_PREFIX_LEN], hash);
-        let cache_path = Path::new(&path);
-        fs::create_dir_all(cache_path.parent().unwrap())?;
-        let mut buf = vec![];
-        if fs::metadata(cache_path).is_ok() {
-            // We have a cached image
-            let mut file = fs::File::open(cache_path)?;
-            file.read_to_end(&mut buf)?;
-        } else {
-            // Need to download it
-            let url = &format!("{}{}", MINECRAFT_TEXTURE_HTTPS_PREFIX, hash);
-            let mut res = match client
-                .get(url)
-                .send()
-                .and_then(|res| res.error_for_status())
-            {
-                Ok(val) => val,
-                Err(err) => {
-                    return Err(Error::new(ErrorKind::ConnectionAborted, err));
-                }
-            };
-            let mut buf = vec![];
-            match res.read_to_end(&mut buf) {
-                Ok(_) => {}
-                Err(err) => {
-                    // TODO: different error for failure to read?
-                    return Err(Error::new(ErrorKind::InvalidData, err));
-                }
-            }
-
-            // Save to cache
-            let mut file = fs::File::create(cache_path)?;
-            file.write_all(&buf)?;
-        }
-        let mut img = match image::load_from_memory(&buf) {
-            Ok(val) => val,
-            Err(err) => {
-                return Err(Error::new(ErrorKind::InvalidData, err));
-            }
-        };
-        let (_, height) = img.dimensions();
-        if height == 32 {
-            // Needs changing to the new format
-            let mut new = image::DynamicImage::new_rgba8(64, 64);
-            new.copy_from(&img, 0, 0)
-                .expect("Invalid png image in skin");
-            for xx in 0..4 {
-                for yy in 0..16 {
-                    for section in 0..4 {
-                        let os = match section {
-                            0 => 2,
-                            1 => 1,
-                            2 => 0,
-                            3 => 3,
-                            _ => unreachable!(),
-                        };
-                        new.put_pixel(
-                            16 + (3 - xx) + section * 4,
-                            48 + yy,
-                            img.get_pixel(xx + os * 4, 16 + yy),
-                        );
-                        new.put_pixel(
-                            32 + (3 - xx) + section * 4,
-                            48 + yy,
-                            img.get_pixel(xx + 40 + os * 4, 16 + yy),
-                        );
-                    }
-                }
-            }
-            img = new;
-        }
-        // Block transparent pixels in blacklisted areas
-        let blacklist = [
-            // X, Y, W, H
-            (0, 0, 32, 16),
-            (16, 16, 24, 16),
-            (0, 16, 16, 16),
-            (16, 48, 16, 16),
-            (32, 48, 16, 16),
-            (40, 16, 16, 16),
-        ];
-        for bl in blacklist.iter() {
-            for x in bl.0..(bl.0 + bl.2) {
-                for y in bl.1..(bl.1 + bl.3) {
-                    let mut col = img.get_pixel(x, y);
-                    col.0[3] = 255;
-                    img.put_pixel(x, y, col);
-                }
-            }
-        }
-        Ok(img)
-    }
-
-    fn update_textures(&mut self, version: usize) {
-        self.pending_uploads.clear();
-        self.atlases.clear();
-        self.animated_textures.clear();
-        self.version = version;
-        let map = self.textures.clone();
-        self.textures.clear();
-
-        self.free_dynamics.clear();
-
-        self.add_defaults();
-
-        for name in map.keys() {
-            if let Some(n) = name.strip_prefix("steven-dynamic:") {
-                let (width, height, data) = {
-                    let dynamic_texture = match self.dynamic_textures.get(n) {
-                        Some(val) => val,
-                        None => continue,
-                    };
-                    let img = &dynamic_texture.1;
-                    let (width, height) = img.dimensions();
-                    (width, height, img.to_rgba8().into_vec())
-                };
-                let new_tex =
-                    self.put_texture("steven-dynamic", n, width as u32, height as u32, data);
-                self.dynamic_textures.get_mut(n).unwrap().0 = new_tex;
-            } else if !self.textures.contains_key(name) {
-                self.load_texture(name);
-            }
-        }
-    }
-
-    fn get_skin(&self, url: &str) -> Option<Texture> {
-        let hash = minecraft_texture_hash(url)?;
-        if let Some(skin) = self.skins.get(hash) {
-            skin.fetch_add(1, Ordering::Relaxed);
-        }
-        self.get_texture(&format!("steven-dynamic:skin-{}", hash))
-    }
-
-    pub fn release_skin(&self, url: &str) {
-        let Some(hash) = minecraft_texture_hash(url) else {
-            return;
-        };
-        if let Some(skin) = self.skins.get(hash) {
-            skin.fetch_sub(1, Ordering::Relaxed);
-        }
-    }
-
-    fn load_skin(&mut self, renderer: &Renderer, url: &str) -> bool {
-        let Some(hash) = minecraft_texture_hash(url) else {
-            return false;
-        };
-        let res = self.resources.clone();
-        // TODO: This shouldn't be hardcoded to steve but instead
-        // have a way to select alex as a default.
-        let img = if let Some(mut val) = res
-            .read()
-            .unwrap()
-            .open("minecraft", "textures/entity/steve.png")
-        {
-            let mut data = Vec::new();
-            val.read_to_end(&mut data).unwrap();
-            image::load_from_memory(&data).unwrap()
-        } else {
-            image::DynamicImage::new_rgba8(64, 64)
-        };
-        self.put_dynamic(&format!("skin-{}", hash), img);
-        self.skins.insert(hash.to_owned(), AtomicIsize::new(0));
-        renderer.skin_request.send(hash.to_owned()).unwrap();
-        true
-    }
-
-    fn update_skin(&mut self, hash: String, img: image::DynamicImage) {
-        if !self.skins.contains_key(&hash) {
-            return;
-        }
-        let name = format!("steven-dynamic:skin-{}", hash);
-        let tex = self.get_texture(&name).unwrap();
-        let rect = atlas::Rect {
-            x: tex.x,
-            y: tex.y,
-            width: tex.width,
-            height: tex.height,
-        };
-
-        self.pending_uploads
-            .push((tex.atlas, rect, img.to_rgba8().into_vec()));
-        self.dynamic_textures
-            .get_mut(&format!("skin-{}", hash))
-            .unwrap()
-            .1 = img;
-    }
-
-    fn get_texture(&self, name: &str) -> Option<Texture> {
-        if name.find(':').is_some() {
-            self.textures.get(name).cloned()
-        } else {
-            self.textures.get(&format!("minecraft:{}", name)).cloned()
-        }
-    }
-
-    fn load_texture(&mut self, name: &str) {
-        let (plugin, name) = if let Some(pos) = name.find(':') {
-            (&name[..pos], &name[pos + 1..])
-        } else {
-            ("minecraft", name)
-        };
-        let path = format!("textures/{}.png", name);
-        let res = self.resources.clone();
-        if let Some(mut val) = res.read().unwrap().open(plugin, &path) {
-            let mut data = Vec::new();
-            val.read_to_end(&mut data).unwrap();
-            if let Ok(img) = image::load_from_memory(&data) {
-                let (width, height) = img.dimensions();
-                // Might be animated
-                if (name.starts_with("blocks/") || name.starts_with("items/")) && width != height {
-                    let id = img.to_rgba8().into_vec();
-                    let frame = id[..(width * width * 4) as usize].to_owned();
-                    if let Some(mut ani) = self.load_animation(plugin, name, &img, id) {
-                        ani.texture = self.put_texture(plugin, name, width, width, frame);
-                        self.animated_textures.push(ani);
-                        return;
-                    }
-                }
-                self.put_texture(plugin, name, width, height, img.to_rgba8().into_vec());
-                return;
-            }
-        }
-        self.insert_texture_dummy(plugin, name);
-    }
-
-    fn load_animation(
-        &mut self,
-        plugin: &str,
-        name: &str,
-        img: &image::DynamicImage,
-        data: Vec<u8>,
-    ) -> Option<AnimatedTexture> {
-        let path = format!("textures/{}.png.mcmeta", name);
-        let res = self.resources.clone();
-        if let Some(val) = res.read().unwrap().open(plugin, &path) {
-            let meta: serde_json::Value = serde_json::from_reader(val).unwrap();
-            let animation = meta.get("animation").unwrap();
-            let frame_time = animation
-                .get("frametime")
-                .and_then(|v| v.as_i64())
-                .unwrap_or(1);
-            let interpolate = animation
-                .get("interpolate")
-                .and_then(|v| v.as_bool())
-                .unwrap_or(false);
-            let frames = if let Some(frames) = animation.get("frames").and_then(|v| v.as_array()) {
-                let mut out = Vec::with_capacity(frames.len());
-                for frame in frames {
-                    if let Some(index) = frame.as_i64() {
-                        out.push(AnimationFrame {
-                            index: index as usize,
-                            time: frame_time,
-                        })
-                    } else {
-                        out.push(AnimationFrame {
-                            index: frame.get("index").unwrap().as_i64().unwrap() as usize,
-                            time: frame_time * frame.get("frameTime").unwrap().as_i64().unwrap(),
-                        })
-                    }
-                }
-                out
-            } else {
-                let (width, height) = img.dimensions();
-                let count = height / width;
-                let mut frames = Vec::with_capacity(count as usize);
-                for i in 0..count {
-                    frames.push(AnimationFrame {
-                        index: i as usize,
-                        time: frame_time,
-                    })
-                }
-                frames
-            };
-
-            return Some(AnimatedTexture {
-                frames,
-                data,
-                interpolate,
-                current_frame: 0,
-                remaining_time: 0.0,
-                texture: self.get_texture("steven:missing_texture").unwrap(),
-            });
-        }
-        None
-    }
-
-    fn put_texture(
-        &mut self,
-        plugin: &str,
-        name: &str,
-        width: u32,
-        height: u32,
-        data: Vec<u8>,
-    ) -> Texture {
-        let (atlas, rect) = self.find_free(width as usize, height as usize);
-        self.pending_uploads.push((atlas, rect, data));
-
-        let mut full_name = String::new();
-        full_name.push_str(plugin);
-        full_name.push(':');
-        full_name.push_str(name);
-
-        let tex = Texture {
-            name: full_name.clone(),
-            version: self.version,
-            atlas,
-            x: rect.x,
-            y: rect.y,
-            width: rect.width,
-            height: rect.height,
-            rel_x: 0.0,
-            rel_y: 0.0,
-            rel_width: 1.0,
-            rel_height: 1.0,
-            is_rel: false,
-        };
-        self.textures.insert(full_name, tex.clone());
-        tex
-    }
-
-    fn find_free(&mut self, width: usize, height: usize) -> (i32, atlas::Rect) {
-        let mut index = 0;
-        for atlas in &mut self.atlases {
-            if let Some(rect) = atlas.add(width, height) {
-                return (index, rect);
-            }
-            index += 1;
-        }
-        let mut atlas = atlas::Atlas::new(ATLAS_SIZE, ATLAS_SIZE);
-        let rect = atlas.add(width, height);
-        self.atlases.push(atlas);
-        (index, rect.unwrap())
-    }
-
-    fn insert_texture_dummy(&mut self, plugin: &str, name: &str) -> Texture {
-        let missing = self.get_texture("steven:missing_texture").unwrap();
-
-        let mut full_name = String::new();
-        full_name.push_str(plugin);
-        full_name.push(':');
-        full_name.push_str(name);
-
-        let t = Texture {
-            name: full_name.to_owned(),
-            version: self.version,
-            atlas: missing.atlas,
-            x: missing.x,
-            y: missing.y,
-            width: missing.width,
-            height: missing.height,
-            rel_x: 0.0,
-            rel_y: 0.0,
-            rel_width: 1.0,
-            rel_height: 1.0,
-            is_rel: false,
-        };
-        self.textures.insert(full_name, t.clone());
-        t
-    }
-
-    pub fn put_dynamic(&mut self, name: &str, img: image::DynamicImage) -> Texture {
-        use std::mem;
-        let (width, height) = img.dimensions();
-        let (width, height) = (width as usize, height as usize);
-        let mut rect_pos = None;
-        for (i, r) in self.free_dynamics.iter().enumerate() {
-            if r.width == width && r.height == height {
-                rect_pos = Some(i);
-                break;
-            } else if r.width >= width && r.height >= height {
-                rect_pos = Some(i);
-            }
-        }
-        let data = img.to_rgba8().into_vec();
-
-        if let Some(rect_pos) = rect_pos {
-            let mut tex = self.free_dynamics.remove(rect_pos);
-            let rect = atlas::Rect {
-                x: tex.x,
-                y: tex.y,
-                width,
-                height,
-            };
-            self.pending_uploads.push((tex.atlas, rect, data));
-            let mut t = tex.relative(
-                0.0,
-                0.0,
-                (width as f32) / (tex.width as f32),
-                (height as f32) / (tex.height as f32),
-            );
-            let old_name = mem::replace(&mut tex.name, format!("steven-dynamic:{}", name));
-            self.dynamic_textures.insert(name.to_owned(), (tex, img));
-            // We need to rename the texture itself so that get_texture calls
-            // work with the new name
-            let mut old = self.textures.remove(&old_name).unwrap();
-            old.name = format!("steven-dynamic:{}", name);
-            t.name = old.name.clone();
-            self.textures
-                .insert(format!("steven-dynamic:{}", name), old);
-            t
-        } else {
-            let tex = self.put_texture("steven-dynamic", name, width as u32, height as u32, data);
-            self.dynamic_textures
-                .insert(name.to_owned(), (tex.clone(), img));
-            tex
-        }
-    }
-
-    pub fn remove_dynamic(&mut self, name: &str) {
-        let desc = self.dynamic_textures.remove(name).unwrap();
-        self.free_dynamics.push(desc.0);
-    }
-}
-
-#[allow(dead_code)]
-struct AnimatedTexture {
-    frames: Vec<AnimationFrame>,
-    data: Vec<u8>,
-    interpolate: bool,
-    current_frame: usize,
-    remaining_time: f64,
-    texture: Texture,
-}
-
-struct AnimationFrame {
-    index: usize,
-    time: i64,
-}
-
-#[derive(Clone, Debug)]
-pub struct Texture {
-    pub name: String,
-    version: usize,
-    pub atlas: i32,
-    x: usize,
-    y: usize,
-    width: usize,
-    height: usize,
-    is_rel: bool, // Save some cycles for non-relative textures
-    rel_x: f32,
-    rel_y: f32,
-    rel_width: f32,
-    rel_height: f32,
-}
-
-impl Texture {
-    pub fn get_x(&self) -> usize {
-        if self.is_rel {
-            self.x + ((self.width as f32) * self.rel_x) as usize
-        } else {
-            self.x
-        }
-    }
-
-    pub fn get_y(&self) -> usize {
-        if self.is_rel {
-            self.y + ((self.height as f32) * self.rel_y) as usize
-        } else {
-            self.y
-        }
-    }
-
-    pub fn get_width(&self) -> usize {
-        if self.is_rel {
-            ((self.width as f32) * self.rel_width) as usize
-        } else {
-            self.width
-        }
-    }
-
-    pub fn get_height(&self) -> usize {
-        if self.is_rel {
-            ((self.height as f32) * self.rel_height) as usize
-        } else {
-            self.height
-        }
-    }
-
-    pub fn relative(&self, x: f32, y: f32, width: f32, height: f32) -> Texture {
-        Texture {
-            name: self.name.clone(),
-            version: self.version,
-            x: self.x,
-            y: self.y,
-            atlas: self.atlas,
-            width: self.width,
-            height: self.height,
-            is_rel: true,
-            rel_x: self.rel_x + x * self.rel_width,
-            rel_y: self.rel_y + y * self.rel_height,
-            rel_width: width * self.rel_width,
-            rel_height: height * self.rel_height,
-        }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    const TEST_SKIN_HASH: &str = "0123456789abcdef";
-
-    #[test]
-    fn minecraft_texture_hash_accepts_http_and_https_urls() {
-        assert_eq!(
-            minecraft_texture_hash(&format!(
-                "{}{}",
-                MINECRAFT_TEXTURE_HTTPS_PREFIX, TEST_SKIN_HASH
-            )),
-            Some(TEST_SKIN_HASH)
-        );
-        assert_eq!(
-            minecraft_texture_hash(&format!(
-                "{}{}",
-                MINECRAFT_TEXTURE_HTTP_PREFIX, TEST_SKIN_HASH
-            )),
-            Some(TEST_SKIN_HASH)
-        );
-    }
-
-    #[test]
-    fn minecraft_texture_hash_rejects_empty_or_unknown_urls() {
-        assert_eq!(minecraft_texture_hash(MINECRAFT_TEXTURE_HTTPS_PREFIX), None);
-        assert_eq!(
-            minecraft_texture_hash("https://example.invalid/texture/hash"),
-            None
-        );
     }
 }
 

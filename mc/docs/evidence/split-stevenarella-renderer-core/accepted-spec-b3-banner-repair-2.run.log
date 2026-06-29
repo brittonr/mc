@@ -1,0 +1,5 @@
+command=remove leading devshell banner lines from spec digest rows in docs/evidence/**/*.b3
+cwd=/home/brittonr/git/mc
+repaired=docs/evidence/modularize-valence-network-session.b3
+repaired=docs/evidence/manifests/2026-06-29/modularize-stevenarella-ui-widgets.b3
+exit_status=0

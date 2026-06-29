@@ -1,0 +1,7 @@
+command=refresh final split-stevenarella-renderer-core BLAKE3 manifests
+cwd=/home/brittonr/git/mc
+manifest=docs/evidence/split-stevenarella-renderer-core/renderer-core.b3
+date_manifest=docs/evidence/manifests/2026-06-29/split-stevenarella-renderer-core.b3
+entries=63
+date_entries=64
+exit_status=0
