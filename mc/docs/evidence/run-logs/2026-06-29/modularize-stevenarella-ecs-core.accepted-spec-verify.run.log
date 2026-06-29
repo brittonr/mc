@@ -1,0 +1,26 @@
+# command: grep stevenarella_ecs accepted spec; nix run .#cairn -- validate --root .
+# cwd: /home/brittonr/git/mc
+9044:r[mc_compatibility.stevenarella_ecs.ecs_boundaries] Stevenarella ECS code SHOULD expose cohesive boundaries for entity IDs, component storage, query access, system registration, system execution, and diagnostics.
+9048:r[mc_compatibility.stevenarella_ecs.ecs_boundaries.ownership]
+9056:r[mc_compatibility.stevenarella_ecs.ecs_core] ECS allocation, lookup, query-shape, system-ordering, and diagnostic decisions SHOULD be deterministic and testable through focused cores where practical.
+9060:r[mc_compatibility.stevenarella_ecs.ecs_core.testable]
+9067:r[mc_compatibility.stevenarella_ecs.parity] ECS modularization MUST preserve public ECS APIs, execution order, component behavior, borrow/error behavior, and evidence non-claims.
+9071:r[mc_compatibility.stevenarella_ecs.parity.stable]
+9078:r[mc_compatibility.stevenarella_ecs.positive_tests] The change MUST include positive tests for entity allocation, component insert/remove/get, query matching, system ordering, and diagnostic reporting.
+9082:r[mc_compatibility.stevenarella_ecs.positive_tests.coverage]
+9089:r[mc_compatibility.stevenarella_ecs.negative_tests] The change MUST include negative tests for missing components, duplicate entities, invalid removals, conflicting borrows, empty systems, and invalid query shapes.
+9093:r[mc_compatibility.stevenarella_ecs.negative_tests.fail_closed]
+9100:r[mc_compatibility.stevenarella_ecs.validation] The change MUST record focused ECS tests, affected client checks, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+9104:r[mc_compatibility.stevenarella_ecs.validation.logs]
+grep_exit_status=0
+{
+  "change_issues": [],
+  "changes": 20,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 25,
+  "valid": true
+}
+exit_status=0

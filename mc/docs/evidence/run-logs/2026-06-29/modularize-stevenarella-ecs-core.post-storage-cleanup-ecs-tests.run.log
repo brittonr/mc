@@ -1,0 +1,207 @@
+# command: nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo fmt && nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test ecs::tests -- --nocapture
+# cwd: /home/brittonr/git/mc/clients/stevenarella
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+cargo_fmt_exit_status=0
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 | ...n| (instrument.offsets(protocol_version)
+     |       ^
+1053 | ... * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                       ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 | ...rsion| (variant.offsets(protocol_version)),
+     |           ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+   Compiling stevenarella v0.0.1 (/home/brittonr/git/mc/clients/stevenarella)
+warning: unreachable pattern
+   --> src/server/login.rs:190:9
+    |
+190 |         (phase, event) => LoginDecision::Fail(LoginFailure {
+    |         ^^^^^^^^^^^^^^ no value can reach this
+    |
+note: multiple earlier patterns match some of the same values
+   --> src/server/login.rs:190:9
+    |
+162 |           (_, LoginEvent::SetCompression(compression)) => {
+    |           -------------------------------------------- matches some of the same values
+...
+165 |           (LoginPhase::Initial, LoginEvent::EncryptionRequest(request)) => {
+    |           ------------------------------------------------------------- matches some of the same values
+...
+168 |           (LoginPhase::Encrypted, LoginEvent::EncryptionRequest(request)) => {
+    |           --------------------------------------------------------------- matches some of the same values
+...
+174 | /         (LoginPhase::Initial, LoginEvent::Success(outcome))
+175 | |         | (LoginPhase::Encrypted, LoginEvent::Success(outcome)) => LoginDecision::Complete(outcome),
+    | |_______________________________________________________________- matches some of the same values
+...
+190 |           (phase, event) => LoginDecision::Fail(LoginFailure {
+    |           ^^^^^^^^^^^^^^ ...and 4 other patterns collectively make this unreachable
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib test) generated 3 warnings (3 duplicates)
+warning: `stevenarella` (lib) generated 5 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella" test) generated 3 warnings (3 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 7.31s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 25 tests
+
+thread 'ecs::tests::ecs_add_component_reports_double_change_before_duplicate_add' (1179618) panicked at src/ecs/mod.rs:301:25:
+Double change within a single tick
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'ecs::tests::ecs_add_component_reports_duplicate_add_after_stable_component' (1179619) panicked at src/ecs/mod.rs:301:25:
+Duplicate add
+test ecs::tests::ecs_component_access_returns_none_after_entity_removal_request ... ok
+test ecs::tests::ecs_component_access_reads_and_mutates_valid_entity ... ok
+test ecs::tests::ecs_component_insert_remove_get_round_trip ... ok
+test ecs::tests::ecs_add_component_reports_double_change_before_duplicate_add - should panic ... ok
+test ecs::tests::ecs_add_component_reports_duplicate_add_after_stable_component - should panic ... ok
+test ecs::tests::ecs_component_storage_drops_removed_component_once ... ok
+test ecs::tests::ecs_component_storage_returns_none_for_missing_slot ... ok
+test ecs::tests::ecs_component_access_returns_none_for_stale_generation ... ok
+test ecs::tests::ecs_component_access_returns_none_for_absent_component ... ok
+test ecs::tests::ecs_diagnostics_report_insertable_component_add ... ok
+test ecs::tests::ecs_diagnostics_report_missing_component_remove ... ok
+test ecs::tests::ecs_duplicate_entity_generation_is_rejected ... ok
+test ecs::tests::ecs_empty_system_order_has_no_entries ... ok
+test ecs::tests::ecs_entity_allocation_core_appends_without_free_entity ... ok
+test ecs::tests::ecs_entity_allocation_core_reuses_last_free_entity ... ok
+test ecs::tests::ecs_four_component_access_mutates_distinct_components ... ok
+test ecs::tests::ecs_invalid_query_shape_rejects_duplicate_component_ids ... ok
+test ecs::tests::ecs_multi_component_access_mutates_distinct_components ... ok
+test ecs::tests::ecs_multi_component_access_rejects_duplicate_keys ... ok
+test ecs::tests::ecs_query_matching_finds_entity_with_component ... ok
+test ecs::tests::ecs_query_shape_accepts_unique_component_ids ... ok
+test ecs::tests::ecs_remove_component_returns_false_for_missing_component ... ok
+test ecs::tests::ecs_system_ordering_core_preserves_registration_order ... ok
+test ecs::tests::ecs_system_registration_records_system_count ... ok
+test ecs::tests::ecs_three_component_access_mutates_distinct_components ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 250 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 25 tests
+
+thread 'ecs::tests::ecs_add_component_reports_duplicate_add_after_stable_component' (1179645) panicked at src/ecs/mod.rs:301:25:
+Duplicate add
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'ecs::tests::ecs_add_component_reports_double_change_before_duplicate_add' (1179644) panicked at src/ecs/mod.rs:301:25:
+Double change within a single tick
+test ecs::tests::ecs_component_access_reads_and_mutates_valid_entity ... ok
+test ecs::tests::ecs_component_access_returns_none_after_entity_removal_request ... ok
+test ecs::tests::ecs_component_access_returns_none_for_absent_component ... ok
+test ecs::tests::ecs_add_component_reports_duplicate_add_after_stable_component - should panic ... ok
+test ecs::tests::ecs_component_access_returns_none_for_stale_generation ... ok
+test ecs::tests::ecs_component_insert_remove_get_round_trip ... ok
+test ecs::tests::ecs_component_storage_drops_removed_component_once ... ok
+test ecs::tests::ecs_component_storage_returns_none_for_missing_slot ... ok
+test ecs::tests::ecs_add_component_reports_double_change_before_duplicate_add - should panic ... ok
+test ecs::tests::ecs_diagnostics_report_insertable_component_add ... ok
+test ecs::tests::ecs_diagnostics_report_missing_component_remove ... ok
+test ecs::tests::ecs_duplicate_entity_generation_is_rejected ... ok
+test ecs::tests::ecs_empty_system_order_has_no_entries ... ok
+test ecs::tests::ecs_entity_allocation_core_appends_without_free_entity ... ok
+test ecs::tests::ecs_entity_allocation_core_reuses_last_free_entity ... ok
+test ecs::tests::ecs_four_component_access_mutates_distinct_components ... ok
+test ecs::tests::ecs_invalid_query_shape_rejects_duplicate_component_ids ... ok
+test ecs::tests::ecs_multi_component_access_mutates_distinct_components ... ok
+test ecs::tests::ecs_multi_component_access_rejects_duplicate_keys ... ok
+test ecs::tests::ecs_query_matching_finds_entity_with_component ... ok
+test ecs::tests::ecs_query_shape_accepts_unique_component_ids ... ok
+test ecs::tests::ecs_remove_component_returns_false_for_missing_component ... ok
+test ecs::tests::ecs_system_ordering_core_preserves_registration_order ... ok
+test ecs::tests::ecs_system_registration_records_system_count ... ok
+test ecs::tests::ecs_three_component_access_mutates_distinct_components ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 250 filtered out; finished in 0.00s
+
+exit_status=0

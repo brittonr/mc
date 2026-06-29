@@ -1,0 +1,82 @@
+# command: CAIRN_ARCHIVE_DATE=2026-06-29 nix run .#cairn -- archive modularize-stevenarella-ecs-core --root . --execute
+# cwd: /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: modularize-stevenarella-ecs-core",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-29-modularize-stevenarella-ecs-core"
+    }
+  ],
+  "blocked": false,
+  "change": "modularize-stevenarella-ecs-core",
+  "dry_run": false,
+  "input_hash": "12fd8964bbdff6b4c4e42ca6555eb5da77f53fa1781825197772def91fe6beaa",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "1c747aa96e60b682a76d38fdf2d666c4335a5540817276b4b506728f1a015976",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-stevenarella-ecs-core/design.md"
+        },
+        {
+          "content_hash": "caec2603de7857d491755693b3289d026ea8b96fbc85c8d5188dfcae75aa2f78",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-stevenarella-ecs-core/proposal.md"
+        },
+        {
+          "content_hash": "53194965afcb9a5eea00c981e547485245ce062fe0ff973e937a3044ef9afa31",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-stevenarella-ecs-core/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "4aae66ac2409fdcf71759ca56b09ac5dc862ce3a8a01d4ee3d45eddb4a134909",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-stevenarella-ecs-core/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/modularize-stevenarella-ecs-core"
+        }
+      ],
+      "manifest_hash": "dbf3ce9dc294b28e0598b1b2339923c648342c90e57d96e5630e8954aec43725"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "1c747aa96e60b682a76d38fdf2d666c4335a5540817276b4b506728f1a015976",
+          "exists": true,
+          "path": "./cairn/changes/modularize-stevenarella-ecs-core/design.md"
+        },
+        {
+          "content_hash": "caec2603de7857d491755693b3289d026ea8b96fbc85c8d5188dfcae75aa2f78",
+          "exists": true,
+          "path": "./cairn/changes/modularize-stevenarella-ecs-core/proposal.md"
+        },
+        {
+          "content_hash": "53194965afcb9a5eea00c981e547485245ce062fe0ff973e937a3044ef9afa31",
+          "exists": true,
+          "path": "./cairn/changes/modularize-stevenarella-ecs-core/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "4aae66ac2409fdcf71759ca56b09ac5dc862ce3a8a01d4ee3d45eddb4a134909",
+          "exists": true,
+          "path": "./cairn/changes/modularize-stevenarella-ecs-core/tasks.md"
+        }
+      ],
+      "manifest_hash": "b7a04aa7f8c751e6e5990af38810b781ddc735894685d12b7c4025fd11ba61cb"
+    },
+    "kind": "archive",
+    "manifest_hash": "7697686f43afb4ae697b30a305f1f2bc1f5634b39571db40be40aac0e797970b"
+  },
+  "plan_hash": "850470c7f9dc32611c9e7046ea6ac2b19d67706412c98ab52dbb1496565bbdee",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "70e012dccefa051c0193e8451b9848cb4255af9ccbdba4e3f1185904c6cd7bb0"
+}
+exit_status=0

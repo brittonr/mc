@@ -12,117 +12,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::types::bit::Set as BSet;
+mod components;
+mod diagnostics;
+mod entity;
+mod execution;
+mod query;
+mod registration;
+
+pub use components::Key;
+pub use entity::Entity;
+pub use query::Filter;
+pub use registration::System;
+
+use crate::render;
 use crate::types::hash::FNVHash;
+use crate::world;
 use std::any::{Any, TypeId};
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use std::hash::BuildHasherDefault;
-use std::marker::PhantomData;
-use std::mem;
-use std::ptr;
 
-use crate::render;
-use crate::world;
-
-/// Used to reference an entity.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct Entity {
-    id: usize,
-    generation: u32,
-}
-
-/// Used to access compoents on an entity in an efficient
-/// way.
-pub struct Key<T> {
-    id: usize,
-    _t: PhantomData<T>,
-}
-impl<T> Clone for Key<T> {
-    fn clone(&self) -> Self {
-        Key {
-            id: self.id,
-            _t: PhantomData,
-        }
-    }
-}
-impl<T> Copy for Key<T> {}
-
-/// Used to search for entities with the requested components.
-pub struct Filter {
-    bits: BSet,
-}
-
-impl Default for Filter {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl Filter {
-    /// Creates an empty filter which matches everything
-    pub fn new() -> Filter {
-        Filter { bits: BSet::new(0) }
-    }
-
-    /// Adds the component to the filter.
-    pub fn with<T>(mut self, key: Key<T>) -> Self {
-        if self.bits.capacity() <= key.id {
-            self.bits.resize(key.id + 1);
-        }
-        self.bits.set(key.id, true);
-        self
-    }
-}
-
-/// A system processes entities
-pub trait System {
-    fn filter(&self) -> &Filter;
-    fn update(
-        &mut self,
-        m: &mut Manager,
-        world: &mut world::World,
-        renderer: &mut render::Renderer,
-    );
-
-    fn entity_added(
-        &mut self,
-        _m: &mut Manager,
-        _e: Entity,
-        _world: &mut world::World,
-        _renderer: &mut render::Renderer,
-    ) {
-    }
-
-    fn entity_removed(
-        &mut self,
-        _m: &mut Manager,
-        _e: Entity,
-        _world: &mut world::World,
-        _renderer: &mut render::Renderer,
-    ) {
-    }
-}
-
-#[derive(Clone)]
-struct EntityState {
-    last_components: BSet,
-    components: BSet,
-    removed: bool,
-}
+const SYSTEMS_PRESENT_MESSAGE: &str = "systems are present outside system execution";
+const RENDER_SYSTEMS_PRESENT_MESSAGE: &str = "render systems are present outside render execution";
+const COMPONENT_STORAGE_PRESENT_MESSAGE: &str =
+    "component storage exists after component storage setup";
+const ENTITY_STATE_PRESENT_MESSAGE: &str =
+    "entity state exists after component mutation classification";
+const REUSED_ENTITY_PRESENT_MESSAGE: &str =
+    "entity allocator selected an available reusable entity";
 
 /// Stores and manages a collection of entities.
 #[derive(Default)]
 pub struct Manager {
     num_components: usize,
-    entities: Vec<(Option<EntityState>, u32)>,
+    entities: Vec<(Option<entity::EntityState>, u32)>,
     free_entities: Vec<usize>,
-    components: Vec<Option<ComponentMem>>,
+    components: Vec<Option<components::ComponentMem>>,
 
     component_ids: RefCell<HashMap<TypeId, usize, BuildHasherDefault<FNVHash>>>,
 
-    systems: Option<Vec<Box<dyn System + Send>>>,
-    render_systems: Option<Vec<Box<dyn System + Send>>>,
+    systems: Option<registration::SystemList>,
+    render_systems: Option<registration::SystemList>,
 
     changed_entity_components: HashSet<Entity, BuildHasherDefault<FNVHash>>,
 }
@@ -133,48 +63,49 @@ impl Manager {
         Manager {
             num_components: 0,
             entities: vec![(
-                Some(EntityState {
-                    last_components: BSet::new(0),
-                    components: BSet::new(0),
-                    removed: false,
-                }),
-                0,
+                Some(entity::EntityState::new(0)),
+                entity::WORLD_ENTITY_GENERATION,
             )], // Has the world entity pre-defined
             free_entities: vec![],
             components: vec![],
 
             component_ids: RefCell::new(HashMap::with_hasher(BuildHasherDefault::default())),
-            systems: Some(vec![]),
-            render_systems: Some(vec![]),
+            systems: Some(registration::empty_systems()),
+            render_systems: Some(registration::empty_systems()),
 
-            changed_entity_components: HashSet::with_hasher(BuildHasherDefault::default()),
+            changed_entity_components: empty_changed_entities(),
         }
     }
 
     /// Returns the world entity. This should never be removed.
     pub fn get_world(&self) -> Entity {
-        Entity {
-            id: 0,
-            generation: 0,
-        }
+        entity::world_entity()
     }
 
     /// Adds a system which will be called every tick
     pub fn add_system<S: System + Send + 'static>(&mut self, s: S) {
-        self.systems.as_mut().unwrap().push(Box::new(s));
+        registration::register_system(
+            self.systems.as_mut().expect(SYSTEMS_PRESENT_MESSAGE),
+            Box::new(s),
+        );
     }
 
     /// Adds a system which will be called every frame
     pub fn add_render_system<S: System + Send + 'static>(&mut self, s: S) {
-        self.render_systems.as_mut().unwrap().push(Box::new(s));
+        registration::register_system(
+            self.render_systems
+                .as_mut()
+                .expect(RENDER_SYSTEMS_PRESENT_MESSAGE),
+            Box::new(s),
+        );
     }
 
     /// Ticks all tick systems
     pub fn tick(&mut self, world: &mut world::World, renderer: &mut render::Renderer) {
         self.process_entity_changes(world, renderer);
-        let mut systems = self.systems.take().unwrap();
-        for sys in &mut systems {
-            sys.update(self, world, renderer);
+        let mut systems = self.systems.take().expect(SYSTEMS_PRESENT_MESSAGE);
+        for system_index in execution::ordered_system_indices(systems.len()) {
+            systems[system_index].update(self, world, renderer);
         }
         self.systems = Some(systems);
         self.process_entity_changes(world, renderer);
@@ -183,9 +114,12 @@ impl Manager {
     /// Ticks all render systems
     pub fn render_tick(&mut self, world: &mut world::World, renderer: &mut render::Renderer) {
         self.process_entity_changes(world, renderer);
-        let mut systems = self.render_systems.take().unwrap();
-        for sys in &mut systems {
-            sys.update(self, world, renderer);
+        let mut systems = self
+            .render_systems
+            .take()
+            .expect(RENDER_SYSTEMS_PRESENT_MESSAGE);
+        for system_index in execution::ordered_system_indices(systems.len()) {
+            systems[system_index].update(self, world, renderer);
         }
         self.render_systems = Some(systems);
         self.process_entity_changes(world, renderer);
@@ -196,57 +130,71 @@ impl Manager {
         world: &mut world::World,
         renderer: &mut render::Renderer,
     ) {
-        let changes = self.changed_entity_components.clone();
-        self.changed_entity_components = HashSet::with_hasher(BuildHasherDefault::default());
+        let changes = std::mem::replace(
+            &mut self.changed_entity_components,
+            empty_changed_entities(),
+        );
         for entity in changes {
-            let (cur, state) = {
-                let state = self.entities[entity.id].0.as_mut().unwrap();
-                let cur = state.components.clone();
-                let orig = state.clone();
+            let (current_components, original_state) = {
+                let state = self.entities[entity.id]
+                    .0
+                    .as_mut()
+                    .expect(ENTITY_STATE_PRESENT_MESSAGE);
+                let current_components = state.components.clone();
+                let original_state = state.clone();
                 state.components.or(&state.last_components);
-                (cur, orig)
+                (current_components, original_state)
             };
             self.trigger_add_for_systems(
                 entity,
-                &state.last_components,
-                &state.components,
+                &original_state.last_components,
+                &original_state.components,
                 world,
                 renderer,
             );
             self.trigger_add_for_render_systems(
                 entity,
-                &state.last_components,
-                &state.components,
+                &original_state.last_components,
+                &original_state.components,
                 world,
                 renderer,
             );
             self.trigger_remove_for_systems(
                 entity,
-                &state.last_components,
-                &state.components,
+                &original_state.last_components,
+                &original_state.components,
                 world,
                 renderer,
             );
             self.trigger_remove_for_render_systems(
                 entity,
-                &state.last_components,
-                &state.components,
+                &original_state.last_components,
+                &original_state.components,
                 world,
                 renderer,
             );
-            for i in 0..self.components.len() {
-                if !state.components.get(i) && state.last_components.get(i) {
-                    let components = self.components.get_mut(i).and_then(|v| v.as_mut()).unwrap();
+            for component_id in 0..self.components.len() {
+                if !original_state.components.get(component_id)
+                    && original_state.last_components.get(component_id)
+                {
+                    let components = self
+                        .components
+                        .get_mut(component_id)
+                        .and_then(|v| v.as_mut())
+                        .expect(COMPONENT_STORAGE_PRESENT_MESSAGE);
                     components.remove(entity.id);
                 }
             }
 
             {
-                let state = self.entities[entity.id].0.as_mut().unwrap();
-                state.components = cur;
+                let state = self.entities[entity.id]
+                    .0
+                    .as_mut()
+                    .expect(ENTITY_STATE_PRESENT_MESSAGE);
+                state.components = current_components;
                 state.last_components = state.components.clone();
             }
-            if state.removed {
+            if original_state.removed {
                 self.free_entities.push(entity.id);
                 self.entities[entity.id].0 = None;
             }
@@ -257,13 +205,16 @@ impl Manager {
     pub fn find(&self, filter: &Filter) -> Vec<Entity> {
         let mut ret = vec![];
         // Skip the world entity.
-        for (i, &(ref set, gen)) in self.entities[1..].iter().enumerate() {
-            if let Some(set) = set.as_ref() {
-                if !set.removed && set.components.includes_set(&filter.bits) {
-                    ret.push(Entity {
-                        id: i + 1,
-                        generation: gen,
-                    });
+        for (offset, &(ref state, generation)) in self.entities[entity::FIRST_ALLOCATED_ENTITY_ID..]
+            .iter()
+            .enumerate()
+        {
+            if let Some(state) = state.as_ref() {
+                if query::entity_matches_filter(state, filter) {
+                    ret.push(Entity::from_parts(
+                        offset + entity::FIRST_ALLOCATED_ENTITY_ID,
+                        generation,
+                    ));
                 }
             }
         }
@@ -272,36 +223,31 @@ impl Manager {
 
     /// Allocates a new entity without any components.
     pub fn create_entity(&mut self) -> Entity {
-        if let Some(id) = self.free_entities.pop() {
-            let entity = &mut self.entities[id];
-            entity.0 = Some(EntityState {
-                last_components: BSet::new(self.num_components),
-                components: BSet::new(self.num_components),
-                removed: false,
-            });
-            entity.1 += 1;
-            return Entity {
-                id,
-                generation: entity.1,
-            };
+        match entity::allocation_decision(&self.free_entities, self.entities.len()) {
+            entity::EntityAllocation::Reuse { entity_id } => {
+                let reused_entity_id = self
+                    .free_entities
+                    .pop()
+                    .expect(REUSED_ENTITY_PRESENT_MESSAGE);
+                assert_eq!(reused_entity_id, entity_id);
+                let entity = &mut self.entities[entity_id];
+                entity.0 = Some(entity::EntityState::new(self.num_components));
+                entity.1 += 1;
+                Entity::from_parts(entity_id, entity.1)
+            }
+            entity::EntityAllocation::Append { entity_id } => {
+                self.entities
+                    .push((Some(entity::EntityState::new(self.num_components)), 0));
+                Entity::from_parts(entity_id, 0)
+            }
         }
-        let id = self.entities.len();
-        self.entities.push((
-            Some(EntityState {
-                last_components: BSet::new(self.num_components),
-                components: BSet::new(self.num_components),
-                removed: false,
-            }),
-            0,
-        ));
-        Entity { id, generation: 0 }
     }
 
     /// Deallocates an entity and frees its components
     pub fn remove_entity(&mut self, e: Entity) {
-        if let Some(set) = self.entities[e.id].0.as_mut() {
-            set.components = BSet::new(self.components.len());
-            set.removed = true;
+        if let Some(state) = self.entities[e.id].0.as_mut() {
+            state.components = crate::types::bit::Set::new(self.components.len());
+            state.removed = true;
             self.changed_entity_components.insert(e);
         }
     }
@@ -312,14 +258,17 @@ impl Manager {
         world: &mut world::World,
         renderer: &mut render::Renderer,
     ) {
-        for (id, e) in self.entities[1..].iter_mut().enumerate() {
-            if let Some(set) = e.0.as_mut() {
-                set.components = BSet::new(self.components.len());
-                set.removed = true;
-                self.changed_entity_components.insert(Entity {
-                    id: id + 1,
-                    generation: e.1,
-                });
+        for (offset, e) in self.entities[entity::FIRST_ALLOCATED_ENTITY_ID..]
+            .iter_mut()
+            .enumerate()
+        {
+            if let Some(state) = e.0.as_mut() {
+                state.components = crate::types::bit::Set::new(self.components.len());
+                state.removed = true;
+                self.changed_entity_components.insert(Entity::from_parts(
+                    offset + entity::FIRST_ALLOCATED_ENTITY_ID,
+                    e.1,
+                ));
             }
         }
         self.process_entity_changes(world, renderer);
@@ -328,7 +277,7 @@ impl Manager {
     /// Returns whether an entity reference is valid.
     pub fn is_entity_valid(&self, e: Entity) -> bool {
         match self.entities.get(e.id) {
-            Some(val) => val.1 == e.generation && val.0.is_some(),
+            Some(val) => entity::generation_matches(val.1, e) && val.0.is_some(),
             None => false,
         }
     }
@@ -339,74 +288,46 @@ impl Manager {
         let mut ids = self.component_ids.borrow_mut();
         let next_id = ids.len();
         let id = ids.entry(TypeId::of::<T>()).or_insert(next_id);
-        Key {
-            id: *id,
-            _t: PhantomData,
-        }
+        Key::from_id(*id)
     }
 
     /// Adds the component to the target entity
     /// # Panics
     /// Panics when the target entity doesn't exist
     pub fn add_component<T>(&mut self, entity: Entity, key: Key<T>, val: T) {
-        if self.components.len() <= key.id {
-            while self.components.len() <= key.id {
-                self.components.push(None);
-            }
+        self.ensure_component_storage::<T>(key);
+        match self.classify_component_add(entity, key.id) {
+            diagnostics::ComponentAddDecision::Insert => {}
+            decision => panic!(
+                "{}",
+                diagnostics::add_decision_message(decision).expect(ENTITY_STATE_PRESENT_MESSAGE)
+            ),
         }
-        if self.components[key.id].is_none() {
-            self.components[key.id] = Some(ComponentMem::new::<T>());
-            self.num_components += 1;
-            for &mut (ref mut set, _) in &mut self.entities {
-                if let Some(set) = set.as_mut() {
-                    set.last_components.resize(self.num_components);
-                    set.components.resize(self.num_components);
-                }
-            }
-        }
-        let mut e = self.entities.get_mut(entity.id);
-        let set = match e {
-            Some(ref mut val) => {
-                if val.1 == entity.generation {
-                    &mut val.0
-                } else {
-                    panic!("Missing entity")
-                }
-            }
-            None => panic!("Missing entity"),
-        };
-        let set = match set.as_mut() {
-            Some(val) => val,
-            None => panic!("Missing entity"),
-        };
-        if set.components.get(key.id) != set.last_components.get(key.id) {
-            panic!("Double change within a single tick");
-        }
-        if set.components.get(key.id) {
-            panic!("Duplicate add");
-        }
-        set.components.set(key.id, true);
+        let state = self
+            .entity_state_mut(entity)
+            .expect(ENTITY_STATE_PRESENT_MESSAGE);
+        state.components.set(key.id, true);
         self.changed_entity_components.insert(entity);
         let components = self
             .components
             .get_mut(key.id)
             .and_then(|v| v.as_mut())
-            .unwrap();
+            .expect(COMPONENT_STORAGE_PRESENT_MESSAGE);
         components.add(entity.id, val);
     }
 
     fn trigger_add_for_systems(
         &mut self,
         e: Entity,
-        old_set: &BSet,
-        new_set: &BSet,
+        old_set: &crate::types::bit::Set,
+        new_set: &crate::types::bit::Set,
         world: &mut world::World,
         renderer: &mut render::Renderer,
     ) {
-        let mut systems = self.systems.take().unwrap();
-        for sys in &mut systems {
-            if new_set.includes_set(&sys.filter().bits) && !old_set.includes_set(&sys.filter().bits)
-            {
+        let mut systems = self.systems.take().expect(SYSTEMS_PRESENT_MESSAGE);
+        for system_index in execution::ordered_system_indices(systems.len()) {
+            let sys = &mut systems[system_index];
+            if execution::should_trigger_add(old_set, new_set, sys.filter()) {
                 sys.entity_added(self, e, world, renderer);
             }
         }
@@ -416,15 +337,18 @@ impl Manager {
     fn trigger_add_for_render_systems(
         &mut self,
         e: Entity,
-        old_set: &BSet,
-        new_set: &BSet,
+        old_set: &crate::types::bit::Set,
+        new_set: &crate::types::bit::Set,
         world: &mut world::World,
         renderer: &mut render::Renderer,
     ) {
-        let mut systems = self.render_systems.take().unwrap();
-        for sys in &mut systems {
-            if new_set.includes_set(&sys.filter().bits) && !old_set.includes_set(&sys.filter().bits)
-            {
+        let mut systems = self
+            .render_systems
+            .take()
+            .expect(RENDER_SYSTEMS_PRESENT_MESSAGE);
+        for system_index in execution::ordered_system_indices(systems.len()) {
+            let sys = &mut systems[system_index];
+            if execution::should_trigger_add(old_set, new_set, sys.filter()) {
                 sys.entity_added(self, e, world, renderer);
             }
         }
@@ -443,34 +367,23 @@ impl Manager {
     /// # Panics
     /// Panics when the target entity doesn't exist
     pub fn remove_component<T>(&mut self, entity: Entity, key: Key<T>) -> bool {
-        if self.components.len() <= key.id {
-            return false;
+        let component_storage_present = self
+            .components
+            .get(key.id)
+            .and_then(|v| v.as_ref())
+            .is_some();
+        match self.classify_component_remove(entity, key.id, component_storage_present) {
+            diagnostics::ComponentRemoveDecision::Remove => {}
+            diagnostics::ComponentRemoveDecision::NoComponent => return false,
+            decision => panic!(
+                "{}",
+                diagnostics::remove_decision_message(decision).expect(ENTITY_STATE_PRESENT_MESSAGE)
+            ),
         }
-        if self.components[key.id].is_none() {
-            return false;
-        }
-        let mut e = self.entities.get_mut(entity.id);
-        let set = match e {
-            Some(ref mut val) => {
-                if val.1 == entity.generation {
-                    &mut val.0
-                } else {
-                    panic!("Missing entity")
-                }
-            }
-            None => panic!("Missing entity"),
-        };
-        let set = match set.as_mut() {
-            Some(val) => val,
-            None => panic!("Missing entity"),
-        };
-        if set.components.get(key.id) != set.last_components.get(key.id) {
-            panic!("Double change within a single tick");
-        }
-        if !set.components.get(key.id) {
-            return false;
-        }
-        set.components.set(key.id, false);
+        let state = self
+            .entity_state_mut(entity)
+            .expect(ENTITY_STATE_PRESENT_MESSAGE);
+        state.components.set(key.id, false);
         self.changed_entity_components.insert(entity);
         // Actual removal is delayed until ticking finishes
         true
@@ -479,15 +392,15 @@ impl Manager {
     fn trigger_remove_for_systems(
         &mut self,
         e: Entity,
-        old_set: &BSet,
-        new_set: &BSet,
+        old_set: &crate::types::bit::Set,
+        new_set: &crate::types::bit::Set,
         world: &mut world::World,
         renderer: &mut render::Renderer,
     ) {
-        let mut systems = self.systems.take().unwrap();
-        for sys in &mut systems {
-            if !new_set.includes_set(&sys.filter().bits) && old_set.includes_set(&sys.filter().bits)
-            {
+        let mut systems = self.systems.take().expect(SYSTEMS_PRESENT_MESSAGE);
+        for system_index in execution::ordered_system_indices(systems.len()) {
+            let sys = &mut systems[system_index];
+            if execution::should_trigger_remove(old_set, new_set, sys.filter()) {
                 sys.entity_removed(self, e, world, renderer);
             }
         }
@@ -497,15 +410,18 @@ impl Manager {
     fn trigger_remove_for_render_systems(
         &mut self,
         e: Entity,
-        old_set: &BSet,
-        new_set: &BSet,
+        old_set: &crate::types::bit::Set,
+        new_set: &crate::types::bit::Set,
         world: &mut world::World,
         renderer: &mut render::Renderer,
     ) {
-        let mut systems = self.render_systems.take().unwrap();
-        for sys in &mut systems {
-            if !new_set.includes_set(&sys.filter().bits) && old_set.includes_set(&sys.filter().bits)
-            {
+        let mut systems = self
+            .render_systems
+            .take()
+            .expect(RENDER_SYSTEMS_PRESENT_MESSAGE);
+        for system_index in execution::ordered_system_indices(systems.len()) {
+            let sys = &mut systems[system_index];
+            if execution::should_trigger_remove(old_set, new_set, sys.filter()) {
                 sys.entity_removed(self, e, world, renderer);
             }
         }
@@ -522,11 +438,8 @@ impl Manager {
     /// Returns the given component that the key points to if it exists.
     pub fn get_component<T>(&self, entity: Entity, key: Key<T>) -> Option<&T> {
         let components = self.components.get(key.id).and_then(|v| v.as_ref())?;
-        let set = match self.entities.get(entity.id) {
-            Some(val) if val.1 == entity.generation => &val.0,
-            _ => return None,
-        };
-        if !set.as_ref().map_or(false, |v| v.components.get(key.id)) {
+        let state = self.entity_state(entity)?;
+        if !state.has_component(key.id) {
             return None;
         }
 
@@ -542,11 +455,7 @@ impl Manager {
 
     /// Returns the given component that the key points to if it exists.
     pub fn get_component_mut<T>(&mut self, entity: Entity, key: Key<T>) -> Option<&mut T> {
-        let set = match self.entities.get(entity.id) {
-            Some(val) if val.1 == entity.generation => &val.0,
-            _ => return None,
-        };
-        if !set.as_ref().map_or(false, |v| v.components.get(key.id)) {
+        if !self.entity_has_components(entity, &[key.id]) {
             return None;
         }
         let components = self.components.get_mut(key.id).and_then(|v| v.as_mut())?;
@@ -568,7 +477,7 @@ impl Manager {
         key_b: Key<B>,
     ) -> Option<(&mut A, &mut B)> {
         let component_ids = [key_a.id, key_b.id];
-        if !unique_component_ids(&component_ids)
+        if !query::component_ids_are_unique(&component_ids)
             || !self.entity_has_components(entity, &component_ids)
         {
             return None;
@@ -591,7 +500,7 @@ impl Manager {
         key_c: Key<C>,
     ) -> Option<(&mut A, &mut B, &mut C)> {
         let component_ids = [key_a.id, key_b.id, key_c.id];
-        if !unique_component_ids(&component_ids)
+        if !query::component_ids_are_unique(&component_ids)
             || !self.entity_has_components(entity, &component_ids)
         {
             return None;
@@ -617,7 +526,7 @@ impl Manager {
         key_d: Key<D>,
     ) -> Option<(&mut A, &mut B, &mut C, &mut D)> {
         let component_ids = [key_a.id, key_b.id, key_c.id, key_d.id];
-        if !unique_component_ids(&component_ids)
+        if !query::component_ids_are_unique(&component_ids)
             || !self.entity_has_components(entity, &component_ids)
         {
             return None;
@@ -637,141 +546,111 @@ impl Manager {
     }
 
     fn entity_has_components(&self, entity: Entity, component_ids: &[usize]) -> bool {
-        let state = match self.entities.get(entity.id) {
-            Some(val) if val.1 == entity.generation => match val.0.as_ref() {
-                Some(state) => state,
-                None => return false,
-            },
-            _ => return false,
+        let Some(state) = self.entity_state(entity) else {
+            return false;
         };
-        component_ids.iter().all(|id| state.components.get(*id))
+        component_ids.iter().all(|id| state.has_component(*id))
     }
 
-    fn component_mem_mut_ptr(&mut self, component_id: usize) -> Option<*mut ComponentMem> {
+    fn component_mem_mut_ptr(
+        &mut self,
+        component_id: usize,
+    ) -> Option<*mut components::ComponentMem> {
         self.components
             .get_mut(component_id)
             .and_then(|v| v.as_mut())
-            .map(|component| component as *mut ComponentMem)
-    }
-}
-
-fn unique_component_ids(component_ids: &[usize]) -> bool {
-    for (position, component_id) in component_ids.iter().enumerate() {
-        if component_ids[position + 1..].contains(component_id) {
-            return false;
-        }
-    }
-    true
-}
-
-const COMPONENTS_PER_BLOCK: usize = 64;
-
-struct ComponentMem {
-    data: Vec<Option<(Vec<u8>, BSet, usize)>>,
-    component_size: usize,
-    drop_func: Box<dyn Fn(*mut u8) + Send>,
-}
-
-impl ComponentMem {
-    fn new<T>() -> ComponentMem {
-        ComponentMem {
-            data: vec![],
-            component_size: mem::size_of::<T>(),
-            drop_func: Box::new(|data| unsafe {
-                let mut val = mem::MaybeUninit::<T>::uninit();
-                ptr::copy(data as *mut T, val.as_mut_ptr(), 1);
-                val.assume_init_drop();
-            }),
-        }
+            .map(|component| component as *mut components::ComponentMem)
     }
 
-    fn add<T>(&mut self, index: usize, val: T) {
-        while self.data.len() < (index / COMPONENTS_PER_BLOCK) + 1 {
-            self.data.push(None);
+    fn ensure_component_storage<T>(&mut self, key: Key<T>) {
+        while self.components.len() <= key.id {
+            self.components.push(None);
         }
-        let idx = index / COMPONENTS_PER_BLOCK;
-        let rem = index % COMPONENTS_PER_BLOCK;
-        if self.data[idx].is_none() {
-            self.data[idx] = Some((
-                vec![0; self.component_size * COMPONENTS_PER_BLOCK],
-                BSet::new(COMPONENTS_PER_BLOCK),
-                0,
-            ));
-        }
-        let data = self.data[idx].as_mut().unwrap();
-        let start = rem * self.component_size;
-        data.2 += 1;
-        data.1.set(rem, true);
-        unsafe {
-            ptr::write(data.0.as_mut_ptr().add(start) as *mut T, val);
-        }
-    }
-
-    fn remove(&mut self, index: usize) {
-        let idx = index / COMPONENTS_PER_BLOCK;
-        let rem = index % COMPONENTS_PER_BLOCK;
-
-        let count = {
-            let Some(data) = self.data.get_mut(idx).and_then(|v| v.as_mut()) else {
-                return;
-            };
-            if !data.1.get(rem) {
-                return;
-            }
-            let start = rem * self.component_size;
-            data.1.set(rem, false);
-            // We don't have access to the actual type in this method so
-            // we use the drop_func which stores the type in its closure
-            // to handle the dropping for us.
-            unsafe {
-                (self.drop_func)(data.0.as_mut_ptr().add(start));
-            }
-            data.2 -= 1;
-            data.2
-        };
-        if count == 0 {
-            self.data[idx] = None;
-        }
-    }
-
-    fn get<T>(&self, index: usize) -> Option<&T> {
-        let idx = index / COMPONENTS_PER_BLOCK;
-        let rem = index % COMPONENTS_PER_BLOCK;
-        let data = self.data.get(idx).and_then(|v| v.as_ref())?;
-        if !data.1.get(rem) {
-            return None;
-        }
-        let start = rem * self.component_size;
-        unsafe { Some(&*(data.0.as_ptr().add(start) as *const T)) }
-    }
-
-    fn get_mut<T>(&mut self, index: usize) -> Option<&mut T> {
-        let idx = index / COMPONENTS_PER_BLOCK;
-        let rem = index % COMPONENTS_PER_BLOCK;
-        let data = self.data.get_mut(idx).and_then(|v| v.as_mut())?;
-        if !data.1.get(rem) {
-            return None;
-        }
-        let start = rem * self.component_size;
-        unsafe { Some(&mut *(data.0.as_mut_ptr().add(start) as *mut T)) }
-    }
-}
-
-impl Drop for ComponentMem {
-    fn drop(&mut self) {
-        for data in &mut self.data {
-            if let Some(data) = data.as_mut() {
-                for i in 0..COMPONENTS_PER_BLOCK {
-                    if data.1.get(i) {
-                        let start = i * self.component_size;
-                        unsafe {
-                            (self.drop_func)(data.0.as_mut_ptr().add(start));
-                        }
-                    }
+        if self.components[key.id].is_none() {
+            self.components[key.id] = Some(components::ComponentMem::new::<T>());
+            self.num_components += 1;
+            for &mut (ref mut state, _) in &mut self.entities {
+                if let Some(state) = state.as_mut() {
+                    state.last_components.resize(self.num_components);
+                    state.components.resize(self.num_components);
                 }
             }
         }
     }
+
+    fn entity_state(&self, entity: Entity) -> Option<&entity::EntityState> {
+        match self.entities.get(entity.id) {
+            Some(val) if entity::generation_matches(val.1, entity) => val.0.as_ref(),
+            _ => None,
+        }
+    }
+
+    fn entity_state_mut(&mut self, entity: Entity) -> Option<&mut entity::EntityState> {
+        match self.entities.get_mut(entity.id) {
+            Some(val) if entity::generation_matches(val.1, entity) => val.0.as_mut(),
+            _ => None,
+        }
+    }
+
+    fn classify_component_add(
+        &self,
+        entity: Entity,
+        component_id: usize,
+    ) -> diagnostics::ComponentAddDecision {
+        match self.entities.get(entity.id) {
+            Some((state, generation)) => diagnostics::classify_component_add(
+                true,
+                entity::generation_matches(*generation, entity),
+                state.is_some(),
+                state.as_ref().map_or(false, |state| {
+                    state.component_changed_this_tick(component_id)
+                }),
+                state
+                    .as_ref()
+                    .map_or(false, |state| state.has_component(component_id)),
+            ),
+            None => diagnostics::classify_component_add(false, false, false, false, false),
+        }
+    }
+
+    fn classify_component_remove(
+        &self,
+        entity: Entity,
+        component_id: usize,
+        component_storage_present: bool,
+    ) -> diagnostics::ComponentRemoveDecision {
+        if !component_storage_present {
+            return diagnostics::classify_component_remove(
+                false, false, false, false, false, false,
+            );
+        }
+        match self.entities.get(entity.id) {
+            Some((state, generation)) => diagnostics::classify_component_remove(
+                component_storage_present,
+                true,
+                entity::generation_matches(*generation, entity),
+                state.is_some(),
+                state.as_ref().map_or(false, |state| {
+                    state.component_changed_this_tick(component_id)
+                }),
+                state
+                    .as_ref()
+                    .map_or(false, |state| state.has_component(component_id)),
+            ),
+            None => diagnostics::classify_component_remove(
+                component_storage_present,
+                false,
+                false,
+                false,
+                false,
+                false,
+            ),
+        }
+    }
+}
+
+fn empty_changed_entities() -> HashSet<Entity, BuildHasherDefault<FNVHash>> {
+    HashSet::with_hasher(BuildHasherDefault::default())
 }
 
 #[cfg(test)]
@@ -783,7 +662,17 @@ mod tests {
     const TEST_COMPONENT_VALUE: i32 = 7;
     const UPDATED_COMPONENT_VALUE: i32 = 11;
     const STALE_GENERATION_OFFSET: u32 = 1;
-    const TEST_COMPONENT_INDEX: usize = COMPONENTS_PER_BLOCK + 1;
+    const TEST_COMPONENT_INDEX: usize = components::COMPONENTS_PER_BLOCK + 1;
+    const REUSABLE_ENTITY_A: usize = 4;
+    const REUSABLE_ENTITY_B: usize = 5;
+    const NEXT_ENTITY_ID: usize = 9;
+    const TEST_SYSTEM_COUNT: usize = 3;
+    const FIRST_SYSTEM_INDEX: usize = 0;
+    const SECOND_SYSTEM_INDEX: usize = 1;
+    const THIRD_SYSTEM_INDEX: usize = 2;
+    const EMPTY_SYSTEM_COUNT: usize = 0;
+    const QUERY_COMPONENT_ID_A: usize = 6;
+    const QUERY_COMPONENT_ID_B: usize = 8;
 
     #[derive(Debug, PartialEq, Eq)]
     struct TestComponent {
@@ -791,6 +680,14 @@ mod tests {
     }
 
     struct OtherComponent {
+        value: i32,
+    }
+
+    struct ThirdComponent {
+        value: i32,
+    }
+
+    struct FourthComponent {
         value: i32,
     }
 
@@ -802,6 +699,48 @@ mod tests {
         fn drop(&mut self) {
             self.drops.fetch_add(1, Ordering::SeqCst);
         }
+    }
+
+    struct NoopSystem {
+        filter: Filter,
+    }
+
+    impl System for NoopSystem {
+        fn filter(&self) -> &Filter {
+            &self.filter
+        }
+
+        fn update(
+            &mut self,
+            _m: &mut Manager,
+            _world: &mut world::World,
+            _renderer: &mut render::Renderer,
+        ) {
+        }
+    }
+
+    #[test]
+    fn ecs_entity_allocation_core_reuses_last_free_entity() {
+        let free_entities = [REUSABLE_ENTITY_A, REUSABLE_ENTITY_B];
+
+        assert_eq!(
+            entity::allocation_decision(&free_entities, NEXT_ENTITY_ID),
+            entity::EntityAllocation::Reuse {
+                entity_id: REUSABLE_ENTITY_B,
+            }
+        );
+    }
+
+    #[test]
+    fn ecs_entity_allocation_core_appends_without_free_entity() {
+        let free_entities = [];
+
+        assert_eq!(
+            entity::allocation_decision(&free_entities, NEXT_ENTITY_ID),
+            entity::EntityAllocation::Append {
+                entity_id: NEXT_ENTITY_ID,
+            }
+        );
     }
 
     #[test]
@@ -830,6 +769,33 @@ mod tests {
     }
 
     #[test]
+    fn ecs_component_insert_remove_get_round_trip() {
+        let mut manager = Manager::new();
+        let entity = manager.create_entity();
+        let key = manager.get_key::<TestComponent>();
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+
+        assert_eq!(
+            manager.get_component(entity, key).unwrap().value,
+            TEST_COMPONENT_VALUE
+        );
+        let state = manager.entities[entity.id]
+            .0
+            .as_mut()
+            .expect(ENTITY_STATE_PRESENT_MESSAGE);
+        state.last_components.set(key.id, true);
+
+        assert!(manager.remove_component(entity, key));
+        assert!(manager.get_component(entity, key).is_none());
+    }
+
+    #[test]
     fn ecs_component_access_returns_none_for_absent_component() {
         let mut manager = Manager::new();
         let entity = manager.create_entity();
@@ -846,6 +812,23 @@ mod tests {
 
         assert!(manager.get_component(entity, absent_key).is_none());
         assert!(manager.get_component_mut(entity, absent_key).is_none());
+    }
+
+    #[test]
+    fn ecs_query_matching_finds_entity_with_component() {
+        let mut manager = Manager::new();
+        let entity = manager.create_entity();
+        let key = manager.get_key::<TestComponent>();
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+        let filter = Filter::new().with(key);
+
+        assert_eq!(manager.find(&filter), vec![entity]);
     }
 
     #[test]
@@ -886,6 +869,119 @@ mod tests {
     }
 
     #[test]
+    fn ecs_three_component_access_mutates_distinct_components() {
+        let mut manager = Manager::new();
+        let entity = manager.create_entity();
+        let key = manager.get_key::<TestComponent>();
+        let other_key = manager.get_key::<OtherComponent>();
+        let third_key = manager.get_key::<ThirdComponent>();
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+        manager.add_component(
+            entity,
+            other_key,
+            OtherComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+        manager.add_component(
+            entity,
+            third_key,
+            ThirdComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+
+        let (first, second, third) = manager
+            .get_three_components_mut(entity, key, other_key, third_key)
+            .unwrap();
+        first.value = UPDATED_COMPONENT_VALUE;
+        second.value = UPDATED_COMPONENT_VALUE;
+        third.value = UPDATED_COMPONENT_VALUE;
+
+        assert_eq!(
+            manager.get_component(entity, key).unwrap().value,
+            UPDATED_COMPONENT_VALUE
+        );
+        assert_eq!(
+            manager.get_component(entity, other_key).unwrap().value,
+            UPDATED_COMPONENT_VALUE
+        );
+        assert_eq!(
+            manager.get_component(entity, third_key).unwrap().value,
+            UPDATED_COMPONENT_VALUE
+        );
+    }
+
+    #[test]
+    fn ecs_four_component_access_mutates_distinct_components() {
+        let mut manager = Manager::new();
+        let entity = manager.create_entity();
+        let key = manager.get_key::<TestComponent>();
+        let other_key = manager.get_key::<OtherComponent>();
+        let third_key = manager.get_key::<ThirdComponent>();
+        let fourth_key = manager.get_key::<FourthComponent>();
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+        manager.add_component(
+            entity,
+            other_key,
+            OtherComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+        manager.add_component(
+            entity,
+            third_key,
+            ThirdComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+        manager.add_component(
+            entity,
+            fourth_key,
+            FourthComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+
+        let (first, second, third, fourth) = manager
+            .get_four_components_mut(entity, key, other_key, third_key, fourth_key)
+            .unwrap();
+        first.value = UPDATED_COMPONENT_VALUE;
+        second.value = UPDATED_COMPONENT_VALUE;
+        third.value = UPDATED_COMPONENT_VALUE;
+        fourth.value = UPDATED_COMPONENT_VALUE;
+
+        assert_eq!(
+            manager.get_component(entity, key).unwrap().value,
+            UPDATED_COMPONENT_VALUE
+        );
+        assert_eq!(
+            manager.get_component(entity, other_key).unwrap().value,
+            UPDATED_COMPONENT_VALUE
+        );
+        assert_eq!(
+            manager.get_component(entity, third_key).unwrap().value,
+            UPDATED_COMPONENT_VALUE
+        );
+        assert_eq!(
+            manager.get_component(entity, fourth_key).unwrap().value,
+            UPDATED_COMPONENT_VALUE
+        );
+    }
+
+    #[test]
     fn ecs_multi_component_access_rejects_duplicate_keys() {
         let mut manager = Manager::new();
         let entity = manager.create_entity();
@@ -913,10 +1009,7 @@ mod tests {
                 value: TEST_COMPONENT_VALUE,
             },
         );
-        let stale = Entity {
-            id: entity.id,
-            generation: entity.generation + STALE_GENERATION_OFFSET,
-        };
+        let stale = Entity::from_parts(entity.id, entity.generation + STALE_GENERATION_OFFSET);
 
         assert!(manager.get_component(stale, key).is_none());
         assert!(manager.get_component_mut(stale, key).is_none());
@@ -942,10 +1035,82 @@ mod tests {
     }
 
     #[test]
+    fn ecs_duplicate_entity_generation_is_rejected() {
+        let manager = Manager::new();
+        let world_entity = manager.get_world();
+        let duplicate_generation = Entity::from_parts(
+            world_entity.id,
+            world_entity.generation + STALE_GENERATION_OFFSET,
+        );
+
+        assert!(!manager.is_entity_valid(duplicate_generation));
+    }
+
+    #[test]
+    fn ecs_remove_component_returns_false_for_missing_component() {
+        let mut manager = Manager::new();
+        let entity = manager.create_entity();
+        let key = manager.get_key::<TestComponent>();
+
+        assert!(!manager.remove_component(entity, key));
+    }
+
+    #[test]
+    #[should_panic(expected = "Double change within a single tick")]
+    fn ecs_add_component_reports_double_change_before_duplicate_add() {
+        let mut manager = Manager::new();
+        let entity = manager.create_entity();
+        let key = manager.get_key::<TestComponent>();
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: UPDATED_COMPONENT_VALUE,
+            },
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "Duplicate add")]
+    fn ecs_add_component_reports_duplicate_add_after_stable_component() {
+        let mut manager = Manager::new();
+        let entity = manager.create_entity();
+        let key = manager.get_key::<TestComponent>();
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: TEST_COMPONENT_VALUE,
+            },
+        );
+        let state = manager.entities[entity.id]
+            .0
+            .as_mut()
+            .expect(ENTITY_STATE_PRESENT_MESSAGE);
+        state.last_components.set(key.id, true);
+
+        manager.add_component(
+            entity,
+            key,
+            TestComponent {
+                value: UPDATED_COMPONENT_VALUE,
+            },
+        );
+    }
+
+    #[test]
     fn ecs_component_storage_drops_removed_component_once() {
         let drops = Arc::new(AtomicUsize::new(0));
         {
-            let mut storage = ComponentMem::new::<DropCounter>();
+            let mut storage = components::ComponentMem::new::<DropCounter>();
             storage.add(
                 TEST_COMPONENT_INDEX,
                 DropCounter {
@@ -962,11 +1127,68 @@ mod tests {
 
     #[test]
     fn ecs_component_storage_returns_none_for_missing_slot() {
-        let mut storage = ComponentMem::new::<TestComponent>();
+        let mut storage = components::ComponentMem::new::<TestComponent>();
 
         assert!(storage.get::<TestComponent>(TEST_COMPONENT_INDEX).is_none());
         assert!(storage
             .get_mut::<TestComponent>(TEST_COMPONENT_INDEX)
             .is_none());
+    }
+
+    #[test]
+    fn ecs_system_registration_records_system_count() {
+        let mut systems = registration::empty_systems();
+
+        registration::register_system(
+            &mut systems,
+            Box::new(NoopSystem {
+                filter: Filter::new(),
+            }),
+        );
+
+        assert_eq!(registration::registered_system_count(&systems), 1);
+    }
+
+    #[test]
+    fn ecs_system_ordering_core_preserves_registration_order() {
+        assert_eq!(
+            execution::ordered_system_indices(TEST_SYSTEM_COUNT),
+            vec![FIRST_SYSTEM_INDEX, SECOND_SYSTEM_INDEX, THIRD_SYSTEM_INDEX]
+        );
+    }
+
+    #[test]
+    fn ecs_empty_system_order_has_no_entries() {
+        assert!(execution::ordered_system_indices(EMPTY_SYSTEM_COUNT).is_empty());
+    }
+
+    #[test]
+    fn ecs_query_shape_accepts_unique_component_ids() {
+        let component_ids = [QUERY_COMPONENT_ID_A, QUERY_COMPONENT_ID_B];
+
+        assert!(query::component_ids_are_unique(&component_ids));
+    }
+
+    #[test]
+    fn ecs_invalid_query_shape_rejects_duplicate_component_ids() {
+        let component_ids = [QUERY_COMPONENT_ID_A, QUERY_COMPONENT_ID_A];
+
+        assert!(!query::component_ids_are_unique(&component_ids));
+    }
+
+    #[test]
+    fn ecs_diagnostics_report_insertable_component_add() {
+        assert_eq!(
+            diagnostics::classify_component_add(true, true, true, false, false),
+            diagnostics::ComponentAddDecision::Insert
+        );
+    }
+
+    #[test]
+    fn ecs_diagnostics_report_missing_component_remove() {
+        assert_eq!(
+            diagnostics::classify_component_remove(true, true, true, true, false, false),
+            diagnostics::ComponentRemoveDecision::NoComponent
+        );
     }
 }
