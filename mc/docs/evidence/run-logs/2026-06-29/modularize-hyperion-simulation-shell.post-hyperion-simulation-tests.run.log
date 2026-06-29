@@ -1,0 +1,69 @@
+cwd=/home/brittonr/git/mc/hyperion
+command=nix develop --no-update-lock-file . -c cargo test -p hyperion simulation:: --lib
+   Compiling hyperion v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion)
+error[E0432]: unresolved import `crate::simulation::PendingTeleportation`
+   --> crates/hyperion/src/egress/player_join/mod.rs:36:9
+    |
+36  |         PendingTeleportation, Position, Uuid, Yaw, skin::PlayerSkin, util::registry_codec_raw,
+    |         ^^^^^^^^^^^^^^^^^^^^ no `PendingTeleportation` in `simulation`
+    |
+note: struct `crate::simulation::domain::PendingTeleportation` exists but is inaccessible
+   --> crates/hyperion/src/simulation/domain.rs:441:1
+    |
+441 | pub struct PendingTeleportation {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not accessible
+
+error[E0432]: unresolved import `crate::simulation::PendingTeleportation`
+   --> crates/hyperion/src/egress/sync_entity_state.rs:16:54
+    |
+16  |         EntitySize, Flight, MovementTracking, Owner, PendingTeleportation, Pitch, Position,
+    |                                                      ^^^^^^^^^^^^^^^^^^^^ no `PendingTeleportation` in `simulation`
+    |
+note: struct `crate::simulation::domain::PendingTeleportation` exists but is inaccessible
+   --> crates/hyperion/src/simulation/domain.rs:441:1
+    |
+441 | pub struct PendingTeleportation {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not accessible
+
+error[E0432]: unresolved imports `crate::simulation::Aabb`, `crate::simulation::PendingTeleportation`
+  --> crates/hyperion/src/simulation/handlers.rs:23:9
+   |
+23 |         Aabb, ConfirmBlockSequences, EntitySize, Flight, MovementTracking, PendingTeleportation,
+   |         ^^^^                                                               ^^^^^^^^^^^^^^^^^^^^ no `PendingTeleportation` in `simulation`
+   |         |
+   |         no `Aabb` in `simulation`
+   |         help: a similar name exists in the module: `aabb`
+   |
+   = help: consider importing this struct instead:
+           geometry::aabb::Aabb
+   = help: consider importing this struct instead:
+           crate::simulation::domain::PendingTeleportation
+
+error[E0432]: unresolved import `crate::simulation::Metadata`
+  --> crates/hyperion/src/simulation/metadata/entity.rs:20:45
+   |
+20 | use crate::{define_and_register_components, simulation::Metadata};
+   |                                             ^^^^^^^^^^^^--------
+   |                                             |           |
+   |                                             |           help: a similar name exists in the module: `metadata`
+   |                                             no `Metadata` in `simulation`
+   |
+   = help: consider importing one of these items instead:
+           crate::simulation::metadata::Metadata
+           std::fs::Metadata
+           rkyv::de::Metadata
+           tracing::Metadata
+
+error[E0432]: unresolved import `crate::simulation::PendingTeleportation`
+  --> crates/hyperion/src/simulation/packet_adapters.rs:16:30
+   |
+16 |         Flight, FlyingSpeed, PendingTeleportation, Pitch, Yaw,
+   |                              ^^^^^^^^^^^^^^^^^^^^ no `PendingTeleportation` in `simulation`
+   |
+   = help: consider importing this struct instead:
+           crate::simulation::domain::PendingTeleportation
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `hyperion` (lib) due to 5 previous errors
+exit_status=101
+]0;

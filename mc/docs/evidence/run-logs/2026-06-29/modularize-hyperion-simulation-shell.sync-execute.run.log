@@ -1,0 +1,51 @@
+cwd=/home/brittonr/git/mc
+command=nix run .#cairn -- sync modularize-hyperion-simulation-shell --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/modularize-hyperion-simulation-shell/specs/valence-hyperion-integration/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/modularize-hyperion-simulation-shell/specs/valence-hyperion-integration/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "modularize-hyperion-simulation-shell",
+  "delta_specs": [
+    "./cairn/changes/modularize-hyperion-simulation-shell/specs/valence-hyperion-integration/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "59116d9e76d1fde50e0061d48fe3423ba798be51ea8d5a9e48efb7840082b678",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "6234c3cebc7a0603bbe8231ab65999b4831d3392be563cdc51186d9f18b68697",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "bfbee4a507341e628b937f9466ce8c40d2c879979f2b42aae103725a5bfb4160"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "6234c3cebc7a0603bbe8231ab65999b4831d3392be563cdc51186d9f18b68697",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "bfbee4a507341e628b937f9466ce8c40d2c879979f2b42aae103725a5bfb4160"
+    },
+    "kind": "sync",
+    "manifest_hash": "74592d3f0f9c1f3cd9aa5b98511b5714ecbbd75cd7eae9a48335bdb686d1aa7f"
+  },
+  "plan_hash": "b99a4ea22948ef1ff356a7605a19ff65632452ccc71f5248e37dede15ae2bd12",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "4fcd0becc2deab8b32cc28c6b710b98df5e3297e31d5eb6f6df4f7af4a74dce0"
+}
+exit_status=0
+]0;

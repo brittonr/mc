@@ -1,0 +1,7 @@
+cwd=/home/brittonr/git/mc/hyperion
+command=cargo +nightly-2025-02-22 test -p hyperion simulation:: --lib
+error: no such command: `+nightly-2025-02-22`
+
+help: invoke `cargo` through `rustup` to handle `+toolchain` directives
+exit_status=101
+]0;

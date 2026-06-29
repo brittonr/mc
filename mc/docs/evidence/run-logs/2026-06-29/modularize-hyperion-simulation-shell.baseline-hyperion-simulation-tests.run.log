@@ -1,0 +1,41 @@
+cwd=/home/brittonr/git/mc/hyperion
+command=cargo test -p hyperion simulation:: --lib
+   Compiling h2 v0.4.15
+   Compiling bevy_app v0.16.1
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling native-tls v0.2.14
+   Compiling spki v0.7.3
+   Compiling rustc-hash v2.1.1
+   Compiling inout v0.1.4
+   Compiling ptr_meta_derive v0.3.0
+   Compiling n0-future v0.1.3
+   Compiling socket2 v0.5.8
+   Compiling sync_wrapper v1.0.2
+   Compiling data-encoding v2.11.0
+   Compiling signature v2.2.0
+   Compiling bevy_app v0.12.1
+   Compiling phf v0.11.3
+   Compiling netlink-packet-core v0.7.0
+   Compiling precis-core v0.1.11
+   Compiling rusticata-macros v4.1.0
+   Compiling pest_generator v2.8.6
+   Compiling precis-profiles v0.1.13
+error[E0554]: `#![feature]` may not be used on the stable release channel
+  --> /home/brittonr/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustc-hash-2.1.1/src/lib.rs:18:34
+   |
+18 | #![cfg_attr(feature = "nightly", feature(hasher_prefixfree_extras))]
+   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0554`.
+   Compiling cipher v0.4.4
+error: could not compile `rustc-hash` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error[E0554]: `#![feature]` may not be used on the stable release channel
+ --> /home/brittonr/.cargo/git/checkouts/valence-f36bc2fa92befb13/fb792dc/crates/valence_protocol/src/lib.rs:1:1
+  |
+1 | #![feature(substr_range)]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: could not compile `valence_protocol` (lib) due to 1 previous error
+exit_status=101
+]0;

@@ -1,0 +1,249 @@
+cwd=/home/brittonr/git/mc/hyperion
+command=nix develop --no-update-lock-file . -c cargo clippy -p hyperion --lib -- -D warnings
+    Checking hyperion v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion)
+error: pub(crate) module inside private module
+ --> crates/hyperion/src/simulation/blocks/loader/mod.rs:1:1
+  |
+1 | pub(crate) mod core;
+  | ----------^^^^^^^^^
+  | |
+  | help: consider using: `pub`
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#redundant_pub_crate
+  = note: `-D clippy::redundant-pub-crate` implied by `-D clippy::nursery`
+  = help: to override `-D clippy::nursery` add `#[allow(clippy::redundant_pub_crate)]`
+
+error: this could be a `const fn`
+  --> crates/hyperion/src/simulation/blocks/loader/core.rs:40:1
+   |
+40 | / pub(super) fn plan_load_request(newly_inserted: bool) -> LoadRequestPlan {
+41 | |     if newly_inserted {
+42 | |         LoadRequestPlan::SpawnLoadTask
+43 | |     } else {
+...  |
+46 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+   = note: `-D clippy::missing-const-for-fn` implied by `-D clippy::nursery`
+   = help: to override `-D clippy::nursery` add `#[allow(clippy::missing_const_for_fn)]`
+help: make the function `const`
+   |
+40 | pub(super) const fn plan_load_request(newly_inserted: bool) -> LoadRequestPlan {
+   |            +++++
+
+error: this could be a `const fn`
+  --> crates/hyperion/src/simulation/blocks/loader/core.rs:48:1
+   |
+48 | / pub(super) fn plan_region_lookup(region_found: bool) -> RegionLoadPlan {
+49 | |     if region_found {
+50 | |         RegionLoadPlan::ReadChunk
+51 | |     } else {
+...  |
+54 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+help: make the function `const`
+   |
+48 | pub(super) const fn plan_region_lookup(region_found: bool) -> RegionLoadPlan {
+   |            +++++
+
+error: this could be a `const fn`
+  --> crates/hyperion/src/simulation/blocks/loader/core.rs:56:1
+   |
+56 | / pub(super) fn plan_loaded_column_height(
+57 | |     expected_height: u32,
+58 | |     actual_height: u32,
+59 | | ) -> LoadedColumnPlan {
+...  |
+68 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+help: make the function `const`
+   |
+56 | pub(super) const fn plan_loaded_column_height(
+   |            +++++
+
+error: pub(crate) module inside private module
+ --> crates/hyperion/src/simulation/blocks/loader/mod.rs:2:1
+  |
+2 | pub(crate) mod palette;
+  | ----------^^^^^^^^^^^^
+  | |
+  | help: consider using: `pub`
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#redundant_pub_crate
+
+error: this could be a `const fn`
+  --> crates/hyperion/src/simulation/blocks/loader/palette.rs:56:5
+   |
+56 | /     pub(super) fn index_in_word(self, word: u64, index_in_word: usize) -> u64 {
+57 | |         let shift = self.bits_per_index * index_in_word;
+58 | |         (word >> shift) & self.index_mask
+59 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+help: make the function `const`
+   |
+56 |     pub(super) const fn index_in_word(self, word: u64, index_in_word: usize) -> u64 {
+   |                +++++
+
+error: this could be a `const fn`
+  --> crates/hyperion/src/simulation/blocks/loader/palette.rs:62:1
+   |
+62 | / fn mask_for_bits(bits_per_index: usize) -> u64 {
+63 | |     if bits_per_index == PACKED_WORD_BITS {
+64 | |         u64::MAX
+65 | |     } else {
+...  |
+68 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+help: make the function `const`
+   |
+62 | const fn mask_for_bits(bits_per_index: usize) -> u64 {
+   | +++++
+
+error: casting `u32` to `i32` may wrap around the value
+   --> crates/hyperion/src/simulation/blocks/loader/parse.rs:513:40
+    |
+513 | const SECTION_HEIGHT_BLOCKS_I32: i32 = SECTION_HEIGHT_BLOCKS as i32;
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#cast_possible_wrap
+    = note: `-D clippy::cast-possible-wrap` implied by `-D clippy::pedantic`
+    = help: to override `-D clippy::pedantic` add `#[allow(clippy::cast_possible_wrap)]`
+
+error: casting `u32` to `i32` may wrap around the value
+   --> crates/hyperion/src/simulation/blocks/loader/parse.rs:514:39
+    |
+514 | const SECTION_WIDTH_BLOCKS_I32: i32 = SECTION_WIDTH_BLOCKS as i32;
+    |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#cast_possible_wrap
+
+error: casting `u32` to `u16` may truncate the value
+   --> crates/hyperion/src/simulation/blocks/loader/parse.rs:518:33
+    |
+518 | const BLOCKS_PER_SECTION: u16 = (SECTION_WIDTH_BLOCKS * SECTION_LAYER_BLOCKS) as u16;
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: if this is intentional allow the lint with `#[allow(clippy::cast_possible_truncation)]` ...
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#cast_possible_truncation
+    = note: `-D clippy::cast-possible-truncation` implied by `-D clippy::pedantic`
+    = help: to override `-D clippy::pedantic` add `#[allow(clippy::cast_possible_truncation)]`
+help: ... or use `try_from` and handle the error accordingly
+    |
+518 - const BLOCKS_PER_SECTION: u16 = (SECTION_WIDTH_BLOCKS * SECTION_LAYER_BLOCKS) as u16;
+518 + const BLOCKS_PER_SECTION: u16 = u16::try_from(SECTION_WIDTH_BLOCKS * SECTION_LAYER_BLOCKS);
+    |
+
+error: casting `u32` to `u16` may truncate the value
+   --> crates/hyperion/src/simulation/blocks/loader/parse.rs:519:33
+    |
+519 | const BIOMES_PER_SECTION: u16 = (BIOME_SECTION_WIDTH * BIOME_SECTION_LAYER) as u16;
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: if this is intentional allow the lint with `#[allow(clippy::cast_possible_truncation)]` ...
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#cast_possible_truncation
+help: ... or use `try_from` and handle the error accordingly
+    |
+519 - const BIOMES_PER_SECTION: u16 = (BIOME_SECTION_WIDTH * BIOME_SECTION_LAYER) as u16;
+519 + const BIOMES_PER_SECTION: u16 = u16::try_from(BIOME_SECTION_WIDTH * BIOME_SECTION_LAYER);
+    |
+
+error: pub(crate) module inside private module
+ --> crates/hyperion/src/simulation/blocks/loader/mod.rs:5:1
+  |
+5 | pub(crate) mod storage_plan;
+  | ----------^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider using: `pub`
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#redundant_pub_crate
+
+error: pub(crate) module inside private module
+ --> crates/hyperion/src/simulation/blocks/loader/mod.rs:6:1
+  |
+6 | pub(crate) mod validation;
+  | ----------^^^^^^^^^^^^^^^
+  | |
+  | help: consider using: `pub`
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#redundant_pub_crate
+
+error: this function has a `#[must_use]` attribute with no message, but returns a type already marked as `#[must_use]`
+  --> crates/hyperion/src/simulation/decisions.rs:84:1
+   |
+84 | / pub fn plan_teleport_packet_summary(
+85 | |     destination: Vec3,
+86 | |     yaw: f32,
+87 | |     pitch: f32,
+88 | |     teleport_id: i32,
+89 | | ) -> Result<TeleportPacketSummary, PacketSummaryError> {
+   | |______________________________________________________^
+   |
+   = help: either add some descriptive message or remove the attribute
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#double_must_use
+   = note: `-D clippy::double-must-use` implied by `-D clippy::style`
+   = help: to override `-D clippy::style` add `#[allow(clippy::double_must_use)]`
+
+error: this function has a `#[must_use]` attribute with no message, but returns a type already marked as `#[must_use]`
+   --> crates/hyperion/src/simulation/decisions.rs:111:1
+    |
+111 | / pub fn plan_flight_packet_summary(
+112 | |     allow_flying: bool,
+113 | |     flying: bool,
+114 | |     flying_speed: f32,
+115 | | ) -> Result<FlightPacketSummary, PacketSummaryError> {
+    | |____________________________________________________^
+    |
+    = help: either add some descriptive message or remove the attribute
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#double_must_use
+
+error: this function has a `#[must_use]` attribute with no message, but returns a type already marked as `#[must_use]`
+   --> crates/hyperion/src/simulation/decisions.rs:163:1
+    |
+163 | / pub fn plan_simulation_update(
+164 | |     world: Option<SimulationWorldFacts>,
+165 | |     request: SimulationUpdateRequest,
+166 | | ) -> Result<SimulationUpdatePlan, SimulationUpdateRejection> {
+    | |____________________________________________________________^
+    |
+    = help: either add some descriptive message or remove the attribute
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#double_must_use
+
+error: this could be a `const fn`
+   --> crates/hyperion/src/simulation/decisions.rs:163:1
+    |
+163 | / pub fn plan_simulation_update(
+164 | |     world: Option<SimulationWorldFacts>,
+165 | |     request: SimulationUpdateRequest,
+166 | | ) -> Result<SimulationUpdatePlan, SimulationUpdateRejection> {
+...   |
+189 | |     }))
+190 | | }
+    | |_^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+help: make the function `const`
+    |
+163 | pub const fn plan_simulation_update(
+    |     +++++
+
+error: this lint expectation is unfulfilled
+   --> crates/hyperion/src/simulation/blocks/loader/parse.rs:221:34
+    |
+221 | #[expect(clippy::cast_sign_loss, clippy::cast_lossless, clippy::too_many_lines)]
+    |                                  ^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `-D unfulfilled-lint-expectations` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(unfulfilled_lint_expectations)]`
+
+error: could not compile `hyperion` (lib) due to 18 previous errors
+exit_status=101
+]0;

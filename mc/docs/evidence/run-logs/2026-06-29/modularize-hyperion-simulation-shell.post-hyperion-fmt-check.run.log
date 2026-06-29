@@ -1,0 +1,4 @@
+cwd=/home/brittonr/git/mc/hyperion
+command=nix develop --no-update-lock-file . -c cargo fmt -p hyperion --check
+exit_status=0
+]0;

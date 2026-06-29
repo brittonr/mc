@@ -1,0 +1,277 @@
+cwd=/home/brittonr/git/mc/hyperion
+command=nix develop --no-update-lock-file . -c cargo clippy -p hyperion --lib -- -D warnings
+    Checking critical-section v1.2.0
+    Checking crossbeam-utils v0.8.21
+    Checking derive_more v1.0.0
+    Checking tokio v1.50.0
+    Checking hashbrown v0.15.2
+    Checking glam v0.29.3
+    Checking generic-array v0.14.7
+    Checking uuid v1.16.0
+   Compiling scopeguard v1.2.0
+   Compiling parking_lot_core v0.9.10
+   Compiling getrandom v0.3.2
+    Checking lazy_static v1.5.0
+    Checking http v1.3.1
+    Checking erased-serde v0.4.6
+    Checking icu_normalizer v1.5.0
+    Checking untrusted v0.9.0
+    Checking valence_ident v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+    Checking nix v0.30.1
+    Checking libz-ng-sys v1.1.22
+    Checking once_cell v1.21.3
+   Compiling lock_api v0.4.12
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+    Checking flate2 v1.1.1
+    Checking httparse v1.10.1
+    Checking try-lock v0.2.5
+    Checking ring v0.17.14
+    Checking httpdate v1.0.3
+    Checking valence_nbt v0.8.0 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+    Checking tinyvec_macros v0.1.1
+    Checking want v0.3.1
+    Checking crossbeam-epoch v0.9.18
+    Checking concurrent-queue v2.5.0
+    Checking tracing-core v0.1.36
+    Checking thread_local v1.1.8
+   Compiling parking_lot v0.12.3
+    Checking crossbeam-queue v0.3.12
+    Checking ahash v0.8.11
+    Checking idna_adapter v1.2.0
+    Checking crypto-common v0.1.6
+    Checking block-buffer v0.10.4
+    Checking crossbeam-channel v0.5.15
+    Checking bevy_platform v0.16.1
+    Checking tower-service v0.3.3
+    Checking async-executor v1.13.1
+    Checking crossbeam-deque v0.8.6
+    Checking event-listener v5.4.0
+    Checking async-channel v1.9.0
+    Checking http-body v1.0.1
+    Checking idna v1.0.3
+    Checking tinyvec v1.11.0
+   Compiling bevy_macro_utils v0.16.1
+    Checking tracing v0.1.44
+    Checking hashbrown v0.14.5
+    Checking digest v0.10.7
+    Checking valence_text v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+    Checking base64ct v1.8.3
+    Checking time v0.3.41
+    Checking bevy_utils v0.16.1
+    Checking tracing-log v0.2.0
+    Checking rayon-core v1.12.1
+    Checking event-listener-strategy v0.5.3
+    Checking bevy_tasks v0.12.1
+   Compiling precis-tools v0.1.9
+    Checking url v2.5.4
+    Checking openssl-sys v0.9.117
+    Checking sharded-slab v0.1.7
+    Checking http-body-util v0.1.3
+    Checking rustix v1.0.3
+    Checking async-channel v2.3.1
+    Checking pem-rfc7468 v0.7.0
+    Checking simdutf8 v0.1.5
+   Compiling bevy_reflect_derive v0.16.1
+   Compiling bevy_ecs_macros v0.16.1
+    Checking rayon v1.10.0
+    Checking ctrlc v3.4.7
+   Compiling bevy_derive v0.16.1
+    Checking der v0.7.10
+    Checking bevy_tasks v0.16.1
+    Checking spin v0.10.0
+    Checking diatomic-waker v0.2.3
+    Checking tower-layer v0.3.3
+    Checking rustls-webpki v0.103.13
+    Checking cordyceps v0.3.4
+   Compiling precis-core v0.1.11
+    Checking snafu v0.8.5
+    Checking curve25519-dalek v4.1.3
+    Checking sha2 v0.10.9
+    Checking inout v0.1.4
+    Checking tracing-subscriber v0.3.23
+    Checking openssl v0.10.81
+    Checking netlink-packet-utils v0.5.2
+   Compiling bevy_derive v0.12.1
+    Checking signature v2.2.0
+    Checking futures-buffered v0.2.13
+    Checking data-encoding v2.11.0
+    Checking rustls v0.23.40
+    Checking iroh-quinn-udp v0.5.7
+    Checking netlink-packet-core v0.7.0
+    Checking cipher v0.4.4
+   Compiling precis-profiles v0.1.13
+    Checking spki v0.7.3
+    Checking unicode-normalization v0.1.25
+    Checking serde_urlencoded v0.7.1
+   Compiling fnv v1.0.7
+    Checking asn1-rs v0.6.2
+    Checking pkcs8 v0.10.2
+   Compiling darling_core v0.20.10
+   Compiling num_enum_derive v0.7.3
+    Checking hmac v0.12.1
+    Checking sha1 v0.10.6
+    Checking ed25519 v2.2.3
+    Checking universal-hash v0.5.1
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+    Checking tagptr v0.2.0
+    Checking opaque-debug v0.3.1
+    Checking ed25519-dalek v2.2.0
+    Checking ntimestamp v1.0.0
+    Checking poly1305 v0.8.0
+    Checking moka v0.12.10
+    Checking indexmap v2.9.0
+    Checking hmac-sha1 v0.2.2
+    Checking bytecheck v0.8.1
+    Checking iroh-metrics v0.34.0
+    Checking tempfile v3.19.1
+    Checking salsa20 v0.10.2
+    Checking chacha20 v0.9.1
+    Checking netlink-packet-route v0.23.0
+    Checking attohttpc v0.30.1
+   Compiling nested_enum_utils v0.2.3
+    Checking aead v0.5.2
+    Checking tokio-util v0.7.15
+    Checking tower v0.5.2
+    Checking petgraph v0.6.5
+    Checking netlink-sys v0.8.8
+    Checking hickory-proto v0.25.2
+    Checking valence_math v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+    Checking netlink-proto v0.11.5
+    Checking async-compat v0.2.5
+    Checking lru v0.12.5
+    Checking native-tls v0.2.14
+   Compiling Inflector v0.11.4
+    Checking simple-dns v0.9.3
+    Checking sha1_smol v1.0.1
+    Checking h2 v0.4.15
+    Checking tokio-native-tls v0.3.1
+    Checking n0-future v0.1.3
+    Checking tokio-rustls v0.26.2
+   Compiling darling_macro v0.20.10
+    Checking iroh-quinn-proto v0.13.0
+    Checking self_cell v1.2.2
+    Checking resolv-conf v0.7.6
+    Checking rusty-fork v0.3.0
+    Checking tokio-websockets v0.11.4
+    Checking serdect v0.2.0
+   Compiling derive-build v0.1.1
+    Checking postcard v1.1.3
+    Checking crypto_secretbox v0.1.1
+    Checking bevy_utils v0.12.1
+    Checking der-parser v9.0.0
+    Checking oid-registry v0.7.1
+    Checking bevy_ecs v0.12.1
+    Checking derive_more v2.1.1
+    Checking rend v0.5.2
+    Checking slotmap v1.0.7
+    Checking iroh-base v0.35.0
+    Checking xattr v1.5.0
+    Checking yasna v0.5.2
+    Checking hickory-resolver v0.25.2
+    Checking rustls-webpki v0.102.8
+    Checking pem v3.0.6
+    Checking serde_spanned v0.6.8
+    Checking toml_datetime v0.6.8
+    Checking hashbrown v0.17.1
+    Checking proptest v1.6.0
+    Checking heed-types v0.21.0
+    Checking toml_edit v0.22.24
+    Checking tar v0.4.46
+    Checking iroh-quinn v0.13.0
+    Checking rcgen v0.13.2
+    Checking hyper v1.10.1
+    Checking geometry v0.1.0 (/home/brittonr/git/mc/hyperion/crates/geometry)
+    Checking x509-parser v0.16.0
+    Checking lmdb-master-sys v0.2.5
+    Checking crypto_box v0.9.1
+    Checking surge-ping v0.8.4
+    Checking libdeflate-sys v1.24.0
+    Checking tokio-stream v0.1.18
+    Checking backon v1.6.0
+    Checking arc-swap v1.9.1
+    Checking rkyv v0.8.16
+    Checking synchronoise v1.0.1
+    Checking toml v0.8.20
+    Checking libdeflater v1.24.0
+    Checking hyper-util v0.1.20
+    Checking heed v0.21.0
+    Checking bvh-region v0.1.0 (/home/brittonr/git/mc/hyperion/crates/bvh-region)
+    Checking hyper-tls v0.6.0
+    Checking hyper-rustls v0.27.5
+    Checking igd-next v0.16.2
+    Checking reqwest v0.12.15
+    Checking hyperion-proto v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-proto)
+    Checking pkarr v3.10.0
+    Checking bevy_app v0.12.1
+   Compiling darling v0.20.10
+   Compiling enumset_derive v0.11.0
+    Checking bevy_reflect v0.16.1
+    Checking bevy_math v0.16.1
+    Checking netwatch v0.5.0
+    Checking bevy_ecs v0.16.1
+    Checking enumset v1.1.6
+    Checking num_enum v0.7.3
+    Checking portmapper v0.5.0
+    Checking stun-rs v0.1.11
+    Checking iroh-relay v0.35.0
+    Checking iroh v0.35.0
+    Checking bevy_app v0.16.1
+    Checking bevy_time v0.16.1
+    Checking bevy_log v0.16.1
+    Checking bevy_input v0.16.1
+    Checking bevy_transform v0.16.1
+    Checking bevy_diagnostic v0.16.1
+    Checking valence_protocol v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+    Checking bevy_internal v0.16.1
+    Checking bevy v0.16.1
+    Checking hyperion-utils v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-utils)
+    Checking valence_server_common v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+    Checking hyperion-crafting v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-crafting)
+    Checking hyperion-palette v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-palette)
+    Checking hyperion-text v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-text)
+    Checking packet-channel v0.1.0 (/home/brittonr/git/mc/hyperion/crates/packet-channel)
+    Checking valence_registry v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+    Checking hyperion-inventory v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-inventory)
+    Checking valence_server v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+    Checking valence_anvil v0.1.0 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+    Checking hyperion v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion)
+error[E0616]: field `yaw` of struct `simulation::domain::Yaw` is private
+  --> crates/hyperion/src/simulation/handlers.rs:99:21
+   |
+99 |                 yaw.yaw = packet.yaw;
+   |                     ^^^ private field
+
+error[E0616]: field `pitch` of struct `simulation::domain::Pitch` is private
+   --> crates/hyperion/src/simulation/handlers.rs:100:23
+    |
+100 |                 pitch.pitch = packet.pitch;
+    |                       ^^^^^ private field
+
+error[E0616]: field `yaw` of struct `simulation::domain::Yaw` is private
+   --> crates/hyperion/src/simulation/handlers.rs:124:21
+    |
+124 |                 yaw.yaw = packet.yaw;
+    |                     ^^^ private field
+
+error[E0616]: field `pitch` of struct `simulation::domain::Pitch` is private
+   --> crates/hyperion/src/simulation/handlers.rs:125:23
+    |
+125 |                 pitch.pitch = packet.pitch;
+    |                       ^^^^^ private field
+
+error[E0616]: field `position` of struct `simulation::domain::Position` is private
+   --> crates/hyperion/src/simulation/handlers.rs:219:52
+    |
+219 |             .insert(PendingTeleportation::new(pose.position));
+    |                                                    ^^^^^^^^ private field
+
+error[E0616]: field `yaw` of struct `simulation::domain::Yaw` is private
+   --> crates/hyperion/src/simulation/handlers.rs:229:28
+    |
+229 |             let smth = yaw.yaw * 0.017_453_292;
+    |                            ^^^ private field
+
+For more information about this error, try `rustc --explain E0616`.
+error: could not compile `hyperion` (lib) due to 6 previous errors
+exit_status=101
+]0;
