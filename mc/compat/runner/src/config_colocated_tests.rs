@@ -534,6 +534,146 @@ fn scenario_cli_and_env_parse() {
 }
 
 #[test]
+fn config_patch_source_order_and_field_sources_are_reviewable() {
+    const FILE_TIMEOUT_SECS: u64 = 9;
+    const ENV_TIMEOUT_SECS: u64 = 10;
+    const CLI_TIMEOUT_SECS: u64 = 11;
+
+    let base = Config::defaults(PathBuf::from("/workspace/mc"))
+        .expect("default config resolves source layout");
+    let mut file_patch = config_patches::ConfigPatch::new(
+        config_patches::ConfigSource::nickel_json("fixture Nickel JSON"),
+    );
+    file_patch.server_backend = Some(ServerBackend::Paper);
+    file_patch.client_timeout = Some(Duration::from_secs(FILE_TIMEOUT_SECS));
+
+    let mut env_patch =
+        config_patches::ConfigPatch::new(config_patches::ConfigSource::environment());
+    env_patch.client_timeout = Some(Duration::from_secs(ENV_TIMEOUT_SECS));
+    env_patch.scenario = Some(Scenario::InventoryInteraction);
+
+    let mut cli_patch =
+        config_patches::ConfigPatch::new(config_patches::ConfigSource::cli("fixture CLI"));
+    cli_patch.server_backend = Some(ServerBackend::Valence);
+    cli_patch.client_timeout = Some(Duration::from_secs(CLI_TIMEOUT_SECS));
+    cli_patch.receipt_path = Some(PathBuf::from("docs/evidence/cli-receipt.json"));
+
+    let resolution = config_patches::resolve_config(base, &[file_patch, env_patch, cli_patch])
+        .expect("ordered patches resolve");
+
+    assert_eq!(
+        config_patches::config_source_order(),
+        &[
+            config_patches::ConfigSourceKind::Defaults,
+            config_patches::ConfigSourceKind::NickelJsonConfig,
+            config_patches::ConfigSourceKind::SteelConfig,
+            config_patches::ConfigSourceKind::Environment,
+            config_patches::ConfigSourceKind::Cli,
+            config_patches::ConfigSourceKind::Validation,
+        ]
+    );
+    assert_eq!(resolution.config.server_backend, ServerBackend::Valence);
+    assert_eq!(resolution.config.server_port, VALENCE_DEFAULT_SERVER_PORT);
+    assert_eq!(
+        resolution.config.client_timeout,
+        Duration::from_secs(CLI_TIMEOUT_SECS)
+    );
+    assert_eq!(resolution.config.scenario, Scenario::InventoryInteraction);
+    assert_eq!(
+        resolution
+            .field_sources
+            .get("client_timeout")
+            .expect("timeout source recorded")
+            .label,
+        "fixture CLI"
+    );
+}
+
+#[test]
+fn ordered_file_env_cli_precedence_preserves_runner_behavior() {
+    const CONFIG_TIMEOUT_SECS: u64 = 9;
+    const ENV_TIMEOUT_SECS: u64 = 10;
+    const CLI_TIMEOUT_SECS: u64 = 11;
+
+    let path = std::env::temp_dir().join(format!(
+        "mc-compat-nickel-config-precedence-{}.json",
+        std::process::id()
+    ));
+    let config_json = format!(
+        r#"{{
+          "server_backend": "paper",
+          "client_timeout_secs": {CONFIG_TIMEOUT_SECS},
+          "scenario": "inventory-interaction",
+          "receipt_path": "docs/evidence/config-receipt.json"
+        }}"#
+    );
+    fs::write(&path, config_json).expect("write Nickel-exported JSON fixture");
+
+    let env_timeout = ENV_TIMEOUT_SECS.to_string();
+    let cli_timeout = CLI_TIMEOUT_SECS.to_string();
+    let cfg = test_config(
+        &[
+            "--server-backend",
+            "valence",
+            "--timeout",
+            cli_timeout.as_str(),
+            "--receipt",
+            "docs/evidence/cli-receipt.json",
+        ],
+        &[
+            ("MC_COMPAT_CONFIG", path.to_str().expect("utf8 config path")),
+            ("CLIENT_TIMEOUT", env_timeout.as_str()),
+        ],
+    )
+    .expect("file env CLI precedence config parses");
+
+    assert_eq!(cfg.server_backend, ServerBackend::Valence);
+    assert_eq!(cfg.server_port, VALENCE_DEFAULT_SERVER_PORT);
+    assert_eq!(cfg.client_timeout, Duration::from_secs(CLI_TIMEOUT_SECS));
+    assert_eq!(cfg.scenario, Scenario::InventoryInteraction);
+    assert_eq!(
+        cfg.receipt_path,
+        Some(PathBuf::from("docs/evidence/cli-receipt.json"))
+    );
+    let _ = fs::remove_file(path);
+}
+
+#[test]
+fn invalid_config_inputs_fail_closed_before_execution() {
+    let unknown = test_config(&["--definitely-unknown"], &[]).unwrap_err();
+    assert!(unknown.contains("unknown arg"), "{unknown}");
+
+    let missing_timeout = test_config(&["--timeout"], &[]).unwrap_err();
+    assert!(missing_timeout.contains("--timeout requires seconds"));
+
+    let invalid_scenario = test_config(&["--scenario", "not-a-scenario"], &[]).unwrap_err();
+    assert!(
+        invalid_scenario.contains("unknown scenario"),
+        "{invalid_scenario}"
+    );
+
+    let invalid_timeout = test_config(&["--timeout", "0"], &[]).unwrap_err();
+    assert!(
+        invalid_timeout.contains("greater than zero"),
+        "{invalid_timeout}"
+    );
+
+    let unsafe_receipt = test_config(&["--receipt", "../escape.json"], &[]).unwrap_err();
+    assert!(unsafe_receipt.contains("receipt_path"), "{unsafe_receipt}");
+    assert!(
+        unsafe_receipt.contains("parent traversal"),
+        "{unsafe_receipt}"
+    );
+
+    let matrix_conflict = test_config(
+        &["--run-matrix", "--receipt", "docs/evidence/one.json"],
+        &[],
+    )
+    .unwrap_err();
+    assert!(matrix_conflict.contains("--run-matrix writes backend receipts"));
+}
+
+#[test]
 fn missing_client_checkout_has_actionable_diagnostic() {
     let missing = std::env::temp_dir().join(format!(
         "mc-compat-missing-stevenarella-{}",

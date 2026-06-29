@@ -1,0 +1,182 @@
+command=nix develop --no-update-lock-file . -c cargo test --manifest-path compat/runner/Cargo.toml config_colocated_tests -- --nocapture
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 38 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3105 ms: Could not connect to server; retrying in 181 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 148 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1071 ms: Could not connect to server; retrying in 138 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1013 ms: Could not connect to server
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/4agv73lwn73ywnblyn8dms878ygbh2jj-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/8j8lxaaiswmfqs05bl32kya7g2zwrddv-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+   Compiling mc-compat-runner v0.1.0 (/home/brittonr/git/mc/compat/runner)
+warning: unused imports: `build_git_revision_evidence`, `cleanup_path`, `git_rev_parse`, `git_revision_evidence`, `is_mc_compat_client_log`, and `valence_source_dir`
+  --> src/main.rs:22:5
+   |
+22 |     build_git_revision_evidence, child_revision_evidence_for_receipt, cleanup_harness_state,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+23 |     cleanup_path, ensure_valence_repo_ready, force_stop_paper_server, force_stop_server,
+   |     ^^^^^^^^^^^^
+24 |     force_stop_valence_server, git_rev_parse, git_revision_evidence, is_mc_compat_client_log,
+   |                                ^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^
+25 |     print_harness_status, probe_status, start_paper_server, start_server, start_valence_server,
+26 |     stop_paper_server, stop_server, stop_valence_server, valence_source_dir,
+   |                                                          ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `mcp_controlled_success_output`, `projectile_damage_dry_run_evidence`, and `projectile_travel_collision_dry_run_evidence`
+  --> src/main.rs:31:38
+   |
+31 |     mcp_controlled_dry_run_evidence, mcp_controlled_success_output, planned_client_usernames,
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+32 |     projectile_damage_dry_run_evidence, projectile_travel_collision_dry_run_evidence,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `biome_dimension_join_state_required_non_claims`, `evaluate_scenario_with_projectile_health`, and `validate_biome_dimension_join_state_record`
+  --> src/main.rs:41:5
+   |
+41 |     biome_dimension_join_state_required_non_claims, evaluate_scenario,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+42 |     evaluate_scenario_with_projectile_health, parse_typed_event_line,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+43 |     validate_biome_dimension_join_state_record,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `evaluate_typed_event_graph`, `typed_event_ordered_edges_for_scenario`, and `typed_event_required_events_for_graph`
+  --> src/main.rs:48:61
+   |
+48 |     evaluate_scenario_for_config, evaluate_server_scenario, evaluate_typed_event_graph,
+   |                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+49 |     normalize_typed_event_timeline, typed_event_oracle_contributes_to_pass_fail,
+50 |     typed_event_oracle_receipt_json, typed_event_ordered_edges_for_scenario,
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+51 |     typed_event_required_events_for_graph, typed_event_timeline_blake3,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `scenario_route_non_claims`
+  --> src/main.rs:58:74
+   |
+58 |     format_plan_diagnostics, harness_plan_from_config, log_harness_plan, scenario_route_non_claims,
+   |                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `receipt_validation::validate_receipt_summary`
+  --> src/main.rs:67:5
+   |
+67 | use receipt_validation::validate_receipt_summary;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `ScenarioMilestone`
+  --> src/main.rs:86:21
+   |
+86 | use scenario_core::{ScenarioMilestone, ALL_SCENARIOS};
+   |                     ^^^^^^^^^^^^^^^^^
+
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/main.rs:335:7
+    |
+335 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: fields `applied_sources` and `field_sources` are never read
+   --> src/config_patches.rs:258:16
+    |
+256 | pub(crate) struct ConfigResolution {
+    |                   ---------------- fields in this struct
+257 |     pub(crate) config: Config,
+258 |     pub(crate) applied_sources: Vec<ConfigSource>,
+    |                ^^^^^^^^^^^^^^^
+259 |     pub(crate) field_sources: BTreeMap<&'static str, ConfigSource>,
+    |                ^^^^^^^^^^^^^
+    |
+    = note: `ConfigResolution` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `config_source_order` is never used
+   --> src/config_patches.rs:262:15
+    |
+262 | pub(crate) fn config_source_order() -> &'static [ConfigSourceKind] {
+    |               ^^^^^^^^^^^^^^^^^^^
+
+warning: function `default_patch_for_tests` is never used
+   --> src/config_patches.rs:718:15
+    |
+718 | pub(crate) fn default_patch_for_tests() -> ConfigPatch {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_string_field` is never used
+  --> src/json_support.rs:12:15
+   |
+12 | pub(crate) fn json_object_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_optional_string_field` is never used
+  --> src/json_support.rs:20:15
+   |
+20 | pub(crate) fn json_object_optional_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_u32_field` is never used
+  --> src/json_support.rs:28:15
+   |
+28 | pub(crate) fn json_object_u32_field(text: &str, object: &str, key: &str) -> Result<u32, String> {
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_bool_field` is never used
+  --> src/json_support.rs:32:15
+   |
+32 | pub(crate) fn json_object_bool_field(text: &str, object: &str, key: &str) -> Result<bool, String> {
+   |               ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Transition` is never constructed
+  --> src/layout.rs:44:5
+   |
+42 | pub enum LayoutKind {
+   |          ---------- variant in this enum
+43 |     RoleBased,
+44 |     Transition,
+   |     ^^^^^^^^^^
+   |
+   = note: `LayoutKind` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: constant `TEST_SESSION_ID` is never used
+  --> src/test_support.rs:11:18
+   |
+11 | pub(crate) const TEST_SESSION_ID: &str = "s1";
+   |                  ^^^^^^^^^^^^^^^
+
+warning: constant `TEST_CLIENT_DIR` is never used
+  --> src/test_support.rs:13:18
+   |
+13 | pub(crate) const TEST_CLIENT_DIR: &str = "/tmp/stevenarella";
+   |                  ^^^^^^^^^^^^^^^
+
+warning: `mc-compat-runner` (bin "mc-compat-runner" test) generated 18 warnings (run `cargo fix --bin "mc-compat-runner" -p mc-compat-runner --tests` to apply 7 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.51s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 15 tests
+test config_colocated_tests::defaults_to_valence_protocol_and_port ... ok
+test config_colocated_tests::failure_bundle_path_parses_from_env_and_cli_override ... ok
+test config_colocated_tests::env_overrides_are_parsed_without_global_environment_mutation ... ok
+test config_colocated_tests::cli_overrides_backend_client_dir_valence_repo_and_revision ... ok
+test config_colocated_tests::client_checkout_must_point_at_manifest_root ... ok
+test config_colocated_tests::invalid_backend_is_rejected ... ok
+test config_colocated_tests::missing_client_checkout_has_actionable_diagnostic ... ok
+test config_colocated_tests::run_matrix_config_sets_receipt_dir_and_backend_defaults ... ok
+test config_colocated_tests::nickel_exported_json_config_sets_defaults_and_allows_env_cli_precedence ... ok
+test config_colocated_tests::run_matrix_rejects_single_receipt_path ... ok
+test config_colocated_tests::status_and_cleanup_modes_parse_without_server_probe_mode ... ok
+test config_colocated_tests::valid_client_checkout_preflight_passes ... ok
+test config_colocated_tests::restricted_steel_config_rejects_forbidden_capabilities ... ok
+test config_colocated_tests::scenario_cli_and_env_parse ... ok
+test config_colocated_tests::restricted_steel_config_sets_runtime_defaults_and_allows_env_cli_precedence ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 182 filtered out; finished in 0.00s
+
+
+exit_status=0

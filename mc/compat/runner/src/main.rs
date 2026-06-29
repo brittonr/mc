@@ -1,5 +1,6 @@
 mod backend_shell;
 mod client_driver;
+mod config_patches;
 mod evidence_bundle;
 mod evidence_core;
 mod evidence_receipts;
@@ -1280,8 +1281,9 @@ impl Config {
             .or_else(|| get_env("ROOT"))
             .map(PathBuf::from)
             .unwrap_or(current_dir);
-        let mut cfg = Config::defaults(root)?;
+        let base = Config::defaults(root)?;
 
+        let mut patches = Vec::new();
         let config_path = find_config_path(get_env("MC_COMPAT_CONFIG"), &args_vec)?;
         let steel_config_path = find_named_config_path(
             "--steel-config",
@@ -1289,235 +1291,59 @@ impl Config {
             get_env("MC_COMPAT_STEEL_CONFIG"),
             &args_vec,
         )?;
-        let mut server_port_was_set = false;
         if let Some(path) = config_path {
-            server_port_was_set |= apply_config_file(&mut cfg, &path)?;
-            cfg.config_path = Some(path);
+            patches.push(config_file_patch(
+                &path,
+                config_patches::ConfigSource::nickel_json(format!(
+                    "selected config {}",
+                    path.display()
+                )),
+            )?);
         }
         if let Some(path) = steel_config_path {
-            server_port_was_set |= apply_steel_config_file(&mut cfg, &path)?;
-            cfg.steel_config_path = Some(path);
+            patches.push(steel_config_file_patch(
+                &path,
+                config_patches::ConfigSource::steel(format!(
+                    "selected Steel config {}",
+                    path.display()
+                )),
+            )?);
         }
 
-        apply_env_overrides(&mut cfg, &mut get_env, &mut server_port_was_set)?;
+        let env_patch = env_config_patch(&mut get_env)?;
+        if env_patch.has_updates() {
+            patches.push(env_patch);
+        }
+        patches.extend(cli_config_patches(&args_vec, &base)?);
 
-        let mut args = args_vec.into_iter();
-        while let Some(arg) = args.next() {
-            match arg.as_str() {
-                "--dry-run" => {
-                    if cfg.mode == Mode::RunMatrix {
-                        cfg.matrix_dry_run = true;
-                    } else if cfg.mode == Mode::Cleanup {
-                        cfg.cleanup_apply = false;
-                    } else {
-                        cfg.mode = Mode::DryRun;
-                    }
-                }
-                "--run" => cfg.mode = Mode::Run,
-                "--run-matrix" => {
-                    cfg.mode = Mode::RunMatrix;
-                    cfg.matrix_dry_run = false;
-                }
-                "--build-client" => cfg.mode = Mode::BuildClient,
-                "--status-only" => cfg.mode = Mode::StatusOnly,
-                "--status" => cfg.mode = Mode::HarnessStatus,
-                "--cleanup" => cfg.mode = Mode::Cleanup,
-                "--apply" => cfg.cleanup_apply = true,
-                "--stop" => cfg.mode = Mode::Stop,
-                "--config" => {
-                    let path = PathBuf::from(args.next().ok_or_else(|| {
-                        "--config requires a Nickel-exported JSON path".to_string()
-                    })?);
-                    server_port_was_set |= apply_config_file(&mut cfg, &path)?;
-                    cfg.config_path = Some(path);
-                }
-                "--steel-config" => {
-                    let path = PathBuf::from(args.next().ok_or_else(|| {
-                        "--steel-config requires a Steel module path".to_string()
-                    })?);
-                    server_port_was_set |= apply_steel_config_file(&mut cfg, &path)?;
-                    cfg.steel_config_path = Some(path);
-                }
-                "--compare-receipts" => {
-                    let left = PathBuf::from(args.next().ok_or_else(|| {
-                        "--compare-receipts requires PAPER_RECEIPT and VALENCE_RECEIPT".to_string()
-                    })?);
-                    let right = PathBuf::from(args.next().ok_or_else(|| {
-                        "--compare-receipts requires PAPER_RECEIPT and VALENCE_RECEIPT".to_string()
-                    })?);
-                    cfg.mode = Mode::CompareReceipts;
-                    cfg.compare_receipts = Some((left, right));
-                }
-                "--accept-eula" => {}
-                "--keep-server" => cfg.keep_server = true,
-                "--server-backend" => {
-                    let value = args
-                        .next()
-                        .ok_or_else(|| "--server-backend requires valence or paper".to_string())?;
-                    cfg.server_backend = parse_backend(&value)?;
-                }
-                "--client-dir" => {
-                    cfg.client_dir = PathBuf::from(
-                        args.next()
-                            .ok_or_else(|| "--client-dir requires a path".to_string())?,
-                    );
-                }
-                "--receipt" => {
-                    cfg.receipt_path = Some(PathBuf::from(
-                        args.next()
-                            .ok_or_else(|| "--receipt requires a path".to_string())?,
-                    ));
-                }
-                "--receipt-dir" => {
-                    cfg.receipt_dir =
-                        Some(PathBuf::from(args.next().ok_or_else(|| {
-                            "--receipt-dir requires a path".to_string()
-                        })?));
-                }
-                "--failure-bundle" => {
-                    cfg.failure_bundle_path =
-                        Some(PathBuf::from(args.next().ok_or_else(|| {
-                            "--failure-bundle requires a path".to_string()
-                        })?));
-                }
-                "--timeout" => {
-                    let value = args
-                        .next()
-                        .ok_or_else(|| "--timeout requires seconds".to_string())?;
-                    cfg.client_timeout =
-                        Duration::from_secs(parse_client_timeout_secs(&value, "--timeout")?);
-                }
-                "--scenario" => {
-                    let value = args.next().ok_or_else(|| {
-                        format!("--scenario requires one of: {SUPPORTED_SCENARIO_USAGE}")
-                    })?;
-                    cfg.scenario = parse_scenario(&value)?;
-                }
-                "--expect-status-description" => {
-                    cfg.expected_status_description = Some(args.next().ok_or_else(|| {
-                        "--expect-status-description requires a string".to_string()
-                    })?);
-                }
-                "--expect-status-version" => {
-                    cfg.expected_status_version_name =
-                        Some(args.next().ok_or_else(|| {
-                            "--expect-status-version requires a string".to_string()
-                        })?);
-                }
-                "--expect-status-sample" => {
-                    cfg.expected_status_sample = args
-                        .next()
-                        .ok_or_else(|| {
-                            "--expect-status-sample requires comma-separated names".to_string()
-                        })?
-                        .split(',')
-                        .filter(|value| !value.is_empty())
-                        .map(str::to_string)
-                        .collect();
-                }
-                "--packet-capture-summary" => cfg.packet_capture_summary = true,
-                "--proxy-route" => {
-                    cfg.proxy_route = Some(
-                        args.next()
-                            .ok_or_else(|| "--proxy-route requires a route label".to_string())?,
-                    );
-                }
-                "--proxy-forwarding-mode" => {
-                    cfg.proxy_forwarding_mode = Some(args.next().ok_or_else(|| {
-                        "--proxy-forwarding-mode requires a mode label".to_string()
-                    })?);
-                }
-                "--valence-repo" => {
-                    cfg.valence_repo = PathBuf::from(
-                        args.next()
-                            .ok_or_else(|| "--valence-repo requires a path".to_string())?,
-                    );
-                }
-                "--valence-rev" => {
-                    cfg.valence_rev = args
-                        .next()
-                        .ok_or_else(|| "--valence-rev requires a git revision".to_string())?;
-                }
-                "-h" | "--help" => {
-                    print_usage(&cfg);
-                    std::process::exit(0);
-                }
-                _ if arg.starts_with("--config=") => {
-                    let path = PathBuf::from(&arg[9..]);
-                    server_port_was_set |= apply_config_file(&mut cfg, &path)?;
-                    cfg.config_path = Some(path);
-                }
-                _ if arg.starts_with("--steel-config=") => {
-                    let path = PathBuf::from(&arg[15..]);
-                    server_port_was_set |= apply_steel_config_file(&mut cfg, &path)?;
-                    cfg.steel_config_path = Some(path);
-                }
-                _ if arg.starts_with("--server-backend=") => {
-                    cfg.server_backend = parse_backend(&arg[17..])?;
-                }
-                _ if arg.starts_with("--client-dir=") => {
-                    cfg.client_dir = PathBuf::from(&arg[13..]);
-                }
-                _ if arg.starts_with("--receipt=") => {
-                    cfg.receipt_path = Some(PathBuf::from(&arg[10..]));
-                }
-                _ if arg.starts_with("--receipt-dir=") => {
-                    cfg.receipt_dir = Some(PathBuf::from(&arg[14..]));
-                }
-                _ if arg.starts_with("--failure-bundle=") => {
-                    cfg.failure_bundle_path = Some(PathBuf::from(&arg[17..]));
-                }
-                _ if arg.starts_with("--timeout=") => {
-                    cfg.client_timeout = Duration::from_secs(parse_client_timeout_secs(
-                        &arg[SCENARIO_ROUTER_TIMEOUT_EQUALS_PREFIX.len()..],
-                        "--timeout",
-                    )?);
-                }
-                _ if arg.starts_with("--scenario=") => {
-                    cfg.scenario = parse_scenario(&arg[11..])?;
-                }
-                _ if arg.starts_with("--expect-status-description=") => {
-                    cfg.expected_status_description = Some(arg[28..].to_string());
-                }
-                _ if arg.starts_with("--expect-status-version=") => {
-                    cfg.expected_status_version_name = Some(arg[24..].to_string());
-                }
-                _ if arg.starts_with("--expect-status-sample=") => {
-                    cfg.expected_status_sample = arg[23..]
-                        .split(',')
-                        .filter(|value| !value.is_empty())
-                        .map(str::to_string)
-                        .collect();
-                }
-                _ if arg == "--packet-capture-summary" => {
-                    cfg.packet_capture_summary = true;
-                }
-                _ if arg.starts_with("--proxy-route=") => {
-                    cfg.proxy_route = Some(arg[14..].to_string());
-                }
-                _ if arg.starts_with("--proxy-forwarding-mode=") => {
-                    cfg.proxy_forwarding_mode = Some(arg[24..].to_string());
-                }
-                _ if arg.starts_with("--valence-repo=") => {
-                    cfg.valence_repo = PathBuf::from(&arg[15..]);
-                }
-                _ if arg.starts_with("--valence-rev=") => {
-                    cfg.valence_rev = arg[14..].to_string();
-                }
-                _ => return Err(format!("unknown arg: {arg}")),
-            }
-        }
-
-        if !server_port_was_set {
-            cfg.server_port = default_port(cfg.server_backend);
-        }
-        if cfg.mode == Mode::RunMatrix && cfg.receipt_path.is_some() {
-            return Err("--run-matrix writes backend receipts under --receipt-dir; do not combine it with --receipt/SMOKE_RECEIPT".to_string());
-        }
-        cfg.scenario_route = scenario_route;
-        Ok(cfg)
+        let mut resolution = config_patches::resolve_config(base, &patches)
+            .map_err(|diagnostics| config_patches::format_validation_diagnostics(&diagnostics))?;
+        resolution.config.scenario_route = scenario_route;
+        Ok(resolution.config)
     }
 }
+
+const CLI_CONFIG_FLAG: &str = "--config";
+const CLI_CONFIG_EQUALS_PREFIX: &str = "--config=";
+const CLI_STEEL_CONFIG_FLAG: &str = "--steel-config";
+const CLI_STEEL_CONFIG_EQUALS_PREFIX: &str = "--steel-config=";
+const CLI_COMPARE_RECEIPTS_FLAG: &str = "--compare-receipts";
+const CLI_ACCEPT_EULA_FLAG: &str = "--accept-eula";
+const CLI_KEEP_SERVER_FLAG: &str = "--keep-server";
+const CLI_CLIENT_DIR_FLAG: &str = "--client-dir";
+const CLI_CLIENT_DIR_EQUALS_PREFIX: &str = "--client-dir=";
+const CLI_RECEIPT_DIR_FLAG: &str = "--receipt-dir";
+const CLI_RECEIPT_DIR_EQUALS_PREFIX: &str = "--receipt-dir=";
+const CLI_EXPECT_STATUS_DESCRIPTION_FLAG: &str = "--expect-status-description";
+const CLI_EXPECT_STATUS_DESCRIPTION_EQUALS_PREFIX: &str = "--expect-status-description=";
+const CLI_EXPECT_STATUS_VERSION_FLAG: &str = "--expect-status-version";
+const CLI_EXPECT_STATUS_VERSION_EQUALS_PREFIX: &str = "--expect-status-version=";
+const CLI_EXPECT_STATUS_SAMPLE_FLAG: &str = "--expect-status-sample";
+const CLI_EXPECT_STATUS_SAMPLE_EQUALS_PREFIX: &str = "--expect-status-sample=";
+const CLI_VALENCE_REPO_FLAG: &str = "--valence-repo";
+const CLI_VALENCE_REPO_EQUALS_PREFIX: &str = "--valence-repo=";
+const CLI_VALENCE_REV_FLAG: &str = "--valence-rev";
+const CLI_VALENCE_REV_EQUALS_PREFIX: &str = "--valence-rev=";
 
 fn find_config_path(env_path: Option<String>, args: &[String]) -> Result<Option<PathBuf>, String> {
     find_named_config_path("--config", "MC_COMPAT_CONFIG", env_path, args)
@@ -1545,256 +1371,530 @@ fn find_named_config_path(
     Ok(config_path)
 }
 
-fn apply_env_overrides<F>(
-    cfg: &mut Config,
-    get_env: &mut F,
-    server_port_was_set: &mut bool,
-) -> Result<(), String>
+fn cli_config_patches(
+    args: &[String],
+    base: &Config,
+) -> Result<Vec<config_patches::ConfigPatch>, String> {
+    let mut patches = Vec::new();
+    let mut current =
+        config_patches::ConfigPatch::new(config_patches::ConfigSource::cli("CLI arguments"));
+    let mut current_mode = base.mode;
+    let mut iter = args.iter();
+    while let Some(arg) = iter.next() {
+        match arg.as_str() {
+            SCENARIO_ROUTER_DRY_RUN_FLAG => {
+                if current_mode == Mode::RunMatrix {
+                    current.matrix_dry_run = Some(true);
+                } else if current_mode == Mode::Cleanup {
+                    current.cleanup_apply = Some(false);
+                } else {
+                    current.mode = Some(Mode::DryRun);
+                    current_mode = Mode::DryRun;
+                }
+            }
+            SCENARIO_ROUTER_RUN_FLAG => {
+                current.mode = Some(Mode::Run);
+                current_mode = Mode::Run;
+            }
+            "--run-matrix" => {
+                current.mode = Some(Mode::RunMatrix);
+                current.matrix_dry_run = Some(false);
+                current_mode = Mode::RunMatrix;
+            }
+            "--build-client" => {
+                current.mode = Some(Mode::BuildClient);
+                current_mode = Mode::BuildClient;
+            }
+            "--status-only" => {
+                current.mode = Some(Mode::StatusOnly);
+                current_mode = Mode::StatusOnly;
+            }
+            "--status" => {
+                current.mode = Some(Mode::HarnessStatus);
+                current_mode = Mode::HarnessStatus;
+            }
+            "--cleanup" => {
+                current.mode = Some(Mode::Cleanup);
+                current_mode = Mode::Cleanup;
+            }
+            "--apply" => current.cleanup_apply = Some(true),
+            "--stop" => {
+                current.mode = Some(Mode::Stop);
+                current_mode = Mode::Stop;
+            }
+            CLI_CONFIG_FLAG => {
+                let path = PathBuf::from(next_cli_value(
+                    CLI_CONFIG_FLAG,
+                    &mut iter,
+                    "--config requires a Nickel-exported JSON path",
+                )?);
+                push_patch_if_nonempty(&mut patches, &mut current);
+                patches.push(config_file_patch(
+                    &path,
+                    config_patches::ConfigSource::nickel_json(format!(
+                        "CLI --config {}",
+                        path.display()
+                    )),
+                )?);
+            }
+            CLI_STEEL_CONFIG_FLAG => {
+                let path = PathBuf::from(next_cli_value(
+                    CLI_STEEL_CONFIG_FLAG,
+                    &mut iter,
+                    "--steel-config requires a Steel module path",
+                )?);
+                push_patch_if_nonempty(&mut patches, &mut current);
+                patches.push(steel_config_file_patch(
+                    &path,
+                    config_patches::ConfigSource::steel(format!(
+                        "CLI --steel-config {}",
+                        path.display()
+                    )),
+                )?);
+            }
+            CLI_COMPARE_RECEIPTS_FLAG => {
+                let left = PathBuf::from(next_cli_value(
+                    CLI_COMPARE_RECEIPTS_FLAG,
+                    &mut iter,
+                    "--compare-receipts requires PAPER_RECEIPT and VALENCE_RECEIPT",
+                )?);
+                let right = PathBuf::from(next_cli_value(
+                    CLI_COMPARE_RECEIPTS_FLAG,
+                    &mut iter,
+                    "--compare-receipts requires PAPER_RECEIPT and VALENCE_RECEIPT",
+                )?);
+                current.mode = Some(Mode::CompareReceipts);
+                current.compare_receipts = Some((left, right));
+                current_mode = Mode::CompareReceipts;
+            }
+            CLI_ACCEPT_EULA_FLAG => {}
+            CLI_KEEP_SERVER_FLAG => current.keep_server = Some(true),
+            SCENARIO_ROUTER_SERVER_BACKEND_FLAG => {
+                let value = next_cli_value(
+                    SCENARIO_ROUTER_SERVER_BACKEND_FLAG,
+                    &mut iter,
+                    "--server-backend requires valence or paper",
+                )?;
+                current.server_backend = Some(parse_backend(&value)?);
+            }
+            CLI_CLIENT_DIR_FLAG => {
+                current.client_dir = Some(PathBuf::from(next_cli_value(
+                    CLI_CLIENT_DIR_FLAG,
+                    &mut iter,
+                    "--client-dir requires a path",
+                )?));
+            }
+            SCENARIO_ROUTER_RECEIPT_FLAG => {
+                current.receipt_path = Some(PathBuf::from(next_cli_value(
+                    SCENARIO_ROUTER_RECEIPT_FLAG,
+                    &mut iter,
+                    "--receipt requires a path",
+                )?));
+            }
+            CLI_RECEIPT_DIR_FLAG => {
+                current.receipt_dir = Some(PathBuf::from(next_cli_value(
+                    CLI_RECEIPT_DIR_FLAG,
+                    &mut iter,
+                    "--receipt-dir requires a path",
+                )?));
+            }
+            SCENARIO_ROUTER_FAILURE_BUNDLE_FLAG => {
+                current.failure_bundle_path = Some(PathBuf::from(next_cli_value(
+                    SCENARIO_ROUTER_FAILURE_BUNDLE_FLAG,
+                    &mut iter,
+                    "--failure-bundle requires a path",
+                )?));
+            }
+            SCENARIO_ROUTER_TIMEOUT_FLAG => {
+                let value = next_cli_value(
+                    SCENARIO_ROUTER_TIMEOUT_FLAG,
+                    &mut iter,
+                    "--timeout requires seconds",
+                )?;
+                current.client_timeout = Some(Duration::from_secs(parse_client_timeout_secs(
+                    &value,
+                    SCENARIO_ROUTER_TIMEOUT_FLAG,
+                )?));
+            }
+            SCENARIO_ROUTER_LEGACY_SCENARIO_FLAG => {
+                let value = next_cli_value(
+                    SCENARIO_ROUTER_LEGACY_SCENARIO_FLAG,
+                    &mut iter,
+                    &format!("--scenario requires one of: {SUPPORTED_SCENARIO_USAGE}"),
+                )?;
+                current.scenario = Some(parse_scenario(&value)?);
+            }
+            CLI_EXPECT_STATUS_DESCRIPTION_FLAG => {
+                current.expected_status_description = Some(next_cli_value(
+                    CLI_EXPECT_STATUS_DESCRIPTION_FLAG,
+                    &mut iter,
+                    "--expect-status-description requires a string",
+                )?);
+            }
+            CLI_EXPECT_STATUS_VERSION_FLAG => {
+                current.expected_status_version_name = Some(next_cli_value(
+                    CLI_EXPECT_STATUS_VERSION_FLAG,
+                    &mut iter,
+                    "--expect-status-version requires a string",
+                )?);
+            }
+            CLI_EXPECT_STATUS_SAMPLE_FLAG => {
+                current.expected_status_sample = Some(parse_comma_list(&next_cli_value(
+                    CLI_EXPECT_STATUS_SAMPLE_FLAG,
+                    &mut iter,
+                    "--expect-status-sample requires comma-separated names",
+                )?));
+            }
+            SCENARIO_ROUTER_PACKET_CAPTURE_FLAG => current.packet_capture_summary = Some(true),
+            SCENARIO_ROUTER_PROXY_ROUTE_FLAG => {
+                current.proxy_route = Some(next_cli_value(
+                    SCENARIO_ROUTER_PROXY_ROUTE_FLAG,
+                    &mut iter,
+                    "--proxy-route requires a route label",
+                )?);
+            }
+            SCENARIO_ROUTER_PROXY_FORWARDING_MODE_FLAG => {
+                current.proxy_forwarding_mode = Some(next_cli_value(
+                    SCENARIO_ROUTER_PROXY_FORWARDING_MODE_FLAG,
+                    &mut iter,
+                    "--proxy-forwarding-mode requires a mode label",
+                )?);
+            }
+            CLI_VALENCE_REPO_FLAG => {
+                current.valence_repo = Some(PathBuf::from(next_cli_value(
+                    CLI_VALENCE_REPO_FLAG,
+                    &mut iter,
+                    "--valence-repo requires a path",
+                )?));
+            }
+            CLI_VALENCE_REV_FLAG => {
+                current.valence_rev = Some(next_cli_value(
+                    CLI_VALENCE_REV_FLAG,
+                    &mut iter,
+                    "--valence-rev requires a git revision",
+                )?);
+            }
+            "-h" | "--help" => {
+                print_usage(base);
+                std::process::exit(0);
+            }
+            _ if arg.starts_with(CLI_CONFIG_EQUALS_PREFIX) => {
+                let path = PathBuf::from(
+                    arg.strip_prefix(CLI_CONFIG_EQUALS_PREFIX)
+                        .expect("prefix checked"),
+                );
+                push_patch_if_nonempty(&mut patches, &mut current);
+                patches.push(config_file_patch(
+                    &path,
+                    config_patches::ConfigSource::nickel_json(format!(
+                        "CLI --config {}",
+                        path.display()
+                    )),
+                )?);
+            }
+            _ if arg.starts_with(CLI_STEEL_CONFIG_EQUALS_PREFIX) => {
+                let path = PathBuf::from(
+                    arg.strip_prefix(CLI_STEEL_CONFIG_EQUALS_PREFIX)
+                        .expect("prefix checked"),
+                );
+                push_patch_if_nonempty(&mut patches, &mut current);
+                patches.push(steel_config_file_patch(
+                    &path,
+                    config_patches::ConfigSource::steel(format!(
+                        "CLI --steel-config {}",
+                        path.display()
+                    )),
+                )?);
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_SERVER_BACKEND_EQUALS_PREFIX) => {
+                let value = arg
+                    .strip_prefix(SCENARIO_ROUTER_SERVER_BACKEND_EQUALS_PREFIX)
+                    .expect("prefix checked");
+                current.server_backend = Some(parse_backend(value)?);
+            }
+            _ if arg.starts_with(CLI_CLIENT_DIR_EQUALS_PREFIX) => {
+                current.client_dir = Some(PathBuf::from(
+                    arg.strip_prefix(CLI_CLIENT_DIR_EQUALS_PREFIX)
+                        .expect("prefix checked"),
+                ));
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_RECEIPT_EQUALS_PREFIX) => {
+                current.receipt_path = Some(PathBuf::from(
+                    arg.strip_prefix(SCENARIO_ROUTER_RECEIPT_EQUALS_PREFIX)
+                        .expect("prefix checked"),
+                ));
+            }
+            _ if arg.starts_with(CLI_RECEIPT_DIR_EQUALS_PREFIX) => {
+                current.receipt_dir = Some(PathBuf::from(
+                    arg.strip_prefix(CLI_RECEIPT_DIR_EQUALS_PREFIX)
+                        .expect("prefix checked"),
+                ));
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_FAILURE_BUNDLE_EQUALS_PREFIX) => {
+                current.failure_bundle_path = Some(PathBuf::from(
+                    arg.strip_prefix(SCENARIO_ROUTER_FAILURE_BUNDLE_EQUALS_PREFIX)
+                        .expect("prefix checked"),
+                ));
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_TIMEOUT_EQUALS_PREFIX) => {
+                let value = arg
+                    .strip_prefix(SCENARIO_ROUTER_TIMEOUT_EQUALS_PREFIX)
+                    .expect("prefix checked");
+                current.client_timeout = Some(Duration::from_secs(parse_client_timeout_secs(
+                    value,
+                    SCENARIO_ROUTER_TIMEOUT_FLAG,
+                )?));
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_LEGACY_SCENARIO_EQUALS_PREFIX) => {
+                let value = arg
+                    .strip_prefix(SCENARIO_ROUTER_LEGACY_SCENARIO_EQUALS_PREFIX)
+                    .expect("prefix checked");
+                current.scenario = Some(parse_scenario(value)?);
+            }
+            _ if arg.starts_with(CLI_EXPECT_STATUS_DESCRIPTION_EQUALS_PREFIX) => {
+                current.expected_status_description = Some(
+                    arg.strip_prefix(CLI_EXPECT_STATUS_DESCRIPTION_EQUALS_PREFIX)
+                        .expect("prefix checked")
+                        .to_string(),
+                );
+            }
+            _ if arg.starts_with(CLI_EXPECT_STATUS_VERSION_EQUALS_PREFIX) => {
+                current.expected_status_version_name = Some(
+                    arg.strip_prefix(CLI_EXPECT_STATUS_VERSION_EQUALS_PREFIX)
+                        .expect("prefix checked")
+                        .to_string(),
+                );
+            }
+            _ if arg.starts_with(CLI_EXPECT_STATUS_SAMPLE_EQUALS_PREFIX) => {
+                current.expected_status_sample = Some(parse_comma_list(
+                    arg.strip_prefix(CLI_EXPECT_STATUS_SAMPLE_EQUALS_PREFIX)
+                        .expect("prefix checked"),
+                ));
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_PROXY_ROUTE_EQUALS_PREFIX) => {
+                current.proxy_route = Some(
+                    arg.strip_prefix(SCENARIO_ROUTER_PROXY_ROUTE_EQUALS_PREFIX)
+                        .expect("prefix checked")
+                        .to_string(),
+                );
+            }
+            _ if arg.starts_with(SCENARIO_ROUTER_PROXY_FORWARDING_MODE_EQUALS_PREFIX) => {
+                current.proxy_forwarding_mode = Some(
+                    arg.strip_prefix(SCENARIO_ROUTER_PROXY_FORWARDING_MODE_EQUALS_PREFIX)
+                        .expect("prefix checked")
+                        .to_string(),
+                );
+            }
+            _ if arg.starts_with(CLI_VALENCE_REPO_EQUALS_PREFIX) => {
+                current.valence_repo = Some(PathBuf::from(
+                    arg.strip_prefix(CLI_VALENCE_REPO_EQUALS_PREFIX)
+                        .expect("prefix checked"),
+                ));
+            }
+            _ if arg.starts_with(CLI_VALENCE_REV_EQUALS_PREFIX) => {
+                current.valence_rev = Some(
+                    arg.strip_prefix(CLI_VALENCE_REV_EQUALS_PREFIX)
+                        .expect("prefix checked")
+                        .to_string(),
+                );
+            }
+            _ => return Err(format!("unknown arg: {arg}")),
+        }
+    }
+    push_patch_if_nonempty(&mut patches, &mut current);
+    Ok(patches)
+}
+
+fn push_patch_if_nonempty(
+    patches: &mut Vec<config_patches::ConfigPatch>,
+    patch: &mut config_patches::ConfigPatch,
+) {
+    let source = patch.source.clone();
+    let next = config_patches::ConfigPatch::new(source);
+    let candidate = std::mem::replace(patch, next);
+    if candidate.has_updates() {
+        patches.push(candidate);
+    }
+}
+
+fn next_cli_value<'a, I>(_flag: &str, iter: &mut I, missing: &str) -> Result<String, String>
+where
+    I: Iterator<Item = &'a String>,
+{
+    iter.next().cloned().ok_or_else(|| missing.to_string())
+}
+
+fn parse_comma_list(value: &str) -> Vec<String> {
+    value
+        .split(',')
+        .filter(|sample| !sample.is_empty())
+        .map(str::to_string)
+        .collect()
+}
+
+fn env_config_patch<F>(get_env: &mut F) -> Result<config_patches::ConfigPatch, String>
 where
     F: FnMut(&str) -> Option<String>,
 {
+    let mut patch = config_patches::ConfigPatch::new(config_patches::ConfigSource::environment());
     if let Some(value) = get_env("CLIENT_DIR") {
-        cfg.client_dir = PathBuf::from(value);
+        patch.client_dir = Some(PathBuf::from(value));
     }
     if let Some(value) = get_env("VALENCE_REPO") {
-        cfg.valence_repo = PathBuf::from(value);
+        patch.valence_repo = Some(PathBuf::from(value));
     }
     if let Some(value) = get_env("VALENCE_REV") {
-        cfg.valence_rev = value;
+        patch.valence_rev = Some(value);
     }
     if let Some(value) = get_env("VALENCE_WORKTREE") {
-        cfg.valence_worktree = PathBuf::from(value);
+        patch.valence_worktree = Some(PathBuf::from(value));
     }
     if let Some(value) = get_env("VALENCE_EXAMPLE") {
-        cfg.valence_example = value;
+        patch.valence_example = Some(value);
     }
     if let Some(value) = get_env("VALENCE_LOG") {
-        cfg.valence_log = PathBuf::from(value);
+        patch.valence_log = Some(PathBuf::from(value));
     }
     if let Some(value) = get_env("VALENCE_TARGET_DIR") {
-        cfg.valence_target_dir = PathBuf::from(value);
+        patch.valence_target_dir = Some(PathBuf::from(value));
     }
     if let Some(value) = get_env("VALENCE_PID_FILE") {
-        cfg.valence_pid_file = PathBuf::from(value);
+        patch.valence_pid_file = Some(PathBuf::from(value));
     }
     if let Some(value) = get_env("SERVER_BACKEND") {
-        cfg.server_backend = parse_backend(&value)?;
+        patch.server_backend = Some(parse_backend(&value)?);
     }
     if let Some(value) = get_env("TARGET_DIR") {
-        cfg.target_dir = PathBuf::from(value);
+        patch.target_dir = Some(PathBuf::from(value));
     }
     if let Some(value) = get_env("SERVER_NAME") {
-        cfg.server_name = value;
+        patch.server_name = Some(value);
     }
     if let Some(value) = get_env("SERVER_VERSION") {
-        cfg.server_version = value;
+        patch.server_version = Some(value);
     }
     if let Some(value) = get_env("SERVER_PROTOCOL") {
-        cfg.server_protocol = value
-            .parse()
-            .map_err(|e| format!("parse SERVER_PROTOCOL: {e}"))?;
+        patch.server_protocol = Some(
+            value
+                .parse()
+                .map_err(|e| format!("parse SERVER_PROTOCOL: {e}"))?,
+        );
     }
     if let Some(value) = get_env("SERVER_PORT") {
-        cfg.server_port = value
-            .parse()
-            .map_err(|e| format!("parse SERVER_PORT: {e}"))?;
-        *server_port_was_set = true;
+        patch.server_port = Some(
+            value
+                .parse()
+                .map_err(|e| format!("parse SERVER_PORT: {e}"))?,
+        );
     }
     if let Some(value) = get_env("CLIENT_USERNAME") {
-        cfg.client_username = value;
+        patch.client_username = Some(value);
     }
     if let Some(value) = get_env("DOCKER_IMAGE") {
-        cfg.docker_image = value;
+        patch.docker_image = Some(value);
     }
     if let Some(value) = get_env("PAPER_PLUGIN_JAR") {
-        cfg.paper_plugin_jar = Some(PathBuf::from(value));
+        patch.paper_plugin_jar = Some(PathBuf::from(value));
     }
     if let Some(value) = get_env("CLIENT_TIMEOUT") {
-        cfg.client_timeout = Duration::from_secs(
+        patch.client_timeout = Some(Duration::from_secs(
             value
                 .parse()
                 .map_err(|e| format!("parse CLIENT_TIMEOUT: {e}"))?,
-        );
+        ));
     }
     if let Some(value) = get_env("CLIENT_SUCCESS_PATTERN") {
-        cfg.client_success_needles = value.split('|').map(str::to_string).collect();
+        patch.client_success_needles = Some(value.split('|').map(str::to_string).collect());
     }
     if let Some(value) = get_env("MC_COMPAT_SCENARIO") {
-        cfg.scenario = parse_scenario(&value)?;
+        patch.scenario = Some(parse_scenario(&value)?);
     }
     if let Some(value) = get_env("MC_COMPAT_EXPECT_STATUS_DESCRIPTION") {
-        cfg.expected_status_description = Some(value);
+        patch.expected_status_description = Some(value);
     }
     if let Some(value) = get_env("MC_COMPAT_EXPECT_STATUS_VERSION") {
-        cfg.expected_status_version_name = Some(value);
+        patch.expected_status_version_name = Some(value);
     }
     if let Some(value) = get_env("MC_COMPAT_EXPECT_STATUS_SAMPLE") {
-        cfg.expected_status_sample = value
-            .split(',')
-            .filter(|sample| !sample.is_empty())
-            .map(str::to_string)
-            .collect();
+        patch.expected_status_sample = Some(
+            value
+                .split(',')
+                .filter(|sample| !sample.is_empty())
+                .map(str::to_string)
+                .collect(),
+        );
     }
     if get_env("MC_COMPAT_PACKET_CAPTURE_SUMMARY").is_some() {
-        cfg.packet_capture_summary = true;
+        patch.packet_capture_summary = Some(true);
     }
     if let Some(value) = get_env("MC_COMPAT_PUBLIC_TARGET") {
-        cfg.negative_public_target = value == "1";
+        patch.negative_public_target = Some(value == "1");
     }
     if let Some(value) = get_env("MC_COMPAT_EXTERNAL_LOAD_AUTHORIZED") {
-        cfg.negative_external_authorized = value == "1";
+        patch.negative_external_authorized = Some(value == "1");
     }
     if let Some(value) = get_env("MC_COMPAT_PROXY_ROUTE") {
-        cfg.proxy_route = Some(value);
+        patch.proxy_route = Some(value);
     }
     if let Some(value) = get_env("MC_COMPAT_PROXY_FORWARDING_MODE") {
-        cfg.proxy_forwarding_mode = Some(value);
+        patch.proxy_forwarding_mode = Some(value);
     }
     if let Some(value) = get_env("SMOKE_RECEIPT") {
-        cfg.receipt_path = Some(PathBuf::from(value));
+        patch.receipt_path = Some(PathBuf::from(value));
     }
     if let Some(value) = get_env("SMOKE_RECEIPT_DIR") {
-        cfg.receipt_dir = Some(PathBuf::from(value));
+        patch.receipt_dir = Some(PathBuf::from(value));
     }
     if let Some(value) = get_env("MC_COMPAT_FAILURE_BUNDLE") {
-        cfg.failure_bundle_path = Some(PathBuf::from(value));
+        patch.failure_bundle_path = Some(PathBuf::from(value));
     }
-    Ok(())
+    Ok(patch)
 }
 
-fn apply_config_file(cfg: &mut Config, path: &Path) -> Result<bool, String> {
+fn config_file_patch(
+    path: &Path,
+    source: config_patches::ConfigSource,
+) -> Result<config_patches::ConfigPatch, String> {
     let text =
         fs::read_to_string(path).map_err(|e| format!("read config {}: {e}", path.display()))?;
-    apply_config_json(cfg, &text).map_err(|e| format!("config {}: {e}", path.display()))
+    let mut patch = config_patches::config_json_patch(source, &text)
+        .map_err(|e| format!("config {}: {e}", path.display()))?;
+    patch.config_path = Some(path.to_path_buf());
+    Ok(patch)
 }
 
-fn apply_steel_config_file(cfg: &mut Config, path: &Path) -> Result<bool, String> {
+fn steel_config_file_patch(
+    path: &Path,
+    source: config_patches::ConfigSource,
+) -> Result<config_patches::ConfigPatch, String> {
     let text = fs::read_to_string(path)
         .map_err(|e| format!("read Steel config {}: {e}", path.display()))?;
-    let source = runtime_config::SteelSource {
+    let steel_source = runtime_config::SteelSource {
         path: path.display().to_string(),
         module_blake3: "runtime-unverified".to_string(),
         sandbox_profile: "mc-compat/pure-v1".to_string(),
     };
-    let snapshot = runtime_config::evaluate_steel_module(source, &text).map_err(|diagnostics| {
-        let details = diagnostics
-            .into_iter()
-            .map(|diagnostic| format!("{}: {}", diagnostic.path, diagnostic.message))
-            .collect::<Vec<_>>()
-            .join("; ");
-        format!("Steel config {}: {details}", path.display())
-    })?;
-    cfg.server_backend = parse_backend(&snapshot.server_backend)?;
-    cfg.server_version = snapshot.server_version;
-    cfg.server_protocol = snapshot.server_protocol;
-    cfg.server_port = snapshot.server_port;
-    cfg.valence_rev = snapshot.valence_rev;
-    cfg.valence_example = snapshot.valence_example;
-    cfg.valence_worktree = PathBuf::from(snapshot.valence_worktree);
-    cfg.valence_target_dir = PathBuf::from(snapshot.valence_target_dir);
-    cfg.valence_log = PathBuf::from(snapshot.valence_log);
-    cfg.valence_pid_file = PathBuf::from(snapshot.valence_pid_file);
-    cfg.client_username = snapshot.client_username;
-    cfg.client_timeout = Duration::from_secs(u64::from(snapshot.client_timeout_secs));
-    cfg.client_success_needles = snapshot.client_success_patterns;
-    cfg.receipt_dir = Some(PathBuf::from(snapshot.receipt_dir));
-    cfg.scenario = parse_scenario(&snapshot.scenario)?;
-    cfg.arrow_damage_policy = snapshot.arrow_damage;
-    Ok(true)
+    let snapshot =
+        runtime_config::evaluate_steel_module(steel_source, &text).map_err(|diagnostics| {
+            let details = diagnostics
+                .into_iter()
+                .map(|diagnostic| format!("{}: {}", diagnostic.path, diagnostic.message))
+                .collect::<Vec<_>>()
+                .join("; ");
+            format!("Steel config {}: {details}", path.display())
+        })?;
+    let mut patch = config_patches::steel_snapshot_patch(source, snapshot)?;
+    patch.steel_config_path = Some(path.to_path_buf());
+    Ok(patch)
 }
 
 fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
-    let mut server_port_was_set = false;
-    if let Some(value) = json_optional_string_field(text, "client_dir")? {
-        cfg.client_dir = PathBuf::from(value);
-    }
-    if let Some(value) = json_optional_string_field(text, "valence_repo")? {
-        cfg.valence_repo = PathBuf::from(value);
-    }
-    if let Some(value) = json_optional_string_field(text, "valence_rev")? {
-        cfg.valence_rev = value;
-    }
-    if let Some(value) = json_optional_string_field(text, "valence_worktree")? {
-        cfg.valence_worktree = PathBuf::from(value);
-    }
-    if let Some(value) = json_optional_string_field(text, "valence_example")? {
-        cfg.valence_example = value;
-    }
-    if let Some(value) = json_optional_string_field(text, "valence_log")? {
-        cfg.valence_log = PathBuf::from(value);
-    }
-    if let Some(value) = json_optional_string_field(text, "valence_target_dir")? {
-        cfg.valence_target_dir = PathBuf::from(value);
-    }
-    if let Some(value) = json_optional_string_field(text, "valence_pid_file")? {
-        cfg.valence_pid_file = PathBuf::from(value);
-    }
-    if let Some(value) = json_optional_string_field(text, "server_backend")? {
-        cfg.server_backend = parse_backend(&value)?;
-        cfg.server_port = default_port(cfg.server_backend);
-    }
-    if let Some(value) = json_optional_string_field(text, "target_dir")? {
-        cfg.target_dir = PathBuf::from(value);
-    }
-    if let Some(value) = json_optional_string_field(text, "server_name")? {
-        cfg.server_name = value;
-    }
-    if let Some(value) = json_optional_string_field(text, "server_version")? {
-        cfg.server_version = value;
-    }
-    if let Some(value) = json_optional_u32_field(text, "server_protocol")? {
-        cfg.server_protocol = value;
-    }
-    if let Some(value) = json_optional_u32_field(text, "server_port")? {
-        cfg.server_port =
-            u16::try_from(value).map_err(|_| format!("server_port {value} exceeds u16"))?;
-        server_port_was_set = true;
-    }
-    if let Some(value) = json_optional_string_field(text, "client_username")? {
-        cfg.client_username = value;
-    }
-    if let Some(value) = json_optional_string_field(text, "docker_image")? {
-        cfg.docker_image = value;
-    }
-    if let Some(value) = json_optional_string_field(text, "paper_plugin_jar")? {
-        cfg.paper_plugin_jar = Some(PathBuf::from(value));
-    }
-    if let Some(value) = json_optional_u32_field(text, "client_timeout_secs")? {
-        cfg.client_timeout = Duration::from_secs(u64::from(value));
-    }
-    if let Some(value) = json_optional_string_array_field(text, "client_success_patterns")? {
-        cfg.client_success_needles = value;
-    }
-    if let Some(value) = json_optional_string_field(text, "scenario")? {
-        cfg.scenario = parse_scenario(&value)?;
-    }
-    if let Some(value) = json_optional_string_field(text, "expected_status_description")? {
-        cfg.expected_status_description = Some(value);
-    }
-    if let Some(value) = json_optional_string_field(text, "expected_status_version_name")? {
-        cfg.expected_status_version_name = Some(value);
-    }
-    if let Some(value) = json_optional_string_array_field(text, "expected_status_sample")? {
-        cfg.expected_status_sample = value;
-    }
-    if let Some(value) = json_optional_bool_field(text, "packet_capture_summary")? {
-        cfg.packet_capture_summary = value;
-    }
-    if let Some(value) = json_optional_string_field(text, "proxy_route")? {
-        cfg.proxy_route = Some(value);
-    }
-    if let Some(value) = json_optional_string_field(text, "proxy_forwarding_mode")? {
-        cfg.proxy_forwarding_mode = Some(value);
-    }
-    if let Some(value) = json_optional_string_field(text, "receipt_path")? {
-        cfg.receipt_path = Some(PathBuf::from(value));
-    }
-    if let Some(value) = json_optional_string_field(text, "receipt_dir")? {
-        cfg.receipt_dir = Some(PathBuf::from(value));
-    }
-    if let Some(value) = json_optional_string_field(text, "failure_bundle_path")? {
-        cfg.failure_bundle_path = Some(PathBuf::from(value));
-    }
+    let patch = config_patches::config_json_patch(
+        config_patches::ConfigSource::nickel_json("in-memory JSON config"),
+        text,
+    )?;
+    let server_port_was_set = patch.sets_server_port();
+    config_patches::apply_patch_for_legacy_mutation(cfg, &patch);
     Ok(server_port_was_set)
 }
 

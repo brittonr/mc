@@ -1,0 +1,16 @@
+# Tasks
+
+- [x] [serial] Capture the current config source map, precedence order, defaults, and baseline config/runner tests before changing parsing behavior. r[mc_compatibility.runner_modularity.config_patch_model]
+  - Evidence: `docs/evidence/introduce-runner-config-patches.source-map.md` and `docs/evidence/run-logs/2026-06-28/introduce-runner-config-patches.baseline-config-tests.run.log`; BLAKE3 manifest `docs/evidence/introduce-runner-config-patches.b3`.
+- [x] [depends:config_patch_model] Introduce pure `ConfigPatch`, `ConfigSource`, patch-merge, and resolved-config validation types without changing public behavior. r[mc_compatibility.runner_modularity.config_patch_model]
+  - Evidence: `docs/evidence/run-logs/2026-06-28/introduce-runner-config-patches.patch-core-tests-after-fmt.run.log`; BLAKE3 manifest `docs/evidence/introduce-runner-config-patches.b3`.
+- [x] [depends:config_patch_model] Convert defaults, Nickel-exported JSON, restricted Steel config, environment variables, and CLI arguments into ordered patches that preserve existing precedence. r[mc_compatibility.runner_modularity.config_source_precedence]
+  - Evidence: `docs/evidence/run-logs/2026-06-28/introduce-runner-config-patches.patch-core-tests-after-fmt.run.log`; BLAKE3 manifest `docs/evidence/introduce-runner-config-patches.b3`.
+- [x] [depends:config_source_precedence] Move cross-field validation into deterministic post-resolution checks with source-aware diagnostics. r[mc_compatibility.runner_modularity.config_validation]
+  - Evidence: `docs/evidence/run-logs/2026-06-28/introduce-runner-config-patches.runner-full-tests.run.log`; BLAKE3 manifest `docs/evidence/introduce-runner-config-patches.b3`.
+- [x] [depends:config_validation] Add positive tests for defaults, file/env/CLI precedence, Steel/Nickel config inputs, mode selection, receipt paths, backend selection, and scenario selection. r[mc_compatibility.runner_modularity.config_positive_tests]
+  - Evidence: `docs/evidence/run-logs/2026-06-28/introduce-runner-config-patches.patch-core-tests-after-fmt.run.log`; BLAKE3 manifest `docs/evidence/introduce-runner-config-patches.b3`.
+- [x] [depends:config_positive_tests] Add negative tests for unknown flags, missing option values, invalid backend/scenario values, invalid timeouts, unsafe output paths, and conflicting mode/source combinations. r[mc_compatibility.runner_modularity.config_negative_tests]
+  - Evidence: `docs/evidence/run-logs/2026-06-28/introduce-runner-config-patches.runner-full-tests.run.log`; BLAKE3 manifest `docs/evidence/introduce-runner-config-patches.b3`.
+- [x] [depends:config_negative_tests] Run focused runner config tests, dry-run smoke checks, Cairn gates, and Cairn validation with reviewable logs. r[mc_compatibility.runner_modularity.config_validation_evidence]
+  - Evidence: `docs/evidence/run-logs/2026-06-28/introduce-runner-config-patches.mc-compat-smoke-valence-dry-run.run.log`, `docs/evidence/run-logs/2026-06-28/introduce-runner-config-patches.mc-compat-smoke-paper-dry-run.run.log`, `docs/evidence/run-logs/2026-06-28/introduce-runner-config-patches.tasks-complete-gate-tasks.run.log`, and `docs/evidence/run-logs/2026-06-28/introduce-runner-config-patches.tasks-complete-validate.run.log`; BLAKE3 manifest `docs/evidence/introduce-runner-config-patches.b3`.

@@ -1,0 +1,152 @@
+command=nix develop --no-update-lock-file . -c cargo fmt --manifest-path compat/runner/Cargo.toml --check
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+Diff in /home/brittonr/git/mc/compat/runner/src/config_colocated_tests.rs:647:
+     assert!(missing_timeout.contains("--timeout requires seconds"));
+
+     let invalid_scenario = test_config(&["--scenario", "not-a-scenario"], &[]).unwrap_err();
+[31m-    assert!(invalid_scenario.contains("unknown scenario"), "{invalid_scenario}");
+(B[m[32m+    assert!(
+(B[m[32m+        invalid_scenario.contains("unknown scenario"),
+(B[m[32m+        "{invalid_scenario}"
+(B[m[32m+    );
+(B[m
+     let invalid_timeout = test_config(&["--timeout", "0"], &[]).unwrap_err();
+[31m-    assert!(invalid_timeout.contains("greater than zero"), "{invalid_timeout}");
+(B[m[32m+    assert!(
+(B[m[32m+        invalid_timeout.contains("greater than zero"),
+(B[m[32m+        "{invalid_timeout}"
+(B[m[32m+    );
+(B[m
+     let unsafe_receipt = test_config(&["--receipt", "../escape.json"], &[]).unwrap_err();
+     assert!(unsafe_receipt.contains("receipt_path"), "{unsafe_receipt}");
+Diff in /home/brittonr/git/mc/compat/runner/src/config_colocated_tests.rs:657:
+[31m-    assert!(unsafe_receipt.contains("parent traversal"), "{unsafe_receipt}");
+(B[m[32m+    assert!(
+(B[m[32m+        unsafe_receipt.contains("parent traversal"),
+(B[m[32m+        "{unsafe_receipt}"
+(B[m[32m+    );
+(B[m
+[31m-    let matrix_conflict = test_config(&["--run-matrix", "--receipt", "docs/evidence/one.json"], &[])
+(B[m[31m-        .unwrap_err();
+(B[m[32m+    let matrix_conflict = test_config(
+(B[m[32m+        &["--run-matrix", "--receipt", "docs/evidence/one.json"],
+(B[m[32m+        &[],
+(B[m[32m+    )
+(B[m[32m+    .unwrap_err();
+(B[m     assert!(matrix_conflict.contains("--run-matrix writes backend receipts"));
+ }
+
+Diff in /home/brittonr/git/mc/compat/runner/src/config_patches.rs:2:
+ use std::path::{Component, Path, PathBuf};
+ use std::time::Duration;
+
+[32m+#[cfg(test)]
+(B[m[32m+use super::default_arrow_damage_policy;
+(B[m use super::json_support::{
+     json_optional_bool_field, json_optional_string_array_field, json_optional_string_field,
+     json_optional_u32_field,
+Diff in /home/brittonr/git/mc/compat/runner/src/config_patches.rs:8:
+ };
+ use super::runtime_config;
+ use super::{default_port, parse_backend, parse_scenario, Config, Mode, Scenario, ServerBackend};
+[31m-#[cfg(test)]
+(B[m[31m-use super::default_arrow_damage_policy;
+(B[m
+ const FIELD_CLIENT_DIR: &str = "client_dir";
+ const FIELD_VALENCE_REPO: &str = "valence_repo";
+Diff in /home/brittonr/git/mc/compat/runner/src/config_patches.rs:54:
+ const TIMEOUT_GREATER_THAN_ZERO_MESSAGE: &str = "client timeout must be greater than zero";
+ const SERVER_PORT_GREATER_THAN_ZERO_MESSAGE: &str = "server port must be greater than zero";
+ const OUTPUT_PATH_EMPTY_MESSAGE: &str = "output path must not be empty";
+[31m-const OUTPUT_PATH_PARENT_TRAVERSAL_MESSAGE: &str =
+(B[m[31m-    "output path must not contain parent traversal";
+(B[m[32m+const OUTPUT_PATH_PARENT_TRAVERSAL_MESSAGE: &str = "output path must not contain parent traversal";
+(B[m const RUN_MATRIX_RECEIPT_CONFLICT_MESSAGE: &str =
+     "--run-matrix writes backend receipts under --receipt-dir; do not combine it with --receipt/SMOKE_RECEIPT";
+
+Diff in /home/brittonr/git/mc/compat/runner/src/config_patches.rs:270:
+     ]
+ }
+
+[31m-pub(crate) fn config_json_patch(
+(B[m[31m-    source: ConfigSource,
+(B[m[31m-    text: &str,
+(B[m[31m-) -> Result<ConfigPatch, String> {
+(B[m[32m+pub(crate) fn config_json_patch(source: ConfigSource, text: &str) -> Result<ConfigPatch, String> {
+(B[m     let mut patch = ConfigPatch::new(source);
+     if let Some(value) = json_optional_string_field(text, FIELD_CLIENT_DIR)? {
+         patch.client_dir = Some(PathBuf::from(value));
+Diff in /home/brittonr/git/mc/compat/runner/src/config_patches.rs:315:
+         patch.server_protocol = Some(value);
+     }
+     if let Some(value) = json_optional_u32_field(text, FIELD_SERVER_PORT)? {
+[31m-        patch.server_port = Some(
+(B[m[31m-            u16::try_from(value).map_err(|_| format!("server_port {value} exceeds u16"))?,
+(B[m[31m-        );
+(B[m[32m+        patch.server_port =
+(B[m[32m+            Some(u16::try_from(value).map_err(|_| format!("server_port {value} exceeds u16"))?);
+(B[m     }
+     if let Some(value) = json_optional_string_field(text, FIELD_CLIENT_USERNAME)? {
+         patch.client_username = Some(value);
+Diff in /home/brittonr/git/mc/compat/runner/src/config_patches.rs:428:
+
+ pub(crate) fn apply_patch_for_legacy_mutation(config: &mut Config, patch: &ConfigPatch) {
+     let mut field_sources = BTreeMap::new();
+[31m-    let default_port_after_backend_change = patch.server_backend.is_some() && patch.server_port.is_none();
+(B[m[32m+    let default_port_after_backend_change =
+(B[m[32m+        patch.server_backend.is_some() && patch.server_port.is_none();
+(B[m     apply_patch(config, patch, &mut field_sources);
+     if default_port_after_backend_change {
+         config.server_port = default_port(config.server_backend);
+Diff in /home/brittonr/git/mc/compat/runner/src/config_patches.rs:435:
+     }
+ }
+
+[31m-pub(crate) fn format_validation_diagnostics(
+(B[m[31m-    diagnostics: &[ConfigValidationDiagnostic],
+(B[m[31m-) -> String {
+(B[m[32m+pub(crate) fn format_validation_diagnostics(diagnostics: &[ConfigValidationDiagnostic]) -> String {
+(B[m     diagnostics
+         .iter()
+         .map(|diagnostic| {
+Diff in /home/brittonr/git/mc/compat/runner/src/main.rs:1376:
+     base: &Config,
+ ) -> Result<Vec<config_patches::ConfigPatch>, String> {
+     let mut patches = Vec::new();
+[31m-    let mut current = config_patches::ConfigPatch::new(config_patches::ConfigSource::cli(
+(B[m[31m-        "CLI arguments",
+(B[m[31m-    ));
+(B[m[32m+    let mut current =
+(B[m[32m+        config_patches::ConfigPatch::new(config_patches::ConfigSource::cli("CLI arguments"));
+(B[m     let mut current_mode = base.mode;
+     let mut iter = args.iter();
+     while let Some(arg) = iter.next() {
+Diff in /home/brittonr/git/mc/compat/runner/src/main.rs:1875:
+         module_blake3: "runtime-unverified".to_string(),
+         sandbox_profile: "mc-compat/pure-v1".to_string(),
+     };
+[31m-    let snapshot = runtime_config::evaluate_steel_module(steel_source, &text).map_err(|diagnostics| {
+(B[m[31m-        let details = diagnostics
+(B[m[31m-            .into_iter()
+(B[m[31m-            .map(|diagnostic| format!("{}: {}", diagnostic.path, diagnostic.message))
+(B[m[31m-            .collect::<Vec<_>>()
+(B[m[31m-            .join("; ");
+(B[m[31m-        format!("Steel config {}: {details}", path.display())
+(B[m[31m-    })?;
+(B[m[32m+    let snapshot =
+(B[m[32m+        runtime_config::evaluate_steel_module(steel_source, &text).map_err(|diagnostics| {
+(B[m[32m+            let details = diagnostics
+(B[m[32m+                .into_iter()
+(B[m[32m+                .map(|diagnostic| format!("{}: {}", diagnostic.path, diagnostic.message))
+(B[m[32m+                .collect::<Vec<_>>()
+(B[m[32m+                .join("; ");
+(B[m[32m+            format!("Steel config {}: {details}", path.display())
+(B[m[32m+        })?;
+(B[m     let mut patch = config_patches::steel_snapshot_patch(source, snapshot)?;
+     patch.steel_config_path = Some(path.to_path_buf());
+     Ok(patch)
+
+exit_status=1

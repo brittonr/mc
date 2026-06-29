@@ -293,7 +293,7 @@ fn planning_core_negative_fixtures_fail_before_side_effects() {
     let missing_receipt_err = plan_diagnostic_text(harness_plan_from_config(&missing_receipt));
     assert!(missing_receipt_err.contains("requires a receipt path"));
 
-    let path_escape = test_config(
+    let path_escape_err = test_config(
         &[
             "--run",
             "--receipt=docs/evidence/failed-receipt.json",
@@ -301,9 +301,9 @@ fn planning_core_negative_fixtures_fail_before_side_effects() {
         ],
         &[],
     )
-    .expect("path escape config parses");
-    let path_escape_err = plan_diagnostic_text(harness_plan_from_config(&path_escape));
-    assert!(path_escape_err.contains("escapes repo"));
+    .expect_err("path escape config fails before planning side effects");
+    assert!(path_escape_err.contains("failure_bundle_path"));
+    assert!(path_escape_err.contains("parent traversal"));
 
     let target_artifact = test_config(
         &[

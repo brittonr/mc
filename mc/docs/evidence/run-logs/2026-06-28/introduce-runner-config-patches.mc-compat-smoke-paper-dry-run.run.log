@@ -1,0 +1,13 @@
+command=nix run .#mc-compat-smoke -- --dry-run --server-backend paper --scenario smoke
+[mc-compat] plan: build client, start Paper server, wait for protocol 758, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] server start will set EULA=TRUE using recorded user acceptance
+[mc-compat] starting Paper 1.18.2 server on 127.0.0.1:25566 via itzg/minecraft-server:java17 with EULA=TRUE
++ "docker" "run" "-d" "--name" "mc-compat-1-18-2" "-p" "127.0.0.1:25566:25565" "-e" "EULA=TRUE" "-e" "TYPE=PAPER" "-e" "VERSION=1.18.2" "-e" "ONLINE_MODE=FALSE" "-e" "MEMORY=1G" "-e" "VIEW_DISTANCE=2" "-e" "SIMULATION_DISTANCE=2" "itzg/minecraft-server:java17"
+[mc-compat] probing status 127.0.0.1:25566 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+
+exit_status=0
