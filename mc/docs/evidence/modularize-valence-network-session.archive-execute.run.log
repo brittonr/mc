@@ -1,0 +1,81 @@
+command: CAIRN_ARCHIVE_DATE=2026-06-29 nix run .#cairn -- archive modularize-valence-network-session --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: modularize-valence-network-session",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-29-modularize-valence-network-session"
+    }
+  ],
+  "blocked": false,
+  "change": "modularize-valence-network-session",
+  "dry_run": false,
+  "input_hash": "b0cf9394cc626ae4ad5b9201e9994f873cdf67d35509151a40f5a979867c1161",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "386fbd442c6ff8691473c18ed43ae234a2576395ac44b5adf3047753ac2cd896",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-valence-network-session/design.md"
+        },
+        {
+          "content_hash": "116e6698f2006deedcc6809c3c17acd527323c6302d02de1f4d739f08df4af81",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-valence-network-session/proposal.md"
+        },
+        {
+          "content_hash": "68eb3f675c33ba112ac4cc022cc77d8f7473ce2610441efc0d87bafe1317f2fa",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-valence-network-session/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "64b76458f3be2bba5f5ff01b6fc52ab5180f5dde4ef498a25fd87e2f2ca137d2",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-valence-network-session/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/modularize-valence-network-session"
+        }
+      ],
+      "manifest_hash": "973725a03873fc482fbd4d46cd44b24140b86aa39b021b082a64970397f09b24"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "386fbd442c6ff8691473c18ed43ae234a2576395ac44b5adf3047753ac2cd896",
+          "exists": true,
+          "path": "./cairn/changes/modularize-valence-network-session/design.md"
+        },
+        {
+          "content_hash": "116e6698f2006deedcc6809c3c17acd527323c6302d02de1f4d739f08df4af81",
+          "exists": true,
+          "path": "./cairn/changes/modularize-valence-network-session/proposal.md"
+        },
+        {
+          "content_hash": "68eb3f675c33ba112ac4cc022cc77d8f7473ce2610441efc0d87bafe1317f2fa",
+          "exists": true,
+          "path": "./cairn/changes/modularize-valence-network-session/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "64b76458f3be2bba5f5ff01b6fc52ab5180f5dde4ef498a25fd87e2f2ca137d2",
+          "exists": true,
+          "path": "./cairn/changes/modularize-valence-network-session/tasks.md"
+        }
+      ],
+      "manifest_hash": "38a2e02d7a66164776272db1f9b096435cde06d9409c3d608cfb885077c9e15c"
+    },
+    "kind": "archive",
+    "manifest_hash": "06c5e13e80e96572244cce196e46a570eb15877e47105be018d96288cb04efd3"
+  },
+  "plan_hash": "7a9ff562c67880384382c9a6460711cea675cc4aabd49bd9e578553383963b0e",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "d753c3872b26064fae945ae8f88aa70cb5e67b6a9eb4e6257c03da752afb8fde"
+}
+exit_status=0

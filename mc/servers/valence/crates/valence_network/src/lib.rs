@@ -3,11 +3,13 @@
 mod byte_channel;
 mod connect;
 mod legacy_ping;
+mod login;
 mod packet_io;
 pub mod profile_cache;
 pub mod proxy_broadcast;
+mod session_core;
+mod status;
 
-use std::borrow::Cow;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, SocketAddrV4};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
@@ -24,7 +26,9 @@ pub use legacy_ping::{ServerListLegacyPingPayload, ServerListLegacyPingResponse}
 use rand::rngs::OsRng;
 use rsa::traits::PublicKeyParts;
 use rsa::RsaPrivateKey;
-use serde::Serialize;
+pub use status::{
+    BroadcastToLan, PlayerSampleEntry, ServerListLegacyPing, ServerListPing, StatusResponseResource,
+};
 use tokio::net::UdpSocket;
 use tokio::runtime::{Handle, Runtime};
 use tokio::sync::Semaphore;
@@ -33,7 +37,19 @@ use tracing::error;
 use uuid::Uuid;
 use valence_protocol::text::IntoText;
 use valence_server::client::{ClientBundle, ClientBundleArgs, Properties, SpawnClientsSet};
-use valence_server::{CompressionThreshold, Server, Text, MINECRAFT_VERSION, PROTOCOL_VERSION};
+use valence_server::{CompressionThreshold, Server, Text};
+
+const NEW_CLIENT_QUEUE_CAPACITY: usize = 64;
+const RSA_KEY_BITS: usize = 1024;
+const DEFAULT_MAX_CONNECTIONS: usize = 1024;
+const DEFAULT_MAX_PLAYERS: usize = 20;
+const DEFAULT_SERVER_PORT: u16 = 25565;
+const BYTES_PER_MIB: usize = 1024 * 1024;
+const DEFAULT_INCOMING_BYTE_LIMIT: usize = 2 * BYTES_PER_MIB;
+const DEFAULT_OUTGOING_BYTE_LIMIT: usize = 8 * BYTES_PER_MIB;
+const LAN_BROADCAST_INTERVAL: Duration = Duration::from_millis(1500);
+const LAN_DISCOVERY_BIND_ADDR: &str = "0.0.0.0:0";
+const LAN_DISCOVERY_MULTICAST_ADDR: &str = "224.0.2.60:4445";
 
 pub struct NetworkPlugin;
 
@@ -56,9 +72,9 @@ fn build_plugin(app: &mut App) -> anyhow::Result<()> {
         .world_mut()
         .get_resource_or_insert_with(NetworkSettings::default);
 
-    let (new_clients_send, new_clients_recv) = flume::bounded(64);
+    let (new_clients_send, new_clients_recv) = flume::bounded(NEW_CLIENT_QUEUE_CAPACITY);
 
-    let rsa_key = RsaPrivateKey::new(&mut OsRng, 1024)?;
+    let rsa_key = RsaPrivateKey::new(&mut OsRng, RSA_KEY_BITS)?;
 
     let public_key_der =
         rsa_der::public_key_to_der(&rsa_key.n().to_bytes_be(), &rsa_key.e().to_bytes_be())
@@ -267,14 +283,14 @@ impl Default for NetworkSettings {
         Self {
             callbacks: ErasedNetworkCallbacks::default(),
             tokio_handle: None,
-            max_connections: 1024,
-            max_players: 20,
-            address: SocketAddrV4::new(Ipv4Addr::new(0, 0, 0, 0), 25565).into(),
+            max_connections: DEFAULT_MAX_CONNECTIONS,
+            max_players: DEFAULT_MAX_PLAYERS,
+            address: SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, DEFAULT_SERVER_PORT).into(),
             connection_mode: ConnectionMode::Online {
                 prevent_proxy_connections: false,
             },
-            incoming_byte_limit: 2097152, // 2 MiB
-            outgoing_byte_limit: 8388608, // 8 MiB
+            incoming_byte_limit: DEFAULT_INCOMING_BYTE_LIMIT,
+            outgoing_byte_limit: DEFAULT_OUTGOING_BYTE_LIMIT,
         }
     }
 }
@@ -327,15 +343,7 @@ pub trait NetworkCallbacks: Send + Sync + 'static {
     ) -> ServerListPing {
         #![allow(unused_variables)]
 
-        ServerListPing::Respond {
-            online_players: shared.player_count().load(Ordering::Relaxed) as i32,
-            max_players: shared.max_players() as i32,
-            player_sample: vec![],
-            description: "A Valence Server".into_text(),
-            favicon_png: &[],
-            version_name: MINECRAFT_VERSION.to_owned(),
-            protocol: PROTOCOL_VERSION,
-        }
+        status::default_server_list_ping(shared)
     }
 
     /// Called when the server receives a Server List Legacy Ping query.
@@ -477,15 +485,19 @@ pub trait NetworkCallbacks: Send + Sync + 'static {
         auth_digest: &str,
         player_ip: &IpAddr,
     ) -> String {
-        if shared.connection_mode()
-            == (&ConnectionMode::Online {
+        let prevent_proxy_connections = matches!(
+            shared.connection_mode(),
+            ConnectionMode::Online {
                 prevent_proxy_connections: true,
-            })
-        {
-            format!("https://sessionserver.mojang.com/session/minecraft/hasJoined?username={username}&serverId={auth_digest}&ip={player_ip}")
-        } else {
-            format!("https://sessionserver.mojang.com/session/minecraft/hasJoined?username={username}&serverId={auth_digest}")
-        }
+            }
+        );
+
+        session_core::default_session_server_url(
+            prevent_proxy_connections,
+            username,
+            auth_digest,
+            player_ip,
+        )
     }
 }
 
@@ -573,148 +585,11 @@ pub enum ConnectionMode {
     },
 }
 
-/// Stable, resource-owned data for server-list status responses.
-///
-/// This is a small compatibility-test seam: applications can install this as a
-/// [`NetworkCallbacks`] implementation or use [`Self::to_server_list_ping`] from
-/// their own callback to keep MOTD/version/player-sample responses deterministic.
-#[derive(Clone, Debug)]
-pub struct StatusResponseResource {
-    /// Displayed online player count.
-    pub online_players: i32,
-    /// Displayed maximum player count.
-    pub max_players: i32,
-    /// Hover sample entries.
-    pub player_sample: Vec<PlayerSampleEntry>,
-    /// Server description/MOTD.
-    pub description: Text,
-    /// Server version name.
-    pub version_name: String,
-    /// Server protocol.
-    pub protocol: i32,
-    /// Optional static favicon PNG bytes. Empty means no icon.
-    pub favicon_png: &'static [u8],
-}
-
-impl Default for StatusResponseResource {
-    fn default() -> Self {
-        Self {
-            online_players: 0,
-            max_players: 20,
-            player_sample: Vec::new(),
-            description: "A Valence Server".into_text(),
-            version_name: MINECRAFT_VERSION.to_owned(),
-            protocol: PROTOCOL_VERSION,
-            favicon_png: &[],
-        }
-    }
-}
-
-impl StatusResponseResource {
-    /// Convert the resource into the existing status-ping callback response.
-    pub fn to_server_list_ping(&self) -> ServerListPing<'static> {
-        ServerListPing::Respond {
-            online_players: self.online_players,
-            max_players: self.max_players,
-            player_sample: self.player_sample.clone(),
-            description: self.description.clone(),
-            favicon_png: self.favicon_png,
-            version_name: self.version_name.clone(),
-            protocol: self.protocol,
-        }
-    }
-}
-
-#[async_trait]
-impl NetworkCallbacks for StatusResponseResource {
-    async fn server_list_ping(
-        &self,
-        _shared: &SharedNetworkState,
-        _remote_addr: SocketAddr,
-        _handshake_data: &HandshakeData,
-    ) -> ServerListPing {
-        self.to_server_list_ping()
-    }
-}
-
-/// The result of the Server List Ping [callback].
-///
-/// [callback]: NetworkCallbacks::server_list_ping
-#[derive(Clone, Default, Debug)]
-pub enum ServerListPing<'a> {
-    /// Responds to the server list ping with the given information.
-    Respond {
-        /// Displayed as the number of players on the server.
-        online_players: i32,
-        /// Displayed as the maximum number of players allowed on the server at
-        /// a time.
-        max_players: i32,
-        /// The list of players visible by hovering over the player count.
-        ///
-        /// Has no effect if this list is empty.
-        player_sample: Vec<PlayerSampleEntry>,
-        /// A description of the server.
-        description: Text,
-        /// The server's icon as the bytes of a PNG image.
-        /// The image must be 64x64 pixels.
-        ///
-        /// No icon is used if the slice is empty.
-        favicon_png: &'a [u8],
-        /// The version name of the server. Displayed when client is using a
-        /// different protocol.
-        ///
-        /// Can be formatted using `§` and format codes. Or use
-        /// [`valence_protocol::text::Text::to_legacy_lossy`].
-        version_name: String,
-        /// The protocol version of the server.
-        protocol: i32,
-    },
-    /// Ignores the query and disconnects from the client.
-    #[default]
-    Ignore,
-}
-
-/// The result of the Server List Legacy Ping [callback].
-///
-/// [callback]: NetworkCallbacks::server_list_legacy_ping
-#[derive(Clone, Default, Debug)]
-pub enum ServerListLegacyPing {
-    /// Responds to the server list legacy ping with the given information.
-    Respond(ServerListLegacyPingResponse),
-    /// Ignores the query and disconnects from the client.
-    #[default]
-    Ignore,
-}
-
-/// The result of the Broadcast To Lan [callback].
-///
-/// [callback]: NetworkCallbacks::broadcast_to_lan
-#[derive(Clone, Default, Debug)]
-pub enum BroadcastToLan<'a> {
-    /// Disabled Broadcast To Lan.
-    #[default]
-    Disabled,
-    /// Send packet to broadcast to LAN every 1.5 seconds with specified MOTD.
-    Enabled(Cow<'a, str>),
-}
-
-/// Represents an individual entry in the player sample.
-#[derive(Clone, Debug, Serialize)]
-pub struct PlayerSampleEntry {
-    /// The name of the player.
-    ///
-    /// This string can contain
-    /// [legacy formatting codes](https://minecraft.wiki/w/Formatting_codes).
-    pub name: String,
-    /// The player UUID.
-    pub id: Uuid,
-}
-
 #[allow(clippy::infinite_loop)]
 async fn do_broadcast_to_lan_loop(shared: SharedNetworkState) {
     let port = shared.0.address.port();
 
-    let Ok(socket) = UdpSocket::bind("0.0.0.0:0").await else {
+    let Ok(socket) = UdpSocket::bind(LAN_DISCOVERY_BIND_ADDR).await else {
         tracing::error!("Failed to bind to UDP socket for broadcast to LAN");
         return;
     };
@@ -722,7 +597,7 @@ async fn do_broadcast_to_lan_loop(shared: SharedNetworkState) {
     loop {
         let motd = match shared.0.callbacks.inner.broadcast_to_lan(&shared).await {
             BroadcastToLan::Disabled => {
-                time::sleep(Duration::from_millis(1500)).await;
+                time::sleep(LAN_BROADCAST_INTERVAL).await;
                 continue;
             }
             BroadcastToLan::Enabled(motd) => motd,
@@ -730,18 +605,27 @@ async fn do_broadcast_to_lan_loop(shared: SharedNetworkState) {
 
         let message = format!("[MOTD]{motd}[/MOTD][AD]{port}[/AD]");
 
-        if let Err(e) = socket.send_to(message.as_bytes(), "224.0.2.60:4445").await {
+        if let Err(e) = socket
+            .send_to(message.as_bytes(), LAN_DISCOVERY_MULTICAST_ADDR)
+            .await
+        {
             tracing::warn!("Failed to send broadcast to LAN packet: {}", e);
         }
 
-        // wait 1.5 seconds
-        tokio::time::sleep(std::time::Duration::from_millis(1500)).await;
+        tokio::time::sleep(LAN_BROADCAST_INTERVAL).await;
     }
 }
 
 #[cfg(test)]
 mod status_response_resource_tests {
+    use valence_server::{MINECRAFT_VERSION, PROTOCOL_VERSION};
+
     use super::*;
+
+    const CONFIGURED_ONLINE_PLAYERS: i32 = 1;
+    const CONFIGURED_MAX_PLAYERS: i32 = 5;
+    const CONFIGURED_PROTOCOL: i32 = 763;
+    const SAMPLE_UUID: u128 = 0x1234567890abcdef1234567890abcdef;
 
     #[test]
     fn default_status_response_resource_matches_existing_defaults() {
@@ -770,17 +654,17 @@ mod status_response_resource_tests {
 
     #[test]
     fn configured_status_response_resource_is_stable() {
-        let sample_id = Uuid::from_u128(0x1234567890abcdef1234567890abcdef);
+        let sample_id = Uuid::from_u128(SAMPLE_UUID);
         let resource = StatusResponseResource {
-            online_players: 1,
-            max_players: 5,
+            online_players: CONFIGURED_ONLINE_PLAYERS,
+            max_players: CONFIGURED_MAX_PLAYERS,
             player_sample: vec![PlayerSampleEntry {
                 name: "compatbot".to_owned(),
                 id: sample_id,
             }],
             description: "compat fixture".into_text(),
             version_name: "compat-version".to_owned(),
-            protocol: 763,
+            protocol: CONFIGURED_PROTOCOL,
             favicon_png: &[],
         };
         match resource.to_server_list_ping() {
@@ -793,13 +677,13 @@ mod status_response_resource_tests {
                 protocol,
                 ..
             } => {
-                assert_eq!(online_players, 1);
-                assert_eq!(max_players, 5);
+                assert_eq!(online_players, CONFIGURED_ONLINE_PLAYERS);
+                assert_eq!(max_players, CONFIGURED_MAX_PLAYERS);
                 assert_eq!(player_sample[0].name, "compatbot");
                 assert_eq!(player_sample[0].id, sample_id);
                 assert_eq!(description.to_legacy_lossy(), "compat fixture");
                 assert_eq!(version_name, "compat-version");
-                assert_eq!(protocol, 763);
+                assert_eq!(protocol, CONFIGURED_PROTOCOL);
             }
             ServerListPing::Ignore => panic!("configured resource must respond"),
         }

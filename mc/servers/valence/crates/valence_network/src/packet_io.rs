@@ -27,6 +27,32 @@ pub(crate) struct PacketIo {
 
 const READ_BUF_SIZE: usize = 4096;
 
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub(crate) enum PacketFrameBudgetDecision {
+    Queue { cost: usize },
+    DisconnectOversized { cost: usize, limit: usize },
+}
+
+pub(crate) fn received_packet_cost(body_len: usize) -> usize {
+    mem::size_of::<ReceivedPacket>() + body_len
+}
+
+pub(crate) fn classify_received_packet_cost(
+    body_len: usize,
+    incoming_byte_limit: usize,
+) -> PacketFrameBudgetDecision {
+    let cost = received_packet_cost(body_len);
+
+    if cost > incoming_byte_limit {
+        PacketFrameBudgetDecision::DisconnectOversized {
+            cost,
+            limit: incoming_byte_limit,
+        }
+    } else {
+        PacketFrameBudgetDecision::Queue { cost }
+    }
+}
+
 impl PacketIo {
     pub(crate) fn new(stream: TcpStream, enc: PacketEncoder, dec: PacketDecoder) -> Self {
         Self {
@@ -133,19 +159,20 @@ impl PacketIo {
                 let timestamp = Instant::now();
                 let frame = frame.into_byte_backed();
 
-                // Estimate memory usage of this packet.
-                let cost = mem::size_of::<ReceivedPacket>() + frame.body().len();
-
-                if cost > incoming_byte_limit {
-                    debug!(
-                        cost,
-                        incoming_byte_limit,
-                        "cost of received packet is greater than the incoming memory limit"
-                    );
-                    // We would never acquire enough permits, so we should exit instead of getting
-                    // stuck.
-                    break;
-                }
+                let cost =
+                    match classify_received_packet_cost(frame.body().len(), incoming_byte_limit) {
+                        PacketFrameBudgetDecision::Queue { cost } => cost,
+                        PacketFrameBudgetDecision::DisconnectOversized { cost, limit } => {
+                            debug!(
+                                cost,
+                                incoming_byte_limit = limit,
+                                "cost of received packet is greater than the incoming memory limit"
+                            );
+                            // We would never acquire enough permits, so we should exit instead of
+                            // getting stuck.
+                            break;
+                        }
+                    };
 
                 // Wait until there's enough space for this packet.
                 let Ok(permits) = recv_sem.acquire_many(cost as u32).await else {
@@ -227,7 +254,7 @@ impl ClientConnection for RealClientConnection {
     fn try_recv(&mut self) -> anyhow::Result<Option<ReceivedPacket>> {
         match self.recv.try_recv() {
             Ok(packet) => {
-                let cost = mem::size_of::<ReceivedPacket>() + packet.body.len();
+                let cost = received_packet_cost(packet.body.len());
 
                 // Add the permits back that we removed earlier.
                 self.recv_sem.add_permits(cost);
@@ -248,5 +275,34 @@ impl Drop for RealClientConnection {
     fn drop(&mut self) {
         self.writer_task.abort();
         self.reader_task.abort();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const BODY_LEN: usize = 8;
+    const EXTRA_PERMIT: usize = 1;
+
+    #[test]
+    fn packet_frame_budget_accepts_frame_at_limit() {
+        let cost = received_packet_cost(BODY_LEN);
+
+        assert_eq!(
+            classify_received_packet_cost(BODY_LEN, cost),
+            PacketFrameBudgetDecision::Queue { cost }
+        );
+    }
+
+    #[test]
+    fn packet_frame_budget_rejects_oversized_frame() {
+        let cost = received_packet_cost(BODY_LEN);
+        let limit = cost - EXTRA_PERMIT;
+
+        assert_eq!(
+            classify_received_packet_cost(BODY_LEN, limit),
+            PacketFrameBudgetDecision::DisconnectOversized { cost, limit }
+        );
     }
 }

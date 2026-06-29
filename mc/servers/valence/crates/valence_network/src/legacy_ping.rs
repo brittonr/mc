@@ -55,11 +55,46 @@ pub struct ServerListLegacyPingResponse {
     description: String,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 enum PingFormat {
     Pre1_4, // Beta 1.8 to 1.3
     Pre1_6, // 1.4 to 1.5
     Pre1_7, // 1.6
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+enum LegacyPingHeader {
+    Legacy(PingFormat),
+    NotLegacy,
+}
+
+const LEGACY_PING_PREFIX_BYTES: usize = 3;
+const LEGACY_PING_BYTE: u8 = 0xfe;
+const LEGACY_PING_PAYLOAD_BYTE: u8 = 0x01;
+const LEGACY_PLUGIN_MESSAGE_BYTE: u8 = 0xfa;
+const LEGACY_PING_PROBE_DELAY: Duration = Duration::from_millis(10);
+const PRE_1_7_PAYLOAD_PREFIX_BYTES: usize = 29;
+const UTF16_CODE_UNIT_BYTES: usize = 2;
+const MAX_LEGACY_HOSTNAME_BYTES: usize = 512;
+
+fn should_probe_legacy_ping_header(bytes: &[u8]) -> bool {
+    matches!(
+        bytes,
+        [LEGACY_PING_BYTE] | [LEGACY_PING_BYTE, LEGACY_PING_PAYLOAD_BYTE]
+    )
+}
+
+fn classify_legacy_ping_header(bytes: &[u8]) -> LegacyPingHeader {
+    match bytes {
+        [LEGACY_PING_BYTE] => LegacyPingHeader::Legacy(PingFormat::Pre1_4),
+        [LEGACY_PING_BYTE, LEGACY_PING_PAYLOAD_BYTE] => {
+            LegacyPingHeader::Legacy(PingFormat::Pre1_6)
+        }
+        [LEGACY_PING_BYTE, LEGACY_PING_PAYLOAD_BYTE, LEGACY_PLUGIN_MESSAGE_BYTE] => {
+            LegacyPingHeader::Legacy(PingFormat::Pre1_7)
+        }
+        _ => LegacyPingHeader::NotLegacy,
+    }
 }
 
 /// Returns true if legacy ping detected and handled
@@ -68,10 +103,10 @@ pub(crate) async fn try_handle_legacy_ping(
     stream: &mut TcpStream,
     remote_addr: SocketAddr,
 ) -> io::Result<bool> {
-    let mut temp_buf = [0_u8; 3];
+    let mut temp_buf = [0_u8; LEGACY_PING_PREFIX_BYTES];
     let mut n = stream.peek(&mut temp_buf).await?;
 
-    if let [0xfe] | [0xfe, 0x01] = &temp_buf[..n] {
+    if should_probe_legacy_ping_header(&temp_buf[..n]) {
         // This could mean one of following things:
         // 1. The beginning of a normal handshake packet, not fully received yet though
         // 2. The beginning of the 1.6 legacy ping, not fully received yet either
@@ -97,15 +132,13 @@ pub(crate) async fn try_handle_legacy_ping(
         // In my opinion, 1 is insignificant, and 2/3 are so rare that they are
         // effectively insignificant too. Network IO is just not that reliable
         // at this level, the connection may be lost as well or something at this point.
-        sleep(Duration::from_millis(10)).await;
+        sleep(LEGACY_PING_PROBE_DELAY).await;
         n = stream.peek(&mut temp_buf).await?;
     }
 
-    let format = match &temp_buf[..n] {
-        [0xfe] => PingFormat::Pre1_4,
-        [0xfe, 0x01] => PingFormat::Pre1_6,
-        [0xfe, 0x01, 0xfa] => PingFormat::Pre1_7,
-        _ => return Ok(false), // Not a legacy ping
+    let format = match classify_legacy_ping_header(&temp_buf[..n]) {
+        LegacyPingHeader::Legacy(format) => format,
+        LegacyPingHeader::NotLegacy => return Ok(false),
     };
 
     let payload = match format {
@@ -183,13 +216,15 @@ pub(crate) async fn try_handle_legacy_ping(
 
 // Reads the payload of a 1.6 legacy ping
 async fn read_payload(stream: &mut TcpStream) -> io::Result<ServerListLegacyPingPayload> {
-    // consume the first 29 useless bytes of this amazing protocol
-    stream.read_exact(&mut [0_u8; 29]).await?;
+    // Consume the fixed useless bytes of this amazing protocol.
+    stream
+        .read_exact(&mut [0_u8; PRE_1_7_PAYLOAD_PREFIX_BYTES])
+        .await?;
 
     let protocol = i32::from(stream.read_u8().await?);
-    let hostname_len = usize::from(stream.read_u16().await?) * 2;
+    let hostname_len = usize::from(stream.read_u16().await?) * UTF16_CODE_UNIT_BYTES;
 
-    if hostname_len > 512 {
+    if hostname_len > MAX_LEGACY_HOSTNAME_BYTES {
         return Err(io::Error::new(
             io::ErrorKind::InvalidData,
             "hostname too long",
@@ -200,7 +235,7 @@ async fn read_payload(stream: &mut TcpStream) -> io::Result<ServerListLegacyPing
     stream.read_exact(&mut hostname).await?;
     let hostname = String::from_utf16_lossy(
         &hostname
-            .chunks(2)
+            .chunks(UTF16_CODE_UNIT_BYTES)
             .map(|pair| u16::from_be_bytes([pair[0], pair[1]]))
             .collect::<Vec<_>>(),
     );
@@ -330,5 +365,64 @@ fn remove_formatting(string: &mut String) {
         } else {
             string.remove(pos);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const NORMAL_HANDSHAKE_PREFIX: &[u8] = &[0x10, 0x00];
+    const MALFORMED_LEGACY_PREFIX: &[u8] = &[LEGACY_PING_BYTE, LEGACY_PLUGIN_MESSAGE_BYTE];
+
+    #[test]
+    fn legacy_ping_header_classifies_supported_formats() {
+        assert_eq!(
+            classify_legacy_ping_header(&[LEGACY_PING_BYTE]),
+            LegacyPingHeader::Legacy(PingFormat::Pre1_4)
+        );
+        assert_eq!(
+            classify_legacy_ping_header(&[LEGACY_PING_BYTE, LEGACY_PING_PAYLOAD_BYTE]),
+            LegacyPingHeader::Legacy(PingFormat::Pre1_6)
+        );
+        assert_eq!(
+            classify_legacy_ping_header(&[
+                LEGACY_PING_BYTE,
+                LEGACY_PING_PAYLOAD_BYTE,
+                LEGACY_PLUGIN_MESSAGE_BYTE,
+            ]),
+            LegacyPingHeader::Legacy(PingFormat::Pre1_7)
+        );
+    }
+
+    #[test]
+    fn legacy_ping_header_rejects_normal_and_malformed_prefixes() {
+        assert_eq!(
+            classify_legacy_ping_header(NORMAL_HANDSHAKE_PREFIX),
+            LegacyPingHeader::NotLegacy
+        );
+        assert_eq!(
+            classify_legacy_ping_header(MALFORMED_LEGACY_PREFIX),
+            LegacyPingHeader::NotLegacy
+        );
+    }
+
+    #[test]
+    fn legacy_ping_probe_waits_only_for_ambiguous_short_prefixes() {
+        assert!(should_probe_legacy_ping_header(&[LEGACY_PING_BYTE]));
+        assert!(should_probe_legacy_ping_header(&[
+            LEGACY_PING_BYTE,
+            LEGACY_PING_PAYLOAD_BYTE,
+        ]));
+        assert!(!should_probe_legacy_ping_header(NORMAL_HANDSHAKE_PREFIX));
+    }
+
+    #[test]
+    fn legacy_ping_formatting_removes_section_codes() {
+        let mut description = "§aHello §lWorld§".to_owned();
+
+        remove_formatting(&mut description);
+
+        assert_eq!(description, "Hello World");
     }
 }

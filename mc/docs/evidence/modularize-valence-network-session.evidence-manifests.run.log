@@ -1,0 +1,30 @@
+== manifest-refresh-check ==
+command: nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh failed: docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3:26: stale digest for servers/valence/crates/valence_network/src/proxy_broadcast.rs: expected 6042f0ca7c0b0d6f094eb1776cfd5d1fdf4376d7f341abc69effad08190640ae, found 3ad50bbf7f0f8dea53dbe4afe7b278176fc9f6ef78747c8a363b6262b782a3ac
+evidence manifest refresh failed: docs/evidence/profile-cache-rate-limiter-validation.b3:4: stale digest for servers/valence/crates/valence_network/src/profile_cache.rs: expected 9c3f0df6a1e8a8ea96f0684afc033dbbd24c8a970759d75f946bd7be99795c0f, found 637bd52e767612caf9513b7bd84497115982ddbef34ce19bea807669404738a6
+exit_status[manifest-refresh-check]=1
+== manifest-check ==
+command: nix build .#checks.x86_64-linux.mc-compat-evidence-manifests --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4098 ms: Could not connect to server; retrying in 23 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 119 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 143 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3090 ms: Could not connect to server; retrying in 518 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/9yrkhdjfl8cfvv7495jzhya7ks9cz5gm-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/9yrkhdjfl8cfvv7495jzhya7ks9cz5gm-mc-compat-evidence-manifests.drv'...
+mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3:26: stale digest for servers/valence/crates/valence_network/src/proxy_broadcast.rs: expected 6042f0ca7c0b0d6f094eb1776cfd5d1fdf4376d7f341abc69effad08190640ae, found 3ad50bbf7f0f8dea53dbe4afe7b278176fc9f6ef78747c8a363b6262b782a3ac
+mc-compat-evidence-manifests> evidence manifest refresh failed: docs/evidence/profile-cache-rate-limiter-validation.b3:4: stale digest for servers/valence/crates/valence_network/src/profile_cache.rs: expected 9c3f0df6a1e8a8ea96f0684afc033dbbd24c8a970759d75f946bd7be99795c0f, found 637bd52e767612caf9513b7bd84497115982ddbef34ce19bea807669404738a6
+error: Cannot build '/nix/store/9yrkhdjfl8cfvv7495jzhya7ks9cz5gm-mc-compat-evidence-manifests.drv'.
+       Reason: builder failed with exit code 1.
+       Output paths:
+         /nix/store/d4ndbwd8ppaaml32xmyv346lhjrlqvbn-mc-compat-evidence-manifests
+       Last 2 log lines:
+       > evidence manifest refresh failed: docs/evidence/introduce-valence-proxy-broadcast-backend-evidence.b3:26: stale digest for servers/valence/crates/valence_network/src/proxy_broadcast.rs: expected 6042f0ca7c0b0d6f094eb1776cfd5d1fdf4376d7f341abc69effad08190640ae, found 3ad50bbf7f0f8dea53dbe4afe7b278176fc9f6ef78747c8a363b6262b782a3ac
+       > evidence manifest refresh failed: docs/evidence/profile-cache-rate-limiter-validation.b3:4: stale digest for servers/valence/crates/valence_network/src/profile_cache.rs: expected 9c3f0df6a1e8a8ea96f0684afc033dbbd24c8a970759d75f946bd7be99795c0f, found 637bd52e767612caf9513b7bd84497115982ddbef34ce19bea807669404738a6
+       For full logs, run:
+         nix log /nix/store/9yrkhdjfl8cfvv7495jzhya7ks9cz5gm-mc-compat-evidence-manifests.drv
+exit_status[manifest-check]=1
+exit_status=1

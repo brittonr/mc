@@ -1,0 +1,8 @@
+command: nix develop --no-update-lock-file /home/brittonr/git/mc/servers/valence -c rustfmt --check --edition 2021 --config-path rustfmt.toml crates/valence_network/src/connect.rs crates/valence_network/src/legacy_ping.rs crates/valence_network/src/lib.rs crates/valence_network/src/login.rs crates/valence_network/src/packet_io.rs crates/valence_network/src/session_core.rs crates/valence_network/src/status.rs
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 24 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 53 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 158 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 58 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds
+exit_status=0
