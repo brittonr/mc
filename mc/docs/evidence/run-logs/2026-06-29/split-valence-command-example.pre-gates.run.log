@@ -1,0 +1,81 @@
+$ nix run .#cairn -- gate proposal split-valence-command-example --root .
+{
+  "change": "split-valence-command-example",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7a23257684071aca1eb4edf60c6f4df9b76d12fd0cd1a0454be4b98356ce988c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "0d2b88c7513ec75e1534ea977c10cac9748d2b682e65815e7d19a395b045f9d7",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+$ nix run .#cairn -- gate design split-valence-command-example --root .
+{
+  "change": "split-valence-command-example",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "019b307b2004dd87e397709870d175458c89bba63f5222dce0f50888587dde90",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e552d4926b2148712d58c05b05b39ba2ca068214b2f595e315882b3e1823938f",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+$ nix run .#cairn -- gate tasks split-valence-command-example --root .
+{
+  "change": "split-valence-command-example",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "054f1072a71e9d16cd55c81f1ab6b6f0422c146d694b773113eeba4505c0e768",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "84b8b4fd905c8aa3dd11d98402419fcf49c220a89a67ce71894609d0261c7256",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 3,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+exit_status=0
