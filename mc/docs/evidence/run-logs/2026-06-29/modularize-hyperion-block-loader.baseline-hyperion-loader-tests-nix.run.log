@@ -1,0 +1,346 @@
+command=nix develop --no-update-lock-file -c cargo test -p hyperion simulation::blocks::loader -- --nocapture
+cwd=/home/brittonr/git/mc/hyperion
+started_at=2026-06-29T06:05:35Z
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 37 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 149 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 96 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 569 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds
+copying path '/nix/store/5rb23cr67q4mb1zdl6n6i6myf7xsqp3m-source' from 'https://nix-community.cachix.org'...
+copying path '/nix/store/rzw1iawi5fgcwy334l7anvzr09jx2vpp-cargo-deny-0.19.8' from 'https://cache.nixos.org'...
+copying path '/nix/store/3h1kkcv00w0q3k65p5ppxlhi50blaf8r-cargo-machete-0.9.2' from 'https://cache.nixos.org'...
+copying path '/nix/store/3j32zmchv9wd60qng1mm04yj07wf04i8-just-1.51.0' from 'https://cache.nixos.org'...
+building '/nix/store/j4740sijpb7myrsrzqpg764aibxfbdv1-rust-docs-nightly-x86_64-unknown-linux-gnu.tar.xz.drv'...
+building '/nix/store/s57q63chsbvirrn4bgj8y9h8k64gb1cb-cargo-nightly-x86_64-unknown-linux-gnu.tar.xz.drv'...
+building '/nix/store/l9cm6df7jynnci3sa0pcv0g8172vbgsn-rustc-nightly-x86_64-unknown-linux-gnu.tar.xz.drv'...
+building '/nix/store/nvf3916w5f70m7wvi3hsridkcc4ishaz-clippy-nightly-x86_64-unknown-linux-gnu.tar.xz.drv'...
+building '/nix/store/2nx4n6w245yj44jzvpi81dahr6bi9dpr-rust-src-nightly.tar.xz.drv'...
+building '/nix/store/yfci6nmm0x9n3cxnrk9x0qcvbh4zr0ld-rustfmt-nightly-x86_64-unknown-linux-gnu.tar.xz.drv'...
+building '/nix/store/kql84xxfp7y2qvr3521w6jrvxx5hpn1w-rust-std-nightly-x86_64-unknown-linux-gnu.tar.xz.drv'...
+building '/nix/store/45zmsawxll3w11if35gbm87q21f3kn5a-cargo-1.87.0-nightly-2025-02-22-x86_64-unknown-linux-gnu.drv'...
+building '/nix/store/5lzwchj1q1lc6g6x01k9jb9pc1bw6m9h-rust-src-1.87.0-nightly-2025-02-22-x86_64-unknown-linux-gnu.drv'...
+building '/nix/store/jwxlli41zpdwrid5ax1ig8k1fbbda3wm-rust-docs-1.87.0-nightly-2025-02-22-x86_64-unknown-linux-gnu.drv'...
+building '/nix/store/kxla3zdl23r342i7wanr45sjqjy99wa3-rust-std-1.87.0-nightly-2025-02-22-x86_64-unknown-linux-gnu.drv'...
+building '/nix/store/s8xhcm6i4lfapd9vybv8ch4v633vr1va-rustc-1.87.0-nightly-2025-02-22-x86_64-unknown-linux-gnu.drv'...
+building '/nix/store/ljf80fvlcdp0adms12nrvkkqxpnzq8lx-clippy-preview-1.87.0-nightly-2025-02-22-x86_64-unknown-linux-gnu.drv'...
+building '/nix/store/pzdvkr621krgfg33fvfwidjq54gglyaz-rustfmt-preview-1.87.0-nightly-2025-02-22-x86_64-unknown-linux-gnu.drv'...
+building '/nix/store/k3nr2ani0mw74fk8qji0192sh53spcsb-rust-default-1.87.0-nightly-2025-02-22.drv'...
+building '/nix/store/g68qmdxi4408rwgas1fg5jzncps2bhzw-nix-shell-env.drv'...
+   Compiling serde_core v1.0.228
+   Compiling serde v1.0.228
+   Compiling critical-section v1.2.0
+   Compiling equivalent v1.0.2
+   Compiling crossbeam-utils v0.8.21
+   Compiling scopeguard v1.2.0
+   Compiling shlex v1.3.0
+   Compiling version_check v0.9.5
+   Compiling cfg_aliases v0.2.1
+   Compiling parking v2.2.1
+   Compiling thiserror v1.0.69
+   Compiling unicode-xid v0.2.6
+   Compiling heck v0.5.0
+   Compiling atomic-waker v1.1.2
+   Compiling utf8_iter v1.0.4
+   Compiling lazy_static v1.5.0
+   Compiling fnv v1.0.7
+   Compiling libc v0.2.186
+   Compiling base64 v0.22.1
+   Compiling arrayvec v0.7.6
+   Compiling once_cell v1.21.3
+   Compiling lock_api v0.4.12
+   Compiling cc v1.2.17
+   Compiling indexmap v2.9.0
+   Compiling futures-lite v2.6.0
+   Compiling http v1.3.1
+   Compiling derive_more-impl v1.0.0
+   Compiling icu_normalizer v1.5.0
+   Compiling nix v0.30.1
+   Compiling untrusted v0.9.0
+   Compiling cpufeatures v0.2.17
+   Compiling futures-lite v1.13.0
+   Compiling httparse v1.10.1
+   Compiling generic-array v0.14.7
+   Compiling ahash v0.8.11
+   Compiling paste v1.0.15
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling tracing-core v0.1.36
+   Compiling parking_lot v0.12.3
+   Compiling thread_local v1.1.8
+   Compiling try-lock v0.2.5
+   Compiling rustls v0.23.40
+   Compiling tokio v1.50.0
+   Compiling httpdate v1.0.3
+   Compiling idna_adapter v1.2.0
+   Compiling crossbeam-epoch v0.9.18
+   Compiling concurrent-queue v2.5.0
+   Compiling tracing v0.1.44
+   Compiling toml_edit v0.22.24
+   Compiling idna v1.0.3
+   Compiling cmake v0.1.54
+   Compiling toml_edit v0.20.7
+   Compiling crossbeam-queue v0.3.12
+   Compiling crossbeam-deque v0.8.6
+   Compiling async-executor v1.13.1
+   Compiling event-listener v5.4.0
+   Compiling async-channel v1.9.0
+   Compiling crypto-common v0.1.6
+   Compiling block-buffer v0.10.4
+   Compiling http-body v1.0.1
+   Compiling crossbeam-channel v0.5.15
+   Compiling rayon-core v1.12.1
+   Compiling want v0.3.1
+   Compiling bevy_tasks v0.12.1
+   Compiling valence_protocol_macros v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling digest v0.10.7
+   Compiling event-listener-strategy v0.5.3
+   Compiling powerfmt v0.2.0
+   Compiling parking_lot_core v0.9.10
+   Compiling ring v0.17.14
+   Compiling getrandom v0.3.2
+   Compiling libz-ng-sys v1.1.22
+   Compiling openssl-sys v0.9.117
+   Compiling async-channel v2.3.1
+   Compiling tinyvec_macros v0.1.1
+   Compiling tower-service v0.3.3
+   Compiling rayon v1.10.0
+   Compiling uuid v1.16.0
+   Compiling tinyvec v1.11.0
+   Compiling deranged v0.4.0
+   Compiling base64ct v1.8.3
+   Compiling semver v1.0.28
+   Compiling precis-tools v0.1.9
+   Compiling tracing-log v0.2.0
+   Compiling rustc_version v0.4.1
+   Compiling openssl v0.10.81
+   Compiling pem-rfc7468 v0.7.0
+   Compiling sharded-slab v0.1.7
+   Compiling native-tls v0.2.14
+   Compiling http-body-util v0.1.3
+   Compiling rustversion v1.0.22
+   Compiling snafu-derive v0.8.5
+   Compiling iroh-quinn-udp v0.5.7
+   Compiling simdutf8 v0.1.5
+   Compiling der v0.7.10
+   Compiling bevy_macro_utils v0.16.1
+   Compiling flate2 v1.1.1
+   Compiling time v0.3.41
+   Compiling curve25519-dalek v4.1.3
+   Compiling bevy_macro_utils v0.12.1
+   Compiling proc-macro-crate v3.3.0
+   Compiling spin v0.10.0
+   Compiling cordyceps v0.3.4
+   Compiling tower-layer v0.3.3
+   Compiling diatomic-waker v0.2.3
+   Compiling bitflags v2.13.0
+   Compiling tracing-subscriber v0.3.23
+   Compiling precis-core v0.1.11
+   Compiling netlink-packet-utils v0.5.2
+   Compiling futures-buffered v0.2.13
+   Compiling sha2 v0.10.9
+   Compiling inout v0.1.4
+   Compiling n0-future v0.1.3
+   Compiling derive_more v1.0.0
+   Compiling rustix v1.0.3
+   Compiling bevy_reflect_derive v0.16.1
+   Compiling bevy_ecs_macros v0.16.1
+   Compiling bevy_derive v0.16.1
+   Compiling spki v0.7.3
+   Compiling data-encoding v2.11.0
+   Compiling hashbrown v0.15.2
+   Compiling glam v0.29.3
+   Compiling url v2.5.4
+   Compiling erased-serde v0.4.6
+   Compiling hashbrown v0.14.5
+   Compiling serde_json v1.0.140
+   Compiling bevy_ecs_macros v0.12.1
+   Compiling valence_ident v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling valence_nbt v0.8.0 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling bevy_platform v0.16.1
+   Compiling snafu v0.8.5
+   Compiling bevy_utils v0.16.1
+   Compiling bevy_tasks v0.16.1
+   Compiling pkcs8 v0.10.2
+   Compiling bevy_derive v0.12.1
+   Compiling signature v2.2.0
+   Compiling ctrlc v3.4.7
+   Compiling valence_text v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling ed25519 v2.2.3
+   Compiling petgraph v0.6.5
+   Compiling serde_urlencoded v0.7.1
+   Compiling netlink-packet-core v0.7.0
+   Compiling cipher v0.4.4
+   Compiling precis-profiles v0.1.13
+   Compiling unicode-normalization v0.1.25
+   Compiling ident_case v1.0.1
+   Compiling asn1-rs v0.6.2
+   Compiling num_enum_derive v0.7.3
+   Compiling tokio-util v0.7.15
+   Compiling tower v0.5.2
+   Compiling darling_core v0.20.10
+   Compiling netlink-sys v0.8.8
+   Compiling hmac v0.12.1
+   Compiling sha1 v0.10.6
+   Compiling universal-hash v0.5.1
+   Compiling slotmap v1.0.7
+   Compiling rustls-webpki v0.103.13
+   Compiling ed25519-dalek v2.2.0
+   Compiling enum-as-inner v0.6.1
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling iroh-metrics-derive v0.2.0
+   Compiling netwatch v0.5.0
+   Compiling iroh-quinn v0.13.0
+   Compiling h2 v0.4.15
+   Compiling pkarr v3.10.0
+   Compiling tagptr v0.2.0
+   Compiling opaque-debug v0.3.1
+   Compiling ntimestamp v1.0.0
+   Compiling iroh-metrics v0.34.0
+   Compiling bevy_utils v0.12.1
+   Compiling poly1305 v0.8.0
+   Compiling moka v0.12.10
+   Compiling bytecheck v0.8.1
+   Compiling hickory-proto v0.25.2
+   Compiling num_enum v0.7.3
+   Compiling bevy_ecs v0.12.1
+   Compiling hmac-sha1 v0.2.2
+   Compiling netlink-proto v0.11.5
+   Compiling tokio-native-tls v0.3.1
+   Compiling tempfile v3.19.1
+   Compiling chacha20 v0.9.1
+   Compiling salsa20 v0.10.2
+   Compiling async-compat v0.2.5
+   Compiling lmdb-master-sys v0.2.5
+   Compiling netlink-packet-route v0.23.0
+   Compiling derive_more-impl v2.1.1
+   Compiling attohttpc v0.30.1
+   Compiling lru v0.12.5
+   Compiling strum_macros v0.26.4
+   Compiling nested_enum_utils v0.2.3
+   Compiling simple-dns v0.9.3
+   Compiling libdeflate-sys v1.24.0
+   Compiling aead v0.5.2
+   Compiling iroh-relay v0.35.0
+   Compiling darling_macro v0.20.10
+   Compiling Inflector v0.11.4
+   Compiling hex v0.4.3
+   Compiling resolv-conf v0.7.6
+   Compiling sha1_smol v1.0.1
+   Compiling self_cell v1.2.2
+   Compiling rusty-fork v0.3.0
+   Compiling derive-build v0.1.1
+   Compiling darling v0.20.10
+   Compiling serdect v0.2.0
+   Compiling bevy_reflect v0.16.1
+   Compiling valence_math v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling postcard v1.1.3
+   Compiling crypto_secretbox v0.1.1
+   Compiling der-parser v9.0.0
+   Compiling rend v0.5.2
+   Compiling oid-registry v0.7.1
+   Compiling iroh-base v0.35.0
+   Compiling rustls-webpki v0.102.8
+   Compiling xattr v1.5.0
+   Compiling yasna v0.5.2
+   Compiling bincode v1.3.3
+   Compiling strum v0.26.3
+   Compiling serde_spanned v0.6.8
+   Compiling toml_datetime v0.6.8
+   Compiling pem v3.0.6
+   Compiling iroh v0.35.0
+   Compiling proptest v1.6.0
+   Compiling tar v0.4.46
+   Compiling hickory-resolver v0.25.2
+   Compiling rcgen v0.13.2
+   Compiling heed-types v0.21.0
+   Compiling geometry v0.1.0 (/home/brittonr/git/mc/hyperion/crates/geometry)
+   Compiling x509-parser v0.16.0
+   Compiling crypto_box v0.9.1
+   Compiling surge-ping v0.8.4
+   Compiling tokio-rustls v0.26.2
+   Compiling iroh-quinn-proto v0.13.0
+   Compiling tokio-websockets v0.11.4
+   Compiling derive_more v2.1.1
+   Compiling hyper v1.10.1
+   Compiling enumset_derive v0.11.0
+   Compiling tokio-stream v0.1.18
+   Compiling terminal_size v0.4.2
+   Compiling backon v1.6.0
+   Compiling arc-swap v1.9.1
+   Compiling synchronoise v1.0.1
+   Compiling clap_builder v4.5.38
+   Compiling serial_test v3.2.0
+   Compiling heed v0.21.0
+   Compiling enumset v1.1.6
+   Compiling toml v0.8.20
+   Compiling libdeflater v1.24.0
+   Compiling hyper-util v0.1.20
+   Compiling bevy_app v0.12.1
+   Compiling bvh-region v0.1.0 (/home/brittonr/git/mc/hyperion/crates/bvh-region)
+   Compiling rkyv v0.8.16
+   Compiling stun-rs v0.1.11
+   Compiling clap v4.5.38
+   Compiling divan v0.1.21 (https://github.com/nvzqz/divan#bca5c967)
+   Compiling hyper-tls v0.6.0
+   Compiling hyper-rustls v0.27.5
+   Compiling igd-next v0.16.2
+   Compiling bevy_ecs v0.16.1
+   Compiling bevy_math v0.16.1
+   Compiling reqwest v0.12.15
+   Compiling portmapper v0.5.0
+   Compiling hyperion-proto v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-proto)
+   Compiling bevy_app v0.16.1
+   Compiling bevy_log v0.16.1
+   Compiling bevy_time v0.16.1
+   Compiling bevy_input v0.16.1
+   Compiling bevy_transform v0.16.1
+   Compiling bevy_diagnostic v0.16.1
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling bevy_internal v0.16.1
+   Compiling bevy v0.16.1
+   Compiling hyperion-utils v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-utils)
+   Compiling valence_server_common v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling hyperion-crafting v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-crafting)
+   Compiling hyperion-palette v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-palette)
+   Compiling hyperion-text v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-text)
+   Compiling packet-channel v0.1.0 (/home/brittonr/git/mc/hyperion/crates/packet-channel)
+   Compiling valence_registry v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling hyperion-inventory v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-inventory)
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling valence_anvil v0.1.0 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling hyperion v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion)
+   Compiling hyperion-genmap v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-genmap)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 40s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/hyperion-79ef2d42d76861e2)
+
+running 7 tests
+test simulation::blocks::loader::parse::section::tests::test_reset_tick_deltas ... ok
+test simulation::blocks::loader::parse::section::tests::test_section_set_multiple_blocks ... ok
+test simulation::blocks::loader::parse::section::tests::test_section_set_boundary_values ... ok
+test simulation::blocks::loader::parse::section::tests::test_section_set_multiple_changes ... ok
+test simulation::blocks::loader::parse::section::tests::test_section_set_new_block ... ok
+test simulation::blocks::loader::parse::section::tests::test_section_set_revert_block ... ok
+test simulation::blocks::loader::parse::section::tests::test_section_set_same_block ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 26 filtered out; finished in 0.00s
+
+     Running tests/collision.rs (/home/brittonr/.cargo-target/debug/deps/collision-d19661e569f7af86)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/entity.rs (/home/brittonr/.cargo-target/debug/deps/entity-c83b791095b8f5e0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/spatial.rs (/home/brittonr/.cargo-target/debug/deps/spatial-cf19940fc54739c1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+finished_at=2026-06-29T06:08:05Z
+exit_status=0

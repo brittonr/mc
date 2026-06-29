@@ -1,0 +1,26 @@
+command=nix run .#cairn -- gate tasks modularize-hyperion-block-loader --root .
+cwd=/home/brittonr/git/mc
+started_at=2026-06-29T06:26:12Z
+{
+  "change": "modularize-hyperion-block-loader",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4ee0f8210367a7aaa404a0e49b16a311acc8d661d88f838d77ed3c96b24a4b2c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "df29d44a788baa7fcd2e800e7508517822adf3b411b230285f2f4fd90447ec8d",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+finished_at=2026-06-29T06:26:13Z
+exit_status=0

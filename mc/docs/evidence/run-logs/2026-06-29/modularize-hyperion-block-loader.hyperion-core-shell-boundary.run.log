@@ -1,0 +1,6 @@
+command=rg forbidden shell/runtime markers in loader pure-core modules
+cwd=/home/brittonr/git/mc/hyperion
+started_at=2026-06-29T06:23:20Z
+forbidden_marker_matches=none
+finished_at=2026-06-29T06:23:20Z
+exit_status=0

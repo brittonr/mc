@@ -1,0 +1,29 @@
+command=nix run .#cairn -- sync modularize-hyperion-block-loader --root .
+cwd=/home/brittonr/git/mc
+started_at=2026-06-29T06:26:30Z
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/modularize-hyperion-block-loader/specs/valence-hyperion-integration/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/modularize-hyperion-block-loader/specs/valence-hyperion-integration/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "modularize-hyperion-block-loader",
+  "delta_specs": [
+    "./cairn/changes/modularize-hyperion-block-loader/specs/valence-hyperion-integration/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "b71058ab25f1ede40028e16181e8875c3db8db7ba3bc21a78c857a1623eaa6ce",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "b2157fc43fea3ec457db8db22c4e34cf46e47456da4ae65c83cb08a797933f9b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "b09cfedb1821632f15ae4433122aa51a66f4fdea42782e1efec70122298ddbfa"
+}
+finished_at=2026-06-29T06:26:31Z
+exit_status=0

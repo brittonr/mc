@@ -1,0 +1,52 @@
+command=nix run .#cairn -- sync modularize-hyperion-block-loader --root . --execute
+cwd=/home/brittonr/git/mc
+started_at=2026-06-29T06:26:48Z
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/modularize-hyperion-block-loader/specs/valence-hyperion-integration/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/modularize-hyperion-block-loader/specs/valence-hyperion-integration/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "modularize-hyperion-block-loader",
+  "delta_specs": [
+    "./cairn/changes/modularize-hyperion-block-loader/specs/valence-hyperion-integration/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "b71058ab25f1ede40028e16181e8875c3db8db7ba3bc21a78c857a1623eaa6ce",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "58c521e0125edea48a9014de42d413906e5cc438f91fecb2604f07ead4230585",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "65c1724747d22353a91f775080af97436a92b9ca802cf26db2e5067efba82d8b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "58c521e0125edea48a9014de42d413906e5cc438f91fecb2604f07ead4230585",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "65c1724747d22353a91f775080af97436a92b9ca802cf26db2e5067efba82d8b"
+    },
+    "kind": "sync",
+    "manifest_hash": "88c318bbfc9e2bf8180fa58963813bb594aa4ba4b55a4cc51b4a261cd08c4e01"
+  },
+  "plan_hash": "c43b4fedc65eb5e271bfa7296151a9f59110f2127a8461a1fbacf2429022b6d4",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "c5ecb95516efa41b093c983598239dd00fbf365a4c7916ff4981a0ab33805dfd"
+}
+finished_at=2026-06-29T06:26:48Z
+exit_status=0
