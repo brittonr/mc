@@ -1,0 +1,248 @@
+# split-stevenarella-player-entity validation
+cwd=/home/brittonr/git/mc
+
+## command: sh -c cd clients/stevenarella && nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo fmt --check
+/home/brittonr/git/mc/clients/stevenarella
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+command_exit_status=0
+
+## command: sh -c cd clients/stevenarella && nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test entity::player -- --nocapture
+/home/brittonr/git/mc/clients/stevenarella
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+   Compiling stevenarella v0.0.1 (/home/brittonr/git/mc/clients/stevenarella)
+warning: unreachable pattern
+   --> src/server/login.rs:190:9
+    |
+190 |         (phase, event) => LoginDecision::Fail(LoginFailure {
+    |         ^^^^^^^^^^^^^^ no value can reach this
+    |
+note: multiple earlier patterns match some of the same values
+   --> src/server/login.rs:190:9
+    |
+162 |           (_, LoginEvent::SetCompression(compression)) => {
+    |           -------------------------------------------- matches some of the same values
+...
+165 |           (LoginPhase::Initial, LoginEvent::EncryptionRequest(request)) => {
+    |           ------------------------------------------------------------- matches some of the same values
+...
+168 |           (LoginPhase::Encrypted, LoginEvent::EncryptionRequest(request)) => {
+    |           --------------------------------------------------------------- matches some of the same values
+...
+174 | /         (LoginPhase::Initial, LoginEvent::Success(outcome))
+175 | |         | (LoginPhase::Encrypted, LoginEvent::Success(outcome)) => LoginDecision::Complete(outcome),
+    | |_______________________________________________________________- matches some of the same values
+...
+190 |           (phase, event) => LoginDecision::Fail(LoginFailure {
+    |           ^^^^^^^^^^^^^^ ...and 4 other patterns collectively make this unreachable
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: enum `TraversalPlanError` is never used
+  --> src/ui/container.rs:18:17
+   |
+18 | pub(crate) enum TraversalPlanError {
+   |                 ^^^^^^^^^^^^^^^^^^
+
+warning: function `draw_order` is never used
+  --> src/ui/container.rs:22:15
+   |
+22 | pub(crate) fn draw_order(draw_indices: &[isize]) -> Vec<usize> {
+   |               ^^^^^^^^^^
+
+warning: function `clicked_index` is never used
+  --> src/ui/container.rs:35:15
+   |
+35 | pub(crate) fn clicked_index(regions: &[Region], x: f64, y: f64) -> Option<usize> {
+   |               ^^^^^^^^^^^^^
+
+warning: function `checked_draw_order` is never used
+  --> src/ui/container.rs:39:15
+   |
+39 | pub(crate) fn checked_draw_order(
+   |               ^^^^^^^^^^^^^^^^^^
+
+warning: enum `LayoutBoundsError` is never used
+  --> src/ui/layout.rs:48:17
+   |
+48 | pub(crate) enum LayoutBoundsError {
+   |                 ^^^^^^^^^^^^^^^^^
+
+warning: associated function `checked` is never used
+  --> src/ui/layout.rs:71:19
+   |
+70 | impl Region {
+   | ----------- associated function in this implementation
+71 |     pub(crate) fn checked(x: f64, y: f64, w: f64, h: f64) -> Result<Self, LayoutBoundsError> {
+   |                   ^^^^^^^
+
+warning: function `validate_region_numbers` is never used
+  --> src/ui/layout.rs:88:15
+   |
+88 | pub(crate) fn validate_region_numbers(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Unsupported` is never constructed
+  --> src/ui/textbox.rs:34:5
+   |
+32 | pub(crate) enum ClipboardPath {
+   |                 ------------- variant in this enum
+33 |     Supported,
+34 |     Unsupported,
+   |     ^^^^^^^^^^^
+   |
+   = note: `ClipboardPath` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `clamp_cursor_position` is never used
+  --> src/ui/textbox.rs:59:15
+   |
+59 | pub(crate) fn clamp_cursor_position(input: &str, requested_position: usize) -> usize {
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:76:21
+    |
+ 76 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+226 | / define_elements! {
+227 | |     Image,
+228 | |     Batch,
+229 | |     Text,
+...   |
+232 | |     TextBox,
+233 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+ 76 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 14 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (lib test) generated 3 warnings (3 duplicates)
+warning: `stevenarella` (bin "stevenarella" test) generated 3 warnings (3 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 5.00s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 23 tests
+test entity::player::collision::tests::player_collision_core_detects_overlapping_bounds ... ok
+test entity::player::collision::tests::player_collision_core_moves_negative_x_out_of_obstacle ... ok
+test entity::player::collision::tests::player_collision_core_moves_positive_x_out_of_obstacle ... ok
+test entity::player::collision::tests::player_collision_core_treats_touching_faces_as_not_colliding ... ok
+test entity::player::construction::tests::player_construction_core_describes_local_player_facts ... ok
+test entity::player::construction::tests::player_construction_core_describes_remote_player_facts ... ok
+test entity::player::construction::tests::player_empty_entity_has_no_player_components ... ok
+test entity::player::model_state::tests::player_animation_core_advances_moving_walk_cycle ... ok
+test entity::player::construction::tests::player_local_shell_attaches_existing_local_components ... ok
+test entity::player::construction::tests::player_remote_shell_attaches_remote_components_without_local_controls ... ok
+test entity::player::model_state::tests::player_animation_core_recenters_idle_walk_cycle ... ok
+test entity::player::model_state::tests::player_model_set_skin_marks_model_dirty ... ok
+test entity::player::model_state::tests::player_model_visibility_core_keeps_expected_local_parts_hidden ... ok
+test entity::player::model_state::tests::player_model_visibility_core_keeps_expected_remote_parts_visible ... ok
+test entity::player::movement::tests::player_movement_core_moves_diagonal_backward_left ... ok
+test entity::player::movement::tests::player_movement_core_moves_forward_from_yaw ... ok
+test entity::player::movement::tests::player_movement_core_rejects_non_finite_yaw ... ok
+test entity::player::movement::tests::player_movement_shell_contains_invalid_yaw_as_stationary ... ok
+test entity::player::movement::tests::player_movement_state_reports_absent_key_as_unpressed ... ok
+test entity::player::rendering::tests::player_renderer_plan_rebuilds_dirty_model ... ok
+test entity::player::rendering::tests::player_renderer_plan_renders_existing_model ... ok
+test entity::player::rendering::tests::player_renderer_plan_skips_missing_model_resource ... ok
+test entity::player::systems::tests::player_movement_system_filter_matches_no_empty_entities ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 332 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 23 tests
+test entity::player::collision::tests::player_collision_core_detects_overlapping_bounds ... ok
+test entity::player::collision::tests::player_collision_core_moves_negative_x_out_of_obstacle ... ok
+test entity::player::collision::tests::player_collision_core_moves_positive_x_out_of_obstacle ... ok
+test entity::player::collision::tests::player_collision_core_treats_touching_faces_as_not_colliding ... ok
+test entity::player::construction::tests::player_construction_core_describes_local_player_facts ... ok
+test entity::player::construction::tests::player_construction_core_describes_remote_player_facts ... ok
+test entity::player::construction::tests::player_empty_entity_has_no_player_components ... ok
+test entity::player::model_state::tests::player_animation_core_advances_moving_walk_cycle ... ok
+test entity::player::construction::tests::player_remote_shell_attaches_remote_components_without_local_controls ... ok
+test entity::player::construction::tests::player_local_shell_attaches_existing_local_components ... ok
+test entity::player::model_state::tests::player_model_set_skin_marks_model_dirty ... ok
+test entity::player::model_state::tests::player_animation_core_recenters_idle_walk_cycle ... ok
+test entity::player::model_state::tests::player_model_visibility_core_keeps_expected_local_parts_hidden ... ok
+test entity::player::model_state::tests::player_model_visibility_core_keeps_expected_remote_parts_visible ... ok
+test entity::player::movement::tests::player_movement_core_moves_diagonal_backward_left ... ok
+test entity::player::movement::tests::player_movement_core_moves_forward_from_yaw ... ok
+test entity::player::movement::tests::player_movement_core_rejects_non_finite_yaw ... ok
+test entity::player::movement::tests::player_movement_shell_contains_invalid_yaw_as_stationary ... ok
+test entity::player::movement::tests::player_movement_state_reports_absent_key_as_unpressed ... ok
+test entity::player::rendering::tests::player_renderer_plan_rebuilds_dirty_model ... ok
+test entity::player::rendering::tests::player_renderer_plan_renders_existing_model ... ok
+test entity::player::rendering::tests::player_renderer_plan_skips_missing_model_resource ... ok
+test entity::player::systems::tests::player_movement_system_filter_matches_no_empty_entities ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 332 filtered out; finished in 0.00s
+
+command_exit_status=0
+
+## command: nix run .#stevenarella -- --dry-run
+repo=/home/brittonr/git/mc/clients/stevenarella
+target_dir=/home/brittonr/git/mc/target/nix-run-stevenarella
+cd /home/brittonr/git/mc/clients/stevenarella && cargo run --
+command_exit_status=0
+
+## command: nix run .#mc-compat-smoke -- --dry-run --server-backend valence --scenario smoke
+[mc-compat] plan: build client, start Valence server, wait for protocol 758, run 1 client session plan(s) under isolated Xvfb/X11
+[mc-compat] building Stevenarella client
++ cd "/home/brittonr/git/mc/clients/stevenarella" && CARGO_TARGET_DIR="/tmp/stevenarella-target2" CMAKE_POLICY_VERSION_MINIMUM="3.5" RUSTC_WRAPPER="" "cargo" "build" "--bin" "stevenarella"
+[mc-compat] using existing Valence worktree /tmp/valence-compat-758
+[mc-compat] starting Valence 8ad9c85 example 'terrain' on 127.0.0.1:25565; log: /tmp/mc-compat-valence.log
+[mc-compat] would run Valence example from /tmp/valence-compat-758
+[mc-compat] probing status 127.0.0.1:25565 expecting protocol 758
+[mc-compat] would run Rust protocol status probe
+[mc-compat] running Stevenarella headless scenario 'smoke' isolated from host Wayland compositor
+[mc-compat] would run Stevenarella under xvfb-run
+command_exit_status=0
+exit_status=0

@@ -1,0 +1,171 @@
+# split-stevenarella-player-entity post-archive validation
+cwd=/home/brittonr/git/mc
+
+## command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 6,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 11,
+  "valid": true
+}
+command_exit_status=0
+
+## command: nix run .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/split-stevenarella-renderer-core/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-stevenarella-renderer-core",
+      "path": "./cairn/changes/split-stevenarella-renderer-core",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-stevenarella-resource-manager/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-stevenarella-resource-manager",
+      "path": "./cairn/changes/split-stevenarella-resource-manager",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-valence-anvil-snapshot-core/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-valence-anvil-snapshot-core",
+      "path": "./cairn/changes/split-valence-anvil-snapshot-core",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-valence-command-example/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-valence-command-example",
+      "path": "./cairn/changes/split-valence-command-example",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-valence-observability-core/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-valence-observability-core",
+      "path": "./cairn/changes/split-valence-observability-core",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/untangle-runner-module-imports/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "untangle-runner-module-imports",
+      "path": "./cairn/changes/untangle-runner-module-imports",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+command_exit_status=0
+
+## command: nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+command_exit_status=0
+
+## command: nix develop --no-update-lock-file /home/brittonr/git/mc -c b3sum --check docs/evidence/split-stevenarella-player-entity.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+docs/evidence/split-stevenarella-player-entity.responsibilities.md: OK
+docs/evidence/split-stevenarella-player-entity.validation.run.log: OK
+docs/evidence/split-stevenarella-player-entity.cairn-gates-ready.run.log: OK
+docs/evidence/split-stevenarella-player-entity.cairn-gates-final.run.log: OK
+command_exit_status=0
+exit_status=0

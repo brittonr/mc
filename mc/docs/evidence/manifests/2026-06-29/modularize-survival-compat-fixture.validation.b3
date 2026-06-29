@@ -25,7 +25,7 @@ da100e7039cde7a96230fad9d9f692b5b79191a05b8d059595eb1366effc27a7  docs/evidence/
 b218319e89f02e4c65e0496b06007b2b50444ab61cd35acff7e97d3668233f0c  docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.task-evidence-active.run.log
 e98933312c043d49a36b46446567b7538ab530fac190345feefa637b88b79f3a  docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.terminal-cairn-validate.run.log
 8b093ae0be0d3d7d4d81cc68017d03317da7568f0d64fc2e1fb15731943f8532  docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.valence-cargo-fmt.run.log
-7300d203b52135405f0464f78bbf5288560066e701946b1848e7c35e809b10b6  cairn/specs/mc-compatibility/spec.md
+352fc30029b0e4db6a9425dd2ee34317da93bae8ac45e3774e30c03a6a835e43  cairn/specs/mc-compatibility/spec.md
 4b4befbcb61afff08035e6b9728f248ffb929df4f73d6750789ade30b10d19bf  cairn/archive/1970-01-01-modularize-survival-compat-fixture/proposal.md
 03f5ecb3ce2ec7a906889fe1860548adff5f9353808d0f51133e8423c2e70e0e  cairn/archive/1970-01-01-modularize-survival-compat-fixture/design.md
 f2a2f52affe5bc87ab34562ea57983bb233c5fe17d87cb87e6fe91b41b7b6ac1  cairn/archive/1970-01-01-modularize-survival-compat-fixture/tasks.md

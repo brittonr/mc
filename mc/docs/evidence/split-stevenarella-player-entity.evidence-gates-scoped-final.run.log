@@ -1,0 +1,27 @@
+# split-stevenarella-player-entity scoped evidence gates final
+cwd=/home/brittonr/git/mc
+
+## command: nix develop --no-update-lock-file /home/brittonr/git/mc -c b3sum --check docs/evidence/split-stevenarella-player-entity.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+docs/evidence/split-stevenarella-player-entity.responsibilities.md: OK
+docs/evidence/split-stevenarella-player-entity.validation.run.log: OK
+docs/evidence/split-stevenarella-player-entity.cairn-gates-ready.run.log: OK
+docs/evidence/split-stevenarella-player-entity.cairn-gates-final.run.log: OK
+command_exit_status=0
+
+## command: nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 23 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 22 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 195 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server; retrying in 757 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds
+this derivation will be built:
+  /nix/store/cnxmhdxz7zr2ap7hmy9zwr7abq4idqm7-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/cnxmhdxz7zr2ap7hmy9zwr7abq4idqm7-mc-compat-cairn-task-evidence.drv'...
+command_exit_status=0
+exit_status=0

@@ -1,0 +1,52 @@
+# split-stevenarella-player-entity sync execute
+cwd=/home/brittonr/git/mc
+## command: nix run .#cairn -- sync split-stevenarella-player-entity --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/split-stevenarella-player-entity/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/split-stevenarella-player-entity/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "split-stevenarella-player-entity",
+  "delta_specs": [
+    "./cairn/changes/split-stevenarella-player-entity/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "b492e3caabcb7ccf34d84fd1facc80beec707aceef4fa498e9186b9e10789b35",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "7300d203b52135405f0464f78bbf5288560066e701946b1848e7c35e809b10b6",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "87bd4466d04ef0706b2e8a896de7ac44862c153c1c50b5ac35af536b7798f538"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "7300d203b52135405f0464f78bbf5288560066e701946b1848e7c35e809b10b6",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "87bd4466d04ef0706b2e8a896de7ac44862c153c1c50b5ac35af536b7798f538"
+    },
+    "kind": "sync",
+    "manifest_hash": "86e1e2c5982314b11bbad9f0c9a6bec4e10eb83a8a8fe5721587fa0fd8271888"
+  },
+  "plan_hash": "fc853123df6c6dde9914a0b0978aac3b9e7d07256877276ca761a60d5f5f41a6",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "daf999dc2fe6b9f1a8f922d637620903de3a4804a67dcc90fd70203747704220"
+}
+command_exit_status=0
+exit_status=0
