@@ -1,0 +1,741 @@
+### cargo-test-resources
++ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test resources -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unreachable pattern
+   --> src/server/login.rs:190:9
+    |
+190 |         (phase, event) => LoginDecision::Fail(LoginFailure {
+    |         ^^^^^^^^^^^^^^ no value can reach this
+    |
+note: multiple earlier patterns match some of the same values
+   --> src/server/login.rs:190:9
+    |
+162 |           (_, LoginEvent::SetCompression(compression)) => {
+    |           -------------------------------------------- matches some of the same values
+...
+165 |           (LoginPhase::Initial, LoginEvent::EncryptionRequest(request)) => {
+    |           ------------------------------------------------------------- matches some of the same values
+...
+168 |           (LoginPhase::Encrypted, LoginEvent::EncryptionRequest(request)) => {
+    |           --------------------------------------------------------------- matches some of the same values
+...
+174 | /         (LoginPhase::Initial, LoginEvent::Success(outcome))
+175 | |         | (LoginPhase::Encrypted, LoginEvent::Success(outcome)) => LoginDecision::Complete(outcome),
+    | |_______________________________________________________________- matches some of the same values
+...
+190 |           (phase, event) => LoginDecision::Fail(LoginFailure {
+    |           ^^^^^^^^^^^^^^ ...and 4 other patterns collectively make this unreachable
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `CameraViewFacts` is never constructed
+  --> src/render/camera.rs:34:19
+   |
+34 | pub(crate) struct CameraViewFacts {
+   |                   ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `camera_view_facts` is never used
+  --> src/render/camera.rs:65:15
+   |
+65 | pub(crate) fn camera_view_facts(camera: &Camera) -> CameraViewFacts {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `unavailable_capture_state` is never used
+  --> src/render/capture_readback.rs:30:15
+   |
+30 | pub(crate) fn unavailable_capture_state(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `ChunkRenderSummary` is never constructed
+  --> src/render/chunk_buffers.rs:49:19
+   |
+49 | pub(crate) struct ChunkRenderSummary {
+   |                   ^^^^^^^^^^^^^^^^^^
+
+warning: enum `ChunkRenderLayer` is never used
+  --> src/render/chunk_buffers.rs:55:17
+   |
+55 | pub(crate) enum ChunkRenderLayer {
+   |                 ^^^^^^^^^^^^^^^^
+
+warning: struct `ChunkDrawPlan` is never constructed
+  --> src/render/chunk_buffers.rs:61:19
+   |
+61 | pub(crate) struct ChunkDrawPlan {
+   |                   ^^^^^^^^^^^^^
+
+warning: function `plan_chunk_render_order` is never used
+  --> src/render/chunk_buffers.rs:66:15
+   |
+66 | pub(crate) fn plan_chunk_render_order(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `push_if_visible` is never used
+  --> src/render/chunk_buffers.rs:90:4
+   |
+90 | fn push_if_visible(ordered: &mut Vec<ChunkDrawPlan>, summary: ChunkRenderSummary, count: usize) {
+   |    ^^^^^^^^^^^^^^^
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: enum `TraversalPlanError` is never used
+  --> src/ui/container.rs:18:17
+   |
+18 | pub(crate) enum TraversalPlanError {
+   |                 ^^^^^^^^^^^^^^^^^^
+
+warning: function `draw_order` is never used
+  --> src/ui/container.rs:22:15
+   |
+22 | pub(crate) fn draw_order(draw_indices: &[isize]) -> Vec<usize> {
+   |               ^^^^^^^^^^
+
+warning: function `clicked_index` is never used
+  --> src/ui/container.rs:35:15
+   |
+35 | pub(crate) fn clicked_index(regions: &[Region], x: f64, y: f64) -> Option<usize> {
+   |               ^^^^^^^^^^^^^
+
+warning: function `checked_draw_order` is never used
+  --> src/ui/container.rs:39:15
+   |
+39 | pub(crate) fn checked_draw_order(
+   |               ^^^^^^^^^^^^^^^^^^
+
+warning: enum `LayoutBoundsError` is never used
+  --> src/ui/layout.rs:48:17
+   |
+48 | pub(crate) enum LayoutBoundsError {
+   |                 ^^^^^^^^^^^^^^^^^
+
+warning: associated function `checked` is never used
+  --> src/ui/layout.rs:71:19
+   |
+70 | impl Region {
+   | ----------- associated function in this implementation
+71 |     pub(crate) fn checked(x: f64, y: f64, w: f64, h: f64) -> Result<Self, LayoutBoundsError> {
+   |                   ^^^^^^^
+
+warning: function `validate_region_numbers` is never used
+  --> src/ui/layout.rs:88:15
+   |
+88 | pub(crate) fn validate_region_numbers(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Unsupported` is never constructed
+  --> src/ui/textbox.rs:34:5
+   |
+32 | pub(crate) enum ClipboardPath {
+   |                 ------------- variant in this enum
+33 |     Supported,
+34 |     Unsupported,
+   |     ^^^^^^^^^^^
+   |
+   = note: `ClipboardPath` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `clamp_cursor_position` is never used
+  --> src/ui/textbox.rs:59:15
+   |
+59 | pub(crate) fn clamp_cursor_position(input: &str, requested_position: usize) -> usize {
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:76:21
+    |
+ 76 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+226 | / define_elements! {
+227 | |     Image,
+228 | |     Batch,
+229 | |     Text,
+...   |
+232 | |     TextBox,
+233 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+ 76 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 22 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (lib test) generated 3 warnings (3 duplicates)
+warning: `stevenarella` (bin "stevenarella" test) generated 3 warnings (3 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.33s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 16 tests
+
+thread 'resources::tests::progress_updates_fail_closed_after_poison' (2172489) panicked at src/resources.rs:860:13:
+poison progress mutex
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test render::texture_manager::tests::missing_resources_use_missing_texture_fallback_decision ... ok
+test render::texture_manager::tests::decoded_resources_use_image_upload_decision ... ok
+test resources::tests::asset_object_urls_reject_short_hashes ... ok
+test resources::tests::progress_updates_record_task_progress ... ok
+test resources::tests::zero_length_progress_reports_complete_without_nan ... ok
+test resources::tests::asset_object_urls_use_https_and_hash_fanout ... ok
+test resources::tests::progress_updates_fail_closed_after_poison ... ok
+test resources::tests::resource_reference_modernizes_legacy_block_textures ... ok
+test resources::tests::resource_reference_rejects_non_minecraft_or_unknown_aliases ... ok
+test resources::tests::resource_manager_returns_none_for_missing_resource ... ok
+test resources::tests::resource_manager_opens_existing_pack_resource ... ok
+test mcp::registry::tests::registry_lists_enabled_tools_and_resources ... ok
+test mcp::tests::tools_and_resources_list_include_capture_when_configured ... ok
+test resources::tests::downloaded_asset_commit_tolerates_parallel_winner ... ok
+test resources::tests::downloaded_asset_commit_renames_temp_file ... ok
+test resources::tests::downloaded_asset_commit_rejects_missing_temp_and_destination ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 352 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 16 tests
+test render::texture_manager::tests::decoded_resources_use_image_upload_decision ... ok
+test render::texture_manager::tests::missing_resources_use_missing_texture_fallback_decision ... ok
+test resources::tests::asset_object_urls_reject_short_hashes ... ok
+
+thread 'resources::tests::progress_updates_fail_closed_after_poison' (2172506) panicked at src/resources.rs:860:13:
+poison progress mutex
+test resources::tests::zero_length_progress_reports_complete_without_nan ... ok
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test resources::tests::resource_reference_rejects_non_minecraft_or_unknown_aliases ... ok
+test resources::tests::asset_object_urls_use_https_and_hash_fanout ... ok
+test resources::tests::resource_reference_modernizes_legacy_block_textures ... ok
+test resources::tests::progress_updates_record_task_progress ... ok
+test resources::tests::resource_manager_returns_none_for_missing_resource ... ok
+test resources::tests::progress_updates_fail_closed_after_poison ... ok
+test mcp::registry::tests::registry_lists_enabled_tools_and_resources ... ok
+test resources::tests::resource_manager_opens_existing_pack_resource ... ok
+test mcp::tests::tools_and_resources_list_include_capture_when_configured ... ok
+test resources::tests::downloaded_asset_commit_renames_temp_file ... ok
+test resources::tests::downloaded_asset_commit_rejects_missing_temp_and_destination ... ok
+test resources::tests::downloaded_asset_commit_tolerates_parallel_winner ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 352 filtered out; finished in 0.00s
+
+exit_status=0
+### cargo-test-model
++ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test model::tests -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unreachable pattern
+   --> src/server/login.rs:190:9
+    |
+190 |         (phase, event) => LoginDecision::Fail(LoginFailure {
+    |         ^^^^^^^^^^^^^^ no value can reach this
+    |
+note: multiple earlier patterns match some of the same values
+   --> src/server/login.rs:190:9
+    |
+162 |           (_, LoginEvent::SetCompression(compression)) => {
+    |           -------------------------------------------- matches some of the same values
+...
+165 |           (LoginPhase::Initial, LoginEvent::EncryptionRequest(request)) => {
+    |           ------------------------------------------------------------- matches some of the same values
+...
+168 |           (LoginPhase::Encrypted, LoginEvent::EncryptionRequest(request)) => {
+    |           --------------------------------------------------------------- matches some of the same values
+...
+174 | /         (LoginPhase::Initial, LoginEvent::Success(outcome))
+175 | |         | (LoginPhase::Encrypted, LoginEvent::Success(outcome)) => LoginDecision::Complete(outcome),
+    | |_______________________________________________________________- matches some of the same values
+...
+190 |           (phase, event) => LoginDecision::Fail(LoginFailure {
+    |           ^^^^^^^^^^^^^^ ...and 4 other patterns collectively make this unreachable
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `CameraViewFacts` is never constructed
+  --> src/render/camera.rs:34:19
+   |
+34 | pub(crate) struct CameraViewFacts {
+   |                   ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `camera_view_facts` is never used
+  --> src/render/camera.rs:65:15
+   |
+65 | pub(crate) fn camera_view_facts(camera: &Camera) -> CameraViewFacts {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `unavailable_capture_state` is never used
+  --> src/render/capture_readback.rs:30:15
+   |
+30 | pub(crate) fn unavailable_capture_state(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `ChunkRenderSummary` is never constructed
+  --> src/render/chunk_buffers.rs:49:19
+   |
+49 | pub(crate) struct ChunkRenderSummary {
+   |                   ^^^^^^^^^^^^^^^^^^
+
+warning: enum `ChunkRenderLayer` is never used
+  --> src/render/chunk_buffers.rs:55:17
+   |
+55 | pub(crate) enum ChunkRenderLayer {
+   |                 ^^^^^^^^^^^^^^^^
+
+warning: struct `ChunkDrawPlan` is never constructed
+  --> src/render/chunk_buffers.rs:61:19
+   |
+61 | pub(crate) struct ChunkDrawPlan {
+   |                   ^^^^^^^^^^^^^
+
+warning: function `plan_chunk_render_order` is never used
+  --> src/render/chunk_buffers.rs:66:15
+   |
+66 | pub(crate) fn plan_chunk_render_order(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `push_if_visible` is never used
+  --> src/render/chunk_buffers.rs:90:4
+   |
+90 | fn push_if_visible(ordered: &mut Vec<ChunkDrawPlan>, summary: ChunkRenderSummary, count: usize) {
+   |    ^^^^^^^^^^^^^^^
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: enum `TraversalPlanError` is never used
+  --> src/ui/container.rs:18:17
+   |
+18 | pub(crate) enum TraversalPlanError {
+   |                 ^^^^^^^^^^^^^^^^^^
+
+warning: function `draw_order` is never used
+  --> src/ui/container.rs:22:15
+   |
+22 | pub(crate) fn draw_order(draw_indices: &[isize]) -> Vec<usize> {
+   |               ^^^^^^^^^^
+
+warning: function `clicked_index` is never used
+  --> src/ui/container.rs:35:15
+   |
+35 | pub(crate) fn clicked_index(regions: &[Region], x: f64, y: f64) -> Option<usize> {
+   |               ^^^^^^^^^^^^^
+
+warning: function `checked_draw_order` is never used
+  --> src/ui/container.rs:39:15
+   |
+39 | pub(crate) fn checked_draw_order(
+   |               ^^^^^^^^^^^^^^^^^^
+
+warning: enum `LayoutBoundsError` is never used
+  --> src/ui/layout.rs:48:17
+   |
+48 | pub(crate) enum LayoutBoundsError {
+   |                 ^^^^^^^^^^^^^^^^^
+
+warning: associated function `checked` is never used
+  --> src/ui/layout.rs:71:19
+   |
+70 | impl Region {
+   | ----------- associated function in this implementation
+71 |     pub(crate) fn checked(x: f64, y: f64, w: f64, h: f64) -> Result<Self, LayoutBoundsError> {
+   |                   ^^^^^^^
+
+warning: function `validate_region_numbers` is never used
+  --> src/ui/layout.rs:88:15
+   |
+88 | pub(crate) fn validate_region_numbers(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Unsupported` is never constructed
+  --> src/ui/textbox.rs:34:5
+   |
+32 | pub(crate) enum ClipboardPath {
+   |                 ------------- variant in this enum
+33 |     Supported,
+34 |     Unsupported,
+   |     ^^^^^^^^^^^
+   |
+   = note: `ClipboardPath` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `clamp_cursor_position` is never used
+  --> src/ui/textbox.rs:59:15
+   |
+59 | pub(crate) fn clamp_cursor_position(input: &str, requested_position: usize) -> usize {
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:76:21
+    |
+ 76 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+226 | / define_elements! {
+227 | |     Image,
+228 | |     Batch,
+229 | |     Text,
+...   |
+232 | |     TextBox,
+233 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+ 76 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 22 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (lib test) generated 3 warnings (3 duplicates)
+warning: `stevenarella` (bin "stevenarella" test) generated 3 warnings (3 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.14s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 26 tests
+test model::tests::average_rgb_averages_samples ... ok
+test model::tests::average_packed_light_returns_zero_without_samples ... ok
+test model::tests::average_packed_light_blends_samples ... ok
+test model::tests::average_rgb_returns_black_for_no_samples ... ok
+test model::tests::element_vertex_coord_picks_low_or_high_bound ... ok
+test model::tests::block_state_model_resource_rejects_unsafe_references ... ok
+test model::tests::eval_multipart_rules_matches_simple_rules ... ok
+test model::tests::eval_multipart_rules_handles_or_groups ... ok
+test model::tests::is_absolute_model_location_detects_known_prefixes ... ok
+test model::tests::model_references_accept_namespaced_modern_paths ... ok
+test model::tests::model_file_path_wraps_with_models_prefix_and_json_suffix ... ok
+test model::tests::model_references_keep_legacy_blockstate_model_names ... ok
+test model::tests::pack_light_value_scales_single_sample ... ok
+test model::tests::model_references_reject_empty_plugin_or_location ... ok
+test model::tests::parent_model_resource_preserves_absolute_and_builtin_paths ... ok
+test model::tests::model_references_modernize_renamed_legacy_block_names ... ok
+test model::tests::resolve_builtin_type_defaults_unknown_builtins_to_false ... ok
+test model::tests::resolve_builtin_type_recognizes_known_builtins ... ok
+test model::tests::rotate_direction_advances_face_cycle ... ok
+test model::tests::rotate_direction_passes_invalid_through_unchanged ... ok
+test model::tests::rotate_face_uv_leaves_invalid_rotations_unchanged ... ok
+test model::tests::rotate_face_uv_transforms_known_rotations ... ok
+test model::tests::select_uv_offset_chooses_low_or_high ... ok
+test model::tests::should_load_parent_model_skips_empty_and_builtin_parents ... ok
+test model::tests::state_model_selects_named_variant ... ok
+test model::tests::uses_multipart_detects_multipart_state_models ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 342 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 26 tests
+test model::tests::average_packed_light_blends_samples ... ok
+test model::tests::average_packed_light_returns_zero_without_samples ... ok
+test model::tests::average_rgb_averages_samples ... ok
+test model::tests::average_rgb_returns_black_for_no_samples ... ok
+test model::tests::element_vertex_coord_picks_low_or_high_bound ... ok
+test model::tests::block_state_model_resource_rejects_unsafe_references ... ok
+test model::tests::eval_multipart_rules_handles_or_groups ... ok
+test model::tests::eval_multipart_rules_matches_simple_rules ... ok
+test model::tests::is_absolute_model_location_detects_known_prefixes ... ok
+test model::tests::model_file_path_wraps_with_models_prefix_and_json_suffix ... ok
+test model::tests::model_references_accept_namespaced_modern_paths ... ok
+test model::tests::model_references_reject_empty_plugin_or_location ... ok
+test model::tests::model_references_keep_legacy_blockstate_model_names ... ok
+test model::tests::model_references_modernize_renamed_legacy_block_names ... ok
+test model::tests::pack_light_value_scales_single_sample ... ok
+test model::tests::parent_model_resource_preserves_absolute_and_builtin_paths ... ok
+test model::tests::resolve_builtin_type_defaults_unknown_builtins_to_false ... ok
+test model::tests::resolve_builtin_type_recognizes_known_builtins ... ok
+test model::tests::rotate_direction_advances_face_cycle ... ok
+test model::tests::rotate_direction_passes_invalid_through_unchanged ... ok
+test model::tests::rotate_face_uv_leaves_invalid_rotations_unchanged ... ok
+test model::tests::rotate_face_uv_transforms_known_rotations ... ok
+test model::tests::select_uv_offset_chooses_low_or_high ... ok
+test model::tests::should_load_parent_model_skips_empty_and_builtin_parents ... ok
+test model::tests::uses_multipart_detects_multipart_state_models ... ok
+test model::tests::state_model_selects_named_variant ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 342 filtered out; finished in 0.00s
+
+exit_status=0
+### cargo-test-render-texture-manager
++ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test render::texture_manager::tests -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unreachable pattern
+   --> src/server/login.rs:190:9
+    |
+190 |         (phase, event) => LoginDecision::Fail(LoginFailure {
+    |         ^^^^^^^^^^^^^^ no value can reach this
+    |
+note: multiple earlier patterns match some of the same values
+   --> src/server/login.rs:190:9
+    |
+162 |           (_, LoginEvent::SetCompression(compression)) => {
+    |           -------------------------------------------- matches some of the same values
+...
+165 |           (LoginPhase::Initial, LoginEvent::EncryptionRequest(request)) => {
+    |           ------------------------------------------------------------- matches some of the same values
+...
+168 |           (LoginPhase::Encrypted, LoginEvent::EncryptionRequest(request)) => {
+    |           --------------------------------------------------------------- matches some of the same values
+...
+174 | /         (LoginPhase::Initial, LoginEvent::Success(outcome))
+175 | |         | (LoginPhase::Encrypted, LoginEvent::Success(outcome)) => LoginDecision::Complete(outcome),
+    | |_______________________________________________________________- matches some of the same values
+...
+190 |           (phase, event) => LoginDecision::Fail(LoginFailure {
+    |           ^^^^^^^^^^^^^^ ...and 4 other patterns collectively make this unreachable
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `CameraViewFacts` is never constructed
+  --> src/render/camera.rs:34:19
+   |
+34 | pub(crate) struct CameraViewFacts {
+   |                   ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `camera_view_facts` is never used
+  --> src/render/camera.rs:65:15
+   |
+65 | pub(crate) fn camera_view_facts(camera: &Camera) -> CameraViewFacts {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `unavailable_capture_state` is never used
+  --> src/render/capture_readback.rs:30:15
+   |
+30 | pub(crate) fn unavailable_capture_state(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `ChunkRenderSummary` is never constructed
+  --> src/render/chunk_buffers.rs:49:19
+   |
+49 | pub(crate) struct ChunkRenderSummary {
+   |                   ^^^^^^^^^^^^^^^^^^
+
+warning: enum `ChunkRenderLayer` is never used
+  --> src/render/chunk_buffers.rs:55:17
+   |
+55 | pub(crate) enum ChunkRenderLayer {
+   |                 ^^^^^^^^^^^^^^^^
+
+warning: struct `ChunkDrawPlan` is never constructed
+  --> src/render/chunk_buffers.rs:61:19
+   |
+61 | pub(crate) struct ChunkDrawPlan {
+   |                   ^^^^^^^^^^^^^
+
+warning: function `plan_chunk_render_order` is never used
+  --> src/render/chunk_buffers.rs:66:15
+   |
+66 | pub(crate) fn plan_chunk_render_order(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `push_if_visible` is never used
+  --> src/render/chunk_buffers.rs:90:4
+   |
+90 | fn push_if_visible(ordered: &mut Vec<ChunkDrawPlan>, summary: ChunkRenderSummary, count: usize) {
+   |    ^^^^^^^^^^^^^^^
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: enum `TraversalPlanError` is never used
+  --> src/ui/container.rs:18:17
+   |
+18 | pub(crate) enum TraversalPlanError {
+   |                 ^^^^^^^^^^^^^^^^^^
+
+warning: function `draw_order` is never used
+  --> src/ui/container.rs:22:15
+   |
+22 | pub(crate) fn draw_order(draw_indices: &[isize]) -> Vec<usize> {
+   |               ^^^^^^^^^^
+
+warning: function `clicked_index` is never used
+  --> src/ui/container.rs:35:15
+   |
+35 | pub(crate) fn clicked_index(regions: &[Region], x: f64, y: f64) -> Option<usize> {
+   |               ^^^^^^^^^^^^^
+
+warning: function `checked_draw_order` is never used
+  --> src/ui/container.rs:39:15
+   |
+39 | pub(crate) fn checked_draw_order(
+   |               ^^^^^^^^^^^^^^^^^^
+
+warning: enum `LayoutBoundsError` is never used
+  --> src/ui/layout.rs:48:17
+   |
+48 | pub(crate) enum LayoutBoundsError {
+   |                 ^^^^^^^^^^^^^^^^^
+
+warning: associated function `checked` is never used
+  --> src/ui/layout.rs:71:19
+   |
+70 | impl Region {
+   | ----------- associated function in this implementation
+71 |     pub(crate) fn checked(x: f64, y: f64, w: f64, h: f64) -> Result<Self, LayoutBoundsError> {
+   |                   ^^^^^^^
+
+warning: function `validate_region_numbers` is never used
+  --> src/ui/layout.rs:88:15
+   |
+88 | pub(crate) fn validate_region_numbers(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Unsupported` is never constructed
+  --> src/ui/textbox.rs:34:5
+   |
+32 | pub(crate) enum ClipboardPath {
+   |                 ------------- variant in this enum
+33 |     Supported,
+34 |     Unsupported,
+   |     ^^^^^^^^^^^
+   |
+   = note: `ClipboardPath` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `clamp_cursor_position` is never used
+  --> src/ui/textbox.rs:59:15
+   |
+59 | pub(crate) fn clamp_cursor_position(input: &str, requested_position: usize) -> usize {
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:76:21
+    |
+ 76 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+226 | / define_elements! {
+227 | |     Image,
+228 | |     Batch,
+229 | |     Text,
+...   |
+232 | |     TextBox,
+233 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+ 76 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 22 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (lib test) generated 3 warnings (3 duplicates)
+warning: `stevenarella` (bin "stevenarella" test) generated 3 warnings (3 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.13s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 2 tests
+test render::texture_manager::tests::missing_resources_use_missing_texture_fallback_decision ... ok
+test render::texture_manager::tests::decoded_resources_use_image_upload_decision ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 366 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 2 tests
+test render::texture_manager::tests::missing_resources_use_missing_texture_fallback_decision ... ok
+test render::texture_manager::tests::decoded_resources_use_image_upload_decision ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 366 filtered out; finished in 0.00s
+
+exit_status=0

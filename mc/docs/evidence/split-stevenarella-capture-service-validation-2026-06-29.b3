@@ -32,7 +32,7 @@ b18890ed224f084be72a06ea9b847daf1a34eaa985c5413c75472600b32f74c7  docs/evidence/
 c5b41a13b0b2d79db27ff8b268ba64d4ec120565d1006e4b6f92e6d7bb8c5e13  docs/evidence/run-logs/2026-06-29/split-stevenarella-capture-service.preflight-validate.run.log
 7659dfa75cc7cf9506b550c0b30a8c141eb571dc0f4daa09677c0a37845aafe5  docs/evidence/run-logs/2026-06-29/split-stevenarella-capture-service.sync-dry-run.run.log
 55517ff75f24e85863796c7653c63f1c32a04d529974fd404ba6a689207e4a17  docs/evidence/run-logs/2026-06-29/split-stevenarella-capture-service.sync-execute.run.log
-9ddc2c88ede303ec23b0276129a6b111a42331b05399680291f37145881ea880  cairn/specs/mc-compatibility/spec.md
+54e47e80b949cf215b35a565155238b838c0a2605840e76d1f6a6551bbc4e07e  cairn/specs/mc-compatibility/spec.md
 74ed9c38a78cb56633fcef71e8bffb19350c10531022145ea929efbfb2d7b0d0  cairn/archive/2026-06-29-split-stevenarella-capture-service/proposal.md
 1dcd8b8940d424c10bfba9be90ef444e7fe681c5731d881ea754da0e5e927e27  cairn/archive/2026-06-29-split-stevenarella-capture-service/design.md
 6e076c7d37b9e1f6e694bb68a1e6f9c4dbefdd6f31d2a67b70f57bc7b3a62884  cairn/archive/2026-06-29-split-stevenarella-capture-service/tasks.md

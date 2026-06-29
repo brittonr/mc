@@ -1,0 +1,110 @@
+### validate
++ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 4,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+exit_status=0
+### change-list
++ nix run .#cairn -- change list --root .
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/split-valence-anvil-snapshot-core/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-valence-anvil-snapshot-core",
+      "path": "./cairn/changes/split-valence-anvil-snapshot-core",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-valence-command-example/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-valence-command-example",
+      "path": "./cairn/changes/split-valence-command-example",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/split-valence-observability-core/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "split-valence-observability-core",
+      "path": "./cairn/changes/split-valence-observability-core",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/untangle-runner-module-imports/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "untangle-runner-module-imports",
+      "path": "./cairn/changes/untangle-runner-module-imports",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+exit_status=0

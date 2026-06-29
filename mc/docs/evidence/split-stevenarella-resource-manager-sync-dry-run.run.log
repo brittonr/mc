@@ -1,0 +1,27 @@
+### sync-dry-run
++ nix run .#cairn -- sync split-stevenarella-resource-manager --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/split-stevenarella-resource-manager/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/split-stevenarella-resource-manager/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "split-stevenarella-resource-manager",
+  "delta_specs": [
+    "./cairn/changes/split-stevenarella-resource-manager/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "d1da47e0f07f811d07207842fc3c439b110050489240c80ad58752f3ce35aede",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "ac7e97faf8d3d39617637a9767a7b79f35f05b0597b5ff65d685fa608085a48b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "7ead384342b2c2909663d7fe817fc369683b09ac26dcf518512038b40bb8b786"
+}
+exit_status=0

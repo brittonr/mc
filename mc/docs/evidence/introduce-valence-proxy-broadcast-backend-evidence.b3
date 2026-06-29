@@ -23,4 +23,4 @@ a245ffbb1bbba69c277ce8768743ef107675c6e0acd9735d7e637ef74b5cdc59  cairn/archive/
 a28f22ab71b0a4a1f8c893c83a2fee95201c8cf29bfddb63446c6abed365e7af  cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/design.md
 e10c253bcdf7b6dc501f8cf4d090e167aaa02def8d4679477cf38a085bd07bc7  cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/tasks.md
 02bf56bf6a32ee42882f1311dda09a0566cc678f53318f468487726bfbe5cea6  cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/specs/valence-hyperion-integration/spec.md
-3ad50bbf7f0f8dea53dbe4afe7b278176fc9f6ef78747c8a363b6262b782a3ac  servers/valence/crates/valence_network/src/proxy_broadcast.rs
+6042f0ca7c0b0d6f094eb1776cfd5d1fdf4376d7f341abc69effad08190640ae  servers/valence/crates/valence_network/src/proxy_broadcast.rs

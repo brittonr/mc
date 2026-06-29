@@ -1,7 +1,7 @@
 c85b0aceb645cd9f8625ae3169ea7fdfba372ca726ebf761595914c981f5b6d7  .gitignore
 12d2713905a6fe36f5ca21537c2e72252df9f5903cc3197392b00a400f1f6349  servers/valence/crates/valence_network/README.md
 be7d2a659cf5a062bcbd712409d0fcac70a802d4c82e215965d8f519e4b05742  servers/valence/crates/valence_network/src/lib.rs
-637bd52e767612caf9513b7bd84497115982ddbef34ce19bea807669404738a6  servers/valence/crates/valence_network/src/profile_cache.rs
+9c3f0df6a1e8a8ea96f0684afc033dbbd24c8a970759d75f946bd7be99795c0f  servers/valence/crates/valence_network/src/profile_cache.rs
 a853f7257f24e32d4ada82e5690cb708f62e2a60e7dc54edf9c8c40415654048  cairn/specs/valence-hyperion-integration/spec.md
 5bb0aa0a725097ae6cb9839064472172dd11b40ed022a27278a03bb4c3488b95  cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/proposal.md
 f6a9da807b3d7cb4d299b6a95cc4aa7c047018e9dff10b2c82f796cd59eb3fff  cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/design.md

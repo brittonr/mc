@@ -1,0 +1,13 @@
+### post-sync-validate
++ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 5,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 10,
+  "valid": true
+}
+exit_status=0
