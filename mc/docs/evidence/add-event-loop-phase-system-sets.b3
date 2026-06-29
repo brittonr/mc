@@ -21,4 +21,4 @@ ba2ef1f662ce659916b6e4b3c1a7f367cd51b750bd2a89b9141ead09933fb222  docs/evidence/
 0fda5eb1341cfb779041518381470cbc898e0988a8aabaacd200f199207a6cac  cairn/archive/2026-06-25-add-event-loop-phase-system-sets/design.md
 58c4e4fd1d621e05f14a9948503d1ac4b1d7e934171eb4afe9d89f93625798d9  cairn/archive/2026-06-25-add-event-loop-phase-system-sets/tasks.md
 deffe5e785b8335da8f00790399734fde4b036504518e16626b8f8d024a6dda3  cairn/archive/2026-06-25-add-event-loop-phase-system-sets/specs/valence-bevy-ecs/spec.md
-a8e8b9061778dfda13e42add0604c0bdb82508337ce6f83b41384b23bf8dce62  cairn/specs/valence-bevy-ecs/spec.md
+eaf499dee7562c0f445f93d39bfa03f2266d88fab5680acb2f88269ab928a908  cairn/specs/valence-bevy-ecs/spec.md

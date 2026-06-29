@@ -1,0 +1,27 @@
+command: nix run .#cairn -- gate proposal extract-valence-packet-compose-core --root .
+cwd=/home/brittonr/git/mc
+started_at=2026-06-28T23:33:31-04:00
+{
+  "change": "extract-valence-packet-compose-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "08bcf666f1289489a9ba185951a385ffd41f55e4f193729c3811c95cae04a684",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "2d6ed5e26af9e76040c10f2110d471e26a5be0b071afd1707c8a989344934865",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+finished_at=2026-06-28T23:33:31-04:00
+exit_status=0

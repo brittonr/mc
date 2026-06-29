@@ -1,0 +1,18 @@
+command=rg -n valence_bevy_ecs.packet_compose cairn/specs/valence-bevy-ecs/spec.md
+cwd=/home/brittonr/git/mc
+started_at=2026-06-28T23:35:55-04:00
+243:r[valence_bevy_ecs.packet_compose.core] Valence packet composition SHOULD expose pure cores for packet field selection, ordering facts, packet family plans, and shared packet-plan helpers.
+247:r[valence_bevy_ecs.packet_compose.core.testable]
+254:r[valence_bevy_ecs.packet_compose.shell_boundary] Packet-compose extraction MUST keep client access, layer access, packet writes, Bevy systems, and logging outside pure packet-compose cores.
+258:r[valence_bevy_ecs.packet_compose.shell_boundary.effects]
+265:r[valence_bevy_ecs.packet_compose.parity] Packet-compose extraction MUST preserve packet bytes and fields, public APIs, ordering behavior, protocol assumptions, and evidence non-claims.
+269:r[valence_bevy_ecs.packet_compose.parity.stable]
+276:r[valence_bevy_ecs.packet_compose.positive_tests] The change MUST include positive tests for representative packet family plans, field selection, ordering, defaults, and protocol-specific assumptions.
+280:r[valence_bevy_ecs.packet_compose.positive_tests.coverage]
+287:r[valence_bevy_ecs.packet_compose.negative_tests] The change MUST include negative tests for missing state, invalid entity or layer facts, unsupported packet variants, malformed inputs, and ordering violations.
+291:r[valence_bevy_ecs.packet_compose.negative_tests.fail_closed]
+298:r[valence_bevy_ecs.packet_compose.validation] The change MUST record focused packet compose/server tests, affected checks, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+302:r[valence_bevy_ecs.packet_compose.validation.logs]
+
+finished_at=2026-06-28T23:35:55-04:00
+exit_status=0
