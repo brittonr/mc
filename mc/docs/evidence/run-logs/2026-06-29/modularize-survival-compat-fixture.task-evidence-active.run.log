@@ -1,0 +1,2 @@
+command=nix command=build command=.#checks.x86_64-linux.mc-compat-cairn-task-evidence command=--no-link command=-L
+exit_status=0

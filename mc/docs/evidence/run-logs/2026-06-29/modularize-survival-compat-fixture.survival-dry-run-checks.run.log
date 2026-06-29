@@ -1,0 +1,9 @@
+command=survival dry-run flake checks: mc-compat-historical-scenario-dry-runs mc-compat-valence-survival-break-place-pickup-dry-run mc-compat-valence-survival-crafting-table-dry-run mc-compat-valence-survival-crafting-recipe-breadth-dry-run mc-compat-valence-survival-furnace-persistence-dry-run mc-compat-valence-survival-furnace-smelting-breadth-dry-run mc-compat-valence-survival-hunger-health-cycle-dry-run
+running mc-compat-historical-scenario-dry-runs
+running mc-compat-valence-survival-break-place-pickup-dry-run
+running mc-compat-valence-survival-crafting-table-dry-run
+running mc-compat-valence-survival-crafting-recipe-breadth-dry-run
+running mc-compat-valence-survival-furnace-persistence-dry-run
+running mc-compat-valence-survival-furnace-smelting-breadth-dry-run
+running mc-compat-valence-survival-hunger-health-cycle-dry-run
+exit_status=0

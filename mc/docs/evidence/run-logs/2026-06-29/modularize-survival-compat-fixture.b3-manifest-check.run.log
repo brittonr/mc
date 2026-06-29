@@ -1,0 +1,31 @@
+command=nix command=develop command=--no-update-lock-file command=. command=-c command=bash command=-lc command=b3sum\ --check\ docs/evidence/manifests/2026-06-29/modularize-survival-compat-fixture.validation.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+docs/evidence/oracles/2026-06-29/modularize-survival-compat-fixture-responsibility-map.md: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.preflight-gate-proposal.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.preflight-gate-design.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.preflight-gate-tasks.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.preflight-validate.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.baseline-valence-survival-example-test.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.valence-cargo-fmt.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.post-valence-survival-example-test.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.survival-dry-run-checks.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.task-evidence-active.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.closeout-gate-proposal.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.closeout-gate-design.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.closeout-gate-tasks.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.closeout-validate.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.sync-execute.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.post-sync-validate.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.archive-dry-run.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.archive-execute.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.post-archive-validate.run.log: OK
+docs/evidence/run-logs/2026-06-29/modularize-survival-compat-fixture.post-archive-change-list.run.log: OK
+cairn/specs/mc-compatibility/spec.md: OK
+cairn/archive/1970-01-01-modularize-survival-compat-fixture/proposal.md: OK
+cairn/archive/1970-01-01-modularize-survival-compat-fixture/design.md: OK
+cairn/archive/1970-01-01-modularize-survival-compat-fixture/tasks.md: OK
+cairn/archive/1970-01-01-modularize-survival-compat-fixture/specs/mc-compatibility/spec.md: OK
+exit_status=0

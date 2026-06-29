@@ -470,11 +470,11 @@ fn parse_survival_runtime_config(inputs: &SurvivalRuntimeConfigInputs) -> Surviv
 }
 
 fn parse_survival_enabled_flag(value: Option<&str>) -> bool {
-    matches!(value, Some(SURVIVAL_ENV_FLAG_ENABLED_VALUE))
+    survival_core::enabled_flag(value, SURVIVAL_ENV_FLAG_ENABLED_VALUE)
 }
 
 fn parse_survival_post_restart_phase(value: Option<&str>) -> bool {
-    matches!(value, Some(SURVIVAL_BLOCK_ENTITY_POST_RESTART_PHASE))
+    survival_core::post_restart_phase(value, SURVIVAL_BLOCK_ENTITY_POST_RESTART_PHASE)
 }
 
 fn survival_marker_path(
@@ -483,10 +483,7 @@ fn survival_marker_path(
     default_dir_name: &str,
     marker_file: &str,
 ) -> PathBuf {
-    configured_dir
-        .map(PathBuf::from)
-        .unwrap_or_else(|| temp_dir.join(default_dir_name))
-        .join(marker_file)
+    survival_core::marker_path(configured_dir, temp_dir, default_dir_name, marker_file)
 }
 
 #[cfg(test)]
@@ -501,17 +498,27 @@ enum SurvivalRuntimeConfigIssue {
 fn survival_runtime_config_issues(
     config: &SurvivalRuntimeConfig,
 ) -> Vec<SurvivalRuntimeConfigIssue> {
-    let mut issues = Vec::new();
-    if config.fixtures.hunger_food && config.fixtures.hunger_health {
-        issues.push(SurvivalRuntimeConfigIssue::ConflictingHungerFixtures);
-    }
-    if config.fixtures.block_entity_post_restart && !config.fixtures.block_entity {
-        issues.push(SurvivalRuntimeConfigIssue::StaleBlockEntityPhase);
-    }
-    if config.fixtures.world_multichunk_post_restart && !config.fixtures.world_multichunk {
-        issues.push(SurvivalRuntimeConfigIssue::StaleWorldMultichunkPhase);
-    }
-    issues
+    survival_core::runtime_config_issues(survival_core::RuntimeFixtureFlags {
+        hunger_food: config.fixtures.hunger_food,
+        hunger_health: config.fixtures.hunger_health,
+        block_entity: config.fixtures.block_entity,
+        block_entity_post_restart: config.fixtures.block_entity_post_restart,
+        world_multichunk: config.fixtures.world_multichunk,
+        world_multichunk_post_restart: config.fixtures.world_multichunk_post_restart,
+    })
+    .into_iter()
+    .map(|issue| match issue {
+        survival_core::RuntimeConfigIssue::ConflictingHungerFixtures => {
+            SurvivalRuntimeConfigIssue::ConflictingHungerFixtures
+        }
+        survival_core::RuntimeConfigIssue::StaleBlockEntityPhase => {
+            SurvivalRuntimeConfigIssue::StaleBlockEntityPhase
+        }
+        survival_core::RuntimeConfigIssue::StaleWorldMultichunkPhase => {
+            SurvivalRuntimeConfigIssue::StaleWorldMultichunkPhase
+        }
+    })
+    .collect()
 }
 
 #[derive(Resource)]
@@ -1708,14 +1715,23 @@ where
 fn plan_survival_mob_drop_pickup(
     input: SurvivalMobDropPickupInput,
 ) -> SurvivalMobDropPickupDecision {
-    if input.pickup_logged {
-        return SurvivalMobDropPickupDecision::AlreadyComplete;
+    match survival_core::plan_mob_drop_pickup(
+        survival_core::MobDropPickupInput {
+            pickup_logged: input.pickup_logged,
+            ticks_since_drop: input.ticks_since_drop,
+        },
+        SURVIVAL_MOB_DROP_PICKUP_DELAY_TICKS,
+    ) {
+        survival_core::MobDropPickupDecision::AlreadyComplete => {
+            SurvivalMobDropPickupDecision::AlreadyComplete
+        }
+        survival_core::MobDropPickupDecision::Pending { ticks_since_drop } => {
+            SurvivalMobDropPickupDecision::Pending { ticks_since_drop }
+        }
+        survival_core::MobDropPickupDecision::Ready { ticks_since_drop } => {
+            SurvivalMobDropPickupDecision::Ready { ticks_since_drop }
+        }
     }
-    let ticks_since_drop = input.ticks_since_drop.saturating_add(1);
-    if ticks_since_drop < SURVIVAL_MOB_DROP_PICKUP_DELAY_TICKS {
-        return SurvivalMobDropPickupDecision::Pending { ticks_since_drop };
-    }
-    SurvivalMobDropPickupDecision::Ready { ticks_since_drop }
 }
 
 fn handle_survival_crafting_open(
@@ -3421,132 +3437,40 @@ fn log_survival_breadth_synthetic_fixtures(config: &SurvivalRuntimeConfig, usern
 }
 
 fn log_survival_mob_ai_loot_breadth(username: &str) {
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_mob_ai_loot_spawn username={} mob=Zombie position=16.5,65.0,4.5",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_mob_ai_loot_ai_checkpoint username={} mob=Zombie checkpoint=approach_player target=compatbot",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_mob_ai_loot_attack username={} mob=Zombie kill_method=player_attack",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_mob_ai_loot_death username={} mob=Zombie",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_mob_ai_loot_drop_spawn username={} item=RottenFlesh count=1",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_mob_ai_loot_pickup username={} item=RottenFlesh count=1",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_mob_ai_loot_inventory username={} slot=36 item=RottenFlesh count=1",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_mob_ai_loot_state username={} mob=Zombie ai_checkpoint=approach_player kill_method=player_attack drop=RottenFlesh count=1 pickup=observed inventory_increment=1 extra_mobs=false",
-        username
-    ));
+    for milestone in survival_core::breadth::mob_ai_loot_milestones(username) {
+        log_milestone(milestone);
+    }
 }
 
 fn log_survival_redstone_circuit_breadth(username: &str) {
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_redstone_circuit_initial username={} circuit=lever_lamp_repeater powered=false tick=0",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_redstone_circuit_input username={} control=Lever position=20,64,0 tick=2 powered_after=true",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_redstone_circuit_powered_on username={} output=RedstoneLamp repeater=Repeater tick=2 powered=true",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_redstone_circuit_powered_off username={} output=RedstoneLamp repeater=Repeater tick=4 powered=false",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_redstone_circuit_state username={} circuit=lever_lamp_repeater initial=false after_input=true after_return=false tick_sequence=0:false,2:true,4:false unintended_outputs=false",
-        username
-    ));
+    for milestone in survival_core::breadth::redstone_circuit_milestones(username) {
+        log_milestone(milestone);
+    }
 }
 
 fn log_survival_world_multichunk_breadth(config: &SurvivalRuntimeConfig, username: &str) {
-    if survival_world_multichunk_post_restart_phase(config) {
-        log_milestone(format!(
-            "MC-COMPAT-MILESTONE survival_world_multichunk_post_restart_observe username={} primary=present secondary=present auxiliary_marker_only=false",
-            username
-        ));
-        log_milestone(format!(
-            "MC-COMPAT-MILESTONE survival_world_multichunk_state username={} chunks=0,0;2,0 primary=present secondary=present controlled_reload=true post_observed=true auxiliary_marker_only=false dirty_reuse=false",
-            username
-        ));
-        return;
+    let post_restart = survival_world_multichunk_post_restart_phase(config);
+    for milestone in survival_core::breadth::world_multichunk_milestones(username, post_restart) {
+        log_milestone(milestone);
     }
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_world_multichunk_mutation username={} chunks=0,0;2,0 primary=0,64,0:Dirt secondary=32,64,0:OakPlanks persisted_before=false persisted_after=true",
-        username
-    ));
 }
 
 fn log_survival_container_block_entity_breadth(username: &str) {
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_container_block_entity_open username={} window=1 kind=Barrel position=34,64,0",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_container_block_entity_transfer username={} window=1 slot=0 item=Dirt count=1",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_container_block_entity_payload username={} summary=slot0:Dirt:1",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_container_block_entity_metadata username={} summary=custom_name:MC Compat Barrel",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_container_block_entity_state username={} kind=Barrel position=34,64,0 transfer=Dirt:1 payload=slot0:Dirt:1 metadata=custom_name:MC Compat Barrel reopen=payload_present arbitrary_nbt=false",
-        username
-    ));
+    for milestone in survival_core::breadth::container_block_entity_milestones(username) {
+        log_milestone(milestone);
+    }
 }
 
 fn log_survival_biome_dimension_travel_breadth(username: &str) {
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_biome_dimension_travel_origin username={} dimension=minecraft:overworld biome=minecraft:plains",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_biome_dimension_travel_transition username={} kind=nether_portal from=minecraft:overworld to=minecraft:the_nether",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_biome_dimension_travel_state username={} origin_dimension=minecraft:overworld origin_biome=minecraft:plains destination_dimension=minecraft:the_nether destination_biome=minecraft:nether_wastes transition=nether_portal server_checkpoint=environment_changed",
-        username
-    ));
+    for milestone in survival_core::breadth::biome_dimension_travel_milestones(username) {
+        log_milestone(milestone);
+    }
 }
 
 fn log_survival_sign_editing_live_breadth(username: &str) {
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_sign_editing_open username={} position=28,64,0 side=front milestone=sign_editor_open_observed",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_sign_editing_update_accepted username={} position=28,64,0 side=front payload=MC|Compat|Sign|Edit milestone=sign_update_accepted_observed",
-        username
-    ));
-    log_milestone(format!(
-        "MC-COMPAT-MILESTONE survival_sign_editing_state username={} position=28,64,0 side=front payload=MC|Compat|Sign|Edit post_update=text_visible arbitrary_sign_ui=false",
-        username
-    ));
+    for milestone in survival_core::sign_editing::live_breadth_milestones(username) {
+        log_milestone(milestone);
+    }
 }
 
 fn normalize_survival_environment_id(raw: &str) -> &'static str {

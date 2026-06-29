@@ -1,0 +1,23 @@
+command=nix run .#cairn -- gate design modularize-survival-compat-fixture --root .
+{
+  "change": "modularize-survival-compat-fixture",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2f0210f97549d4a41f5adb8e0d8a4a324e446fdbde9c1488c10970ed1ee72946",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e611f964ae766656e79d04299a1eb40524bb096f25929ba319b14bad549c4fa9",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
