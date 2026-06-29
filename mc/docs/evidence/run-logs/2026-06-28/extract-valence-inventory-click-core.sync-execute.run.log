@@ -1,0 +1,52 @@
+## command: nix run .#cairn -- sync extract-valence-inventory-click-core --root . --execute
+## cwd: /home/brittonr/git/mc
+## started_at: 2026-06-28T23:12:48-04:00
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/extract-valence-inventory-click-core/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/extract-valence-inventory-click-core/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "extract-valence-inventory-click-core",
+  "delta_specs": [
+    "./cairn/changes/extract-valence-inventory-click-core/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "47dc935b517dc83d2bd42811a47c80d9cb4dcbd8b92a45ef6e6216577de472c2",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "dfa4b8e1e9fae71429f9594acef6956b48196f5c3d04a1344049c1692c384c79",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "de5b7700a2f4645a53af2009e2aba6dc1bd9e52d9cc7adc3995f9a881e2d8173"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "dfa4b8e1e9fae71429f9594acef6956b48196f5c3d04a1344049c1692c384c79",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "de5b7700a2f4645a53af2009e2aba6dc1bd9e52d9cc7adc3995f9a881e2d8173"
+    },
+    "kind": "sync",
+    "manifest_hash": "7deb09ad892d0ec940c9f2af282ba984553d068b79ca249d270633b79462a18e"
+  },
+  "plan_hash": "371a17819257e41b07218f47d8e27d31b1de22a8750e3b8f5ee4dde1a4228b17",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "82be083282b1d6c3aca9b25d06add2610b2aa1b9215e02b6b43b9aced8510532"
+}
+exit_status=0
+## finished_at: 2026-06-28T23:12:48-04:00

@@ -1,0 +1,11 @@
+## command: nix develop --no-update-lock-file . -c rustfmt --edition 2021 --config-path rustfmt.toml --check crates/valence_inventory/src/click.rs crates/valence_inventory/src/click/transaction.rs
+## cwd: /home/brittonr/git/mc/servers/valence
+## started_at: 2026-06-28T23:04:06-04:00
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 14 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server; retrying in 195 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4095 ms: Could not connect to server; retrying in 100 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 214 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3068 ms: Could not connect to server
+exit_status=0
+## finished_at: 2026-06-28T23:04:20-04:00

@@ -1,0 +1,29 @@
+## command: nix run .#cairn -- sync extract-valence-inventory-click-core --root .
+## cwd: /home/brittonr/git/mc
+## started_at: 2026-06-28T23:12:34-04:00
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/extract-valence-inventory-click-core/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/extract-valence-inventory-click-core/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "extract-valence-inventory-click-core",
+  "delta_specs": [
+    "./cairn/changes/extract-valence-inventory-click-core/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "47dc935b517dc83d2bd42811a47c80d9cb4dcbd8b92a45ef6e6216577de472c2",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "04076a5098e791f0f53ca532d3233b7a46ad227f3c752fba846e8f8c69053340",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "5342708f082cc4a72b21b4893e529fddeea8efc12ff574a916111120f7b8c85b"
+}
+exit_status=0
+## finished_at: 2026-06-28T23:12:34-04:00

@@ -2,6 +2,7 @@ use super::*;
 
 mod flow;
 mod press;
+mod transaction;
 
 const OUTSIDE_WINDOW_SLOT: i16 = -999;
 
@@ -55,16 +56,37 @@ fn handle_packet(
     let Ok((mut client, mut client_inv, mut inv_state, open_inventory, mut cursor_item)) =
         clients.get_mut(client_entity)
     else {
+        let decision = transaction::plan_click_transaction(transaction::ClickTransactionInput {
+            packet: &pkt,
+            client: transaction::ClickTransactionClient::Missing,
+        });
+        debug_assert!(matches!(
+            decision,
+            transaction::ClickTransactionDecision::Ignore(
+                transaction::ClickIgnoreReason::MissingClient
+            )
+        ));
         return;
     };
 
-    {
+    let decision = {
         let open_inv = open_inventory
             .as_ref()
             .and_then(|open| inventories.get_mut(open.entity).ok());
-        if let Err(error) =
-            validate::check_packet(&pkt, &client_inv, open_inv.as_deref(), &cursor_item)
-        {
+        let open_window = match (open_inventory.is_some(), open_inv.as_ref()) {
+            (false, _) => transaction::OpenWindowSummary::Closed,
+            (true, Some(open_inv)) => transaction::OpenWindowSummary::Open(open_inv),
+            (true, None) => transaction::OpenWindowSummary::Missing,
+        };
+        let decision = transaction::plan_click_transaction(transaction::ClickTransactionInput {
+            packet: &pkt,
+            client: transaction::ClickTransactionClient::Present {
+                client_inventory: &client_inv,
+                open_window,
+                cursor_item: &cursor_item,
+            },
+        });
+        if let transaction::ClickTransactionDecision::ResyncInvalid(plan) = decision {
             resync_invalid((
                 &mut client,
                 &inv_state,
@@ -73,46 +95,54 @@ fn handle_packet(
                 &pkt,
                 open_inv,
                 client_inv,
-                error,
+                plan.reason,
             ));
             return;
         }
-    }
+        decision
+    };
 
-    if pkt.slot_idx == OUTSIDE_WINDOW_SLOT && pkt.mode == ClickMode::Click {
-        drop_cursor_item(&mut cursor_item, drop_item_stack_events, client_entity);
-        return;
-    }
-
-    if pkt.mode == ClickMode::DropKey {
-        press::handle_key(
-            &pkt,
-            (
-                client_entity,
-                &mut client,
-                &mut client_inv,
-                &mut inv_state,
-                open_inventory,
-                inventories,
+    match decision {
+        transaction::ClickTransactionDecision::Ignore(_) => {}
+        transaction::ClickTransactionDecision::ResyncInvalid(_) => unreachable!(),
+        transaction::ClickTransactionDecision::DropCursor(plan) => {
+            apply_drop_cursor_plan(
+                &mut cursor_item,
                 drop_item_stack_events,
-                &cursor_item,
-            ),
-        );
-        return;
-    }
-
-    if flow::handle_regular(
-        &pkt,
-        flow::Ctx {
-            client: &mut client,
-            client_inv: &mut client_inv,
-            inv_state: &mut inv_state,
-            open_inventory,
-            cursor_item: &mut cursor_item,
-        },
-        inventories,
-    ) {
-        slot_events.send(event_from_packet(client_entity, pkt));
+                client_entity,
+                plan,
+            );
+        }
+        transaction::ClickTransactionDecision::DropKey(_) => {
+            press::handle_key(
+                &pkt,
+                (
+                    client_entity,
+                    &mut client,
+                    &mut client_inv,
+                    &mut inv_state,
+                    open_inventory,
+                    inventories,
+                    drop_item_stack_events,
+                    &cursor_item,
+                ),
+            );
+        }
+        transaction::ClickTransactionDecision::Regular(plan) => {
+            if flow::handle_regular(
+                &pkt,
+                flow::Ctx {
+                    client: &mut client,
+                    client_inv: &mut client_inv,
+                    inv_state: &mut inv_state,
+                    open_inventory,
+                    cursor_item: &mut cursor_item,
+                },
+                inventories,
+            ) {
+                slot_events.send(event_from_plan(client_entity, plan.event));
+            }
+        }
     }
 }
 
@@ -146,12 +176,14 @@ fn resync_invalid<E: std::fmt::Display>(
     });
 }
 
-fn drop_cursor_item(
+fn apply_drop_cursor_plan(
     cursor_item: &mut CursorItem,
     drop_item_stack_events: &mut EventWriter<DropItemStackEvent>,
     client: Entity,
+    plan: transaction::DropCursorPlan,
 ) {
     let stack = std::mem::take(&mut cursor_item.0);
+    debug_assert_eq!(stack, plan.stack);
     if stack.is_empty() {
         return;
     }
@@ -234,15 +266,15 @@ fn mark_changed_slot(changed: &mut u64, slot_id: u16) {
     *changed |= mask;
 }
 
-fn event_from_packet(client: Entity, pkt: ClickSlotC2s) -> ClickSlotEvent {
+fn event_from_plan(client: Entity, plan: transaction::ClickSlotEventPlan) -> ClickSlotEvent {
     ClickSlotEvent {
         client,
-        window_id: pkt.window_id,
-        state_id: pkt.state_id.0,
-        slot_id: pkt.slot_idx,
-        button: pkt.button,
-        mode: pkt.mode,
-        slot_changes: pkt.slot_changes.into(),
-        carried_item: pkt.carried_item,
+        window_id: plan.window_id,
+        state_id: plan.state_id,
+        slot_id: plan.slot_id,
+        button: plan.button,
+        mode: plan.mode,
+        slot_changes: plan.slot_changes,
+        carried_item: plan.carried_item,
     }
 }

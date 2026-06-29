@@ -1,0 +1,12 @@
+4847a04b5783441f015c29a6e4061bb64362aee78c618b13e748c11813456f9a  docs/evidence/run-logs/2026-06-28/extract-valence-inventory-click-core.sync-dry-run.run.log
+49f1005520e10856c95ccfbb585a2229cd50bf91f2ed36d572ada6c2aa841ba6  docs/evidence/run-logs/2026-06-28/extract-valence-inventory-click-core.sync-execute.run.log
+5394c590740f9b5964b055f3b5d100278bce75a475ea89e5bbdc3e6af3f8c9a6  docs/evidence/run-logs/2026-06-28/extract-valence-inventory-click-core.post-sync-validate.run.log
+3a024b678d26b65aa7ada73169ca4f66368c48bfd6475274f714d7c2a751a1af  docs/evidence/run-logs/2026-06-28/extract-valence-inventory-click-core.post-manual-sync-validate.run.log
+75e4694ad2dc7d326cbe5766463c30a1f23344262001683fc4f22b818e9c1464  docs/evidence/run-logs/2026-06-28/extract-valence-inventory-click-core.evidence-manifest-refresh.run.log
+68ec8159a386d66d87d0f7eaa69a91cbfac2b4f3549425df432dcd571ef654f8  docs/evidence/run-logs/2026-06-28/extract-valence-inventory-click-core.evidence-manifest-check-final.run.log
+374b22fe55d39d0430d3bed69d7693ea43b0f6879073836b2394ad03b82e7b98  docs/evidence/run-logs/2026-06-28/extract-valence-inventory-click-core.evidence-manifest-check-closeout.run.log
+c3a9bcf56dc79f6f7d381808b1f2c011996013f390af2f0139dadfd5e572facd  docs/evidence/run-logs/2026-06-28/extract-valence-inventory-click-core.evidence-manifest-check-pruned.run.log
+7bc1c2436b1c1a04b6f2548775e5f4508da598b5c7e040f76860ae723590301b  docs/evidence/run-logs/2026-06-28/extract-valence-inventory-click-core.archive-dry-run.run.log
+5a2fb5c4fba9938548b8984427b646d48b82915974e46d91e2b9abb300a46257  docs/evidence/run-logs/2026-06-28/extract-valence-inventory-click-core.archive-execute.run.log
+5bf333641519be1af04e970c5394aeac131b11203c11075642c04276526d46d6  docs/evidence/run-logs/2026-06-28/extract-valence-inventory-click-core.post-archive-validate.run.log
+2f96d90a823431c3ae43e954a7b4c854d2a733a09875de09e3ce601eed7bb4a3  docs/evidence/run-logs/2026-06-28/extract-valence-inventory-click-core.post-archive-change-list.run.log

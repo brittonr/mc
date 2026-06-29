@@ -1,0 +1,26 @@
+## command: nix run .#cairn -- gate design extract-valence-inventory-click-core --root .
+## cwd: /home/brittonr/git/mc
+## started_at: 2026-06-28T23:09:47-04:00
+{
+  "change": "extract-valence-inventory-click-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e4872e089c82298da5872b6e202f9568eb5974fc699aa74e206d98a97504f863",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "de1454dcc046058b09b01a91ddd9fa22499fb7c5f35ce79d0fa43fc1099674a2",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+## finished_at: 2026-06-28T23:09:47-04:00

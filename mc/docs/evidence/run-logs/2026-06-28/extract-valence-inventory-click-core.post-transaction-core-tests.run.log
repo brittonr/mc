@@ -1,0 +1,78 @@
+## command: cargo test -p valence_inventory transaction --lib -- --nocapture
+## cwd: /home/brittonr/git/mc/servers/valence
+## started_at: 2026-06-28T22:54:32-04:00
+    Blocking waiting for file lock on artifact directory
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+   Compiling valence_inventory v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_inventory)
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib test) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 11.89s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_inventory-5e89102e661fd8f7)
+
+running 10 tests
+test click::transaction::tests::drop_key_click_plans_drop_key_shell_path ... ok
+test click::transaction::tests::invalid_cursor_state_plans_resync ... ok
+test click::transaction::tests::malformed_slot_changes_plan_resync ... ok
+test click::transaction::tests::invalid_packet_plans_resync ... ok
+test click::transaction::tests::missing_open_inventory_is_ignored_after_validation ... ok
+test click::transaction::tests::missing_client_is_ignored ... ok
+test click::transaction::tests::open_inventory_click_plans_open_window_event ... ok
+test click::transaction::tests::outside_window_click_plans_cursor_drop ... ok
+test click::transaction::tests::regular_player_click_plans_event_and_cursor_update ... ok
+test click::transaction::tests::unsafe_slot_indices_plan_resync ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 47 filtered out; finished in 0.00s
+
+exit_status=0
+## finished_at: 2026-06-28T22:54:44-04:00
