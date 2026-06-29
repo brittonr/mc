@@ -1,0 +1,811 @@
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 | ...n| (instrument.offsets(protocol_version)
+     |       ^
+1053 | ... * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                       ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 | ...rsion| (variant.offsets(protocol_version)),
+     |           ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+   Compiling stevenarella v0.0.1 (/home/brittonr/git/mc/clients/stevenarella)
+warning: unreachable pattern
+   --> src/server/login.rs:190:9
+    |
+190 | ...   (phase, event) => LoginDecision::Fail(LoginFailu...
+    |       ^^^^^^^^^^^^^^ no value can reach this
+    |
+note: multiple earlier patterns match some of the same values
+   --> src/server/login.rs:190:9
+    |
+162 |   ...   (_, LoginEvent::SetCompression(compression)) => {
+    |         -------------------------------------------- matches some of the same values
+...
+165 |   ...   (LoginPhase::Initial, LoginEvent::EncryptionRequest(request)) => {
+    |         ------------------------------------------------------------- matches some of the same values
+...
+168 |   ...   (LoginPhase::Encrypted, LoginEvent::EncryptionRequest(request)) => {
+    |         --------------------------------------------------------------- matches some of the same values
+...
+174 | / ...   (LoginPhase::Initial, LoginEvent::Success(outcome))
+175 | | ...   | (LoginPhase::Encrypted, LoginEvent::Success(outcome)) => LoginDe...
+    | |_____________________________________________________________- matches some of the same values
+...
+190 |   ...   (phase, event) => LoginDecision::Fail(LoginFailure {
+    |         ^^^^^^^^^^^^^^ ...and 4 other patterns collectively make this unreachable
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -...
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 | ...d + Any>(&self, var: CVar<T>) -> Ref<T>
+    |             ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |             |
+    |             the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib test) generated 3 warnings (3 duplicates)
+warning: `stevenarella` (lib) generated 5 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella" test) generated 3 warnings (3 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 10.19s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 26 tests
+test model::tests::average_packed_light_blends_samples ... ok
+test model::tests::average_packed_light_returns_zero_without_samples ... ok
+test model::tests::average_rgb_averages_samples ... ok
+test model::tests::average_rgb_returns_black_for_no_samples ... ok
+test model::tests::block_state_model_resource_rejects_unsafe_references ... ok
+test model::tests::eval_multipart_rules_handles_or_groups ... ok
+test model::tests::eval_multipart_rules_matches_simple_rules ... ok
+test model::tests::element_vertex_coord_picks_low_or_high_bound ... ok
+test model::tests::is_absolute_model_location_detects_known_prefixes ... ok
+test model::tests::model_file_path_wraps_with_models_prefix_and_json_suffix ... ok
+test model::tests::model_references_accept_namespaced_modern_paths ... ok
+test model::tests::model_references_keep_legacy_blockstate_model_names ... ok
+test model::tests::model_references_modernize_renamed_legacy_block_names ... ok
+test model::tests::model_references_reject_empty_plugin_or_location ... ok
+test model::tests::pack_light_value_scales_single_sample ... ok
+test model::tests::parent_model_resource_preserves_absolute_and_builtin_paths ... ok
+test model::tests::resolve_builtin_type_defaults_unknown_builtins_to_false ... ok
+test model::tests::resolve_builtin_type_recognizes_known_builtins ... ok
+test model::tests::rotate_direction_advances_face_cycle ... ok
+test model::tests::rotate_direction_passes_invalid_through_unchanged ... ok
+test model::tests::rotate_face_uv_leaves_invalid_rotations_unchanged ... ok
+test model::tests::rotate_face_uv_transforms_known_rotations ... ok
+test model::tests::select_uv_offset_chooses_low_or_high ... ok
+test model::tests::should_load_parent_model_skips_empty_and_builtin_parents ... ok
+test model::tests::state_model_selects_named_variant ... ok
+test model::tests::uses_multipart_detects_multipart_state_models ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 218 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 26 tests
+test model::tests::average_rgb_averages_samples ... ok
+test model::tests::average_packed_light_blends_samples ... ok
+test model::tests::average_packed_light_returns_zero_without_samples ... ok
+test model::tests::element_vertex_coord_picks_low_or_high_bound ... ok
+test model::tests::average_rgb_returns_black_for_no_samples ... ok
+test model::tests::block_state_model_resource_rejects_unsafe_references ... ok
+test model::tests::eval_multipart_rules_handles_or_groups ... ok
+test model::tests::eval_multipart_rules_matches_simple_rules ... ok
+test model::tests::is_absolute_model_location_detects_known_prefixes ... ok
+test model::tests::model_file_path_wraps_with_models_prefix_and_json_suffix ... ok
+test model::tests::model_references_accept_namespaced_modern_paths ... ok
+test model::tests::model_references_keep_legacy_blockstate_model_names ... ok
+test model::tests::model_references_modernize_renamed_legacy_block_names ... ok
+test model::tests::model_references_reject_empty_plugin_or_location ... ok
+test model::tests::pack_light_value_scales_single_sample ... ok
+test model::tests::parent_model_resource_preserves_absolute_and_builtin_paths ... ok
+test model::tests::resolve_builtin_type_defaults_unknown_builtins_to_false ... ok
+test model::tests::resolve_builtin_type_recognizes_known_builtins ... ok
+test model::tests::rotate_direction_advances_face_cycle ... ok
+test model::tests::rotate_direction_passes_invalid_through_unchanged ... ok
+test model::tests::rotate_face_uv_leaves_invalid_rotations_unchanged ... ok
+test model::tests::rotate_face_uv_transforms_known_rotations ... ok
+test model::tests::select_uv_offset_chooses_low_or_high ... ok
+test model::tests::should_load_parent_model_skips_empty_and_builtin_parents ... ok
+test model::tests::state_model_selects_named_variant ... ok
+test model::tests::uses_multipart_detects_multipart_state_models ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 218 filtered out; finished in 0.00s
+
+post_model_exit_status=0
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 | ...n| (instrument.offsets(protocol_version)
+     |       ^
+1053 | ... * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                       ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 | ...rsion| (variant.offsets(protocol_version)),
+     |           ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+warning: unreachable pattern
+   --> src/server/login.rs:190:9
+    |
+190 | ...   (phase, event) => LoginDecision::Fail(LoginFailu...
+    |       ^^^^^^^^^^^^^^ no value can reach this
+    |
+note: multiple earlier patterns match some of the same values
+   --> src/server/login.rs:190:9
+    |
+162 |   ...   (_, LoginEvent::SetCompression(compression)) => {
+    |         -------------------------------------------- matches some of the same values
+...
+165 |   ...   (LoginPhase::Initial, LoginEvent::EncryptionRequest(request)) => {
+    |         ------------------------------------------------------------- matches some of the same values
+...
+168 |   ...   (LoginPhase::Encrypted, LoginEvent::EncryptionRequest(request)) => {
+    |         --------------------------------------------------------------- matches some of the same values
+...
+174 | / ...   (LoginPhase::Initial, LoginEvent::Success(outcome))
+175 | | ...   | (LoginPhase::Encrypted, LoginEvent::Success(outcome)) => LoginDe...
+    | |_____________________________________________________________- matches some of the same values
+...
+190 |   ...   (phase, event) => LoginDecision::Fail(LoginFailure {
+    |         ^^^^^^^^^^^^^^ ...and 4 other patterns collectively make this unreachable
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &...
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -...
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 | ...d + Any>(&self, var: CVar<T>) -> Ref<T>
+    |             ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |             |
+    |             the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 5 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (lib test) generated 3 warnings (3 duplicates)
+warning: `stevenarella` (bin "stevenarella" test) generated 3 warnings (3 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.13s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 244 tests
+test capture::tests::artifact_path_escape_is_rejected ... ok
+test capture::tests::capture_queue_rejects_recording_request_before_enqueue ... ok
+test capture::tests::capture_queue_reports_closed_after_pending_receiver_drop ... ok
+test capture::tests::capture_queue_services_one_latest_frame_after_frame_readback ... ok
+test capture::tests::focused_validation_covers_vertical_flip_normalization ... ok
+test capture::tests::capture_queue_services_one_screenshot_after_frame_readback ... ok
+test capture::tests::focused_validation_rejects_invalid_format ... ok
+test capture::tests::focused_validation_rejects_path_traversal ... ok
+test capture::tests::focused_validation_rejects_unbounded_recording ... ok
+test capture::tests::focused_validation_rejects_capture_rate_limit ... ok
+test capture::tests::invalid_digest_is_rejected ... ok
+test capture::tests::one_shot_artifact_size_guard_rejects_before_write ... ok
+test capture::tests::recording_inline_output_is_rejected ... ok
+test capture::tests::one_shot_capture_rejects_ui_exclusion_before_readback ... ok
+test capture::tests::recording_without_explicit_bounds_is_rejected ... ok
+test capture::tests::rgba_readback_normalizes_gl_bottom_left_origin ... ok
+test capture::tests::rgba_readback_rejects_empty_dimensions ... ok
+test capture::tests::rgba_readback_rejects_wrong_buffer_length ... ok
+test capture::tests::unsupported_format_fails_closed ... ok
+test capture::tests::valid_artifact_metadata_is_accepted ... ok
+test capture::tests::valid_recording_bounds_are_accepted ... ok
+test capture::tests::valid_screenshot_artifact_request_is_planned ... ok
+test capture::tests::zero_dimensions_are_rejected ... ok
+test compat_instrumentation::tests::default_options_disable_mcp_instrumentation ... ok
+test compat_instrumentation::tests::disabled_instrumentation_has_no_harness_queues ... ok
+test compat_instrumentation::tests::stdio_options_enable_mcp_instrumentation_and_reserve_stdout ... ok
+test compat_instrumentation::tests::tcp_options_enable_mcp_instrumentation_without_reserving_stdout ... ok
+test control::tests::classifies_command_facts_without_game_state ... ok
+test control::tests::classifies_response_vocabulary_without_mcp_transport ... ok
+test control::tests::parses_all_key_aliases ... ok
+test control::tests::parses_json_string_entrypoint ... ok
+test control::tests::parses_resource_pack_status_decline_for_owned_local_offer ... ok
+test control::tests::parses_sign_editor_update_for_matching_open_state ... ok
+test control::tests::parses_valid_initial_command_set ... ok
+test control::tests::rejects_blank_chat_message ... ok
+test control::tests::rejects_external_resource_pack_url_before_protocol_response ... ok
+test control::tests::rejects_invalid_key_name ... ok
+test control::tests::rejects_invalid_mouse_button ... ok
+test control::tests::rejects_malformed_json_entrypoint ... ok
+test control::tests::rejects_command_payload_schema_mismatches ... ok
+test control::tests::rejects_missing_action_field ... ok
+test control::tests::rejects_missing_payloads_for_commands ... ok
+test control::tests::rejects_missing_required_command_field ... ok
+test control::tests::rejects_non_object_and_action_schema_mismatches ... ok
+test control::tests::rejects_out_of_range_look_delta ... ok
+test control::tests::rejects_oversized_chat_message ... ok
+test control::tests::rejects_oversized_resource_pack_url_before_redaction_boundary ... ok
+test control::tests::rejects_resource_pack_offer_with_blank_identity ... ok
+test control::tests::rejects_resource_pack_status_without_offer_state ... ok
+test control::tests::rejects_sign_editor_malformed_payload ... ok
+test control::tests::rejects_sign_editor_overclaim ... ok
+test control::tests::rejects_sign_editor_overlong_line ... ok
+test control::tests::rejects_sign_editor_update_for_wrong_open_position ... ok
+test control::tests::rejects_sign_editor_update_without_open_state ... ok
+test control::tests::rejects_sign_editor_wrong_line_count ... ok
+test control::tests::rejects_unknown_action ... ok
+test control::tests::rejects_unsupported_resource_pack_status ... ok
+test ecs::tests::ecs_component_access_reads_and_mutates_valid_entity ... ok
+test ecs::tests::ecs_component_access_returns_none_after_entity_removal_request ... ok
+test ecs::tests::ecs_component_access_returns_none_for_absent_component ... ok
+test ecs::tests::ecs_component_access_returns_none_for_stale_generation ... ok
+test ecs::tests::ecs_component_storage_drops_removed_component_once ... ok
+test ecs::tests::ecs_component_storage_returns_none_for_missing_slot ... ok
+test ecs::tests::ecs_multi_component_access_mutates_distinct_components ... ok
+test ecs::tests::ecs_multi_component_access_rejects_duplicate_keys ... ok
+test gl::tests::gl_context_status_reports_uninitialized_before_startup ... ok
+test mcp::tests::command_queue_drains_pending_command_with_main_thread_handler ... ok
+test mcp::tests::command_queue_rejects_enqueue_after_receiver_drop ... ok
+test gl::tests::gl_context_access_fails_with_deterministic_startup_diagnostic - should panic ... ok
+test mcp::tests::command_queue_respects_per_frame_drain_limit ... ok
+test mcp::tests::ipv6_loopback_tcp_transport_is_accepted_without_token ... ok
+test mcp::tests::jsonrpc_capture_tool_rejects_invalid_format_before_enqueue ... ok
+test mcp::tests::jsonrpc_handler_rejects_malformed_json ... ok
+test mcp::tests::malformed_listen_address_is_rejected ... ok
+test mcp::tests::jsonrpc_handler_requires_matching_auth_token_when_configured ... ok
+test mcp::tests::jsonrpc_handler_supports_initialize_and_lists_empty_tools ... ok
+test mcp::tests::non_loopback_tcp_transport_is_accepted_with_token_env_and_value ... ok
+test mcp::tests::jsonrpc_tools_list_includes_queue_tool_when_sender_is_configured ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_empty_token_env_name ... ok
+test mcp::tests::loopback_tcp_transport_is_accepted_without_token ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_without_token_env ... ok
+test mcp_control_tests::control_capture_enqueue_rejects_missing_capture_queue ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_empty_token_value ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_missing_token_value ... ok
+test mcp_control_tests::maps_control_block_position_to_protocol_position ... ok
+test mcp_control_tests::maps_control_keys_to_internal_steven_keys ... ok
+test mcp_control_tests::pitch_bounds_match_window_input_clamp ... ok
+test mcp::tests::stdio_transport_is_accepted_and_requires_clean_stdout ... ok
+test mcp::tests::stdio_transport_runs_jsonrpc_line_loop ... ok
+test model::tests::average_rgb_returns_black_for_no_samples ... ok
+test mcp_control_tests::sign_editor_open_match_is_position_exact ... ok
+test mcp_control_tests::status_connect_and_disconnect_do_not_require_an_existing_connection ... ok
+test model::tests::block_state_model_resource_rejects_unsafe_references ... ok
+test mcp_control_tests::status_message_reports_connection_state ... ok
+test model::tests::element_vertex_coord_picks_low_or_high_bound ... ok
+test mcp_control_tests::disconnected_operations_return_rejected_response ... ok
+test model::tests::eval_multipart_rules_handles_or_groups ... ok
+test model::tests::eval_multipart_rules_matches_simple_rules ... ok
+test model::tests::is_absolute_model_location_detects_known_prefixes ... ok
+test model::tests::average_packed_light_blends_samples ... ok
+test model::tests::average_packed_light_returns_zero_without_samples ... ok
+test model::tests::model_file_path_wraps_with_models_prefix_and_json_suffix ... ok
+test model::tests::model_references_accept_namespaced_modern_paths ... ok
+test mcp::tests::command_queue_reports_timeout_when_main_thread_does_not_drain ... ok
+test model::tests::model_references_keep_legacy_blockstate_model_names ... ok
+test model::tests::model_references_modernize_renamed_legacy_block_names ... ok
+test model::tests::model_references_reject_empty_plugin_or_location ... ok
+test model::tests::pack_light_value_scales_single_sample ... ok
+test model::tests::parent_model_resource_preserves_absolute_and_builtin_paths ... ok
+test model::tests::resolve_builtin_type_defaults_unknown_builtins_to_false ... ok
+test model::tests::resolve_builtin_type_recognizes_known_builtins ... ok
+test model::tests::rotate_direction_advances_face_cycle ... ok
+test model::tests::rotate_direction_passes_invalid_through_unchanged ... ok
+test model::tests::rotate_face_uv_leaves_invalid_rotations_unchanged ... ok
+test model::tests::rotate_face_uv_transforms_known_rotations ... ok
+test mcp::tests::jsonrpc_capture_resource_read_returns_inline_blob ... ok
+test model::tests::select_uv_offset_chooses_low_or_high ... ok
+test model::tests::should_load_parent_model_skips_empty_and_builtin_parents ... ok
+test model::tests::state_model_selects_named_variant ... ok
+test model::tests::uses_multipart_detects_multipart_state_models ... ok
+test render::tests::minecraft_texture_hash_accepts_http_and_https_urls ... ok
+test render::tests::minecraft_texture_hash_rejects_empty_or_unknown_urls ... ok
+test resources::tests::asset_object_urls_reject_short_hashes ... ok
+test resources::tests::asset_object_urls_use_https_and_hash_fanout ... ok
+test mcp::tests::tools_and_resources_list_include_capture_when_configured ... ok
+test mcp::tests::stdio_transport_runtime_keeps_command_sender_for_worker_threads ... ok
+test mcp::tests::stdio_transport_runtime_starts_line_loop_thread ... ok
+test resources::tests::progress_updates_record_task_progress ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_control_command_for_main_thread_drain ... ok
+test resources::tests::progress_updates_fail_closed_after_poison ... ok
+test mcp::tests::tcp_transport_binds_loopback_and_serves_jsonrpc ... ok
+test resources::tests::resource_manager_opens_existing_pack_resource ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_inline_image_and_metadata ... ok
+test resources::tests::resource_manager_returns_none_for_missing_resource ... ok
+test resources::tests::resource_reference_modernizes_legacy_block_textures ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_capture_command_for_main_thread_drain ... ok
+test resources::tests::resource_reference_rejects_non_minecraft_or_unknown_aliases ... ok
+test resources::tests::zero_length_progress_reports_complete_without_nan ... ok
+test server::login::tests::compression_before_success_returns_apply_then_complete ... ok
+test server::login::tests::encrypted_login_accepts_plugin_request_for_shell_handling ... ok
+test server::login::tests::login_disconnect_preserves_disconnect_reason ... ok
+test server::login::tests::encryption_requests_normalize_to_begin_encryption_decisions ... ok
+test server::login::tests::login_plugin_request_before_encryption_fails_closed ... ok
+test server::login::tests::login_success_string_normalizes_offline_outcome ... ok
+test model::tests::average_rgb_averages_samples ... ok
+test server::login::tests::login_success_uuid_normalizes_offline_outcome ... ok
+test mcp_control_tests::control_capture_enqueue_reaches_post_render_capture_queue ... ok
+test server::login::tests::wrong_packets_keep_stage_specific_diagnostics ... ok
+test server::login::tests::login_success_with_properties_preserves_property_facts ... ok
+test server::login::tests::unsupported_fml_network_version_preserves_panic ... ok
+test server::login::tests::malformed_string_uuid_panics_when_shell_reads_protocol_uuid ... ok
+test server::probes::tests::combat_probe_decision_preserves_regular_schedule ... ok
+test server::probes::tests::combat_probe_decision_rejects_disabled_non_attacker_or_limit ... ok
+test server::probes::tests::ctf_score_limit_chat_requires_both_score_terms ... ok
+test server::probes::tests::flag_probe_repeat_target_accepts_positive_counts ... ok
+test server::probes::tests::flag_probe_repeat_target_defaults_when_unset_or_invalid ... ok
+test server::probes::tests::flag_probe_repeat_target_is_capped ... ok
+test server::probes::tests::inventory_drag_transactions_actions_advance_after_observed_state ... ok
+test server::probes::tests::inventory_drag_transactions_waits_for_probe_guards ... ok
+test server::probes::tests::inventory_stack_split_merge_actions_advance_after_observed_state ... ok
+test server::probes::tests::inventory_stack_split_merge_waits_for_probe_guards ... ok
+test server::probes::tests::survival_biome_dimension_environment_prefers_world_identifier ... ok
+test server::probes::tests::survival_biome_dimension_environment_rejects_unknown_identifiers ... ok
+test server::probes::tests::survival_block_entity_position_match_rejects_wrong_target ... ok
+test server::probes::tests::survival_block_entity_sign_lines_match_contract_payload ... ok
+test server::probes::tests::survival_crafting_fixture_positions_are_named ... ok
+test server::probes::tests::survival_crafting_inventory_indices_accept_player_and_open_mirror ... ok
+test server::probes::tests::survival_crafting_inventory_updates_use_player_inventory_window ... ok
+test server::probes::tests::survival_crafting_result_match_rejects_wrong_item_or_count ... ok
+test server::probes::tests::survival_crafting_stacks_use_contract_items ... ok
+test server::probes::tests::survival_furnace_fixture_positions_are_named ... ok
+test server::probes::tests::survival_furnace_inventory_indices_accept_player_and_open_mirror ... ok
+test server::probes::tests::survival_furnace_inventory_updates_accept_player_and_open_mirror_slots ... ok
+test server::probes::tests::survival_furnace_output_match_rejects_wrong_item_or_count ... ok
+test server::probes::tests::survival_furnace_stacks_use_contract_items ... ok
+test server::probes::tests::survival_hunger_food_health_updates_match_exact_contract ... ok
+test server::probes::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test server::probes::tests::survival_hunger_food_stack_match_accepts_only_contract_bread ... ok
+test server::probes::tests::survival_hunger_health_updates_match_bounded_health_cycle_contract ... ok
+test server::probes::tests::survival_mob_drop_actions_progress_and_fail_closed ... ok
+test server::probes::tests::survival_mob_drop_item_match_accepts_only_contract_drop ... ok
+test server::probes::tests::survival_mob_drop_position_match_rejects_wrong_target ... ok
+test server::probes::tests::survival_redstone_toggle_output_position_match_rejects_wrong_target ... ok
+test server::probes::tests::survival_world_persistence_position_match_rejects_wrong_target ... ok
+test server::tests::flag_probe_repeat_target_accepts_positive_counts ... ok
+test server::tests::flag_probe_repeat_target_defaults_when_unset_or_invalid ... ok
+test server::tests::flag_probe_repeat_target_is_capped ... ok
+test server::tests::inventory_drag_transactions_actions_advance_after_observed_state ... ok
+test server::tests::inventory_drag_transactions_waits_for_probe_guards ... ok
+test server::tests::inventory_stack_split_merge_actions_advance_after_observed_state ... ok
+test server::tests::inventory_stack_split_merge_waits_for_probe_guards ... ok
+test server::tests::survival_biome_dimension_environment_prefers_world_identifier ... ok
+test server::tests::survival_biome_dimension_environment_rejects_unknown_identifiers ... ok
+test server::tests::survival_block_entity_position_match_rejects_wrong_target ... ok
+test server::tests::survival_block_entity_sign_lines_match_contract_payload ... ok
+test server::tests::survival_crafting_fixture_positions_are_named ... ok
+test server::tests::survival_crafting_inventory_indices_accept_player_and_open_mirror ... ok
+test server::tests::survival_crafting_inventory_updates_use_player_inventory_window ... ok
+test server::tests::survival_crafting_result_match_rejects_wrong_item_or_count ... ok
+test server::tests::survival_crafting_stacks_use_contract_items ... ok
+test server::tests::survival_furnace_fixture_positions_are_named ... ok
+test server::tests::survival_furnace_inventory_indices_accept_player_and_open_mirror ... ok
+test server::tests::survival_furnace_inventory_updates_accept_player_and_open_mirror_slots ... ok
+test server::tests::survival_furnace_output_match_rejects_wrong_item_or_count ... ok
+test server::tests::survival_furnace_stacks_use_contract_items ... ok
+test server::tests::survival_hunger_food_health_updates_match_exact_contract ... ok
+test server::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test server::tests::survival_hunger_food_stack_match_accepts_only_contract_bread ... ok
+test server::tests::survival_hunger_health_updates_match_bounded_health_cycle_contract ... ok
+test server::tests::survival_mob_drop_item_match_accepts_only_contract_drop ... ok
+test server::tests::survival_mob_drop_position_match_rejects_wrong_target ... ok
+test server::tests::survival_redstone_toggle_output_position_match_rejects_wrong_target ... ok
+test server::tests::survival_world_persistence_position_match_rejects_wrong_target ... ok
+test world::tests::dimension_codec_rejects_unaligned_height ... ok
+test world::tests::dimension_codec_ignores_missing_dimension_name ... ok
+test world::tests::dimension_codec_applies_named_dimension_bounds ... ok
+test world::tests::parse_chunk_1_16_4 ... ok
+test world::tests::parse_chunk_1_14_2 ... ok
+test world::tests::parse_chunk_1_16_3 ... ok
+test world::tests::parse_chunk_1_14_3 ... ok
+test world::tests::parse_chunk_1_16_1 ... ok
+test world::tests::parse_chunk_1_16_2 ... ok
+test world::tests::parse_chunk_19w02a ... ok
+test world::tests::parse_chunk_1_15_2 ... ok
+test world::tests::parse_chunk_1_15_1 ... ok
+test world::tests::parse_chunk_1_14_4 ... ok
+test world::tests::parse_chunk_1_14_1 ... ok
+test world::tests::parse_chunk_1_17_1 ... ok
+test world::tests::parse_chunk_1_13_2 ... ok
+test world::tests::parse_chunk_18w50a ... ok
+test world::tests::parse_chunk_1_16 ... ok
+test world::tests::parse_chunk_1_14 ... ok
+test world::tests::parse_chunk_1_12_2 ... ok
+test capture::tests::focused_validation_covers_valid_screenshot_metadata ... ok
+test capture::tests::bounded_recording_writes_contained_frames_and_respects_fps ... ok
+test capture::tests::one_shot_artifact_capture_writes_png_and_metadata ... ok
+test resources::tests::downloaded_asset_commit_rejects_missing_temp_and_destination ... ok
+test resources::tests::downloaded_asset_commit_tolerates_parallel_winner ... ok
+test resources::tests::downloaded_asset_commit_renames_temp_file ... ok
+test mcp_control_tests::control_capture_enqueue_uses_capture_dir_artifact_output ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_artifact_path_and_digest ... ok
+test mcp::tests::non_loopback_tcp_transport_requires_token_per_request ... ok
+test world::tests::parse_chunk_1_18_1 ... ok
+test world::tests::parse_chunk_1_18_2 ... ok
+
+test result: ok. 244 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 244 tests
+test capture::tests::artifact_path_escape_is_rejected ... ok
+test capture::tests::capture_queue_rejects_recording_request_before_enqueue ... ok
+test capture::tests::capture_queue_reports_closed_after_pending_receiver_drop ... ok
+test capture::tests::capture_queue_services_one_latest_frame_after_frame_readback ... ok
+test capture::tests::capture_queue_services_one_screenshot_after_frame_readback ... ok
+test capture::tests::focused_validation_covers_vertical_flip_normalization ... ok
+test capture::tests::focused_validation_rejects_capture_rate_limit ... ok
+test capture::tests::focused_validation_rejects_invalid_format ... ok
+test capture::tests::focused_validation_rejects_path_traversal ... ok
+test capture::tests::focused_validation_rejects_unbounded_recording ... ok
+test capture::tests::invalid_digest_is_rejected ... ok
+test capture::tests::one_shot_capture_rejects_ui_exclusion_before_readback ... ok
+test capture::tests::one_shot_artifact_size_guard_rejects_before_write ... ok
+test capture::tests::recording_inline_output_is_rejected ... ok
+test capture::tests::recording_without_explicit_bounds_is_rejected ... ok
+test capture::tests::rgba_readback_normalizes_gl_bottom_left_origin ... ok
+test capture::tests::rgba_readback_rejects_empty_dimensions ... ok
+test capture::tests::rgba_readback_rejects_wrong_buffer_length ... ok
+test capture::tests::unsupported_format_fails_closed ... ok
+test capture::tests::focused_validation_covers_valid_screenshot_metadata ... ok
+test capture::tests::valid_artifact_metadata_is_accepted ... ok
+test capture::tests::valid_recording_bounds_are_accepted ... ok
+test capture::tests::bounded_recording_writes_contained_frames_and_respects_fps ... ok
+test capture::tests::valid_screenshot_artifact_request_is_planned ... ok
+test capture::tests::zero_dimensions_are_rejected ... ok
+test compat_instrumentation::tests::default_options_disable_mcp_instrumentation ... ok
+test capture::tests::one_shot_artifact_capture_writes_png_and_metadata ... ok
+test compat_instrumentation::tests::disabled_instrumentation_has_no_harness_queues ... ok
+test compat_instrumentation::tests::stdio_options_enable_mcp_instrumentation_and_reserve_stdout ... ok
+test compat_instrumentation::tests::tcp_options_enable_mcp_instrumentation_without_reserving_stdout ... ok
+test control::tests::classifies_command_facts_without_game_state ... ok
+test control::tests::classifies_response_vocabulary_without_mcp_transport ... ok
+test control::tests::parses_all_key_aliases ... ok
+test control::tests::parses_json_string_entrypoint ... ok
+test control::tests::parses_resource_pack_status_decline_for_owned_local_offer ... ok
+test control::tests::parses_sign_editor_update_for_matching_open_state ... ok
+test control::tests::parses_valid_initial_command_set ... ok
+test control::tests::rejects_blank_chat_message ... ok
+test control::tests::rejects_command_payload_schema_mismatches ... ok
+test control::tests::rejects_external_resource_pack_url_before_protocol_response ... ok
+test control::tests::rejects_invalid_key_name ... ok
+test control::tests::rejects_invalid_mouse_button ... ok
+test control::tests::rejects_malformed_json_entrypoint ... ok
+test control::tests::rejects_missing_action_field ... ok
+test control::tests::rejects_missing_payloads_for_commands ... ok
+test control::tests::rejects_missing_required_command_field ... ok
+test control::tests::rejects_non_object_and_action_schema_mismatches ... ok
+test control::tests::rejects_oversized_chat_message ... ok
+test control::tests::rejects_oversized_resource_pack_url_before_redaction_boundary ... ok
+test control::tests::rejects_resource_pack_offer_with_blank_identity ... ok
+test control::tests::rejects_resource_pack_status_without_offer_state ... ok
+test control::tests::rejects_sign_editor_malformed_payload ... ok
+test control::tests::rejects_sign_editor_overclaim ... ok
+test control::tests::rejects_out_of_range_look_delta ... ok
+test control::tests::rejects_sign_editor_overlong_line ... ok
+test control::tests::rejects_sign_editor_update_for_wrong_open_position ... ok
+test control::tests::rejects_sign_editor_wrong_line_count ... ok
+test control::tests::rejects_sign_editor_update_without_open_state ... ok
+test control::tests::rejects_unsupported_resource_pack_status ... ok
+test ecs::tests::ecs_component_access_reads_and_mutates_valid_entity ... ok
+test ecs::tests::ecs_component_access_returns_none_after_entity_removal_request ... ok
+test control::tests::rejects_unknown_action ... ok
+test ecs::tests::ecs_component_access_returns_none_for_absent_component ... ok
+test ecs::tests::ecs_component_access_returns_none_for_stale_generation ... ok
+test ecs::tests::ecs_component_storage_drops_removed_component_once ... ok
+test ecs::tests::ecs_component_storage_returns_none_for_missing_slot ... ok
+test ecs::tests::ecs_multi_component_access_mutates_distinct_components ... ok
+test ecs::tests::ecs_multi_component_access_rejects_duplicate_keys ... ok
+test gl::tests::gl_context_status_reports_uninitialized_before_startup ... ok
+test mcp::tests::command_queue_drains_pending_command_with_main_thread_handler ... ok
+test mcp::tests::command_queue_rejects_enqueue_after_receiver_drop ... ok
+test gl::tests::gl_context_access_fails_with_deterministic_startup_diagnostic - should panic ... ok
+test mcp::tests::command_queue_respects_per_frame_drain_limit ... ok
+test mcp::tests::ipv6_loopback_tcp_transport_is_accepted_without_token ... ok
+test mcp::tests::jsonrpc_capture_tool_rejects_invalid_format_before_enqueue ... ok
+test mcp::tests::jsonrpc_handler_rejects_malformed_json ... ok
+test mcp::tests::jsonrpc_handler_requires_matching_auth_token_when_configured ... ok
+test mcp::tests::jsonrpc_tools_list_includes_queue_tool_when_sender_is_configured ... ok
+test mcp::tests::loopback_tcp_transport_is_accepted_without_token ... ok
+test mcp::tests::malformed_listen_address_is_rejected ... ok
+test mcp::tests::jsonrpc_handler_supports_initialize_and_lists_empty_tools ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_without_token_env ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_missing_token_value ... ok
+test mcp::tests::non_loopback_tcp_transport_is_accepted_with_token_env_and_value ... ok
+test mcp_control_tests::maps_control_block_position_to_protocol_position ... ok
+test mcp_control_tests::maps_control_keys_to_internal_steven_keys ... ok
+test mcp_control_tests::pitch_bounds_match_window_input_clamp ... ok
+test model::tests::block_state_model_resource_rejects_unsafe_references ... ok
+test model::tests::element_vertex_coord_picks_low_or_high_bound ... ok
+test model::tests::eval_multipart_rules_handles_or_groups ... ok
+test model::tests::eval_multipart_rules_matches_simple_rules ... ok
+test model::tests::is_absolute_model_location_detects_known_prefixes ... ok
+test mcp::tests::stdio_transport_runtime_keeps_command_sender_for_worker_threads ... ok
+test model::tests::average_packed_light_returns_zero_without_samples ... ok
+test model::tests::average_rgb_returns_black_for_no_samples ... ok
+test model::tests::model_references_modernize_renamed_legacy_block_names ... ok
+test model::tests::parent_model_resource_preserves_absolute_and_builtin_paths ... ok
+test model::tests::resolve_builtin_type_defaults_unknown_builtins_to_false ... ok
+test model::tests::rotate_direction_advances_face_cycle ... ok
+test model::tests::resolve_builtin_type_recognizes_known_builtins ... ok
+test model::tests::rotate_direction_passes_invalid_through_unchanged ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_empty_token_value ... ok
+test model::tests::model_file_path_wraps_with_models_prefix_and_json_suffix ... ok
+test mcp::tests::stdio_transport_is_accepted_and_requires_clean_stdout ... ok
+test model::tests::rotate_face_uv_leaves_invalid_rotations_unchanged ... ok
+test model::tests::rotate_face_uv_transforms_known_rotations ... ok
+test model::tests::select_uv_offset_chooses_low_or_high ... ok
+test model::tests::should_load_parent_model_skips_empty_and_builtin_parents ... ok
+test mcp_control_tests::control_capture_enqueue_reaches_post_render_capture_queue ... ok
+test mcp::tests::stdio_transport_runs_jsonrpc_line_loop ... ok
+test mcp::tests::stdio_transport_runtime_starts_line_loop_thread ... ok
+test model::tests::state_model_selects_named_variant ... ok
+test model::tests::uses_multipart_detects_multipart_state_models ... ok
+test render::tests::minecraft_texture_hash_accepts_http_and_https_urls ... ok
+test render::tests::minecraft_texture_hash_rejects_empty_or_unknown_urls ... ok
+test resources::tests::asset_object_urls_reject_short_hashes ... ok
+test resources::tests::asset_object_urls_use_https_and_hash_fanout ... ok
+test mcp_control_tests::status_connect_and_disconnect_do_not_require_an_existing_connection ... ok
+test model::tests::model_references_accept_namespaced_modern_paths ... ok
+test mcp_control_tests::control_capture_enqueue_rejects_missing_capture_queue ... ok
+test resources::tests::progress_updates_record_task_progress ... ok
+test mcp_control_tests::sign_editor_open_match_is_position_exact ... ok
+test resources::tests::progress_updates_fail_closed_after_poison ... ok
+test resources::tests::resource_manager_opens_existing_pack_resource ... ok
+test resources::tests::resource_reference_modernizes_legacy_block_textures ... ok
+test resources::tests::resource_manager_returns_none_for_missing_resource ... ok
+test resources::tests::resource_reference_rejects_non_minecraft_or_unknown_aliases ... ok
+test mcp_control_tests::status_message_reports_connection_state ... ok
+test resources::tests::zero_length_progress_reports_complete_without_nan ... ok
+test server::login::tests::compression_before_success_returns_apply_then_complete ... ok
+test model::tests::average_packed_light_blends_samples ... ok
+test server::login::tests::encrypted_login_accepts_plugin_request_for_shell_handling ... ok
+test model::tests::model_references_keep_legacy_blockstate_model_names ... ok
+test server::login::tests::login_disconnect_preserves_disconnect_reason ... ok
+test server::login::tests::encryption_requests_normalize_to_begin_encryption_decisions ... ok
+test mcp_control_tests::disconnected_operations_return_rejected_response ... ok
+test server::login::tests::login_plugin_request_before_encryption_fails_closed ... ok
+test resources::tests::downloaded_asset_commit_rejects_missing_temp_and_destination ... ok
+test server::login::tests::login_success_uuid_normalizes_offline_outcome ... ok
+test server::login::tests::login_success_string_normalizes_offline_outcome ... ok
+test server::login::tests::login_success_with_properties_preserves_property_facts ... ok
+test resources::tests::downloaded_asset_commit_renames_temp_file ... ok
+test model::tests::average_rgb_averages_samples ... ok
+test server::login::tests::wrong_packets_keep_stage_specific_diagnostics ... ok
+test server::login::tests::unsupported_fml_network_version_preserves_panic ... ok
+test server::login::tests::malformed_string_uuid_panics_when_shell_reads_protocol_uuid ... ok
+test server::probes::tests::combat_probe_decision_preserves_regular_schedule ... ok
+test server::probes::tests::combat_probe_decision_rejects_disabled_non_attacker_or_limit ... ok
+test server::probes::tests::ctf_score_limit_chat_requires_both_score_terms ... ok
+test mcp::tests::tools_and_resources_list_include_capture_when_configured ... ok
+test server::probes::tests::flag_probe_repeat_target_accepts_positive_counts ... ok
+test server::probes::tests::flag_probe_repeat_target_is_capped ... ok
+test server::probes::tests::flag_probe_repeat_target_defaults_when_unset_or_invalid ... ok
+test mcp::tests::command_queue_reports_timeout_when_main_thread_does_not_drain ... ok
+test mcp::tests::non_loopback_tcp_transport_is_rejected_with_empty_token_env_name ... ok
+test server::probes::tests::inventory_stack_split_merge_actions_advance_after_observed_state ... ok
+test server::probes::tests::inventory_stack_split_merge_waits_for_probe_guards ... ok
+test server::probes::tests::survival_biome_dimension_environment_prefers_world_identifier ... ok
+test server::probes::tests::survival_biome_dimension_environment_rejects_unknown_identifiers ... ok
+test server::probes::tests::survival_block_entity_position_match_rejects_wrong_target ... ok
+test resources::tests::downloaded_asset_commit_tolerates_parallel_winner ... ok
+test server::probes::tests::survival_block_entity_sign_lines_match_contract_payload ... ok
+test mcp::tests::jsonrpc_capture_resource_read_returns_inline_blob ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_inline_image_and_metadata ... ok
+test server::probes::tests::survival_crafting_fixture_positions_are_named ... ok
+test server::probes::tests::survival_crafting_inventory_indices_accept_player_and_open_mirror ... ok
+test mcp_control_tests::control_capture_enqueue_uses_capture_dir_artifact_output ... ok
+test server::probes::tests::survival_crafting_inventory_updates_use_player_inventory_window ... ok
+test server::probes::tests::survival_crafting_result_match_rejects_wrong_item_or_count ... ok
+test server::probes::tests::survival_crafting_stacks_use_contract_items ... ok
+test server::probes::tests::survival_furnace_fixture_positions_are_named ... ok
+test server::probes::tests::survival_furnace_inventory_indices_accept_player_and_open_mirror ... ok
+test server::probes::tests::survival_mob_drop_item_match_accepts_only_contract_drop ... ok
+test server::probes::tests::survival_mob_drop_position_match_rejects_wrong_target ... ok
+test server::probes::tests::survival_redstone_toggle_output_position_match_rejects_wrong_target ... ok
+test server::probes::tests::survival_world_persistence_position_match_rejects_wrong_target ... ok
+test server::tests::flag_probe_repeat_target_accepts_positive_counts ... ok
+test server::tests::flag_probe_repeat_target_defaults_when_unset_or_invalid ... ok
+test model::tests::pack_light_value_scales_single_sample ... ok
+test server::tests::flag_probe_repeat_target_is_capped ... ok
+test server::tests::inventory_drag_transactions_actions_advance_after_observed_state ... ok
+test model::tests::model_references_reject_empty_plugin_or_location ... ok
+test server::tests::inventory_drag_transactions_waits_for_probe_guards ... ok
+test server::tests::inventory_stack_split_merge_actions_advance_after_observed_state ... ok
+test server::tests::inventory_stack_split_merge_waits_for_probe_guards ... ok
+test server::tests::survival_biome_dimension_environment_prefers_world_identifier ... ok
+test server::tests::survival_biome_dimension_environment_rejects_unknown_identifiers ... ok
+test server::probes::tests::inventory_drag_transactions_actions_advance_after_observed_state ... ok
+test server::probes::tests::inventory_drag_transactions_waits_for_probe_guards ... ok
+test server::probes::tests::survival_furnace_inventory_updates_accept_player_and_open_mirror_slots ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_capture_command_for_main_thread_drain ... ok
+test server::probes::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test server::probes::tests::survival_furnace_output_match_rejects_wrong_item_or_count ... ok
+test server::probes::tests::survival_hunger_food_stack_match_accepts_only_contract_bread ... ok
+test server::probes::tests::survival_furnace_stacks_use_contract_items ... ok
+test mcp::tests::tcp_transport_binds_loopback_and_serves_jsonrpc ... ok
+test server::probes::tests::survival_hunger_health_updates_match_bounded_health_cycle_contract ... ok
+test server::tests::survival_block_entity_position_match_rejects_wrong_target ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_artifact_path_and_digest ... ok
+test server::tests::survival_block_entity_sign_lines_match_contract_payload ... ok
+test server::tests::survival_crafting_fixture_positions_are_named ... ok
+test server::tests::survival_crafting_inventory_indices_accept_player_and_open_mirror ... ok
+test server::tests::survival_crafting_inventory_updates_use_player_inventory_window ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_control_command_for_main_thread_drain ... ok
+test server::tests::survival_crafting_result_match_rejects_wrong_item_or_count ... ok
+test server::tests::survival_crafting_stacks_use_contract_items ... ok
+test server::tests::survival_furnace_fixture_positions_are_named ... ok
+test server::tests::survival_furnace_inventory_indices_accept_player_and_open_mirror ... ok
+test server::probes::tests::survival_hunger_food_health_updates_match_exact_contract ... ok
+test server::tests::survival_furnace_inventory_updates_accept_player_and_open_mirror_slots ... ok
+test server::tests::survival_furnace_output_match_rejects_wrong_item_or_count ... ok
+test server::tests::survival_furnace_stacks_use_contract_items ... ok
+test server::tests::survival_hunger_food_health_updates_match_exact_contract ... ok
+test server::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test server::tests::survival_hunger_food_stack_match_accepts_only_contract_bread ... ok
+test server::tests::survival_hunger_health_updates_match_bounded_health_cycle_contract ... ok
+test server::tests::survival_mob_drop_item_match_accepts_only_contract_drop ... ok
+test server::tests::survival_mob_drop_position_match_rejects_wrong_target ... ok
+test server::tests::survival_redstone_toggle_output_position_match_rejects_wrong_target ... ok
+test server::probes::tests::survival_mob_drop_actions_progress_and_fail_closed ... ok
+test server::tests::survival_world_persistence_position_match_rejects_wrong_target ... ok
+test world::tests::dimension_codec_rejects_unaligned_height ... ok
+test world::tests::dimension_codec_applies_named_dimension_bounds ... ok
+test world::tests::dimension_codec_ignores_missing_dimension_name ... ok
+test world::tests::parse_chunk_1_16_4 ... ok
+test world::tests::parse_chunk_19w02a ... ok
+test world::tests::parse_chunk_1_14_2 ... ok
+test world::tests::parse_chunk_1_12_2 ... ok
+test world::tests::parse_chunk_1_16 ... ok
+test world::tests::parse_chunk_1_17_1 ... ok
+test world::tests::parse_chunk_1_15_2 ... ok
+test world::tests::parse_chunk_1_16_3 ... ok
+test world::tests::parse_chunk_1_13_2 ... ok
+test world::tests::parse_chunk_1_14_4 ... ok
+test world::tests::parse_chunk_1_14_1 ... ok
+test world::tests::parse_chunk_1_14_3 ... ok
+test world::tests::parse_chunk_1_16_2 ... ok
+test world::tests::parse_chunk_1_14 ... ok
+test world::tests::parse_chunk_18w50a ... ok
+test world::tests::parse_chunk_1_15_1 ... ok
+test world::tests::parse_chunk_1_16_1 ... ok
+test mcp::tests::non_loopback_tcp_transport_requires_token_per_request ... ok
+test world::tests::parse_chunk_1_18_1 ... ok
+test world::tests::parse_chunk_1_18_2 ... ok
+
+test result: ok. 244 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+   Doc-tests stevenarella
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+post_full_exit_status=0

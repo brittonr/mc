@@ -1,0 +1,11 @@
+{
+  "change_issues": [],
+  "changes": 31,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 36,
+  "valid": true
+}
+validate_exit_status=0

@@ -1,11 +1,11 @@
 566daa03c9ada900266ebcaffe72044b8ab337c046d4b538b8110ff8a8587ca3  clients/stevenarella/src/server/mod.rs
 5b80c6b70c640916527995581aa95a65efa02712e2681a7da614e241cd13150b  clients/stevenarella/src/server/login.rs
-2c019bf6972a2a81220c73ab47d67c72c18b9fda61ddc22e1f5b1c8c3cc67f93  cairn/specs/mc-compatibility/spec.md
+be65ac3b757b4b0c68fc4d730075b3e1bdac200485ac6cba0144edfd5b1d5028  cairn/specs/mc-compatibility/spec.md
 0610244f34e95cee52e7dffa0fa6e0eb2673b3bf6854c058477b8ffd3deab824  cairn/archive/2026-06-28-extract-stevenarella-login-core/proposal.md
 c0a84f74581ea62100741742f59977c68dbac57fef179cb93d79ac825443966e  cairn/archive/2026-06-28-extract-stevenarella-login-core/design.md
 d1050b8519c7b57717a0f48d889168438bd1f389879f3bf4b9f3e171b877f56e  cairn/archive/2026-06-28-extract-stevenarella-login-core/tasks.md
 c58c8af4bf35bbd06c30d5467769eb2181db9335602cb2341e3dd1c57b63f71d  cairn/archive/2026-06-28-extract-stevenarella-login-core/specs/mc-compatibility/spec.md
-40a8211c59f59d09b4485ec164831cdddb0e8a6a1c6bb6beab8a6e872ecafb19  docs/evidence/protocol-763-ctf-invalid-action-live-breadth-2026-06-22.b3
+6c3372c17849215a1eb3467a5342f705a6002b7c91253e2752224b5c5fe1f873  docs/evidence/protocol-763-ctf-invalid-action-live-breadth-2026-06-22.b3
 b739ce00bc850fe8a35980059904fd83143ad2af3f7db9607d7bb060633b2902  docs/evidence/extract-stevenarella-login-core.baseline.stevenarella-server-tests.run.log
 fffde0bbc807e65249d9dc2b6af67b38a5bbb69377b551633e95e0a9ec1cc152  docs/evidence/extract-stevenarella-login-core.cargo-fmt.run.log
 c9576dbc1abe54a2854bac79ecc1f50e4da5512ac9f6705274ca52a77d800f22  docs/evidence/extract-stevenarella-login-core.focused.login-tests.run.log

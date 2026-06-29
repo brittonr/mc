@@ -147,6 +147,178 @@ fn parent_model_resource(default_plugin: &str, reference: &str) -> Option<Resour
     Some(resource)
 }
 
+// ---------------------------------------------------------------------------
+// Pure model decision cores.
+//
+// These free functions are the deterministic functional core of the model
+// module: they take explicit inputs and return a decision without touching the
+// resource manager, JSON readers, texture manager, random sources, renderer
+// allocation, or logging. The `Factory` and render/light shells keep every side
+// effect and delegate the model decisions to these cores so block model
+// behavior stays testable in isolation.
+// ---------------------------------------------------------------------------
+
+/// Vertex light channel scale used to pack a 0..15 light sample.
+const LIGHT_PACK_SCALE: u16 = 4000;
+
+/// Minecraft models use 16 units per block.
+const MODEL_UNITS_PER_BLOCK: f64 = 16.0;
+
+/// Minecraft face UVs live in a 0..16 model space; texture lookups multiply by
+/// this extent when mapping UV coordinates to texture pixels.
+const MODEL_UV_EXTENT: i16 = 16;
+
+/// Resolve the builtin model type from a resolved parent location.
+///
+/// Mirrors the `builtin:` parent handling inside `Factory::parse_model` so the
+/// inheritance decision is testable without resource reads.
+fn resolve_builtin_type(parent_location: &str) -> BuiltinType {
+    match parent_location {
+        "builtin/generated" => BuiltinType::Generated,
+        "builtin/entity" => BuiltinType::Entity,
+        "builtin/compass" => BuiltinType::Compass,
+        "builtin/clock" => BuiltinType::Clock,
+        _ => BuiltinType::False,
+    }
+}
+
+/// Decide whether a parent model should be loaded from resources.
+///
+/// A parent is loaded only when it is non-empty and not a builtin model;
+/// builtin parents are handled by [`resolve_builtin_type`] instead.
+fn should_load_parent_model(parent: &str, parent_location: &str) -> bool {
+    !parent.is_empty() && !parent_location.starts_with(BUILTIN_MODEL_PREFIX)
+}
+
+/// Decide whether a state model resolves variants through multipart rules
+/// rather than a single named variant.
+fn uses_multipart(state_model: &StateModel) -> bool {
+    !state_model.multipart.is_empty()
+}
+
+/// Evaluate parsed multipart `when` rules against a block-matching predicate.
+///
+/// The matcher is supplied by the shell (typically
+/// `|key, val| block.match_multipart(key, val)`), keeping this core free of
+/// `Block` and world state. Empty rules match vacuously; an empty `OR` group
+/// matches nothing.
+fn eval_multipart_rules(rules: &[Rule], matches: &dyn Fn(&str, &str) -> bool) -> bool {
+    for rule in rules {
+        match rule {
+            Rule::Or(sub_groups) => {
+                let mut matched = false;
+                for sub_rules in sub_groups {
+                    if eval_multipart_rules(sub_rules, matches) {
+                        matched = true;
+                        break;
+                    }
+                }
+                if !matched {
+                    return false;
+                }
+            }
+            Rule::Match(key, val) => {
+                if !matches(key.as_str(), val.as_str()) {
+                    return false;
+                }
+            }
+        }
+    }
+    true
+}
+
+/// Average a set of RGB samples, matching the per-pixel accumulation used by
+/// biome color blending. An empty sample set returns black so callers cannot
+/// divide by zero.
+fn average_rgb(samples: &[(u8, u8, u8)]) -> (u8, u8, u8) {
+    if samples.is_empty() {
+        return (0, 0, 0);
+    }
+    let mut r = 0u32;
+    let mut g = 0u32;
+    let mut b = 0u32;
+    for &(cr, cg, cb) in samples {
+        r += cr as u32;
+        g += cg as u32;
+        b += cb as u32;
+    }
+    let count = samples.len() as u32;
+    ((r / count) as u8, (g / count) as u8, (b / count) as u8)
+}
+
+/// Pack a single light sample into the vertex light channel.
+fn pack_light_value(value: u8) -> u16 {
+    (value as u16) * LIGHT_PACK_SCALE
+}
+
+/// Average accumulated smooth-lighting samples into packed vertex light.
+///
+/// `count` is the number of samples that produced `block_light_sum` and
+/// `sky_light_sum`; a zero count returns no light so callers cannot divide by
+/// zero.
+fn average_packed_light(block_light_sum: u32, sky_light_sum: u32, count: u32) -> (u16, u16) {
+    if count == 0 {
+        return (0, 0);
+    }
+    (
+        ((block_light_sum * (LIGHT_PACK_SCALE as u32)) / count) as u16,
+        ((sky_light_sum * (LIGHT_PACK_SCALE as u32)) / count) as u16,
+    )
+}
+
+/// Rotate face UV bounds by a model face rotation in degrees.
+///
+/// `uv` is `(ux1, ux2, uy1, uy2)` already scaled to texture pixels. Only the
+/// Minecraft rotations `90`, `180`, and `270` transform the bounds; any other
+/// value (including `0` and unsupported angles) leaves them unchanged so the
+/// shell fails closed on invalid face data.
+fn rotate_face_uv(
+    uv: (i16, i16, i16, i16),
+    rotation: i32,
+    tw: i16,
+    th: i16,
+) -> (i16, i16, i16, i16) {
+    let (ux1, ux2, uy1, uy2) = uv;
+    match rotation {
+        270 => (uy1, uy2, tw * MODEL_UV_EXTENT - ux2, tw * MODEL_UV_EXTENT - ux1),
+        180 => (
+            tw * MODEL_UV_EXTENT - ux2,
+            tw * MODEL_UV_EXTENT - ux1,
+            th * MODEL_UV_EXTENT - uy2,
+            th * MODEL_UV_EXTENT - uy1,
+        ),
+        90 => (
+            th * MODEL_UV_EXTENT - uy2,
+            th * MODEL_UV_EXTENT - uy1,
+            ux1,
+            ux2,
+        ),
+        _ => uv,
+    }
+}
+
+/// Select a model-space vertex coordinate from element bounds.
+///
+/// `base` is the precomputed unit-cube vertex coordinate (0.0 or 1.0 from
+/// [`BlockVertex`]); vertices on the low face use `from`, vertices on the high
+/// face use `to`, matching Minecraft element layout.
+fn element_vertex_coord(base: f32, from: f64, to: f64) -> f32 {
+    if base < 0.5 {
+        (from / MODEL_UNITS_PER_BLOCK) as f32
+    } else {
+        (to / MODEL_UNITS_PER_BLOCK) as f32
+    }
+}
+
+/// Select the low or high UV offset for a vertex from its unit-cube offset.
+fn select_uv_offset(toffset: i16, low: i16, high: i16) -> i16 {
+    if toffset == 0 {
+        low
+    } else {
+        high
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -223,6 +395,246 @@ mod tests {
         );
         assert_eq!(parse_resource_reference(DEFAULT_PLUGIN, "minecraft:"), None);
     }
+
+    #[test]
+    fn model_file_path_wraps_with_models_prefix_and_json_suffix() {
+        assert_eq!(
+            model_file_path("block/grass_block"),
+            "models/block/grass_block.json",
+        );
+        assert_eq!(
+            model_file_path("builtin/generated"),
+            "models/builtin/generated.json",
+        );
+    }
+
+    #[test]
+    fn is_absolute_model_location_detects_known_prefixes() {
+        assert!(is_absolute_model_location("block/stone"));
+        assert!(is_absolute_model_location("builtin/generated"));
+        assert!(is_absolute_model_location("item/stick"));
+        assert!(!is_absolute_model_location("grass_block"));
+    }
+
+    #[test]
+    fn block_state_model_resource_rejects_unsafe_references() {
+        assert_eq!(block_state_model_resource(DEFAULT_PLUGIN, ""), None);
+        assert_eq!(block_state_model_resource(DEFAULT_PLUGIN, "minecraft:"), None);
+    }
+
+    #[test]
+    fn parent_model_resource_preserves_absolute_and_builtin_paths() {
+        assert_eq!(
+            parent_model_resource(DEFAULT_PLUGIN, "minecraft:block/cube_all"),
+            Some(ResourceReference {
+                plugin: "minecraft".to_owned(),
+                location: "models/block/cube_all.json".to_owned(),
+            }),
+        );
+        assert_eq!(
+            parent_model_resource(DEFAULT_PLUGIN, "builtin/generated"),
+            Some(ResourceReference {
+                plugin: "minecraft".to_owned(),
+                location: "models/builtin/generated.json".to_owned(),
+            }),
+        );
+    }
+
+    #[test]
+    fn resolve_builtin_type_recognizes_known_builtins() {
+        assert_eq!(
+            resolve_builtin_type("builtin/generated"),
+            BuiltinType::Generated
+        );
+        assert_eq!(resolve_builtin_type("builtin/entity"), BuiltinType::Entity);
+        assert_eq!(resolve_builtin_type("builtin/compass"), BuiltinType::Compass);
+        assert_eq!(resolve_builtin_type("builtin/clock"), BuiltinType::Clock);
+    }
+
+    #[test]
+    fn resolve_builtin_type_defaults_unknown_builtins_to_false() {
+        // Unknown builtin parents fall back to no builtin, preserving the
+        // current behavior of treating unrecognized parents as ordinary models.
+        assert_eq!(resolve_builtin_type("builtin/unknown"), BuiltinType::False);
+        assert_eq!(resolve_builtin_type(""), BuiltinType::False);
+        assert_eq!(resolve_builtin_type("block/cube_all"), BuiltinType::False);
+    }
+
+    #[test]
+    fn should_load_parent_model_skips_empty_and_builtin_parents() {
+        assert!(should_load_parent_model("block/cube_all", "block/cube_all"));
+        // Missing parent: nothing to inherit.
+        assert!(!should_load_parent_model("", ""));
+        // Builtin parents are handled by resolve_builtin_type, not loaded.
+        assert!(!should_load_parent_model(
+            "builtin/generated",
+            "builtin/generated",
+        ));
+        assert!(!should_load_parent_model("builtin/clock", "builtin/clock"));
+    }
+
+    #[test]
+    fn uses_multipart_detects_multipart_state_models() {
+        let variants_only = StateModel {
+            variants: HashMap::with_hasher(BuildHasherDefault::default()),
+            multipart: vec![],
+        };
+        assert!(!uses_multipart(&variants_only));
+
+        let multipart = StateModel {
+            variants: HashMap::with_hasher(BuildHasherDefault::default()),
+            multipart: vec![MultipartRule {
+                apply: Variants { models: vec![] },
+                rules: vec![Rule::Match("variant".to_owned(), "north".to_owned())],
+            }],
+        };
+        assert!(uses_multipart(&multipart));
+    }
+
+    #[test]
+    fn state_model_selects_named_variant() {
+        let mut variants = HashMap::with_hasher(BuildHasherDefault::default());
+        variants.insert("east".to_owned(), Variants { models: vec![] });
+        let state_model = StateModel {
+            variants,
+            multipart: vec![],
+        };
+        assert!(state_model.get_variants("east").is_some());
+        assert!(state_model.get_variants("north").is_none());
+    }
+
+    #[test]
+    fn eval_multipart_rules_matches_simple_rules() {
+        let always = |_: &str, _: &str| true;
+        let never = |_: &str, _: &str| false;
+        let facing_north = |key: &str, val: &str| key == "facing" && val == "north";
+
+        // Empty rules match vacuously.
+        assert!(eval_multipart_rules(&[], &always));
+        // A matching rule passes.
+        assert!(eval_multipart_rules(
+            &[Rule::Match("facing".to_owned(), "north".to_owned())],
+            &facing_north,
+        ));
+        // A non-matching rule fails.
+        assert!(!eval_multipart_rules(
+            &[Rule::Match("facing".to_owned(), "south".to_owned())],
+            &facing_north,
+        ));
+        // A rule the matcher never satisfies fails.
+        assert!(!eval_multipart_rules(
+            &[Rule::Match("facing".to_owned(), "north".to_owned())],
+            &never,
+        ));
+    }
+
+    #[test]
+    fn eval_multipart_rules_handles_or_groups() {
+        let axis_x_or_z = |key: &str, val: &str| key == "axis" && (val == "x" || val == "z");
+        let rules = vec![Rule::Or(vec![
+            vec![Rule::Match("axis".to_owned(), "x".to_owned())],
+            vec![Rule::Match("axis".to_owned(), "z".to_owned())],
+        ])];
+        assert!(eval_multipart_rules(&rules, &axis_x_or_z));
+        // An empty OR group matches nothing (invalid multipart rule fails closed).
+        assert!(!eval_multipart_rules(&[Rule::Or(vec![])], &|_, _| true));
+    }
+
+    #[test]
+    fn average_rgb_averages_samples() {
+        assert_eq!(average_rgb(&[(10, 20, 30), (30, 40, 50)]), (20, 30, 40));
+        // Nine equal samples collapse to the sample color (biome blend shape).
+        assert_eq!(average_rgb(&[(255, 0, 0); 9]), (255, 0, 0));
+    }
+
+    #[test]
+    fn average_rgb_returns_black_for_no_samples() {
+        // Unsupported/empty biome inputs fail closed to black.
+        assert_eq!(average_rgb(&[]), (0, 0, 0));
+    }
+
+    #[test]
+    fn pack_light_value_scales_single_sample() {
+        assert_eq!(pack_light_value(0), 0);
+        assert_eq!(pack_light_value(15), 60_000);
+    }
+
+    #[test]
+    fn average_packed_light_blends_samples() {
+        // Eight samples of block light 2 and sky light 4 match the smooth
+        // lighting shape used by calculate_light.
+        assert_eq!(average_packed_light(16, 32, 8), (8_000, 16_000));
+    }
+
+    #[test]
+    fn average_packed_light_returns_zero_without_samples() {
+        // Unsupported/empty light inputs fail closed to no light instead of
+        // dividing by zero.
+        assert_eq!(average_packed_light(100, 100, 0), (0, 0));
+    }
+
+    #[test]
+    fn rotate_face_uv_transforms_known_rotations() {
+        let uv = (10, 20, 30, 40);
+        let tw = 2;
+        let th = 3;
+        assert_eq!(
+            rotate_face_uv(uv, 90, tw, th),
+            (th * 16 - 40, th * 16 - 30, 10, 20),
+        );
+        assert_eq!(
+            rotate_face_uv(uv, 180, tw, th),
+            (tw * 16 - 20, tw * 16 - 10, th * 16 - 40, th * 16 - 30),
+        );
+        assert_eq!(
+            rotate_face_uv(uv, 270, tw, th),
+            (30, 40, tw * 16 - 20, tw * 16 - 10),
+        );
+    }
+
+    #[test]
+    fn rotate_face_uv_leaves_invalid_rotations_unchanged() {
+        let uv = (10, 20, 30, 40);
+        // Rotation 0 and unsupported angles fail closed: UV unchanged.
+        assert_eq!(rotate_face_uv(uv, 0, 2, 3), uv);
+        assert_eq!(rotate_face_uv(uv, 45, 2, 3), uv);
+        assert_eq!(rotate_face_uv(uv, -90, 2, 3), uv);
+    }
+
+    #[test]
+    fn element_vertex_coord_picks_low_or_high_bound() {
+        // Low-face vertices (base < 0.5) use `from`.
+        assert_eq!(element_vertex_coord(0.0, 0.0, 16.0), 0.0);
+        // High-face vertices use `to`, scaled from model to block space.
+        assert_eq!(element_vertex_coord(1.0, 0.0, 16.0), 1.0);
+        assert_eq!(element_vertex_coord(1.0, 0.0, 8.0), 0.5);
+    }
+
+    #[test]
+    fn select_uv_offset_chooses_low_or_high() {
+        assert_eq!(select_uv_offset(0, 1, 2), 1);
+        assert_eq!(select_uv_offset(1, 1, 2), 2);
+    }
+
+    #[test]
+    fn rotate_direction_advances_face_cycle() {
+        assert_eq!(
+            rotate_direction(Direction::North, 1, FACE_ROTATION, &[Direction::Invalid]),
+            Direction::East,
+        );
+        assert_eq!(
+            rotate_direction(Direction::West, 1, FACE_ROTATION, &[Direction::Invalid]),
+            Direction::North,
+        );
+    }
+
+    #[test]
+    fn rotate_direction_passes_invalid_through_unchanged() {
+        assert_eq!(
+            rotate_direction(Direction::Invalid, 1, FACE_ROTATION, &[Direction::Invalid]),
+            Direction::Invalid,
+        );
+    }
 }
 
 thread_local!(
@@ -277,7 +689,7 @@ impl Factory {
     ) -> Result<usize, bool> {
         use std::collections::hash_map::Entry;
         if let Some(model) = self.models.get(&key) {
-            if model.multipart.is_empty() {
+            if !uses_multipart(model) {
                 let variant = block.get_model_variant();
                 if let Some(var) = model.get_variants(&variant) {
                     let model = var.choose_model(rng);
@@ -294,7 +706,10 @@ impl Factory {
                         Entry::Vacant(e) => {
                             let mut res: Option<Model> = None;
                             for rule in &model.multipart {
-                                let ok = Self::eval_rules(block, &rule.rules);
+                                let ok = eval_multipart_rules(
+                                    &rule.rules,
+                                    &|rule_key, rule_val| block.match_multipart(rule_key, rule_val),
+                                );
                                 if ok {
                                     if res.is_some() {
                                         res.as_mut().unwrap().join(rule.apply.choose_model(rng));
@@ -314,31 +729,6 @@ impl Factory {
             return Err(true);
         }
         Err(false)
-    }
-
-    fn eval_rules(block: Block, rules: &[Rule]) -> bool {
-        for mrule in rules {
-            match *mrule {
-                Rule::Or(ref sub_rules) => {
-                    let mut ok = false;
-                    for srule in sub_rules {
-                        if Self::eval_rules(block, srule) {
-                            ok = true;
-                            break;
-                        }
-                    }
-                    if !ok {
-                        return false;
-                    }
-                }
-                Rule::Match(ref key, ref val) => {
-                    if !block.match_multipart(key, val) {
-                        return false;
-                    }
-                }
-            }
-        }
-        true
     }
 
     pub fn get_state_model<R: Rng, W: Write>(
@@ -525,8 +915,7 @@ impl Factory {
             .as_ref()
             .map(|resource| resource.location.as_str())
             .unwrap_or("");
-        let mut model = if !parent.is_empty() && !parent_location.starts_with(BUILTIN_MODEL_PREFIX)
-        {
+        let mut model = if should_load_parent_model(parent, parent_location) {
             let parent_resource = match parent_model_resource(plugin, parent) {
                 Some(val) => val,
                 None => {
@@ -573,13 +962,7 @@ impl Factory {
                 weight: 1.0,
 
                 display: HashMap::with_hasher(BuildHasherDefault::default()),
-                builtin: match parent_location {
-                    "builtin/generated" => BuiltinType::Generated,
-                    "builtin/entity" => BuiltinType::Entity,
-                    "builtin/compass" => BuiltinType::Compass,
-                    "builtin/clock" => BuiltinType::Clock,
-                    _ => BuiltinType::False,
-                },
+                builtin: resolve_builtin_type(parent_location),
             }
         };
 
@@ -799,33 +1182,12 @@ impl Factory {
 
                     let tw = texture.get_width() as i16;
                     let th = texture.get_height() as i16;
-                    if face.rotation > 0 {
-                        let ox1 = ux1;
-                        let ox2 = ux2;
-                        let oy1 = uy1;
-                        let oy2 = uy2;
-                        match face.rotation {
-                            270 => {
-                                uy1 = tw * 16 - ox2;
-                                uy2 = tw * 16 - ox1;
-                                ux1 = oy1;
-                                ux2 = oy2;
-                            }
-                            180 => {
-                                uy1 = th * 16 - oy2;
-                                uy2 = th * 16 - oy1;
-                                ux1 = tw * 16 - ox2;
-                                ux2 = tw * 16 - ox1;
-                            }
-                            90 => {
-                                uy1 = ox1;
-                                uy2 = ox2;
-                                ux1 = th * 16 - oy2;
-                                ux2 = th * 16 - oy1;
-                            }
-                            _ => {}
-                        }
-                    }
+                    let (rotated_ux1, rotated_ux2, rotated_uy1, rotated_uy2) =
+                        rotate_face_uv((ux1, ux2, uy1, uy2), face.rotation, tw, th);
+                    ux1 = rotated_ux1;
+                    ux2 = rotated_ux2;
+                    uy1 = rotated_uy1;
+                    uy2 = rotated_uy2;
 
                     for v in &mut verts {
                         processed_face.vertices_texture.push(texture.clone());
@@ -835,23 +1197,9 @@ impl Factory {
                         v.th = texture.get_height() as u16;
                         v.tatlas = texture.atlas as i16;
 
-                        if v.x < 0.5 {
-                            v.x = (el.from[0] / 16.0) as f32;
-                        } else {
-                            v.x = (el.to[0] / 16.0) as f32;
-                        }
-
-                        if v.y < 0.5 {
-                            v.y = (el.from[1] / 16.0) as f32;
-                        } else {
-                            v.y = (el.to[1] / 16.0) as f32;
-                        }
-
-                        if v.z < 0.5 {
-                            v.z = (el.from[2] / 16.0) as f32;
-                        } else {
-                            v.z = (el.to[2] / 16.0) as f32;
-                        }
+                        v.x = element_vertex_coord(v.x, el.from[0], el.to[0]);
+                        v.y = element_vertex_coord(v.y, el.from[1], el.to[1]);
+                        v.z = element_vertex_coord(v.z, el.from[2], el.to[2]);
 
                         if let Some(r) = el.rotation.as_ref() {
                             let angle = r.angle * (::std::f64::consts::PI / 180.0);
@@ -927,17 +1275,8 @@ impl Factory {
                             v.z = 0.5 + (z * c + x * s);
                         }
 
-                        if v.toffsetx == 0 {
-                            v.toffsetx = ux1;
-                        } else {
-                            v.toffsetx = ux2;
-                        }
-
-                        if v.toffsety == 0 {
-                            v.toffsety = uy1;
-                        } else {
-                            v.toffsety = uy2;
-                        }
+                        v.toffsetx = select_uv_offset(v.toffsetx, ux1, ux2);
+                        v.toffsety = select_uv_offset(v.toffsety, uy1, uy2);
 
                         if face.rotation > 0 {
                             let rot_y =
@@ -1054,7 +1393,7 @@ impl Variants {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 enum BuiltinType {
     False,
     Generated,
@@ -1244,10 +1583,11 @@ fn calculate_biome(
     img: &image::DynamicImage,
 ) -> (u8, u8, u8) {
     use std::cmp::{max, min};
-    let mut count = 0;
-    let mut r = 0;
-    let mut g = 0;
-    let mut b = 0;
+    // Fixed 3x3 neighborhood sampled by Minecraft biome color blending.
+    const SMOOTH_BIOME_SAMPLE_COUNT: usize = 9;
+    let mut samples: [(u8, u8, u8); SMOOTH_BIOME_SAMPLE_COUNT] =
+        [(0, 0, 0); SMOOTH_BIOME_SAMPLE_COUNT];
+    let mut index = 0usize;
     for xx in -1..2 {
         for zz in -1..2 {
             let bi = snapshot.get_biome(x + xx, z + zz);
@@ -1260,13 +1600,12 @@ fn calculate_biome(
 
             let col = img.get_pixel(ix as u32, iy as u32);
             let col = bi.process_color(col);
-            r += col.0[0] as u32;
-            g += col.0[1] as u32;
-            b += col.0[2] as u32;
-            count += 1;
+            samples[index] = (col.0[0], col.0[1], col.0[2]);
+            index += 1;
         }
     }
-    ((r / count) as u8, (g / count) as u8, (b / count) as u8)
+    debug_assert_eq!(index, SMOOTH_BIOME_SAMPLE_COUNT);
+    average_rgb(&samples[..index])
 }
 
 fn calculate_light(
@@ -1288,7 +1627,10 @@ fn calculate_light(
     let s_block_light = snapshot.get_block_light(orig_x + ox, orig_y + oy, orig_z + oz);
     let s_sky_light = snapshot.get_sky_light(orig_x + ox, orig_y + oy, orig_z + oz);
     if !smooth {
-        return ((s_block_light as u16) * 4000, (s_sky_light as u16) * 4000);
+        return (
+            pack_light_value(s_block_light),
+            pack_light_value(s_sky_light),
+        );
     }
 
     let mut block_light = 0u32;
@@ -1323,10 +1665,7 @@ fn calculate_light(
         }
     }
 
-    (
-        (((block_light * 4000) / count) as u16),
-        (((sky_light * 4000) / count) as u16),
-    )
+    average_packed_light(block_light, sky_light, count)
 }
 
 pub const PRECOMPUTED_VERTS: [&[BlockVertex; 4]; 6] = [
