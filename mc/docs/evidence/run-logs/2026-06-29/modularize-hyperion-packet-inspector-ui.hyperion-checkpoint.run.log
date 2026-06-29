@@ -1,0 +1,9 @@
+command=jj status && jj log -r @- --no-graph --color=never -T commit_id.short() ++ " " ++ description.first_line()
+cwd=/home/brittonr/git/mc/hyperion
+
+The working copy has no changes.
+Working copy  (@) : ukxznmmu 2c85d143 (empty) (no description set)
+Parent commit (@-): lnoqnwou c6204c3f make packet inspector decisions testable
+c6204c3f9cb8 make packet inspector decisions testable
+
+exit_status=0

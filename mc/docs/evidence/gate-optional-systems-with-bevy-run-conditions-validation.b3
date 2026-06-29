@@ -29,6 +29,6 @@ eaf499dee7562c0f445f93d39bfa03f2266d88fab5680acb2f88269ab928a908  cairn/specs/va
 bdf917e86b1a20f791b467f1a6bb13c9daa6b72886deea46c56b8447b4b6905a  servers/valence/crates/valence_server/src/observability.rs
 132a2163f4623f8ed862fbf373c7f680b21ebafb3ecc7492b69be92bdf96f9e4  servers/valence/crates/valence_server/README.md
 fe9fdc33a41711936258ea0644b210e9f8b5f5643bf8f1ac8be1fd2cf4bf8dfa  docs/evidence/add-schedule-hygiene-gates.b3
-ff055093737df363d7b69930f5a5d37bf08e9ba6ee8d436a5938b1ac03310865  docs/evidence/add-observability-profiling-hooks-2026-06-23.b3
-0e20a55e11fb44dd8afca679c56ca741e2b39953699398180267c03407e37585  docs/evidence/add-valence-tick-scheduler-validation.b3
-a0babb5703c8ef620457981daaa5a94bb1608c6e0cd8f74ec4e171d376e3ac2b  docs/evidence/valence-packet-compose-api-2026-06-23.b3
+a0e93547bf95b4359d2f77c4cfcb295c7c8562a6b05480940d3e4ea2d4c01201  docs/evidence/add-observability-profiling-hooks-2026-06-23.b3
+15fe5acd6f0b81613919e5f69bbfc73164b50991f036606e87adc6181e62d59a  docs/evidence/add-valence-tick-scheduler-validation.b3
+fbdb0852bfd59a371c6067c7cd55586d947a6d85725e361fc292e73c21e8832b  docs/evidence/valence-packet-compose-api-2026-06-23.b3

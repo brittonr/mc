@@ -1,0 +1,63 @@
+command=nix develop --no-update-lock-file . -c cargo clippy -p packet-inspector --all-targets --all-features -- -D warnings
+cwd=/home/brittonr/git/mc/hyperion
+
+   Compiling packet-inspector v0.1.0 (/home/brittonr/git/mc/hyperion/tools/packet-inspector)
+error: this could be a `const fn`
+  --> tools/packet-inspector/src/app/packet_list/sorting.rs:58:1
+   |
+58 | / fn grouping_key(packet: &Packet, grouping: PacketGrouping) -> u8 {
+59 | |     match grouping {
+60 | |         PacketGrouping::Flat => flat_group_order(),
+61 | |         PacketGrouping::PacketState => packet_state_order(packet.state),
+62 | |     }
+63 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+   = note: `-D clippy::missing-const-for-fn` implied by `-D clippy::nursery`
+   = help: to override `-D clippy::nursery` add `#[allow(clippy::missing_const_for_fn)]`
+help: make the function `const`
+   |
+58 | const fn grouping_key(packet: &Packet, grouping: PacketGrouping) -> u8 {
+   | +++++
+
+error: this could be a `const fn`
+  --> tools/packet-inspector/src/app/packet_list/sorting.rs:65:1
+   |
+65 | / fn sorting_key(packet: &Packet, received_order: usize, sort: PacketSort) -> (i32, u8, usize) {
+66 | |     match sort {
+67 | |         PacketSort::ReceivedOrder => (
+68 | |             received_order_packet_id(),
+...  |
+74 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+help: make the function `const`
+   |
+65 | const fn sorting_key(packet: &Packet, received_order: usize, sort: PacketSort) -> (i32, u8, usize) {
+   | +++++
+
+error: this lint expectation is unfulfilled
+ --> tools/packet-inspector/src/app/packet_list/sorting.rs:8:9
+  |
+8 |         dead_code,
+  |         ^^^^^^^^^
+  |
+  = note: core supports state grouping while the shell keeps flat grouping to preserve current UI behavior
+  = note: `-D unfulfilled-lint-expectations` implied by `-D warnings`
+  = help: to override `-D warnings` add `#[allow(unfulfilled_lint_expectations)]`
+
+error: this lint expectation is unfulfilled
+  --> tools/packet-inspector/src/app/packet_list/sorting.rs:18:9
+   |
+18 |         dead_code,
+   |         ^^^^^^^^^
+   |
+   = note: core supports packet-id sorting while the shell keeps received order to preserve current UI behavior
+
+error: could not compile `packet-inspector` (bin "packet-inspector") due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `packet-inspector` (bin "packet-inspector" test) due to 4 previous errors
+
+exit_status=101

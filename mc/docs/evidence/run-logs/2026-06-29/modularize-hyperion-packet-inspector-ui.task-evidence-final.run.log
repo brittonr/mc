@@ -1,0 +1,6 @@
+command=bash -lc rustc --edition=2021 tools/check_cairn_task_evidence.rs -o target/check_cairn_task_evidence && target/check_cairn_task_evidence cairn/changes/modularize-hyperion-packet-inspector-ui/tasks.md
+cwd=/home/brittonr/git/mc
+
+task evidence gate passed: 7 completed tasks checked across 1 task files
+
+exit_status=0

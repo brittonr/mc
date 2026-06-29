@@ -1,0 +1,5 @@
+command=nix develop --no-update-lock-file . -c cargo fmt -p packet-inspector
+cwd=/home/brittonr/git/mc/hyperion
+
+
+exit_status=0

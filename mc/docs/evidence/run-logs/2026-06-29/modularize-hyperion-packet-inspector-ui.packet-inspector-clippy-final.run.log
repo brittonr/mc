@@ -1,0 +1,7 @@
+command=nix develop --no-update-lock-file . -c cargo clippy -p packet-inspector --all-targets --all-features -- -D warnings
+cwd=/home/brittonr/git/mc/hyperion
+
+   Compiling packet-inspector v0.1.0 (/home/brittonr/git/mc/hyperion/tools/packet-inspector)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.99s
+
+exit_status=0

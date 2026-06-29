@@ -1,0 +1,384 @@
+command=nix develop --no-update-lock-file . -c cargo clippy -p packet-inspector --all-targets --all-features -- -D warnings
+cwd=/home/brittonr/git/mc/hyperion
+
+    Checking linux-raw-sys v0.4.15
+   Compiling equivalent v1.0.2
+    Checking libloading v0.8.6
+    Checking tracing-core v0.1.36
+    Checking parking v2.2.1
+    Checking foldhash v0.1.5
+    Checking serde_core v1.0.228
+    Checking scoped-tls v1.0.1
+    Checking getrandom v0.2.15
+    Checking crossbeam-utils v0.8.21
+   Compiling quick-xml v0.37.2
+    Checking scopeguard v1.2.0
+    Checking bytemuck v1.23.0
+    Checking thiserror v1.0.69
+    Checking static_assertions v1.1.0
+    Checking arrayvec v0.7.6
+    Checking typenum v1.20.1
+   Compiling enumflags2 v0.7.11
+    Checking endi v1.1.0
+   Compiling indexmap v2.9.0
+    Checking lock_api v0.4.12
+    Checking futures-lite v2.6.0
+    Checking ttf-parser v0.25.1
+    Checking atomic-waker v1.1.2
+    Checking hashbrown v0.15.2
+    Checking memoffset v0.9.1
+    Checking dlib v0.5.2
+    Checking rand_core v0.6.4
+    Checking tinystr v0.7.6
+   Compiling quick-xml v0.30.0
+    Checking ab_glyph_rasterizer v0.1.8
+    Checking concurrent-queue v2.5.0
+    Checking cpufeatures v0.2.17
+    Checking piper v0.2.4
+    Checking tracing v0.1.44
+    Checking futures-util v0.3.31
+    Checking xdg-home v1.3.0
+    Checking wayland-sys v0.31.6
+    Checking parking_lot v0.12.3
+    Checking rand_chacha v0.3.1
+    Checking ordered-stream v0.2.0
+    Checking hex v0.4.3
+    Checking icu_locid v1.5.0
+    Checking event-listener v5.4.0
+    Checking cursor-icon v1.1.0
+    Checking xcursor v0.3.8
+    Checking raw-window-handle v0.6.2
+    Checking simd-adler32 v0.3.7
+    Checking xkeysym v0.2.1
+    Checking profiling v1.0.16
+    Checking rand v0.8.5
+    Checking num-traits v0.2.19
+   Compiling toml_edit v0.22.24
+    Checking event-listener-strategy v0.5.3
+    Checking icu_collections v1.5.0
+    Checking generic-array v0.14.7
+   Compiling wayland-scanner v0.31.6
+    Checking strict-num v0.1.1
+    Checking arrayref v0.3.9
+    Checking miniz_oxide v0.8.5
+    Checking x11-dl v2.21.0
+    Checking async-executor v1.13.1
+    Checking as-raw-xcb-connection v1.0.1
+    Checking utf8_iter v1.0.4
+    Checking async-lock v3.4.0
+    Checking async-channel v2.3.1
+    Checking icu_provider v1.5.0
+    Checking async-broadcast v0.7.2
+    Checking tiny-skia-path v0.11.4
+    Checking x11rb-protocol v0.13.1
+    Checking getrandom v0.3.2
+    Checking blocking v1.6.1
+    Checking epaint_default_fonts v0.31.1
+    Checking flate2 v1.1.1
+    Checking base64 v0.21.7
+    Checking termcolor v1.4.1
+    Checking block-buffer v0.10.4
+    Checking crypto-common v0.1.6
+    Checking icu_locid_transform v1.5.0
+    Checking unicode-width v0.1.14
+    Checking nohash-hasher v0.2.0
+   Compiling serde_json v1.0.140
+    Checking strum v0.26.3
+    Checking async-fs v2.1.2
+    Checking immutable-chunkmap v2.0.6
+    Checking digest v0.10.7
+    Checking unicode-xid v0.2.6
+    Checking smol_str v0.2.2
+    Checking bitflags v1.3.2
+    Checking dpi v0.1.1
+    Checking tiny-skia v0.11.4
+    Checking hexf-parse v0.2.1
+    Checking codespan-reporting v0.11.1
+    Checking glow v0.16.0
+    Checking ash v0.38.0+1.3.281
+    Checking khronos-egl v6.0.0
+    Checking sha1 v0.10.6
+    Checking ordered-float v4.6.0
+    Checking fdeflate v0.3.7
+    Checking form_urlencoded v1.2.1
+    Checking renderdoc-sys v1.1.0
+   Compiling toml_edit v0.20.7
+    Checking icu_properties v1.5.1
+    Checking bitflags v2.13.0
+    Checking serde v1.0.228
+   Compiling valence_build_utils v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+    Checking aho-corasick v1.1.3
+    Checking owned_ttf_parser v0.25.0
+    Checking powerfmt v0.2.0
+    Checking png v0.17.16
+    Checking byteorder-lite v0.1.0
+    Checking petgraph v0.6.5
+   Compiling proc-macro-crate v3.3.0
+    Checking ab_glyph v0.2.29
+    Checking rustix v0.38.44
+    Checking nix v0.29.0
+    Checking spirv v0.3.0+sdk-1.3.268.0
+    Checking gpu-alloc-types v0.3.0
+    Checking ahash v0.8.11
+    Checking accesskit v0.17.1
+    Checking emath v0.31.1
+    Checking uuid v1.16.0
+    Checking ron v0.8.1
+    Checking xkbcommon-dl v0.4.2
+    Checking gpu-descriptor-types v0.2.0
+    Checking gpu-alloc v0.6.0
+    Checking wgpu-types v24.0.0
+    Checking regex-automata v0.4.14
+    Checking gpu-descriptor v0.3.1
+    Checking image v0.25.5
+    Checking hashbrown v0.14.5
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+   Compiling zvariant_derive v4.2.0
+   Compiling zbus_macros v4.4.0
+    Checking ecolor v0.31.1
+    Checking valence_ident v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+    Checking naga v24.0.0
+    Checking epaint v0.31.1
+    Checking icu_normalizer v1.5.0
+    Checking glutin_glx_sys v0.6.1
+   Compiling bevy_macro_utils v0.12.1
+    Checking deranged v0.4.0
+    Checking futures-lite v1.13.0
+    Checking async-channel v1.9.0
+    Checking glutin_egl_sys v0.7.1
+    Checking glam v0.30.4
+    Checking accesskit_consumer v0.26.0
+    Checking base64 v0.22.1
+    Checking idna_adapter v1.2.0
+   Compiling zvariant v4.2.0
+    Checking home v0.5.11
+    Checking num_threads v0.1.7
+    Checking idna v1.0.3
+    Checking bit-vec v0.6.3
+    Checking web-time v1.1.0
+    Checking valence_nbt v0.8.0 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+    Checking glutin v0.32.2
+    Checking time v0.3.41
+    Checking bevy_utils v0.12.1
+    Checking type-map v0.5.0
+    Checking bevy_tasks v0.12.1
+    Checking bit-set v0.5.3
+    Checking url v2.5.4
+   Compiling bevy_ecs_macros v0.12.1
+    Checking quick-xml v0.38.4
+    Checking same-file v1.0.6
+    Checking linked-hash-map v0.5.6
+    Checking valence_text v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+    Checking derive_more v1.0.0
+    Checking walkdir v2.5.0
+    Checking yaml-rust v0.4.5
+    Checking regex v1.12.4
+   Compiling packet-inspector v0.1.0 (/home/brittonr/git/mc/hyperion/tools/packet-inspector)
+    Checking webbrowser v1.0.4
+    Checking bincode v1.3.3
+    Checking spin v0.9.8
+    Checking nanorand v0.7.0
+    Checking fnv v1.0.7
+    Checking fancy-regex v0.11.0
+    Checking pollster v0.4.0
+    Checking tokio v1.50.0
+    Checking flume v0.11.1
+    Checking egui v0.31.1
+    Checking bevy_ecs v0.12.1
+    Checking plist v1.8.0
+    Checking zbus_names v3.0.0
+    Checking syntect v5.2.0
+    Checking zbus_xml v4.0.0
+    Checking polling v3.7.4
+    Checking wayland-backend v0.3.8
+    Checking zbus-lockstep v0.4.4
+    Checking async-io v2.4.0
+    Checking calloop v0.13.0
+   Compiling zbus-lockstep-macros v0.4.4
+    Checking wayland-client v0.31.8
+    Checking wayland-csd-frame v0.3.0
+    Checking zbus v4.4.0
+    Checking wayland-protocols v0.32.6
+    Checking wayland-cursor v0.31.8
+    Checking calloop-wayland-source v0.3.0
+    Checking valence_math v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+    Checking x11rb v0.13.1
+    Checking egui_glow v0.31.1
+    Checking egui_dock v0.16.0
+    Checking atspi-common v0.6.0
+    Checking arboard v3.4.1
+    Checking wayland-protocols-wlr v0.3.6
+    Checking wayland-protocols-plasma v0.3.6
+    Checking smithay-client-toolkit v0.19.2
+    Checking wgpu-hal v24.0.2
+    Checking atspi-proxies v0.6.0
+    Checking accesskit_atspi_common v0.10.1
+    Checking sctk-adwaita v0.10.1
+    Checking smithay-clipboard v0.7.2
+    Checking winit v0.30.9
+    Checking atspi-connection v0.6.0
+    Checking atspi v0.22.0
+    Checking accesskit_unix v0.13.1
+    Checking wgpu-core v24.0.2
+    Checking glutin-winit v0.5.0
+    Checking accesskit_winit v0.23.1
+    Checking egui-winit v0.31.1
+    Checking wgpu v24.0.3
+    Checking egui-wgpu v0.31.1
+    Checking eframe v0.31.1
+    Checking valence_protocol v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+error: variant `PacketState` is never constructed
+ --> tools/packet-inspector/src/app/packet_list/sorting.rs:7:5
+  |
+5 | pub(in crate::app) enum PacketGrouping {
+  |                         -------------- variant in this enum
+6 |     Flat,
+7 |     PacketState,
+  |     ^^^^^^^^^^^
+  |
+  = note: `PacketGrouping` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+  = note: `-D dead-code` implied by `-D warnings`
+  = help: to override `-D warnings` add `#[allow(dead_code)]`
+
+error: variant `PacketIdThenSide` is never constructed
+  --> tools/packet-inspector/src/app/packet_list/sorting.rs:13:5
+   |
+11 | pub(in crate::app) enum PacketSort {
+   |                         ---------- variant in this enum
+12 |     ReceivedOrder,
+13 |     PacketIdThenSide,
+   |     ^^^^^^^^^^^^^^^^
+   |
+   = note: `PacketSort` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+error: this could be a `const fn`
+  --> tools/packet-inspector/src/app/packet_list/sorting.rs:68:1
+   |
+68 | / fn flat_group_order() -> u8 {
+69 | |     0
+70 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+   = note: `-D clippy::missing-const-for-fn` implied by `-D clippy::nursery`
+   = help: to override `-D clippy::nursery` add `#[allow(clippy::missing_const_for_fn)]`
+help: make the function `const`
+   |
+68 | const fn flat_group_order() -> u8 {
+   | +++++
+
+error: this could be a `const fn`
+  --> tools/packet-inspector/src/app/packet_list/sorting.rs:72:1
+   |
+72 | / fn received_order_packet_id() -> i32 {
+73 | |     0
+74 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+help: make the function `const`
+   |
+72 | const fn received_order_packet_id() -> i32 {
+   | +++++
+
+error: this could be a `const fn`
+  --> tools/packet-inspector/src/app/packet_list/sorting.rs:76:1
+   |
+76 | / fn received_order_side() -> u8 {
+77 | |     0
+78 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+help: make the function `const`
+   |
+76 | const fn received_order_side() -> u8 {
+   | +++++
+
+error: this could be a `const fn`
+  --> tools/packet-inspector/src/app/packet_list/sorting.rs:80:1
+   |
+80 | / fn packet_state_order(state: PacketState) -> u8 {
+81 | |     match state {
+82 | |         PacketState::Handshaking => 0,
+83 | |         PacketState::Status => 1,
+...  |
+87 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+help: make the function `const`
+   |
+80 | const fn packet_state_order(state: PacketState) -> u8 {
+   | +++++
+
+error: this could be a `const fn`
+  --> tools/packet-inspector/src/app/packet_list/sorting.rs:89:1
+   |
+89 | / fn packet_side_order(side: PacketSide) -> u8 {
+90 | |     match side {
+91 | |         PacketSide::Clientbound => 0,
+92 | |         PacketSide::Serverbound => 1,
+93 | |     }
+94 | | }
+   | |_^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+help: make the function `const`
+   |
+89 | const fn packet_side_order(side: PacketSide) -> u8 {
+   | +++++
+
+error: this could be a `const fn`
+  --> tools/packet-inspector/src/app/packet_list/state.rs:9:5
+   |
+9  | /     pub(in crate::app) fn new(selected_packet: Option<usize>, update_scroll: bool) -> Self {
+10 | |         Self {
+11 | |             selected_packet,
+12 | |             update_scroll,
+13 | |         }
+14 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+help: make the function `const`
+   |
+9  |     pub(in crate::app) const fn new(selected_packet: Option<usize>, update_scroll: bool) -> Self {
+   |                        +++++
+
+error: this could be a `const fn`
+  --> tools/packet-inspector/src/app/packet_list/state.rs:25:5
+   |
+25 | /     pub(in crate::app) fn new(visible: usize, total: usize) -> Self {
+26 | |         Self { visible, total }
+27 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+help: make the function `const`
+   |
+25 |     pub(in crate::app) const fn new(visible: usize, total: usize) -> Self {
+   |                        +++++
+
+error: this could be a `const fn`
+   --> tools/packet-inspector/src/app/packet_list/ui.rs:216:1
+    |
+216 | / fn packet_row_fill(selected: bool) -> Rgba {
+217 | |     if selected {
+218 | |         return Rgba::from_rgba_premultiplied(
+219 | |             SELECTED_FILL_RED,
+...   |
+232 | | }
+    | |_^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn
+help: make the function `const`
+    |
+216 | const fn packet_row_fill(selected: bool) -> Rgba {
+    | +++++
+
+error: could not compile `packet-inspector` (bin "packet-inspector") due to 10 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `packet-inspector` (bin "packet-inspector" test) due to 8 previous errors
+
+exit_status=101

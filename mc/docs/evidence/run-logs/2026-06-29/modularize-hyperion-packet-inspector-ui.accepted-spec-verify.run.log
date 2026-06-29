@@ -1,0 +1,17 @@
+command=bash -lc grep -n "r\[valence_hyperion_integration.hyperion_packet_inspector" cairn/specs/valence-hyperion-integration/spec.md
+cwd=/home/brittonr/git/mc
+
+349:r[valence_hyperion_integration.hyperion_packet_inspector.scope] Hyperion packet-inspector UI modularity work MUST be scoped as Hyperion tool-owned nested-repo work unless a separate integration Cairn classifies specific code or concepts for Valence adoption, porting, or reference use.
+353:r[valence_hyperion_integration.hyperion_packet_inspector.scope.owned]
+361:r[valence_hyperion_integration.hyperion_packet_inspector.boundaries] Hyperion packet-inspector UI code SHOULD expose cohesive boundaries for packet-list state, filters, selection, sorting/grouping, render models, and UI rendering shells.
+365:r[valence_hyperion_integration.hyperion_packet_inspector.boundaries.ownership]
+372:r[valence_hyperion_integration.hyperion_packet_inspector.core] Packet-inspector filtering, selection, sorting/grouping, viewport state, and render-model generation SHOULD be pure over explicit packet-list inputs.
+376:r[valence_hyperion_integration.hyperion_packet_inspector.core.testable]
+383:r[valence_hyperion_integration.hyperion_packet_inspector.parity] Packet-inspector UI modularization MUST preserve packet inspector UI behavior, keyboard/mouse interactions, filter semantics, public tool behavior, and non-claims.
+387:r[valence_hyperion_integration.hyperion_packet_inspector.parity.stable]
+394:r[valence_hyperion_integration.hyperion_packet_inspector.tests] The change MUST include positive and negative tests for filter matches, empty filters, selection movement, sorting/grouping, empty packet lists, malformed packet summaries, and render models.
+398:r[valence_hyperion_integration.hyperion_packet_inspector.tests.coverage]
+405:r[valence_hyperion_integration.hyperion_packet_inspector.validation] The change MUST record focused Hyperion packet-inspector tests run from the Hyperion root, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+409:r[valence_hyperion_integration.hyperion_packet_inspector.validation.logs]
+
+exit_status=0

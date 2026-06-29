@@ -1,0 +1,235 @@
+command=cargo test -p packet-inspector
+cwd=/home/brittonr/git/mc/hyperion
+
+   Compiling rustix v0.38.44
+   Compiling linux-raw-sys v0.4.15
+   Compiling indexmap v2.9.0
+   Compiling libloading v0.8.6
+   Compiling crossbeam-utils v0.8.21
+   Compiling tracing-core v0.1.36
+   Compiling winnow v0.7.4
+   Compiling wayland-sys v0.31.6
+   Compiling foldhash v0.1.5
+   Compiling endi v1.1.0
+   Compiling getrandom v0.2.15
+   Compiling scoped-tls v1.0.1
+   Compiling quick-xml v0.37.2
+   Compiling ahash v0.8.11
+   Compiling enumflags2_derive v0.7.11
+   Compiling zvariant_utils v2.1.0
+   Compiling bytemuck v1.23.0
+   Compiling wayland-backend v0.3.8
+   Compiling wayland-client v0.31.8
+   Compiling displaydoc v0.2.5
+   Compiling hashbrown v0.15.2
+   Compiling dlib v0.5.2
+   Compiling memoffset v0.9.1
+   Compiling ttf-parser v0.25.1
+   Compiling piper v0.2.4
+   Compiling rand_core v0.6.4
+   Compiling crypto-common v0.1.6
+   Compiling quick-xml v0.30.0
+   Compiling nix v0.29.0
+   Compiling khronos_api v3.1.0
+   Compiling tracing v0.1.44
+   Compiling ab_glyph_rasterizer v0.1.8
+   Compiling rand_chacha v0.3.1
+   Compiling digest v0.10.7
+   Compiling enumflags2 v0.7.11
+   Compiling tinystr v0.7.6
+   Compiling enumn v0.1.14
+   Compiling num-traits v0.2.19
+   Compiling futures-util v0.3.31
+   Compiling concurrent-queue v2.5.0
+   Compiling rand v0.8.5
+   Compiling sha1 v0.10.6
+   Compiling wayland-scanner v0.31.6
+   Compiling serde_repr v0.1.20
+   Compiling async-trait v0.1.88
+   Compiling icu_locid v1.5.0
+   Compiling event-listener v5.4.0
+   Compiling async-executor v1.13.1
+   Compiling xdg-home v1.3.0
+   Compiling ordered-stream v0.2.0
+   Compiling x11-dl v2.21.0
+   Compiling xcursor v0.3.8
+   Compiling accesskit v0.17.1
+   Compiling event-listener-strategy v0.5.3
+   Compiling xkeysym v0.2.1
+   Compiling async-channel v2.3.1
+   Compiling async-lock v3.4.0
+   Compiling async-broadcast v0.7.2
+   Compiling hex v0.4.3
+   Compiling raw-window-handle v0.6.2
+   Compiling log v0.4.26
+   Compiling icu_provider v1.5.0
+   Compiling blocking v1.6.1
+   Compiling profiling v1.0.16
+   Compiling toml_edit v0.22.24
+   Compiling smithay-client-toolkit v0.19.2
+   Compiling simd-adler32 v0.3.7
+   Compiling cursor-icon v1.1.0
+   Compiling xml-rs v0.8.25
+   Compiling async-fs v2.1.2
+   Compiling icu_collections v1.5.0
+   Compiling icu_locid_transform v1.5.0
+   Compiling memmap2 v0.9.5
+   Compiling strict-num v0.1.1
+   Compiling miniz_oxide v0.8.5
+   Compiling getrandom v0.3.2
+   Compiling emath v0.31.1
+   Compiling as-raw-xcb-connection v1.0.1
+   Compiling serde_json v1.0.140
+   Compiling x11rb-protocol v0.13.1
+   Compiling owned_ttf_parser v0.25.0
+   Compiling tiny-skia-path v0.11.4
+   Compiling strum_macros v0.26.4
+   Compiling ab_glyph v0.2.29
+   Compiling gl_generator v0.14.0
+   Compiling naga v24.0.0
+   Compiling winit v0.30.9
+   Compiling flate2 v1.1.1
+   Compiling ecolor v0.31.1
+   Compiling base64 v0.21.7
+   Compiling icu_properties v1.5.1
+   Compiling bit-vec v0.8.0
+   Compiling nohash-hasher v0.2.0
+   Compiling tiny-skia v0.11.4
+   Compiling epaint_default_fonts v0.31.1
+   Compiling ash v0.38.0+1.3.281
+   Compiling khronos-egl v6.0.0
+   Compiling epaint v0.31.1
+   Compiling bit-set v0.8.0
+   Compiling ron v0.8.1
+   Compiling uuid v1.16.0
+   Compiling xkbcommon-dl v0.4.2
+   Compiling immutable-chunkmap v2.0.6
+   Compiling gpu-descriptor-types v0.2.0
+   Compiling proc-macro-crate v3.3.0
+   Compiling spirv v0.3.0+sdk-1.3.268.0
+   Compiling gpu-alloc-types v0.3.0
+   Compiling wgpu-hal v24.0.2
+   Compiling dpi v0.1.1
+   Compiling bitflags v1.3.2
+   Compiling unicode-xid v0.2.6
+   Compiling hexf-parse v0.2.1
+   Compiling glow v0.16.0
+   Compiling smol_str v0.2.2
+   Compiling gpu-alloc v0.6.0
+   Compiling accesskit_consumer v0.26.0
+   Compiling gpu-descriptor v0.3.1
+   Compiling glutin_glx_sys v0.6.1
+   Compiling glutin_egl_sys v0.7.1
+   Compiling ordered-float v4.6.0
+   Compiling fdeflate v0.3.7
+   Compiling form_urlencoded v1.2.1
+   Compiling strum v0.26.3
+   Compiling wgpu-types v24.0.0
+   Compiling wgpu-core v24.0.2
+   Compiling zvariant_derive v4.2.0
+   Compiling zbus_macros v4.4.0
+   Compiling litrs v0.4.1
+   Compiling renderdoc-sys v1.1.0
+   Compiling png v0.17.16
+   Compiling toml_edit v0.20.7
+   Compiling valence_build_utils v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+   Compiling valence_ident_macros v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+   Compiling icu_normalizer v1.5.0
+   Compiling proc-macro2-diagnostics v0.10.1
+   Compiling document-features v0.2.11
+   Compiling aho-corasick v1.1.3
+   Compiling wgpu v24.0.3
+   Compiling glutin v0.32.2
+   Compiling byteorder-lite v0.1.0
+   Compiling idna_adapter v1.2.0
+   Compiling egui v0.31.1
+   Compiling zvariant v4.2.0
+   Compiling idna v1.0.3
+   Compiling image v0.25.5
+   Compiling hashbrown v0.14.5
+   Compiling polling v3.7.4
+   Compiling async-channel v1.9.0
+   Compiling petgraph v0.6.5
+   Compiling url v2.5.4
+   Compiling valence_ident v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+   Compiling calloop v0.13.0
+   Compiling async-io v2.4.0
+   Compiling regex-automata v0.4.14
+   Compiling bevy_macro_utils v0.12.1
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+   Compiling wayland-csd-frame v0.3.0
+   Compiling glutin-winit v0.5.0
+   Compiling home v0.5.11
+   Compiling web-time v1.1.0
+   Compiling glam v0.30.4
+   Compiling bit-vec v0.6.3
+   Compiling yansi v1.0.1
+   Compiling webbrowser v1.0.4
+   Compiling valence_nbt v0.8.0 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+   Compiling time v0.3.41
+   Compiling bevy_ecs_macros v0.12.1
+   Compiling bevy_utils v0.12.1
+   Compiling bit-set v0.5.3
+   Compiling zbus_names v3.0.0
+   Compiling bevy_tasks v0.12.1
+   Compiling type-map v0.5.0
+   Compiling derive_more-impl v1.0.0
+   Compiling quick-xml v0.38.4
+   Compiling zbus_xml v4.0.0
+   Compiling wayland-protocols v0.32.6
+   Compiling wayland-cursor v0.31.8
+   Compiling zbus v4.4.0
+   Compiling calloop-wayland-source v0.3.0
+   Compiling regex v1.12.4
+   Compiling zbus-lockstep v0.4.4
+   Compiling linked-hash-map v0.5.6
+   Compiling same-file v1.0.6
+   Compiling bevy_ecs v0.12.1
+   Compiling walkdir v2.5.0
+   Compiling yaml-rust v0.4.5
+   Compiling fancy-regex v0.11.0
+   Compiling plist v1.8.0
+   Compiling zbus-lockstep-macros v0.4.4
+   Compiling duplicate v2.0.0
+   Compiling packet-inspector v0.1.0 (/home/brittonr/git/mc/hyperion/tools/packet-inspector)
+   Compiling valence_text v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+   Compiling nanorand v0.7.0
+   Compiling valence_protocol_macros v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+   Compiling spin v0.9.8
+   Compiling bincode v1.3.3
+   Compiling pollster v0.4.0
+   Compiling tokio v1.50.0
+   Compiling flume v0.11.1
+   Compiling derive_more v1.0.0
+   Compiling syntect v5.2.0
+   Compiling egui_glow v0.31.1
+   Compiling egui_dock v0.16.0
+   Compiling wayland-protocols-wlr v0.3.6
+   Compiling wayland-protocols-plasma v0.3.6
+   Compiling x11rb v0.13.1
+   Compiling valence_math v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+   Compiling atspi-common v0.6.0
+   Compiling arboard v3.4.1
+   Compiling sctk-adwaita v0.10.1
+   Compiling smithay-clipboard v0.7.2
+   Compiling atspi-proxies v0.6.0
+   Compiling accesskit_atspi_common v0.10.1
+   Compiling atspi-connection v0.6.0
+   Compiling atspi v0.22.0
+   Compiling accesskit_unix v0.13.1
+   Compiling accesskit_winit v0.23.1
+   Compiling egui-winit v0.31.1
+   Compiling egui-wgpu v0.31.1
+   Compiling eframe v0.31.1
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-open#7c664716)
+error[E0554]: `#![feature]` may not be used on the stable release channel
+ --> /home/brittonr/.cargo/git/checkouts/valence-f36bc2fa92befb13/7c66471/crates/valence_protocol/src/lib.rs:1:1
+  |
+1 | #![feature(specialization)]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0554`.
+error: could not compile `valence_protocol` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+
+exit_status=101

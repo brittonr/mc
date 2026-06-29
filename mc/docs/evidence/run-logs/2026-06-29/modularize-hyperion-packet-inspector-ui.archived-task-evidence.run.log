@@ -1,0 +1,9 @@
+command=bash -lc rustc --edition=2021 tools/check_cairn_task_evidence.rs -o target/check_cairn_task_evidence && target/check_cairn_task_evidence cairn/archive/2026-06-29-modularize-hyperion-packet-inspector-ui/tasks.md
+cwd=/home/brittonr/git/mc
+
+task evidence gate failed: cairn/archive/2026-06-29-modularize-hyperion-packet-inspector-ui/tasks.md:15 cites run log docs/evidence/run-logs/2026-06-29/modularize-hyperion-packet-inspector-ui.closeout-gate-design.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/archive/2026-06-29-modularize-hyperion-packet-inspector-ui/tasks.md:15 cites run log docs/evidence/run-logs/2026-06-29/modularize-hyperion-packet-inspector-ui.closeout-gate-proposal.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/archive/2026-06-29-modularize-hyperion-packet-inspector-ui/tasks.md:15 cites run log docs/evidence/run-logs/2026-06-29/modularize-hyperion-packet-inspector-ui.closeout-gate-tasks.run.log without a cited .b3 manifest covering it
+task evidence gate failed: cairn/archive/2026-06-29-modularize-hyperion-packet-inspector-ui/tasks.md:15 cites run log docs/evidence/run-logs/2026-06-29/modularize-hyperion-packet-inspector-ui.closeout-validate.run.log without a cited .b3 manifest covering it
+
+exit_status=1

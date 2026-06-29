@@ -1,0 +1,26 @@
+command=nix run .#cairn -- gate proposal modularize-hyperion-packet-inspector-ui --root .
+cwd=/home/brittonr/git/mc
+
+{
+  "change": "modularize-hyperion-packet-inspector-ui",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f3f6344f9dabb98fe7d53229c4e72539a513eca8795c2a821c31b7602882af1f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "9a8f5c7cf0231dac66d0d08d35c12a50ac680c913bcb70b01317c0601d867e2c",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+exit_status=0

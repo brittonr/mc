@@ -2,7 +2,7 @@
 717fcbba9af3587b33a6910699502cae1cb5c144ceb03fc6067cca2f917a65b7  cairn/archive/2026-06-24-upstream-byte-backed-protocol-path/design.md
 ed5a65994caced635cf8e9ee578f2f4fb6f0b604714e5d1646e6d6d97e06046d  cairn/archive/2026-06-24-upstream-byte-backed-protocol-path/tasks.md
 8363350cfb8a90ae1f2daa659b15e7e21903d36c9d2aae03e9a5197689a75cad  cairn/archive/2026-06-24-upstream-byte-backed-protocol-path/specs/valence-hyperion-integration/spec.md
-3d57a9adcc32ec124328bb2647483a374ec099a40ee01fb1c0295630ffb8c470  cairn/specs/valence-hyperion-integration/spec.md
+6234c3cebc7a0603bbe8231ab65999b4831d3392be563cdc51186d9f18b68697  cairn/specs/valence-hyperion-integration/spec.md
 69c2e61bc8225fbb1a4aa81ac610a6305373cb2c70e87679f327882cbd19349d  docs/upstream-byte-backed-protocol-audit.md
 e37ef3553be3f09e819f8e40d0d088f268f965e3b8b3f107ed6acf6fc2a3c137  docs/evidence/upstream-byte-backed-protocol-path-accepted-spec-merge.md
 3528574d7124a4892a1829f7c2e8f8e2189c63adbcef533b5b4b836eacb9c153  servers/valence/crates/valence_protocol/src/byte_backed.rs

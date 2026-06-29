@@ -1,0 +1,354 @@
+command=nix develop --no-update-lock-file . -c cargo fmt -p packet-inspector -- --check
+cwd=/home/brittonr/git/mc/hyperion
+
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/render_models.rs:113:
+     use valence_protocol::{PacketSide, PacketState};
+ 
+     use super::{
+[31m-        build_packet_counter, build_packet_list_model, packet_summary_is_well_formed,
+(B[m[31m-        PacketListState,
+(B[m[32m+        PacketListState, build_packet_counter, build_packet_list_model,
+(B[m[32m+        packet_summary_is_well_formed,
+(B[m     };
+ 
+     const SELECTED_PACKET_INDEX: usize = 1;
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/render_models.rs:136:
+     #[test]
+     fn render_model_contains_counter_rows_and_selection() {
+         let packets = [
+[31m-            packet(FIRST_PACKET_ID, "First", Some(time::OffsetDateTime::UNIX_EPOCH)),
+(B[m[31m-            packet(SECOND_PACKET_ID, "Second", Some(time::OffsetDateTime::UNIX_EPOCH)),
+(B[m[32m+            packet(
+(B[m[32m+                FIRST_PACKET_ID,
+(B[m[32m+                "First",
+(B[m[32m+                Some(time::OffsetDateTime::UNIX_EPOCH),
+(B[m[32m+            ),
+(B[m[32m+            packet(
+(B[m[32m+                SECOND_PACKET_ID,
+(B[m[32m+                "Second",
+(B[m[32m+                Some(time::OffsetDateTime::UNIX_EPOCH),
+(B[m[32m+            ),
+(B[m         ];
+         let state = PacketListState::new(Some(SELECTED_PACKET_INDEX), false);
+ 
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/render_models.rs:153:
+     #[test]
+     fn render_model_omits_disabled_packets() {
+         let packets = [
+[31m-            packet(FIRST_PACKET_ID, "First", Some(time::OffsetDateTime::UNIX_EPOCH)),
+(B[m[31m-            packet(SECOND_PACKET_ID, "Second", Some(time::OffsetDateTime::UNIX_EPOCH)),
+(B[m[32m+            packet(
+(B[m[32m+                FIRST_PACKET_ID,
+(B[m[32m+                "First",
+(B[m[32m+                Some(time::OffsetDateTime::UNIX_EPOCH),
+(B[m[32m+            ),
+(B[m[32m+            packet(
+(B[m[32m+                SECOND_PACKET_ID,
+(B[m[32m+                "Second",
+(B[m[32m+                Some(time::OffsetDateTime::UNIX_EPOCH),
+(B[m[32m+            ),
+(B[m         ];
+         let state = PacketListState::new(None, false);
+ 
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/render_models.rs:161:
+[31m-        let model = build_packet_list_model(&packets, state, |packet| Some(packet.id == FIRST_PACKET_ID));
+(B[m[32m+        let model =
+(B[m[32m+            build_packet_list_model(&packets, state, |packet| Some(packet.id == FIRST_PACKET_ID));
+(B[m 
+         assert_eq!(model.counter.visible, 1);
+         assert_eq!(model.counter.total, packets.len());
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/render_models.rs:181:
+     #[test]
+     fn malformed_packet_summaries_fail_closed() {
+         let packets = [
+[31m-            packet(MALFORMED_PACKET_ID, "Negative", Some(time::OffsetDateTime::UNIX_EPOCH)),
+(B[m[32m+            packet(
+(B[m[32m+                MALFORMED_PACKET_ID,
+(B[m[32m+                "Negative",
+(B[m[32m+                Some(time::OffsetDateTime::UNIX_EPOCH),
+(B[m[32m+            ),
+(B[m             packet(FIRST_PACKET_ID, "", Some(time::OffsetDateTime::UNIX_EPOCH)),
+             packet(SECOND_PACKET_ID, "Missing Timestamp", None),
+         ];
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/render_models.rs:193:
+         assert!(model.rows.is_empty());
+         assert_eq!(model.counter.visible, 0);
+         assert_eq!(counter.visible, 0);
+[31m-        assert!(packets.iter().all(|packet| !packet_summary_is_well_formed(packet)));
+(B[m[32m+        assert!(
+(B[m[32m+            packets
+(B[m[32m+                .iter()
+(B[m[32m+                .all(|packet| !packet_summary_is_well_formed(packet))
+(B[m[32m+        );
+(B[m     }
+ }
+ 
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/selection.rs:37:
+     }
+ }
+ 
+[31m-fn previous_visible_index(selected_packet: Option<usize>, visible_indexes: &[usize]) -> Option<usize> {
+(B[m[32m+fn previous_visible_index(
+(B[m[32m+    selected_packet: Option<usize>,
+(B[m[32m+    visible_indexes: &[usize],
+(B[m[32m+) -> Option<usize> {
+(B[m     let anchor = selected_packet.unwrap_or(PREVIOUS_SELECTION_FALLBACK_EXCLUSIVE_INDEX);
+ 
+[31m-    visible_indexes.iter().copied().rev().find(|index| *index < anchor)
+(B[m[32m+    visible_indexes
+(B[m[32m+        .iter()
+(B[m[32m+        .copied()
+(B[m[32m+        .rev()
+(B[m[32m+        .find(|index| *index < anchor)
+(B[m }
+ 
+ fn next_visible_index(selected_packet: Option<usize>, visible_indexes: &[usize]) -> Option<usize> {
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/selection.rs:47:
+     let anchor = selected_packet.unwrap_or(NEXT_SELECTION_FALLBACK_EXCLUSIVE_INDEX);
+ 
+[31m-    visible_indexes.iter().copied().find(|index| *index > anchor)
+(B[m[32m+    visible_indexes
+(B[m[32m+        .iter()
+(B[m[32m+        .copied()
+(B[m[32m+        .find(|index| *index > anchor)
+(B[m }
+ 
+ #[cfg(test)]
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/selection.rs:53:
+ mod tests {
+[31m-    use super::{move_selection, SelectionDirection, SelectionUpdate};
+(B[m[32m+    use super::{SelectionDirection, SelectionUpdate, move_selection};
+(B[m 
+     const FIRST_VISIBLE_INDEX: usize = 0;
+     const MIDDLE_VISIBLE_INDEX: usize = 2;
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/selection.rs:60:
+ 
+     #[test]
+     fn moves_to_previous_and_next_visible_packet() {
+[31m-        let visible = [FIRST_VISIBLE_INDEX, MIDDLE_VISIBLE_INDEX, LAST_VISIBLE_INDEX];
+(B[m[32m+        let visible = [
+(B[m[32m+            FIRST_VISIBLE_INDEX,
+(B[m[32m+            MIDDLE_VISIBLE_INDEX,
+(B[m[32m+            LAST_VISIBLE_INDEX,
+(B[m[32m+        ];
+(B[m 
+         let previous = move_selection(Some(HIDDEN_INDEX), &visible, SelectionDirection::Previous);
+         let next = move_selection(Some(HIDDEN_INDEX), &visible, SelectionDirection::Next);
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/selection.rs:67:
+ 
+[31m-        assert_eq!(
+(B[m[31m-            previous,
+(B[m[31m-            SelectionUpdate {
+(B[m[31m-                selected_packet: Some(MIDDLE_VISIBLE_INDEX),
+(B[m[31m-                update_scroll: true,
+(B[m[31m-            }
+(B[m[31m-        );
+(B[m[31m-        assert_eq!(
+(B[m[31m-            next,
+(B[m[31m-            SelectionUpdate {
+(B[m[31m-                selected_packet: Some(LAST_VISIBLE_INDEX),
+(B[m[31m-                update_scroll: true,
+(B[m[31m-            }
+(B[m[31m-        );
+(B[m[32m+        assert_eq!(previous, SelectionUpdate {
+(B[m[32m+            selected_packet: Some(MIDDLE_VISIBLE_INDEX),
+(B[m[32m+            update_scroll: true,
+(B[m[32m+        });
+(B[m[32m+        assert_eq!(next, SelectionUpdate {
+(B[m[32m+            selected_packet: Some(LAST_VISIBLE_INDEX),
+(B[m[32m+            update_scroll: true,
+(B[m[32m+        });
+(B[m     }
+ 
+     #[test]
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/selection.rs:91:
+             SelectionDirection::Previous,
+         );
+ 
+[31m-        assert_eq!(
+(B[m[31m-            update,
+(B[m[31m-            SelectionUpdate {
+(B[m[31m-                selected_packet: Some(FIRST_VISIBLE_INDEX),
+(B[m[31m-                update_scroll: false,
+(B[m[31m-            }
+(B[m[31m-        );
+(B[m[32m+        assert_eq!(update, SelectionUpdate {
+(B[m[32m+            selected_packet: Some(FIRST_VISIBLE_INDEX),
+(B[m[32m+            update_scroll: false,
+(B[m[32m+        });
+(B[m     }
+ 
+     #[test]
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/selection.rs:106:
+ 
+         let update = move_selection(None, &visible, SelectionDirection::Next);
+ 
+[31m-        assert_eq!(
+(B[m[31m-            update,
+(B[m[31m-            SelectionUpdate {
+(B[m[31m-                selected_packet: None,
+(B[m[31m-                update_scroll: false,
+(B[m[31m-            }
+(B[m[31m-        );
+(B[m[32m+        assert_eq!(update, SelectionUpdate {
+(B[m[32m+            selected_packet: None,
+(B[m[32m+            update_scroll: false,
+(B[m[32m+        });
+(B[m     }
+ }
+ 
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/sorting.rs:33:
+         grouping_key(left_packet, grouping)
+             .cmp(&grouping_key(right_packet, grouping))
+             .then_with(|| {
+[31m-                sorting_key(left_packet, *left_order, sort)
+(B[m[31m-                    .cmp(&sorting_key(right_packet, *right_order, sort))
+(B[m[32m+                sorting_key(left_packet, *left_order, sort).cmp(&sorting_key(
+(B[m[32m+                    right_packet,
+(B[m[32m+                    *right_order,
+(B[m[32m+                    sort,
+(B[m[32m+                ))
+(B[m             })
+     });
+ 
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/sorting.rs:41:
+[31m-    ordered_indexes.into_iter().map(|(_, index)| index).collect()
+(B[m[32m+    ordered_indexes
+(B[m[32m+        .into_iter()
+(B[m[32m+        .map(|(_, index)| index)
+(B[m[32m+        .collect()
+(B[m }
+ 
+ fn grouping_key(packet: &Packet, grouping: PacketGrouping) -> u8 {
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/sorting.rs:92:
+     use packet_inspector::Packet;
+     use valence_protocol::{PacketSide, PacketState};
+ 
+[31m-    use super::{order_visible_packets, PacketGrouping, PacketSort};
+(B[m[32m+    use super::{PacketGrouping, PacketSort, order_visible_packets};
+(B[m 
+     const HIGH_PACKET_ID: i32 = 9;
+     const LOW_PACKET_ID: i32 = 1;
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/sorting.rs:112:
+     #[test]
+     fn received_order_keeps_visible_packet_order() {
+         let packets = [
+[31m-            packet(HIGH_PACKET_ID, PacketSide::Serverbound, PacketState::Play, "high"),
+(B[m[31m-            packet(LOW_PACKET_ID, PacketSide::Clientbound, PacketState::Login, "low"),
+(B[m[31m-            packet(MIDDLE_PACKET_ID, PacketSide::Clientbound, PacketState::Status, "middle"),
+(B[m[32m+            packet(
+(B[m[32m+                HIGH_PACKET_ID,
+(B[m[32m+                PacketSide::Serverbound,
+(B[m[32m+                PacketState::Play,
+(B[m[32m+                "high",
+(B[m[32m+            ),
+(B[m[32m+            packet(
+(B[m[32m+                LOW_PACKET_ID,
+(B[m[32m+                PacketSide::Clientbound,
+(B[m[32m+                PacketState::Login,
+(B[m[32m+                "low",
+(B[m[32m+            ),
+(B[m[32m+            packet(
+(B[m[32m+                MIDDLE_PACKET_ID,
+(B[m[32m+                PacketSide::Clientbound,
+(B[m[32m+                PacketState::Status,
+(B[m[32m+                "middle",
+(B[m[32m+            ),
+(B[m         ];
+         let visible = [2, 0];
+ 
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/sorting.rs:131:
+     #[test]
+     fn can_sort_by_packet_id_then_side() {
+         let packets = [
+[31m-            packet(HIGH_PACKET_ID, PacketSide::Serverbound, PacketState::Play, "high"),
+(B[m[31m-            packet(LOW_PACKET_ID, PacketSide::Serverbound, PacketState::Play, "low-server"),
+(B[m[31m-            packet(LOW_PACKET_ID, PacketSide::Clientbound, PacketState::Play, "low-client"),
+(B[m[32m+            packet(
+(B[m[32m+                HIGH_PACKET_ID,
+(B[m[32m+                PacketSide::Serverbound,
+(B[m[32m+                PacketState::Play,
+(B[m[32m+                "high",
+(B[m[32m+            ),
+(B[m[32m+            packet(
+(B[m[32m+                LOW_PACKET_ID,
+(B[m[32m+                PacketSide::Serverbound,
+(B[m[32m+                PacketState::Play,
+(B[m[32m+                "low-server",
+(B[m[32m+            ),
+(B[m[32m+            packet(
+(B[m[32m+                LOW_PACKET_ID,
+(B[m[32m+                PacketSide::Clientbound,
+(B[m[32m+                PacketState::Play,
+(B[m[32m+                "low-client",
+(B[m[32m+            ),
+(B[m         ];
+         let visible = [0, 1, 2];
+ 
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/sorting.rs:150:
+     #[test]
+     fn can_group_by_packet_state_before_sorting() {
+         let packets = [
+[31m-            packet(LOW_PACKET_ID, PacketSide::Clientbound, PacketState::Play, "play"),
+(B[m[31m-            packet(HIGH_PACKET_ID, PacketSide::Clientbound, PacketState::Handshaking, "handshake"),
+(B[m[31m-            packet(MIDDLE_PACKET_ID, PacketSide::Clientbound, PacketState::Login, "login"),
+(B[m[32m+            packet(
+(B[m[32m+                LOW_PACKET_ID,
+(B[m[32m+                PacketSide::Clientbound,
+(B[m[32m+                PacketState::Play,
+(B[m[32m+                "play",
+(B[m[32m+            ),
+(B[m[32m+            packet(
+(B[m[32m+                HIGH_PACKET_ID,
+(B[m[32m+                PacketSide::Clientbound,
+(B[m[32m+                PacketState::Handshaking,
+(B[m[32m+                "handshake",
+(B[m[32m+            ),
+(B[m[32m+            packet(
+(B[m[32m+                MIDDLE_PACKET_ID,
+(B[m[32m+                PacketSide::Clientbound,
+(B[m[32m+                PacketState::Login,
+(B[m[32m+                "login",
+(B[m[32m+            ),
+(B[m         ];
+         let visible = [0, 1, 2];
+ 
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/ui.rs:5:
+ };
+ use valence_protocol::PacketSide;
+ 
+[31m-use crate::shared_state::SharedState;
+(B[m[31m-
+(B[m use super::{
+     filters,
+     render_models::{self, PacketRowRenderModel},
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/ui.rs:13:
+     selection::{self, SelectionDirection},
+     state::PacketListState,
+ };
+[32m+use crate::shared_state::SharedState;
+(B[m 
+ const PACKET_ROW_HEIGHT: f32 = 24.0;
+ const PACKET_ROW_CORNER_RADIUS: f32 = 0.0;
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/ui.rs:74:
+ 
+ fn apply_selection_move(state: &mut SharedState, direction: SelectionDirection) {
+     let packets = state.packets.read().unwrap();
+[31m-    let visible_indexes = filters::visible_indexes(&packets, |packet| state.packet_filter.get(packet));
+(B[m[32m+    let visible_indexes =
+(B[m[32m+        filters::visible_indexes(&packets, |packet| state.packet_filter.get(packet));
+(B[m     let selection = selection::move_selection(state.selected_packet, &visible_indexes, direction);
+ 
+     if selection.update_scroll {
+Diff in /home/brittonr/git/mc/hyperion/tools/packet-inspector/src/app/packet_list/ui.rs:85:
+ 
+ fn draw_packet_counter(state: &SharedState, ui: &mut Ui) {
+     let packets = state.packets.read().unwrap();
+[31m-    let counter = render_models::build_packet_counter(&packets, |packet| state.packet_filter.get(packet));
+(B[m[32m+    let counter =
+(B[m[32m+        render_models::build_packet_counter(&packets, |packet| state.packet_filter.get(packet));
+(B[m 
+     ui.label(counter.label());
+ }
+
+exit_status=1
