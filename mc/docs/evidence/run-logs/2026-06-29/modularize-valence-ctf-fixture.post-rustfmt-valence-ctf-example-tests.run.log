@@ -1,0 +1,3101 @@
+# command: nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --example ctf
+# cwd: /home/brittonr/git/mc/servers/valence
+# timestamp_utc: 2026-06-29T14:35:27Z
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: function `view_contains_chunk` is never used
+  --> crates/valence_server/src/layer/chunk/targeting.rs:60:15
+   |
+60 | pub(crate) fn view_contains_chunk(view: ChunkView, pos: ChunkPos) -> bool {
+   |               ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_server` (lib) generated 1 warning
+warning: unknown lint: `path_segment_repetition`
+ --> crates/valence_inventory/src/slots.rs:4:9
+  |
+4 | #[allow(path_segment_repetition)]
+  |         ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unknown_lints)]` on by default
+
+warning: `valence_inventory` (lib) generated 1 warning
+   Compiling valence v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence)
+warning: unused import: `REQUIRED_BOUNDARY_CATEGORIES`
+  --> examples/fixture_core/ctf.rs:13:53
+   |
+13 |     CTF_BOUNDARY_NON_CLAIMS, CTF_MODULE_BOUNDARIES, REQUIRED_BOUNDARY_CATEGORIES,
+   |                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ProjectileTravelCollisionMarkers`
+  --> examples/fixture_core/ctf.rs:33:5
+   |
+33 |     ProjectileTravelCollisionMarkers,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `score_limit_final_capture_milestone`, `score_limit_post_win_score_mutation_milestone`, and `score_limit_pre_state_milestone`
+  --> examples/fixture_core/ctf.rs:41:42
+   |
+41 |     score_limit_duplicate_win_milestone, score_limit_final_capture_milestone,
+   |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+42 |     score_limit_post_win_score_mutation_milestone, score_limit_pre_state_milestone,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `spawn_team_assignment_milestone`
+  --> examples/fixture_core/ctf.rs:46:67
+   |
+46 |     defer_spawn_assignment, spawn_resource_reset_state_milestone, spawn_team_assignment_milestone,
+   |                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `should_break_survival_block` and `should_place_survival_block`
+  --> examples/fixture_core/survival.rs:17:17
+   |
+17 | pub use arena::{should_break_survival_block, should_place_survival_block};
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `derive_environment_id` and `normalize_environment_id`
+  --> examples/fixture_core/survival.rs:18:27
+   |
+18 | pub use biome_dimension::{derive_environment_id, normalize_environment_id};
+   |                           ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `should_place_block_entity_sign` and `validate_block_entity_payload`
+  --> examples/fixture_core/survival.rs:19:26
+   |
+19 | pub use block_entities::{should_place_block_entity_sign, validate_block_entity_payload};
+   |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `collect_event_matches`, `should_open_fixture_container`, `slot_event_matches`, and `stack_matches`
+  --> examples/fixture_core/survival.rs:21:5
+   |
+21 |     collect_event_matches, should_open_fixture_container, slot_event_matches, stack_matches,
+   |     ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^
+
+warning: unused imports: `should_emit_furnace_breadth_rejection` and `should_reject_furnace_invalid_fuel`
+  --> examples/fixture_core/survival.rs:23:19
+   |
+23 | pub use furnace::{should_emit_furnace_breadth_rejection, should_reject_furnace_invalid_fuel};
+   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `HungerUseContract`, `HungerUseInput`, `select_hunger_profile`, and `should_consume_hunger_food`
+  --> examples/fixture_core/survival.rs:25:5
+   |
+25 |     select_hunger_profile, should_consume_hunger_food, HungerUseContract, HungerUseInput,
+   |     ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^
+
+warning: unused import: `milestones::biome_dimension_state_milestone`
+  --> examples/fixture_core/survival.rs:27:9
+   |
+27 | pub use milestones::biome_dimension_state_milestone;
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `MobDropPickupDecision`, `MobDropPickupInput`, `plan_mob_drop_pickup`, and `should_handle_mob_drop_attack`
+  --> examples/fixture_core/survival.rs:29:5
+   |
+29 |     plan_mob_drop_pickup, should_handle_mob_drop_attack, MobDropPickupDecision, MobDropPickupInput,
+   |     ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `MarkerDecision` and `evaluate_marker_decision`
+  --> examples/fixture_core/survival.rs:31:23
+   |
+31 | pub use persistence::{evaluate_marker_decision, MarkerDecision};
+   |                       ^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^
+
+warning: unused import: `redstone::redstone_power_transition`
+  --> examples/fixture_core/survival.rs:32:9
+   |
+32 | pub use redstone::redstone_power_transition;
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `RuntimeConfigIssue`, `RuntimeFixtureFlags`, `enabled_flag`, `marker_path`, `post_restart_phase`, and `runtime_config_issues`
+  --> examples/fixture_core/survival.rs:34:5
+   |
+34 |     enabled_flag, marker_path, post_restart_phase, runtime_config_issues, RuntimeConfigIssue,
+   |     ^^^^^^^^^^^^  ^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^
+35 |     RuntimeFixtureFlags,
+   |     ^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `FixtureBlockPos`, `FixtureDiggingState`, `FixtureDirection`, `FixtureGameMode`, `FixtureHand`, `FixtureHungerProfile`, `FixtureInteraction`, `FixtureSlotChange`, and `FixtureStack`
+  --> examples/fixture_core/survival.rs:38:5
+   |
+38 |     FixtureBlockPos, FixtureDiggingState, FixtureDirection, FixtureGameMode, FixtureHand,
+   |     ^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^  ^^^^^^^^^^^
+39 |     FixtureHungerProfile, FixtureInteraction, FixtureSlotChange, FixtureStack,
+   |     ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^
+
+warning: constant `VANILLA_COMBAT_REFERENCE_KNOCKBACK_SCALE` is never used
+   --> examples/ctf.rs:111:7
+    |
+111 | const VANILLA_COMBAT_REFERENCE_KNOCKBACK_SCALE: f64 = 20.0;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `VANILLA_COMBAT_ARMOR_REDUCTION_DENOMINATOR` is never used
+   --> examples/ctf.rs:112:7
+    |
+112 | const VANILLA_COMBAT_ARMOR_REDUCTION_DENOMINATOR: f32 = 25.0;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `VANILLA_ARMOR_TOUGHNESS_QUARTER_DIVISOR` is never used
+   --> examples/ctf.rs:115:7
+    |
+115 | const VANILLA_ARMOR_TOUGHNESS_QUARTER_DIVISOR: f32 = 4.0;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `VANILLA_ARMOR_TOUGHNESS_BASE` is never used
+   --> examples/ctf.rs:116:7
+    |
+116 | const VANILLA_ARMOR_TOUGHNESS_BASE: f32 = 2.0;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `VANILLA_ARMOR_MIN_REDUCTION_DIVISOR` is never used
+   --> examples/ctf.rs:117:7
+    |
+117 | const VANILLA_ARMOR_MIN_REDUCTION_DIVISOR: f32 = 5.0;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `VANILLA_ARMOR_MAX_REDUCTION_POINTS` is never used
+   --> examples/ctf.rs:118:7
+    |
+118 | const VANILLA_ARMOR_MAX_REDUCTION_POINTS: f32 = 20.0;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `parse_nonzero_env_flag` is never used
+   --> examples/ctf.rs:311:4
+    |
+311 | fn parse_nonzero_env_flag(value: Option<&str>) -> bool {
+    |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `parse_present_env_flag` is never used
+   --> examples/ctf.rs:315:4
+    |
+315 | fn parse_present_env_flag(value: Option<&str>) -> bool {
+    |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `inventory_stack_slot_change_matches` is never used
+    --> examples/ctf.rs:2067:4
+     |
+2067 | fn inventory_stack_slot_change_matches(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `inventory_stack_slot_change_empty` is never used
+    --> examples/ctf.rs:2078:4
+     |
+2078 | fn inventory_stack_slot_change_empty(event: &ClickSlotEvent, slot: i16) -> bool {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `vanilla_armor_mitigation_for` is never used
+    --> examples/ctf.rs:3630:4
+     |
+3630 | fn vanilla_armor_mitigation_for(base_damage: f32, armor_points: f32, toughness: f32) -> f32 {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `for_team` is never used
+  --> examples/fixture_core/ctf/scoring.rs:10:12
+   |
+ 9 | impl ScoreSnapshot {
+   | ------------------ method in this implementation
+10 |     pub fn for_team(self, team: Team) -> u32 {
+   |            ^^^^^^^^
+
+warning: function `score_limit_pre_state_milestone` is never used
+  --> examples/fixture_core/ctf/scoring.rs:18:8
+   |
+18 | pub fn score_limit_pre_state_milestone(score: ScoreSnapshot, score_limit: u32) -> String {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `score_limit_final_capture_milestone` is never used
+  --> examples/fixture_core/ctf/scoring.rs:25:8
+   |
+25 | pub fn score_limit_final_capture_milestone(
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `score_limit_post_win_score_mutation_milestone` is never used
+  --> examples/fixture_core/ctf/scoring.rs:75:8
+   |
+75 | pub fn score_limit_post_win_score_mutation_milestone(username: &str, winning_team: Team) -> String {
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: fields `red_slot37_resource` and `blue_slot37_resource` are never read
+  --> examples/fixture_core/ctf/spawn.rs:32:9
+   |
+26 | pub struct SpawnResetContract {
+   |            ------------------ fields in this struct
+...
+32 |     pub red_slot37_resource: &'static str,
+   |         ^^^^^^^^^^^^^^^^^^^
+33 |     pub blue_slot37_resource: &'static str,
+   |         ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `spawn_team_assignment_milestone` is never used
+  --> examples/fixture_core/ctf/spawn.rs:38:8
+   |
+38 | pub fn spawn_team_assignment_milestone(
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `opponent` is never used
+  --> examples/fixture_core/ctf/team.rs:15:12
+   |
+ 7 | impl Team {
+   | --------- method in this implementation
+...
+15 |     pub fn opponent(self) -> Self {
+   |            ^^^^^^^^
+
+warning: constant `EVENT_LOOP_PRE_UPDATE_SCHEDULE_LABEL` is never used
+ --> examples/gameplay_contracts/mod.rs:6:18
+  |
+6 | pub(crate) const EVENT_LOOP_PRE_UPDATE_SCHEDULE_LABEL: &str = "EventLoopPreUpdate";
+  |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `SURVIVAL_PRIMARY_ARENA_ID` is never used
+ --> examples/gameplay_contracts/mod.rs:9:18
+  |
+9 | pub(crate) const SURVIVAL_PRIMARY_ARENA_ID: &str = "survival-primary";
+  |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `TERRAIN_PRIMARY_ARENA_ID` is never used
+  --> examples/gameplay_contracts/mod.rs:10:18
+   |
+10 | pub(crate) const TERRAIN_PRIMARY_ARENA_ID: &str = "terrain-primary";
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `LayerOwnedFixture` is never constructed
+  --> examples/gameplay_contracts/mod.rs:37:5
+   |
+36 | pub(crate) enum GameplayScopeModel {
+   |                 ------------------ variant in this enum
+37 |     LayerOwnedFixture,
+   |     ^^^^^^^^^^^^^^^^^
+   |
+   = note: `GameplayScopeModel` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: variant `Terrain` is never constructed
+  --> examples/gameplay_contracts/mod.rs:96:5
+   |
+93 | pub(crate) enum GameplayMode {
+   |                 ------------ variant in this enum
+...
+96 |     Terrain,
+   |     ^^^^^^^
+   |
+   = note: `GameplayMode` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/mod.rs:8:1
+  |
+8 | pub mod ctf;
+  | ---^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+  = note: requested on the command line with `-W unreachable-pub`
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/mod.rs:9:1
+  |
+9 | pub mod survival;
+  | ---^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:12:5
+   |
+11 | pub use boundaries::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+12 |     validate_module_boundaries, BoundaryCategory, BoundaryIssue, ModuleBoundary,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:12:33
+   |
+11 | pub use boundaries::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+12 |     validate_module_boundaries, BoundaryCategory, BoundaryIssue, ModuleBoundary,
+   |                                 ^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:12:51
+   |
+11 | pub use boundaries::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+12 |     validate_module_boundaries, BoundaryCategory, BoundaryIssue, ModuleBoundary,
+   |                                                   ^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:12:66
+   |
+11 | pub use boundaries::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+12 |     validate_module_boundaries, BoundaryCategory, BoundaryIssue, ModuleBoundary,
+   |                                                                  ^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:13:5
+   |
+11 | pub use boundaries::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+12 |     validate_module_boundaries, BoundaryCategory, BoundaryIssue, ModuleBoundary,
+13 |     CTF_BOUNDARY_NON_CLAIMS, CTF_MODULE_BOUNDARIES, REQUIRED_BOUNDARY_CATEGORIES,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:13:30
+   |
+11 | pub use boundaries::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+12 |     validate_module_boundaries, BoundaryCategory, BoundaryIssue, ModuleBoundary,
+13 |     CTF_BOUNDARY_NON_CLAIMS, CTF_MODULE_BOUNDARIES, REQUIRED_BOUNDARY_CATEGORIES,
+   |                              ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:13:53
+   |
+11 | pub use boundaries::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+12 |     validate_module_boundaries, BoundaryCategory, BoundaryIssue, ModuleBoundary,
+13 |     CTF_BOUNDARY_NON_CLAIMS, CTF_MODULE_BOUNDARIES, REQUIRED_BOUNDARY_CATEGORIES,
+   |                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:16:5
+   |
+15 | pub use combat::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+16 |     combat_armor_mitigation_for, knockback_metric, reference_hit_for, vanilla_armor_mitigation_for,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:16:34
+   |
+15 | pub use combat::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+16 |     combat_armor_mitigation_for, knockback_metric, reference_hit_for, vanilla_armor_mitigation_for,
+   |                                  ^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:16:52
+   |
+15 | pub use combat::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+16 |     combat_armor_mitigation_for, knockback_metric, reference_hit_for, vanilla_armor_mitigation_for,
+   |                                                    ^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:16:71
+   |
+15 | pub use combat::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+16 |     combat_armor_mitigation_for, knockback_metric, reference_hit_for, vanilla_armor_mitigation_for,
+   |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:17:5
+   |
+15 | pub use combat::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+16 |     combat_armor_mitigation_for, knockback_metric, reference_hit_for, vanilla_armor_mitigation_for,
+17 |     ArmorState,
+   |     ^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:20:5
+   |
+19 | pub use flags::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+20 |     evaluate_flag_pickup, invalid_flag_pickup_rejection_milestone,
+   |     ^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:20:27
+   |
+19 | pub use flags::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+20 |     evaluate_flag_pickup, invalid_flag_pickup_rejection_milestone,
+   |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:21:5
+   |
+19 | pub use flags::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+20 |     evaluate_flag_pickup, invalid_flag_pickup_rejection_milestone,
+21 |     invalid_return_drop_rejection_milestone, race_accepted_transition_milestone,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:21:46
+   |
+19 | pub use flags::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+20 |     evaluate_flag_pickup, invalid_flag_pickup_rejection_milestone,
+21 |     invalid_return_drop_rejection_milestone, race_accepted_transition_milestone,
+   |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:22:5
+   |
+19 | pub use flags::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+22 |     race_duplicate_pickup_blocked, race_final_state_milestone, race_rejected_transition_milestone,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:22:36
+   |
+19 | pub use flags::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+22 |     race_duplicate_pickup_blocked, race_final_state_milestone, race_rejected_transition_milestone,
+   |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:22:64
+   |
+19 | pub use flags::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+22 |     race_duplicate_pickup_blocked, race_final_state_milestone, race_rejected_transition_milestone,
+   |                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:23:5
+   |
+19 | pub use flags::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+23 |     FlagPickupDecision, FlagPresence, FlagSnapshot, RaceFinalContract,
+   |     ^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:23:25
+   |
+19 | pub use flags::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+23 |     FlagPickupDecision, FlagPresence, FlagSnapshot, RaceFinalContract,
+   |                         ^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:23:39
+   |
+19 | pub use flags::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+23 |     FlagPickupDecision, FlagPresence, FlagSnapshot, RaceFinalContract,
+   |                                       ^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:23:53
+   |
+19 | pub use flags::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+23 |     FlagPickupDecision, FlagPresence, FlagSnapshot, RaceFinalContract,
+   |                                                     ^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:26:5
+   |
+25 | pub use inventory::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+26 |     classify_inventory_drag_transactions_event, classify_inventory_stack_split_merge_event,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:26:49
+   |
+25 | pub use inventory::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+26 |     classify_inventory_drag_transactions_event, classify_inventory_stack_split_merge_event,
+   |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:27:5
+   |
+25 | pub use inventory::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+26 |     classify_inventory_drag_transactions_event, classify_inventory_stack_split_merge_event,
+27 |     InventoryClickMode, InventoryClickSnapshot, InventoryDragAction, InventoryDragContract,
+   |     ^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:27:25
+   |
+25 | pub use inventory::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+26 |     classify_inventory_drag_transactions_event, classify_inventory_stack_split_merge_event,
+27 |     InventoryClickMode, InventoryClickSnapshot, InventoryDragAction, InventoryDragContract,
+   |                         ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:27:49
+   |
+25 | pub use inventory::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+26 |     classify_inventory_drag_transactions_event, classify_inventory_stack_split_merge_event,
+27 |     InventoryClickMode, InventoryClickSnapshot, InventoryDragAction, InventoryDragContract,
+   |                                                 ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:27:70
+   |
+25 | pub use inventory::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+26 |     classify_inventory_drag_transactions_event, classify_inventory_stack_split_merge_event,
+27 |     InventoryClickMode, InventoryClickSnapshot, InventoryDragAction, InventoryDragContract,
+   |                                                                      ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:28:5
+   |
+25 | pub use inventory::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+28 |     InventoryDragState, InventoryItemStack, InventoryProbeItem, InventorySlotChange,
+   |     ^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:28:25
+   |
+25 | pub use inventory::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+28 |     InventoryDragState, InventoryItemStack, InventoryProbeItem, InventorySlotChange,
+   |                         ^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:28:45
+   |
+25 | pub use inventory::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+28 |     InventoryDragState, InventoryItemStack, InventoryProbeItem, InventorySlotChange,
+   |                                             ^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:28:65
+   |
+25 | pub use inventory::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+28 |     InventoryDragState, InventoryItemStack, InventoryProbeItem, InventorySlotChange,
+   |                                                                 ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:29:5
+   |
+25 | pub use inventory::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+29 |     InventoryStackAction, InventoryStackContract, InventoryStackState,
+   |     ^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:29:27
+   |
+25 | pub use inventory::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+29 |     InventoryStackAction, InventoryStackContract, InventoryStackState,
+   |                           ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:29:51
+   |
+25 | pub use inventory::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+29 |     InventoryStackAction, InventoryStackContract, InventoryStackState,
+   |                                                   ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:32:5
+   |
+31 | pub use projectile::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+32 |     projectile_sequence_matches, projectile_travel_collision_markers, ProjectileProbeContract,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:32:34
+   |
+31 | pub use projectile::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+32 |     projectile_sequence_matches, projectile_travel_collision_markers, ProjectileProbeContract,
+   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:32:71
+   |
+31 | pub use projectile::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+32 |     projectile_sequence_matches, projectile_travel_collision_markers, ProjectileProbeContract,
+   |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:33:5
+   |
+31 | pub use projectile::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+32 |     projectile_sequence_matches, projectile_travel_collision_markers, ProjectileProbeContract,
+33 |     ProjectileTravelCollisionMarkers,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:36:5
+   |
+35 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+36 |     parse_nonzero_env_flag, parse_present_env_flag, parse_runtime_config, runtime_config_issues,
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:36:29
+   |
+35 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+36 |     parse_nonzero_env_flag, parse_present_env_flag, parse_runtime_config, runtime_config_issues,
+   |                             ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:36:53
+   |
+35 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+36 |     parse_nonzero_env_flag, parse_present_env_flag, parse_runtime_config, runtime_config_issues,
+   |                                                     ^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:36:75
+   |
+35 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+36 |     parse_nonzero_env_flag, parse_present_env_flag, parse_runtime_config, runtime_config_issues,
+   |                                                                           ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:37:5
+   |
+35 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+36 |     parse_nonzero_env_flag, parse_present_env_flag, parse_runtime_config, runtime_config_issues,
+37 |     ArrowPolicyConfig, ProbeConfig, RuntimeConfig, RuntimeConfigInputs, RuntimeConfigIssue,
+   |     ^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:37:24
+   |
+35 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+36 |     parse_nonzero_env_flag, parse_present_env_flag, parse_runtime_config, runtime_config_issues,
+37 |     ArrowPolicyConfig, ProbeConfig, RuntimeConfig, RuntimeConfigInputs, RuntimeConfigIssue,
+   |                        ^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:37:37
+   |
+35 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+36 |     parse_nonzero_env_flag, parse_present_env_flag, parse_runtime_config, runtime_config_issues,
+37 |     ArrowPolicyConfig, ProbeConfig, RuntimeConfig, RuntimeConfigInputs, RuntimeConfigIssue,
+   |                                     ^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:37:52
+   |
+35 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+36 |     parse_nonzero_env_flag, parse_present_env_flag, parse_runtime_config, runtime_config_issues,
+37 |     ArrowPolicyConfig, ProbeConfig, RuntimeConfig, RuntimeConfigInputs, RuntimeConfigIssue,
+   |                                                    ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:37:73
+   |
+35 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+36 |     parse_nonzero_env_flag, parse_present_env_flag, parse_runtime_config, runtime_config_issues,
+37 |     ArrowPolicyConfig, ProbeConfig, RuntimeConfig, RuntimeConfigInputs, RuntimeConfigIssue,
+   |                                                                         ^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:38:5
+   |
+35 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+38 |     ENV_FLAG_DISABLED_VALUE, ENV_FLAG_ENABLED_VALUE,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:38:30
+   |
+35 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+38 |     ENV_FLAG_DISABLED_VALUE, ENV_FLAG_ENABLED_VALUE,
+   |                              ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:41:5
+   |
+40 | pub use scoring::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+41 |     score_limit_duplicate_win_milestone, score_limit_final_capture_milestone,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:41:42
+   |
+40 | pub use scoring::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+41 |     score_limit_duplicate_win_milestone, score_limit_final_capture_milestone,
+   |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:42:5
+   |
+40 | pub use scoring::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+41 |     score_limit_duplicate_win_milestone, score_limit_final_capture_milestone,
+42 |     score_limit_post_win_score_mutation_milestone, score_limit_pre_state_milestone,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:42:52
+   |
+40 | pub use scoring::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+41 |     score_limit_duplicate_win_milestone, score_limit_final_capture_milestone,
+42 |     score_limit_post_win_score_mutation_milestone, score_limit_pre_state_milestone,
+   |                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:43:5
+   |
+40 | pub use scoring::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+43 |     score_limit_win_condition_milestone, ScoreSnapshot,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:43:42
+   |
+40 | pub use scoring::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+...
+43 |     score_limit_win_condition_milestone, ScoreSnapshot,
+   |                                          ^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:46:5
+   |
+45 | pub use spawn::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+46 |     defer_spawn_assignment, spawn_resource_reset_state_milestone, spawn_team_assignment_milestone,
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:46:29
+   |
+45 | pub use spawn::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+46 |     defer_spawn_assignment, spawn_resource_reset_state_milestone, spawn_team_assignment_milestone,
+   |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:46:67
+   |
+45 | pub use spawn::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+46 |     defer_spawn_assignment, spawn_resource_reset_state_milestone, spawn_team_assignment_milestone,
+   |                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:47:5
+   |
+45 | pub use spawn::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+46 |     defer_spawn_assignment, spawn_resource_reset_state_milestone, spawn_team_assignment_milestone,
+47 |     spawn_team_balance_milestone, SpawnResetContract, SpawnResetState,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:47:35
+   |
+45 | pub use spawn::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+46 |     defer_spawn_assignment, spawn_resource_reset_state_milestone, spawn_team_assignment_milestone,
+47 |     spawn_team_balance_milestone, SpawnResetContract, SpawnResetState,
+   |                                   ^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:47:55
+   |
+45 | pub use spawn::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+46 |     defer_spawn_assignment, spawn_resource_reset_state_milestone, spawn_team_assignment_milestone,
+47 |     spawn_team_balance_milestone, SpawnResetContract, SpawnResetState,
+   |                                                       ^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf.rs:49:9
+   |
+49 | pub use team::Team;
+   | ---     ^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf/boundaries.rs:2:1
+  |
+2 | pub enum BoundaryCategory {
+  | ---^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/boundaries.rs:16:1
+   |
+16 | pub struct ModuleBoundary {
+   | ---^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/boundaries.rs:25:1
+   |
+25 | pub enum BoundaryIssue {
+   | ---^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/boundaries.rs:33:1
+   |
+33 | pub const CTF_BOUNDARY_NON_CLAIMS: &[&str] = &[
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/boundaries.rs:40:1
+   |
+40 | pub const REQUIRED_BOUNDARY_CATEGORIES: &[BoundaryCategory] = &[
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/boundaries.rs:53:1
+   |
+53 | pub const CTF_MODULE_BOUNDARIES: &[ModuleBoundary] = &[
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf/boundaries.rs:128:1
+    |
+128 | pub fn validate_module_boundaries(boundaries: &[ModuleBoundary]) -> Result<(), BoundaryIssue> {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf/combat.rs:2:1
+  |
+2 | pub enum ArmorState {
+  | ---^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/combat.rs:8:1
+   |
+ 8 |   pub fn reference_hit_for(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+ 9 | |     enabled: bool,
+10 | |     attacker: &str,
+11 | |     victim: &str,
+12 | |     expected_attacker: &str,
+13 | |     expected_victim: &str,
+14 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/combat.rs:18:1
+   |
+18 |   pub fn combat_armor_mitigation_for(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+19 | |     reference_probe_enabled: bool,
+20 | |     armor_probe_enabled: bool,
+21 | |     chest_item: ArmorState,
+...  |
+25 | |     diamond_toughness: f32,
+26 | | ) -> f32 {
+   | |________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/combat.rs:36:1
+   |
+36 | pub fn vanilla_armor_mitigation_for(base_damage: f32, armor_points: f32, toughness: f32) -> f32 {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/combat.rs:47:1
+   |
+47 | pub fn knockback_metric(knockback_velocity: [f32; KNOCKBACK_VECTOR_COMPONENT_COUNT]) -> f64 {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf/flags.rs:4:1
+  |
+4 | pub enum FlagPresence {
+  | ---^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/flags.rs:10:5
+   |
+10 |     pub fn label(self) -> &'static str {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/flags.rs:19:1
+   |
+19 | pub struct FlagSnapshot {
+   | ---^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/flags.rs:25:5
+   |
+25 |     pub fn for_team(self, team: Team) -> FlagPresence {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/flags.rs:34:1
+   |
+34 | pub enum FlagPickupDecision {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/flags.rs:40:1
+   |
+40 |   pub fn evaluate_flag_pickup(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+41 | |     player_team: Team,
+42 | |     flag_team: Team,
+43 | |     flag_presence: FlagPresence,
+44 | | ) -> FlagPickupDecision {
+   | |_______________________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/flags.rs:54:1
+   |
+54 | pub fn race_duplicate_pickup_blocked(accepted_username_present: bool) -> bool {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/flags.rs:58:1
+   |
+58 |   pub fn race_accepted_transition_milestone(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+59 | |     username: &str,
+60 | |     player_team: Team,
+61 | |     flag_team: Team,
+62 | |     accepted_transition: &str,
+63 | |     race_window_ticks: u32,
+64 | | ) -> String {
+   | |___________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/flags.rs:76:1
+   |
+76 |   pub fn race_rejected_transition_milestone(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+77 | |     username: &str,
+78 | |     player_team: Team,
+79 | |     flag_team: Team,
+80 | |     rejected_transition: &str,
+81 | |     race_window_ticks: u32,
+82 | | ) -> String {
+   | |___________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/flags.rs:94:1
+   |
+94 | pub struct RaceFinalContract<'a> {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf/flags.rs:105:1
+    |
+105 |   pub fn race_final_state_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+106 | |     accepted_username: &str,
+107 | |     rejected_username: &str,
+108 | |     capture_username: &str,
+...   |
+113 | |     contract: RaceFinalContract<'_>,
+114 | | ) -> Option<String> {
+    | |___________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf/flags.rs:146:1
+    |
+146 |   pub fn invalid_flag_pickup_rejection_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+147 | |     username: &str,
+148 | |     player_team: Team,
+149 | |     flag_team: Team,
+...   |
+152 | |     score: ScoreSnapshot,
+153 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf/flags.rs:168:1
+    |
+168 |   pub fn invalid_return_drop_rejection_milestone(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+169 | |     milestone: &str,
+170 | |     username: &str,
+171 | |     actor_team: Team,
+...   |
+175 | |     score: ScoreSnapshot,
+176 | | ) -> String {
+    | |___________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf/inventory.rs:2:1
+  |
+2 | pub enum InventoryProbeItem {
+  | ---^^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf/inventory.rs:9:1
+  |
+9 | pub enum InventoryClickMode {
+  | ---^^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/inventory.rs:16:1
+   |
+16 | pub struct InventoryItemStack {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/inventory.rs:22:5
+   |
+22 |     pub fn empty(empty_count: i8) -> Self {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/inventory.rs:31:1
+   |
+31 | pub struct InventorySlotChange {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/inventory.rs:37:1
+   |
+37 | pub struct InventoryClickSnapshot {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/inventory.rs:48:1
+   |
+48 | pub struct InventoryStackContract {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/inventory.rs:60:1
+   |
+60 | pub struct InventoryStackState {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/inventory.rs:67:1
+   |
+67 | pub enum InventoryStackAction {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/inventory.rs:74:1
+   |
+74 |   pub fn classify_inventory_stack_split_merge_event(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+75 | |     event: &InventoryClickSnapshot,
+76 | |     state: InventoryStackState,
+77 | |     contract: InventoryStackContract,
+78 | | ) -> Option<InventoryStackAction> {
+   | |_________________________________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf/inventory.rs:143:1
+    |
+143 | pub struct InventoryDragContract {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf/inventory.rs:159:1
+    |
+159 | pub struct InventoryDragState {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf/inventory.rs:167:1
+    |
+167 | pub enum InventoryDragAction {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf/inventory.rs:175:1
+    |
+175 |   pub fn classify_inventory_drag_transactions_event(
+    |   ^--
+    |   |
+    |  _help: consider restricting its visibility: `pub(crate)`
+    | |
+176 | |     event: &InventoryClickSnapshot,
+177 | |     state: InventoryDragState,
+178 | |     contract: InventoryDragContract,
+179 | | ) -> Option<InventoryDragAction> {
+    | |________________________________^
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf/projectile.rs:2:1
+  |
+2 | pub struct ProjectileProbeContract<'a> {
+  | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/projectile.rs:17:1
+   |
+17 | pub struct ProjectileTravelCollisionMarkers {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/projectile.rs:24:1
+   |
+24 | pub fn projectile_sequence_matches(observed: i32, expected: i32) -> bool {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/projectile.rs:28:1
+   |
+28 |   pub fn projectile_travel_collision_markers(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+29 | |     attacker_name: &str,
+30 | |     target_name: &str,
+31 | |     contract: ProjectileProbeContract<'_>,
+32 | | ) -> ProjectileTravelCollisionMarkers {
+   | |_____________________________________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf/runtime_config.rs:1:1
+  |
+1 | pub const ENV_FLAG_DISABLED_VALUE: &str = "0";
+  | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf/runtime_config.rs:2:1
+  |
+2 | pub const ENV_FLAG_ENABLED_VALUE: &str = "1";
+  | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf/runtime_config.rs:5:1
+  |
+5 | pub struct RuntimeConfig {
+  | ---^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/runtime_config.rs:11:1
+   |
+11 | pub struct ProbeConfig {
+   | ---^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/runtime_config.rs:27:1
+   |
+27 | pub struct ArrowPolicyConfig {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/runtime_config.rs:33:1
+   |
+33 | pub struct RuntimeConfigInputs {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/runtime_config.rs:51:1
+   |
+51 | pub enum RuntimeConfigIssue {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/runtime_config.rs:57:1
+   |
+57 | pub fn parse_runtime_config(inputs: &RuntimeConfigInputs) -> RuntimeConfig {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/runtime_config.rs:94:1
+   |
+94 |   pub fn runtime_config_issues(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+95 | |     previous: Option<&RuntimeConfig>,
+96 | |     config: &RuntimeConfig,
+97 | | ) -> Vec<RuntimeConfigIssue> {
+   | |____________________________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf/runtime_config.rs:114:1
+    |
+114 | pub fn parse_nonzero_env_flag(value: Option<&str>) -> bool {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf/runtime_config.rs:122:1
+    |
+122 | pub fn parse_present_env_flag(value: Option<&str>) -> bool {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf/scoring.rs:4:1
+  |
+4 | pub struct ScoreSnapshot {
+  | ---^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/scoring.rs:10:5
+   |
+10 |     pub fn for_team(self, team: Team) -> u32 {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/scoring.rs:18:1
+   |
+18 | pub fn score_limit_pre_state_milestone(score: ScoreSnapshot, score_limit: u32) -> String {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/scoring.rs:25:1
+   |
+25 |   pub fn score_limit_final_capture_milestone(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+26 | |     username: &str,
+27 | |     capture_team: Team,
+28 | |     carried_flag: Team,
+29 | |     before: ScoreSnapshot,
+30 | |     after: ScoreSnapshot,
+31 | | ) -> String {
+   | |___________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/scoring.rs:46:1
+   |
+46 |   pub fn score_limit_win_condition_milestone(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+47 | |     username: &str,
+48 | |     winning_team: Team,
+49 | |     score: ScoreSnapshot,
+50 | |     win_emissions: u32,
+51 | |     score_limit: u32,
+52 | | ) -> String {
+   | |___________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/scoring.rs:66:1
+   |
+66 | pub fn score_limit_duplicate_win_milestone(username: &str, winning_team: Team) -> String {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/scoring.rs:75:1
+   |
+75 | pub fn score_limit_post_win_score_mutation_milestone(username: &str, winning_team: Team) -> String {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf/spawn.rs:4:1
+  |
+4 | pub struct SpawnResetState {
+  | ---^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/spawn.rs:12:5
+   |
+12 |     pub fn record_assignment(&mut self, username: &str, team: Team) {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/spawn.rs:26:1
+   |
+26 | pub struct SpawnResetContract {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/spawn.rs:38:1
+   |
+38 |   pub fn spawn_team_assignment_milestone(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+39 | |     username: &str,
+40 | |     team: Team,
+41 | |     red_count: u32,
+...  |
+44 | |     slot37_resource: &str,
+45 | | ) -> String {
+   | |___________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/spawn.rs:59:1
+   |
+59 |   pub fn spawn_team_balance_milestone(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+60 | |     state: &SpawnResetState,
+61 | |     contract: &SpawnResetContract,
+62 | | ) -> Option<String> {
+   | |___________________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/spawn.rs:78:1
+   |
+78 |   pub fn spawn_resource_reset_state_milestone(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+79 | |     state: &SpawnResetState,
+80 | |     username: &str,
+81 | |     team: Team,
+...  |
+84 | |     contract: &SpawnResetContract,
+85 | | ) -> Option<String> {
+   | |___________________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/ctf/spawn.rs:112:1
+    |
+112 | pub fn defer_spawn_assignment(username: &str, team: Team, expected_blue_username: &str) -> bool {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf/team.rs:2:1
+  |
+2 | pub enum Team {
+  | ---^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/ctf/team.rs:8:5
+  |
+8 |     pub fn label(self) -> &'static str {
+  |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |     |
+  |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/ctf/team.rs:15:5
+   |
+15 |     pub fn opponent(self) -> Self {
+   |     ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     help: consider restricting its visibility: `pub(crate)`
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival.rs:1:1
+  |
+1 | pub mod arena;
+  | ---^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival.rs:2:1
+  |
+2 | pub mod biome_dimension;
+  | ---^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival.rs:3:1
+  |
+3 | pub mod block_entities;
+  | ---^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival.rs:4:1
+  |
+4 | pub mod breadth;
+  | ---^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival.rs:5:1
+  |
+5 | pub mod containers;
+  | ---^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival.rs:6:1
+  |
+6 | pub mod crafting;
+  | ---^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival.rs:7:1
+  |
+7 | pub mod furnace;
+  | ---^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival.rs:8:1
+  |
+8 | pub mod hunger_health;
+  | ---^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival.rs:9:1
+  |
+9 | pub mod milestones;
+  | ---^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:10:1
+   |
+10 | pub mod mob_drops;
+   | ---^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:11:1
+   |
+11 | pub mod persistence;
+   | ---^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:12:1
+   |
+12 | pub mod redstone;
+   | ---^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:13:1
+   |
+13 | pub mod runtime_config;
+   | ---^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:14:1
+   |
+14 | pub mod sign_editing;
+   | ---^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:15:1
+   |
+15 | pub mod types;
+   | ---^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:17:17
+   |
+17 | pub use arena::{should_break_survival_block, should_place_survival_block};
+   | ---             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:17:46
+   |
+17 | pub use arena::{should_break_survival_block, should_place_survival_block};
+   | ---                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:18:27
+   |
+18 | pub use biome_dimension::{derive_environment_id, normalize_environment_id};
+   | ---                       ^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:18:50
+   |
+18 | pub use biome_dimension::{derive_environment_id, normalize_environment_id};
+   | ---                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:19:26
+   |
+19 | pub use block_entities::{should_place_block_entity_sign, validate_block_entity_payload};
+   | ---                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:19:58
+   |
+19 | pub use block_entities::{should_place_block_entity_sign, validate_block_entity_payload};
+   | ---                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:21:5
+   |
+20 | pub use containers::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+21 |     collect_event_matches, should_open_fixture_container, slot_event_matches, stack_matches,
+   |     ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:21:28
+   |
+20 | pub use containers::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+21 |     collect_event_matches, should_open_fixture_container, slot_event_matches, stack_matches,
+   |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:21:59
+   |
+20 | pub use containers::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+21 |     collect_event_matches, should_open_fixture_container, slot_event_matches, stack_matches,
+   |                                                           ^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:21:79
+   |
+20 | pub use containers::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+21 |     collect_event_matches, should_open_fixture_container, slot_event_matches, stack_matches,
+   |                                                                               ^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:23:19
+   |
+23 | pub use furnace::{should_emit_furnace_breadth_rejection, should_reject_furnace_invalid_fuel};
+   | ---               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:23:58
+   |
+23 | pub use furnace::{should_emit_furnace_breadth_rejection, should_reject_furnace_invalid_fuel};
+   | ---                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:25:5
+   |
+24 | pub use hunger_health::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+25 |     select_hunger_profile, should_consume_hunger_food, HungerUseContract, HungerUseInput,
+   |     ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:25:28
+   |
+24 | pub use hunger_health::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+25 |     select_hunger_profile, should_consume_hunger_food, HungerUseContract, HungerUseInput,
+   |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:25:56
+   |
+24 | pub use hunger_health::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+25 |     select_hunger_profile, should_consume_hunger_food, HungerUseContract, HungerUseInput,
+   |                                                        ^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:25:75
+   |
+24 | pub use hunger_health::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+25 |     select_hunger_profile, should_consume_hunger_food, HungerUseContract, HungerUseInput,
+   |                                                                           ^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:27:9
+   |
+27 | pub use milestones::biome_dimension_state_milestone;
+   | ---     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:29:5
+   |
+28 | pub use mob_drops::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+29 |     plan_mob_drop_pickup, should_handle_mob_drop_attack, MobDropPickupDecision, MobDropPickupInput,
+   |     ^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:29:27
+   |
+28 | pub use mob_drops::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+29 |     plan_mob_drop_pickup, should_handle_mob_drop_attack, MobDropPickupDecision, MobDropPickupInput,
+   |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:29:58
+   |
+28 | pub use mob_drops::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+29 |     plan_mob_drop_pickup, should_handle_mob_drop_attack, MobDropPickupDecision, MobDropPickupInput,
+   |                                                          ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:29:81
+   |
+28 | pub use mob_drops::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+29 |     plan_mob_drop_pickup, should_handle_mob_drop_attack, MobDropPickupDecision, MobDropPickupInput,
+   |                                                                                 ^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:31:23
+   |
+31 | pub use persistence::{evaluate_marker_decision, MarkerDecision};
+   | ---                   ^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:31:49
+   |
+31 | pub use persistence::{evaluate_marker_decision, MarkerDecision};
+   | ---                                             ^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:32:9
+   |
+32 | pub use redstone::redstone_power_transition;
+   | ---     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:34:5
+   |
+33 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+34 |     enabled_flag, marker_path, post_restart_phase, runtime_config_issues, RuntimeConfigIssue,
+   |     ^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:34:19
+   |
+33 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+34 |     enabled_flag, marker_path, post_restart_phase, runtime_config_issues, RuntimeConfigIssue,
+   |                   ^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:34:32
+   |
+33 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+34 |     enabled_flag, marker_path, post_restart_phase, runtime_config_issues, RuntimeConfigIssue,
+   |                                ^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:34:52
+   |
+33 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+34 |     enabled_flag, marker_path, post_restart_phase, runtime_config_issues, RuntimeConfigIssue,
+   |                                                    ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:34:75
+   |
+33 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+34 |     enabled_flag, marker_path, post_restart_phase, runtime_config_issues, RuntimeConfigIssue,
+   |                                                                           ^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:35:5
+   |
+33 | pub use runtime_config::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+34 |     enabled_flag, marker_path, post_restart_phase, runtime_config_issues, RuntimeConfigIssue,
+35 |     RuntimeFixtureFlags,
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:38:5
+   |
+37 | pub use types::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+38 |     FixtureBlockPos, FixtureDiggingState, FixtureDirection, FixtureGameMode, FixtureHand,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:38:22
+   |
+37 | pub use types::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+38 |     FixtureBlockPos, FixtureDiggingState, FixtureDirection, FixtureGameMode, FixtureHand,
+   |                      ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:38:43
+   |
+37 | pub use types::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+38 |     FixtureBlockPos, FixtureDiggingState, FixtureDirection, FixtureGameMode, FixtureHand,
+   |                                           ^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:38:61
+   |
+37 | pub use types::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+38 |     FixtureBlockPos, FixtureDiggingState, FixtureDirection, FixtureGameMode, FixtureHand,
+   |                                                             ^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:38:78
+   |
+37 | pub use types::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+38 |     FixtureBlockPos, FixtureDiggingState, FixtureDirection, FixtureGameMode, FixtureHand,
+   |                                                                              ^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:39:5
+   |
+37 | pub use types::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+38 |     FixtureBlockPos, FixtureDiggingState, FixtureDirection, FixtureGameMode, FixtureHand,
+39 |     FixtureHungerProfile, FixtureInteraction, FixtureSlotChange, FixtureStack,
+   |     ^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:39:27
+   |
+37 | pub use types::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+38 |     FixtureBlockPos, FixtureDiggingState, FixtureDirection, FixtureGameMode, FixtureHand,
+39 |     FixtureHungerProfile, FixtureInteraction, FixtureSlotChange, FixtureStack,
+   |                           ^^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:39:47
+   |
+37 | pub use types::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+38 |     FixtureBlockPos, FixtureDiggingState, FixtureDirection, FixtureGameMode, FixtureHand,
+39 |     FixtureHungerProfile, FixtureInteraction, FixtureSlotChange, FixtureStack,
+   |                                               ^^^^^^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival.rs:39:66
+   |
+37 | pub use types::{
+   | --- help: consider restricting its visibility: `pub(crate)`
+38 |     FixtureBlockPos, FixtureDiggingState, FixtureDirection, FixtureGameMode, FixtureHand,
+39 |     FixtureHungerProfile, FixtureInteraction, FixtureSlotChange, FixtureStack,
+   |                                                                  ^^^^^^^^^^^^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/arena.rs:5:1
+   |
+ 5 |   pub fn should_break_survival_block(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+ 6 | |     game_mode: FixtureGameMode,
+ 7 | |     digging_state: FixtureDiggingState,
+ 8 | |     position: FixtureBlockPos,
+ 9 | |     target: FixtureBlockPos,
+10 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/arena.rs:16:1
+   |
+16 |   pub fn should_place_survival_block(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+17 | |     game_mode: FixtureGameMode,
+18 | |     hand: FixtureHand,
+19 | |     position: FixtureBlockPos,
+20 | |     face: FixtureDirection,
+21 | |     target: FixtureBlockPos,
+22 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/biome_dimension.rs:1:1
+  |
+1 |   pub fn normalize_environment_id(
+  |   ^--
+  |   |
+  |  _help: consider restricting its visibility: `pub(crate)`
+  | |
+2 | |     raw: &str,
+3 | |     known: &[&'static str],
+4 | |     unknown: &'static str,
+5 | | ) -> &'static str {
+  | |_________________^
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/biome_dimension.rs:14:1
+   |
+14 |   pub fn derive_environment_id(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+15 | |     spawn_environment: &str,
+16 | |     environment_identifier: &str,
+17 | |     known: &[&'static str],
+18 | |     unknown: &'static str,
+19 | | ) -> &'static str {
+   | |_________________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/block_entities.rs:3:1
+  |
+3 | pub fn should_place_block_entity_sign(post_restart: bool, marker_present: bool) -> bool {
+  | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/block_entities.rs:10:1
+   |
+10 |   pub fn validate_block_entity_payload(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+11 | |     lines: &[&str],
+12 | |     expected_payload: &str,
+13 | |     separator: &str,
+14 | |     expected_line_count: usize,
+15 | | ) -> Result<(), &'static str> {
+   | |_____________________________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/breadth.rs:1:1
+  |
+1 | pub fn mob_ai_loot_milestones(username: &str) -> Vec<String> {
+  | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/breadth.rs:38:1
+   |
+38 | pub fn redstone_circuit_milestones(username: &str) -> Vec<String> {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/breadth.rs:63:1
+   |
+63 | pub fn world_multichunk_milestones(username: &str, post_restart: bool) -> Vec<String> {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/breadth.rs:82:1
+   |
+82 | pub fn container_block_entity_milestones(username: &str) -> Vec<String> {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+   --> examples/fixture_core/survival/breadth.rs:107:1
+    |
+107 | pub fn biome_dimension_travel_milestones(username: &str) -> Vec<String> {
+    | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | |
+    | help: consider restricting its visibility: `pub(crate)`
+    |
+    = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/containers.rs:5:1
+   |
+ 5 |   pub fn should_open_fixture_container(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+ 6 | |     game_mode: FixtureGameMode,
+ 7 | |     hand: FixtureHand,
+ 8 | |     position: FixtureBlockPos,
+ 9 | |     target: FixtureBlockPos,
+10 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/containers.rs:14:1
+   |
+14 |   pub fn slot_event_matches<'a>(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+15 | |     window_id: u8,
+16 | |     slot_id: i16,
+17 | |     slot_changes: &[FixtureSlotChange<'a>],
+...  |
+20 | |     expected_stack: FixtureStack<'a>,
+21 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/containers.rs:29:1
+   |
+29 | pub fn stack_matches(observed: FixtureStack<'_>, expected: FixtureStack<'_>) -> bool {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/containers.rs:33:1
+   |
+33 |   pub fn collect_event_matches(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+34 | |     window_id: u8,
+35 | |     slot_id: i16,
+36 | |     stack: FixtureStack<'_>,
+...  |
+39 | |     expected_stack: FixtureStack<'_>,
+40 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/crafting.rs:4:1
+  |
+4 |   pub fn input_event_matches(
+  |   ^--
+  |   |
+  |  _help: consider restricting its visibility: `pub(crate)`
+  | |
+5 | |     window_id: u8,
+6 | |     slot_id: i16,
+7 | |     expected_window_id: u8,
+8 | |     expected_slot_id: i16,
+9 | | ) -> bool {
+  | |_________^
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/crafting.rs:13:1
+   |
+13 |   pub fn collect_result_matches(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+14 | |     window_id: u8,
+15 | |     slot_id: i16,
+16 | |     carried_stack: FixtureStack<'_>,
+...  |
+19 | |     expected_result_stack: FixtureStack<'_>,
+20 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/furnace.rs:4:1
+  |
+4 |   pub fn slot_event_matches(
+  |   ^--
+  |   |
+  |  _help: consider restricting its visibility: `pub(crate)`
+  | |
+5 | |     window_id: u8,
+6 | |     slot_id: i16,
+7 | |     expected_window_id: u8,
+8 | |     expected_slot_id: i16,
+9 | | ) -> bool {
+  | |_________^
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/furnace.rs:13:1
+   |
+13 |   pub fn collect_output_matches(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+14 | |     window_id: u8,
+15 | |     slot_id: i16,
+16 | |     carried_stack: FixtureStack<'_>,
+...  |
+19 | |     expected_output_stack: FixtureStack<'_>,
+20 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/furnace.rs:31:1
+   |
+31 |   pub fn should_emit_furnace_breadth_rejection(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+32 | |     collect_logged: bool,
+33 | |     invalid_rejection_logged: bool,
+34 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/furnace.rs:38:1
+   |
+38 |   pub fn should_reject_furnace_invalid_fuel(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+39 | |     breadth_enabled: bool,
+40 | |     collect_logged: bool,
+41 | |     window_id: u8,
+...  |
+44 | |     expected_fuel_slot_id: i16,
+45 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/furnace.rs:52:1
+   |
+52 | pub fn item_count_is_empty(count: i8) -> bool {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/hunger_health.rs:5:1
+  |
+5 | pub struct HungerUseInput<'a> {
+  | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/hunger_health.rs:16:1
+   |
+16 | pub struct HungerUseContract<'a> {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/hunger_health.rs:22:1
+   |
+22 |   pub fn select_hunger_profile(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+23 | |     food_enabled: bool,
+24 | |     health_enabled: bool,
+25 | |     food_profile: FixtureHungerProfile,
+26 | |     health_profile: FixtureHungerProfile,
+27 | | ) -> Option<FixtureHungerProfile> {
+   | |_________________________________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/hunger_health.rs:37:1
+   |
+37 |   pub fn should_consume_hunger_food(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+38 | |     profile: FixtureHungerProfile,
+39 | |     input: HungerUseInput<'_>,
+40 | |     contract: HungerUseContract<'_>,
+41 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/milestones.rs:1:1
+  |
+1 |   pub fn biome_dimension_state_milestone(
+  |   ^--
+  |   |
+  |  _help: consider restricting its visibility: `pub(crate)`
+  | |
+2 | |     username: &str,
+3 | |     spawn_environment: &str,
+4 | |     environment_identifier: &str,
+5 | |     derived_environment: &str,
+6 | | ) -> String {
+  | |___________^
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/mob_drops.rs:4:1
+  |
+4 | pub struct MobDropPickupInput {
+  | ---^^^^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/mob_drops.rs:10:1
+   |
+10 | pub enum MobDropPickupDecision {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/mob_drops.rs:16:1
+   |
+16 |   pub fn should_handle_mob_drop_attack(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+17 | |     game_mode: FixtureGameMode,
+18 | |     interaction: FixtureInteraction,
+19 | |     target_entity_id: u32,
+20 | |     fixture_entity_id: u32,
+21 | | ) -> bool {
+   | |_________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/mob_drops.rs:27:1
+   |
+27 |   pub fn plan_mob_drop_pickup(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+28 | |     input: MobDropPickupInput,
+29 | |     pickup_delay_ticks: u8,
+30 | | ) -> MobDropPickupDecision {
+   | |__________________________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/persistence.rs:2:1
+  |
+2 | pub enum MarkerDecision {
+  | ---^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/persistence.rs:8:1
+  |
+8 | pub fn evaluate_marker_decision(post_restart: bool, marker_present: bool) -> MarkerDecision {
+  | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/redstone.rs:1:1
+  |
+1 | pub fn redstone_power_transition(powered: bool) -> bool {
+  | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/runtime_config.rs:4:1
+  |
+4 | pub struct RuntimeFixtureFlags {
+  | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/runtime_config.rs:14:1
+   |
+14 | pub enum RuntimeConfigIssue {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/runtime_config.rs:20:1
+   |
+20 | pub fn enabled_flag(value: Option<&str>, enabled_value: &str) -> bool {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/runtime_config.rs:24:1
+   |
+24 | pub fn post_restart_phase(value: Option<&str>, post_restart_value: &str) -> bool {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/runtime_config.rs:28:1
+   |
+28 |   pub fn marker_path(
+   |   ^--
+   |   |
+   |  _help: consider restricting its visibility: `pub(crate)`
+   | |
+29 | |     configured_dir: Option<&str>,
+30 | |     temp_dir: &Path,
+31 | |     default_dir_name: &str,
+32 | |     marker_file: &str,
+33 | | ) -> PathBuf {
+   | |____________^
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/runtime_config.rs:40:1
+   |
+40 | pub fn runtime_config_issues(flags: RuntimeFixtureFlags) -> Vec<RuntimeConfigIssue> {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/sign_editing.rs:1:1
+  |
+1 | pub fn live_breadth_milestones(username: &str) -> Vec<String> {
+  | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/types.rs:2:1
+  |
+2 | pub enum FixtureGameMode {
+  | ---^^^^^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+ --> examples/fixture_core/survival/types.rs:8:1
+  |
+8 | pub enum FixtureHand {
+  | ---^^^^^^^^^^^^^^^^^
+  | |
+  | help: consider restricting its visibility: `pub(crate)`
+  |
+  = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/types.rs:14:1
+   |
+14 | pub enum FixtureDirection {
+   | ---^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/types.rs:20:1
+   |
+20 | pub enum FixtureDiggingState {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/types.rs:26:1
+   |
+26 | pub enum FixtureInteraction {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/types.rs:32:1
+   |
+32 | pub struct FixtureBlockPos {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/types.rs:39:1
+   |
+39 | pub struct FixtureStack<'a> {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/types.rs:45:1
+   |
+45 | pub struct FixtureSlotChange<'a> {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: unreachable `pub` item
+  --> examples/fixture_core/survival/types.rs:51:1
+   |
+51 | pub struct FixtureHungerProfile {
+   | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider restricting its visibility: `pub(crate)`
+   |
+   = help: or consider exporting it for use by other crates
+
+warning: `valence` (example "ctf" test) generated 280 warnings (run `cargo fix --example "ctf" -p valence --tests` to apply 257 suggestions)
+    Finished `test` profile [optimized + debuginfo] target(s) in 5.17s
+     Running unittests examples/ctf.rs (/home/brittonr/.cargo-target/debug/examples/ctf-c9641f2886cfabb4)
+
+running 67 tests
+test fixture_core::ctf::tests::flag_pickup_accepts_enemy_base_flag_and_rejects_wrong_team_or_duplicate ... ok
+test fixture_core::ctf::tests::combat_core_handles_reference_hits_and_armor_mitigation ... ok
+test fixture_core::ctf::tests::inventory_drag_core_accepts_ordered_sequence_and_rejects_out_of_order_or_bad_distribution ... ok
+test fixture_core::ctf::tests::inventory_stack_core_accepts_ordered_sequence_and_rejects_invalid_inventory ... ok
+test fixture_core::ctf::tests::module_boundary_map_covers_required_ctf_families_and_rejects_missing_boundary ... ok
+test fixture_core::ctf::tests::projectile_core_formats_bounded_markers_and_rejects_sequence_mismatch ... ok
+test fixture_core::ctf::tests::race_and_score_milestones_preserve_receipt_strings_and_fail_closed ... ok
+test fixture_core::ctf::tests::runtime_config_core_preserves_env_flag_contracts_and_rejects_reload_gaps ... ok
+test fixture_core::ctf::tests::spawn_reset_core_records_balanced_assignments_and_rejects_malformed_state ... ok
+test fixture_core::survival::arena::tests::break_accepts_survival_stop_on_target_and_rejects_other_inputs ... ok
+test fixture_core::survival::arena::tests::place_accepts_main_hand_up_on_target_and_rejects_other_inputs ... ok
+test fixture_core::survival::biome_dimension::tests::known_environment_ids_normalize_and_unknowns_fail_closed ... ok
+test fixture_core::survival::block_entities::tests::sign_placement_accepts_initial_or_observed_persisted_and_rejects_missing_restart ... ok
+test fixture_core::survival::block_entities::tests::sign_payload_requires_exact_line_count_and_payload ... ok
+test fixture_core::survival::breadth::tests::world_multichunk_post_restart_uses_observe_path_not_mutation_path ... ok
+test fixture_core::survival::breadth::tests::breadth_milestones_cover_positive_fixture_rows ... ok
+test fixture_core::survival::containers::tests::container_open_requires_survival_main_hand_target ... ok
+test fixture_core::survival::containers::tests::slot_and_collect_events_require_exact_window_slot_and_stack ... ok
+test fixture_core::survival::crafting::tests::crafting_collect_requires_result_slot_and_result_stack ... ok
+test fixture_core::survival::crafting::tests::crafting_input_matches_exact_window_and_slot ... ok
+test fixture_core::survival::furnace::tests::furnace_breadth_invalid_fuel_fails_closed ... ok
+test fixture_core::survival::furnace::tests::furnace_collect_requires_output_slot_and_stack ... ok
+test fixture_core::survival::furnace::tests::furnace_slots_match_exact_window_and_slot ... ok
+test fixture_core::survival::hunger_health::tests::hunger_consumption_requires_main_hand_sequence_slot_stack_and_pre_state ... ok
+test fixture_core::survival::hunger_health::tests::hunger_profile_prefers_health_then_food_and_rejects_disabled ... ok
+test fixture_core::survival::milestones::tests::biome_dimension_milestone_preserves_vocabulary ... ok
+test fixture_core::survival::mob_drops::tests::mob_drop_attack_requires_survival_attack_on_fixture_entity ... ok
+test fixture_core::survival::mob_drops::tests::pickup_planner_advances_until_ready_and_stops_when_complete ... ok
+test fixture_core::survival::persistence::tests::marker_decision_writes_before_restart_observes_present_and_fails_missing ... ok
+test fixture_core::survival::redstone::tests::redstone_transition_toggles_powered_state ... ok
+test fixture_core::survival::runtime_config::tests::flags_accept_exact_enabled_and_post_restart_values ... ok
+test fixture_core::survival::runtime_config::tests::invalid_runtime_flags_report_conflicts_and_stale_phases ... ok
+test fixture_core::survival::runtime_config::tests::marker_path_uses_configured_directory_or_temp_default ... ok
+test fixture_core::survival::sign_editing::tests::sign_editing_milestones_preserve_bounded_non_claim ... ok
+test tests::arrow_policy_clamps_damage_to_maximum ... ok
+test tests::arrow_policy_redacts_secret_like_diagnostics ... ok
+test tests::ctf_gameplay_phase_order_rejects_regression ... ok
+test tests::ctf_race_final_state_rejects_double_score_or_held_flag ... ok
+test tests::ctf_race_milestones_record_one_accept_one_reject_and_final_score ... ok
+test tests::ctf_runtime_config_diagnostics_cover_missing_stale_and_disabled_reload ... ok
+test tests::ctf_scope_checks_accept_primary_scope_and_reject_invalid_scope ... ok
+test tests::ctf_runtime_config_parser_preserves_env_contracts ... ok
+test tests::default_arrow_policy_matches_legacy_projectile_damage ... ok
+test tests::invalid_flag_pickup_helper_rejects_own_flag_and_allows_enemy_flag ... ok
+test tests::ctf_spawn_team_reset_milestones_record_balanced_assignments_and_reset ... ok
+test tests::ctf_spawn_team_reset_rejects_imbalance_or_wrong_score ... ok
+test tests::disabled_ctf_gameplay_plugin_installs_no_contract_or_policy ... ok
+test tests::ctf_gameplay_plugin_installs_contract_resources_and_schedules ... ok
+test tests::invalid_flag_pickup_milestone_records_no_transfer_and_scores ... ok
+test tests::invalid_opponent_base_return_drop_milestone_records_no_state_mutation_or_score ... ok
+test tests::invalid_flag_return_drop_milestone_records_no_state_mutation_or_score ... ok
+test tests::vanilla_combat_reference_helpers_fail_closed_for_unbounded_inputs ... ok
+test tests::invalid_module_is_rejected_and_previous_snapshot_survives ... ok
+test tests::inventory_drag_transactions_classifier_accepts_ordered_drag ... ok
+test tests::malformed_or_capability_invalid_module_is_rejected ... ok
+test tests::score_limit_forbidden_milestones_are_named_for_duplicate_win_and_late_score_mutation ... ok
+test tests::inventory_drag_transactions_classifier_rejects_wrong_order_or_distribution ... ok
+test tests::inventory_stack_split_merge_classifier_accepts_ordered_clicks ... ok
+test tests::range_invalid_decision_output_is_rejected ... ok
+test tests::score_limit_milestones_record_pre_state_final_capture_and_win_once ... ok
+test tests::snapshot_diff_reports_changed_policy_fields ... ok
+test tests::vanilla_combat_armor_reference_helpers_apply_bounded_chestplate_formula ... ok
+test tests::vanilla_combat_reference_milestones_record_normalized_metrics ... ok
+test tests::steel_module_edit_changes_arrow_damage_policy ... ok
+test tests::inventory_stack_split_merge_classifier_rejects_wrong_actor_or_count ... ok
+test tests::non_default_policy_changes_both_projectile_call_site_health_deltas ... ok
+test tests::ctf_config_source_adapter_owns_env_reload_boundary ... ok
+
+test result: ok. 67 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+exit_status=0

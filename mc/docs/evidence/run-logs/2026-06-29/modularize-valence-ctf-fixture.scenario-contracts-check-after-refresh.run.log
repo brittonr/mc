@@ -1,0 +1,14 @@
+# command: nix build .#checks.x86_64-linux.mc-compat-scenario-contracts --no-link -L
+# cwd: /home/brittonr/git/mc
+# timestamp_utc: 2026-06-29T14:37:51Z
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4101 ms: Could not connect to server; retrying in 81 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 183 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 369 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 468 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3107 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/76mwv1qlcacn4z06h4jk86snww8l46pp-mc-compat-scenario-contracts.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/76mwv1qlcacn4z06h4jk86snww8l46pp-mc-compat-scenario-contracts.drv'...
+exit_status=0

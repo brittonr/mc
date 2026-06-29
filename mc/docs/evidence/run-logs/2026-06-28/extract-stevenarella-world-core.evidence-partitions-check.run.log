@@ -1,0 +1,63 @@
+command=nix develop --no-update-lock-file . -c bash -lc 'rustc --edition=2021 tools/check_evidence_partitions.rs -o target/check-evidence-partitions && target/check-evidence-partitions --root .'
+cwd=/home/brittonr/git/mc
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+evidence partitions check failed: stale_generated_surface: docs/evidence/evidence-inventory.generated.md is stale; run tools/check_evidence_partitions.rs --write-generated
+evidence partitions check failed: stale_generated_surface: docs/evidence/evidence-index.generated.md is stale; run tools/check_evidence_partitions.rs --write-generated
+evidence partitions check failed: missing_index_row: docs/evidence/manifests/2026-06-28/extract-stevenarella-control-core.b3 is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/run-logs/2026-06-28/extract-stevenarella-control-core-archive-dry-run.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/run-logs/2026-06-28/extract-stevenarella-control-core-archive-execute.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/run-logs/2026-06-28/extract-stevenarella-control-core-baseline-tests.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/run-logs/2026-06-28/extract-stevenarella-control-core-cairn-gates.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/run-logs/2026-06-28/extract-stevenarella-control-core-dry-runs.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/run-logs/2026-06-28/extract-stevenarella-control-core-evidence-checks.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/run-logs/2026-06-28/extract-stevenarella-control-core-final-validation.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/run-logs/2026-06-28/extract-stevenarella-control-core-focused-tests.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/run-logs/2026-06-28/extract-stevenarella-control-core-post-sync-validate.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/run-logs/2026-06-28/extract-stevenarella-control-core-pre-gates.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/oracles/2026-06-28/extract-stevenarella-control-core-responsibilities.md is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/run-logs/2026-06-28/extract-stevenarella-control-core-sync-dry-run.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/run-logs/2026-06-28/extract-stevenarella-control-core-sync-execute.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/run-logs/2026-06-28/extract-stevenarella-control-core-task-evidence.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.archive.dry-run.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.archive.execute.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.baseline.stevenarella-server-tests.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.cargo-fmt.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.closeout.evidence-manifest-check.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.closeout.gate-tasks.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.closeout.task-evidence.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.closeout.validate.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.dry-run-mc-compat-smoke.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.dry-run-stevenarella.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.evidence.b3 is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.evidence-manifest-refresh.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.final.gate-design.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.final.gate-proposal.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.final.gate-tasks.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.final.validate.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.focused.login-tests.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.post.stevenarella-server-tests.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.postarchive.change-list.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.postarchive.evidence-manifest-check.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.postarchive.task-evidence.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.postarchive.validate.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.postsync.evidence-manifest-check.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.postsync.gate-design.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.postsync.gate-proposal.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.postsync.gate-tasks.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.postsync.task-evidence.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.postsync.validate.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.pre.gate-design.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.pre.gate-proposal.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.pre.gate-tasks.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.pre.validate.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.sync.dry-run.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/extract-stevenarella-login-core.sync.execute.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/stevenarella-model-core.b3 is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/stevenarella-model-core-baseline-model-tests.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/stevenarella-model-core-cairn-gates.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/stevenarella-model-core-cairn-validate.run.log is absent from docs/evidence/evidence-index.generated.md
+evidence partitions check failed: missing_index_row: docs/evidence/stevenarella-model-core-post-model-tests.run.log is absent from docs/evidence/evidence-index.generated.md
+exit_status=1

@@ -1,0 +1,5 @@
+# command: nix run .#evidence-manifest-refresh -- --check
+# cwd: /home/brittonr/git/mc
+# timestamp_utc: 2026-06-29T14:50:20Z
+evidence manifest refresh ok: mode=check; passes=0; manifests=548; entries=5476; current=5476; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+exit_status=0

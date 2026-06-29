@@ -1,0 +1,14 @@
+# command: nix run .#cairn -- validate --root .
+# cwd: /home/brittonr/git/mc
+# timestamp_utc: 2026-06-29T15:05:59Z
+{
+  "change_issues": [],
+  "changes": 12,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 17,
+  "valid": true
+}
+exit_status=0

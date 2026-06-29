@@ -6,7 +6,7 @@
 b9238b436d210bf12378c7c6acd097843b38d235b677c0f36f8d36d98ddc95a1  docs/architecture.md
 1d1c58304c8579b164e492b0d7a04d7943c3c4b10b1cd683316ca308d0a4ba08  docs/compat-instrumentation-boundary.md
 c937204651d7e51a7b5580dbeef06497dc5dcb8071f52fd4d40afceb7f695f99  docs/scenario-derived-surfaces.md
-5ecf7eae846f9b9668faec6214aab5ffffb625d716b84350df67e16d81e8f670  docs/evidence/scenario-contract-inventory.generated.md
+c4359ac302d061a127b2da1371d8d9afc1cb658c7637fcce07acb882071dbaec  docs/evidence/scenario-contract-inventory.generated.md
 8eb2c42dd1018bef8fd8d300de66d00483669c788502f42d4425a07b06f64e3b  docs/evidence/oracles/2026-06-29/modularize-runner-entrypoint-responsibility-map.md
 a4c6886183f0b6f0c22bd77e5c1d3497c682975d29cbc33e39e032b48775cb6a  docs/evidence/run-logs/2026-06-29/modularize-runner-entrypoint.preflight-gate-proposal.run.log
 99095a8cb77edb3ff7db01e9fa88ac5bbf888dc80446d5d8d106b2a974a4a8fc  docs/evidence/run-logs/2026-06-29/modularize-runner-entrypoint.preflight-gate-design.run.log

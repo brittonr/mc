@@ -1,0 +1,51 @@
+# command: nix run .#cairn -- sync modularize-valence-ctf-fixture --root . --execute
+# cwd: /home/brittonr/git/mc
+# timestamp_utc: 2026-06-29T15:08:28Z
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/modularize-valence-ctf-fixture/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/modularize-valence-ctf-fixture/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "modularize-valence-ctf-fixture",
+  "delta_specs": [
+    "./cairn/changes/modularize-valence-ctf-fixture/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "8313e66733d553d7c24667114e58ec2efae31635bdfabfb7730510c11d7851e1",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "92bf156f00f3b113c06ea94f5393d36b6e459900ace43f198ff2937229144bd9",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "53f9adbec63c05a657b16c8721dcbe630a0a823eca0b99b1dda0879a62277c97"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "92bf156f00f3b113c06ea94f5393d36b6e459900ace43f198ff2937229144bd9",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "53f9adbec63c05a657b16c8721dcbe630a0a823eca0b99b1dda0879a62277c97"
+    },
+    "kind": "sync",
+    "manifest_hash": "24326b8b21c3298c7c3a7b4ca3cc1fec567fe4e447649b318c98c656493e9939"
+  },
+  "plan_hash": "714757ad19d4dc445eb630fa1c87ecfaffb04aa076a7a67804362900d6bb8c48",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "44727b1e8e9ae4c2f9fce1f9b2df1ec3cded19bd3e232931be3d46d71d571f7d"
+}
+exit_status=0

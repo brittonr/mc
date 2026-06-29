@@ -1,0 +1,25 @@
+# command: nix run .#cairn -- gate tasks modularize-valence-ctf-fixture --root .
+# cwd: /home/brittonr/git/mc
+# timestamp_utc: 2026-06-29T15:05:49Z
+{
+  "change": "modularize-valence-ctf-fixture",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f5978089022dc64b546078912ed5a9595e7d0b3d094ac93f96ca3e2a21e1b65d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "c4ef4e909c1dcd5dd84c14a2bcfe27b8d3488360271b8b2770531255082cdb58",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

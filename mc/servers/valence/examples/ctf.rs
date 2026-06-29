@@ -1,15 +1,24 @@
 #![allow(clippy::type_complexity)]
 
+#[path = "ctf/arena.rs"]
+mod arena;
 mod fixture_core;
 mod gameplay_contracts;
 mod scenario_contracts_generated;
+#[path = "ctf/schedule_contracts.rs"]
+mod schedule_contracts;
 
+use arena::Portals;
 use fixture_core::ctf as ctf_core;
 use gameplay_contracts::{
     gameplay_scope_matches, register_gameplay_plugin_contract, GameplayArenaId,
-    GameplayInstallMode, GameplayMode, GameplayPhase as CtfGameplayPhase, GameplayPluginContract,
-    GameplayScheduleContract, GameplayScope, GameplayScopeModel, CTF_PRIMARY_ARENA_ID,
-    EVENT_LOOP_UPDATE_SCHEDULE_LABEL, GAMEPLAY_PHASE_ORDER, UPDATE_SCHEDULE_LABEL,
+    GameplayInstallMode, GameplayMode, GameplayPhase as CtfGameplayPhase, GameplayScope,
+    CTF_PRIMARY_ARENA_ID,
+};
+use schedule_contracts::{
+    CTF_GAMEPLAY_CONTRACT, CTF_GAMEPLAY_PHASE_ORDER, CTF_GAMEPLAY_PLUGIN_NAME, CTF_PRIMARY_SCOPE,
+    CTF_RUNTIME_CONFIG_RELOAD_EVENT_NAME, CTF_RUNTIME_CONFIG_SOURCE_CONTRACT,
+    CTF_RUNTIME_CONFIG_SOURCE_PLUGIN_NAME,
 };
 use std::collections::HashMap;
 use std::path::Path;
@@ -31,7 +40,6 @@ use valence::inventory::{
 };
 use valence::log::{debug, info};
 use valence::math::Vec3Swizzles;
-use valence::nbt::{compound, List};
 use valence::prelude::*;
 use valence::protocol::packets::play::entity_equipment_update_s2c::EquipmentEntry;
 use valence::protocol::packets::play::{EntityEquipmentUpdateS2c, ItemPickupAnimationS2c};
@@ -189,62 +197,6 @@ const CTF_SPAWN_BLUE_SLOT37_RESOURCE: &str = "BlueWool:64";
 const CTF_SPAWN_RESET_SLOT37_RESOURCE: &str = "TeamWool:64";
 const CTF_SPAWN_RESET_STATE: &str = "scoreboard_flags_and_resources_coherent";
 const CTF_SPAWN_EXPECTED_BLUE_USERNAME: &str = "compatbotb";
-const CTF_GAMEPLAY_PLUGIN_NAME: &str = "CtfGameplayPlugin";
-const CTF_RUNTIME_CONFIG_SOURCE_PLUGIN_NAME: &str = "CtfRuntimeConfigSourcePlugin";
-const CTF_RUNTIME_CONFIG_RELOAD_EVENT_NAME: &str = "CtfRuntimeConfigReloadEvent";
-const CTF_PRIMARY_SCOPE: GameplayScope = GameplayScope::new(
-    GameplayMode::Ctf,
-    GameplayArenaId::new(CTF_PRIMARY_ARENA_ID),
-);
-const CTF_GAMEPLAY_PHASE_ORDER: &[CtfGameplayPhase] = GAMEPLAY_PHASE_ORDER;
-const CTF_GAMEPLAY_SCHEDULES: &[GameplayScheduleContract] = &[
-    GameplayScheduleContract {
-        label: UPDATE_SCHEDULE_LABEL,
-        phases: CTF_GAMEPLAY_PHASE_ORDER,
-    },
-    GameplayScheduleContract {
-        label: EVENT_LOOP_UPDATE_SCHEDULE_LABEL,
-        phases: CTF_GAMEPLAY_PHASE_ORDER,
-    },
-];
-const CTF_SOURCE_SCHEDULES: &[GameplayScheduleContract] = CTF_GAMEPLAY_SCHEDULES;
-const CTF_GAMEPLAY_OWNED_RESOURCES: &[&str] = &[
-    "ArrowPolicyState",
-    "CtfGlobals",
-    "CtfGameplayPluginContract",
-    "CtfLayers",
-    "FlagManager",
-    "Score",
-];
-const CTF_SOURCE_OWNED_RESOURCES: &[&str] = &["CtfRuntimeConfig"];
-const CTF_SOURCE_OWNED_EVENTS: &[&str] = &[CTF_RUNTIME_CONFIG_RELOAD_EVENT_NAME];
-const CTF_NO_OWNED_EVENTS: &[&str] = &[];
-const CTF_NON_CLAIMS: &[&str] = &[
-    "dynamic runtime plugins",
-    "default Valence gameplay",
-    "BedWars or Hyperion scope",
-    "vanilla parity",
-    "production readiness",
-];
-const CTF_GAMEPLAY_CONTRACT: GameplayPluginContract = GameplayPluginContract {
-    plugin: CTF_GAMEPLAY_PLUGIN_NAME,
-    install_mode: GameplayInstallMode::ExplicitOptIn,
-    scope_model: GameplayScopeModel::ArenaOwnedLayer,
-    schedules: CTF_GAMEPLAY_SCHEDULES,
-    owned_resources: CTF_GAMEPLAY_OWNED_RESOURCES,
-    owned_events: CTF_NO_OWNED_EVENTS,
-    non_claims: CTF_NON_CLAIMS,
-};
-const CTF_RUNTIME_CONFIG_SOURCE_CONTRACT: GameplayPluginContract = GameplayPluginContract {
-    plugin: CTF_RUNTIME_CONFIG_SOURCE_PLUGIN_NAME,
-    install_mode: GameplayInstallMode::SourceAdapter,
-    scope_model: GameplayScopeModel::SourceOnly,
-    schedules: CTF_SOURCE_SCHEDULES,
-    owned_resources: CTF_SOURCE_OWNED_RESOURCES,
-    owned_events: CTF_SOURCE_OWNED_EVENTS,
-    non_claims: CTF_NON_CLAIMS,
-};
-
 #[derive(Resource, Clone, Debug, Default, PartialEq, Eq)]
 struct CtfRuntimeConfig {
     probes: CtfProbeConfig,
@@ -353,81 +305,100 @@ impl CtfRuntimeConfigInputs {
 }
 
 fn parse_ctf_runtime_config(inputs: &CtfRuntimeConfigInputs) -> CtfRuntimeConfig {
-    let vanilla_combat_armor_reference =
-        parse_nonzero_env_flag(inputs.vanilla_combat_armor_reference_probe.as_deref());
-    CtfRuntimeConfig {
-        probes: CtfProbeConfig {
-            inventory_stack_split_merge: parse_nonzero_env_flag(
-                inputs.inventory_stack_split_merge_probe.as_deref(),
-            ),
-            inventory_drag_transactions: parse_nonzero_env_flag(
-                inputs.inventory_drag_transactions_probe.as_deref(),
-            ),
-            vanilla_combat_reference: parse_nonzero_env_flag(
-                inputs.vanilla_combat_reference_probe.as_deref(),
-            ) || vanilla_combat_armor_reference,
-            vanilla_combat_armor_reference,
-            score_limit_win: parse_nonzero_env_flag(inputs.ctf_score_limit_win_probe.as_deref()),
-            race: parse_nonzero_env_flag(inputs.ctf_race_probe.as_deref()),
-            spawn_team_reset: parse_present_env_flag(inputs.ctf_spawn_team_reset_probe.as_deref()),
-            invalid_return_drop: parse_nonzero_env_flag(
-                inputs.ctf_invalid_return_drop_probe.as_deref(),
-            ),
-            invalid_opponent_base_return_drop: parse_nonzero_env_flag(
-                inputs
-                    .ctf_invalid_opponent_base_return_drop_probe
-                    .as_deref(),
-            ),
-            projectile: parse_nonzero_env_flag(inputs.projectile_probe.as_deref()),
-            armor_mitigation: parse_nonzero_env_flag(inputs.armor_mitigation_probe.as_deref()),
-            equipment_update: parse_nonzero_env_flag(inputs.equipment_update_probe.as_deref()),
-        },
-        arrow_policy: ArrowPolicyRuntimeConfig {
-            config_path: inputs.arrow_policy_config.clone(),
-            reload_request: inputs.arrow_policy_reload_request.clone(),
-        },
-    }
+    CtfRuntimeConfig::from_core(ctf_core::parse_runtime_config(&inputs.as_core()))
 }
 
 fn parse_nonzero_env_flag(value: Option<&str>) -> bool {
-    match value {
-        Some(ENV_FLAG_DISABLED_VALUE) | None => false,
-        Some(ENV_FLAG_ENABLED_VALUE) => true,
-        Some(_) => true,
-    }
+    ctf_core::parse_nonzero_env_flag(value)
 }
 
 fn parse_present_env_flag(value: Option<&str>) -> bool {
-    value.is_some()
+    ctf_core::parse_present_env_flag(value)
+}
+
+impl CtfRuntimeConfig {
+    fn from_core(config: ctf_core::RuntimeConfig) -> Self {
+        Self {
+            probes: CtfProbeConfig {
+                inventory_stack_split_merge: config.probes.inventory_stack_split_merge,
+                inventory_drag_transactions: config.probes.inventory_drag_transactions,
+                vanilla_combat_reference: config.probes.vanilla_combat_reference,
+                vanilla_combat_armor_reference: config.probes.vanilla_combat_armor_reference,
+                score_limit_win: config.probes.score_limit_win,
+                race: config.probes.race,
+                spawn_team_reset: config.probes.spawn_team_reset,
+                invalid_return_drop: config.probes.invalid_return_drop,
+                invalid_opponent_base_return_drop: config.probes.invalid_opponent_base_return_drop,
+                projectile: config.probes.projectile,
+                armor_mitigation: config.probes.armor_mitigation,
+                equipment_update: config.probes.equipment_update,
+            },
+            arrow_policy: ArrowPolicyRuntimeConfig {
+                config_path: config.arrow_policy.config_path,
+                reload_request: config.arrow_policy.reload_request,
+            },
+        }
+    }
+
+    #[cfg(test)]
+    fn as_core(&self) -> ctf_core::RuntimeConfig {
+        ctf_core::RuntimeConfig {
+            probes: ctf_core::ProbeConfig {
+                inventory_stack_split_merge: self.probes.inventory_stack_split_merge,
+                inventory_drag_transactions: self.probes.inventory_drag_transactions,
+                vanilla_combat_reference: self.probes.vanilla_combat_reference,
+                vanilla_combat_armor_reference: self.probes.vanilla_combat_armor_reference,
+                score_limit_win: self.probes.score_limit_win,
+                race: self.probes.race,
+                spawn_team_reset: self.probes.spawn_team_reset,
+                invalid_return_drop: self.probes.invalid_return_drop,
+                invalid_opponent_base_return_drop: self.probes.invalid_opponent_base_return_drop,
+                projectile: self.probes.projectile,
+                armor_mitigation: self.probes.armor_mitigation,
+                equipment_update: self.probes.equipment_update,
+            },
+            arrow_policy: ctf_core::ArrowPolicyConfig {
+                config_path: self.arrow_policy.config_path.clone(),
+                reload_request: self.arrow_policy.reload_request.clone(),
+            },
+        }
+    }
+}
+
+impl CtfRuntimeConfigInputs {
+    fn as_core(&self) -> ctf_core::RuntimeConfigInputs {
+        ctf_core::RuntimeConfigInputs {
+            inventory_stack_split_merge_probe: self.inventory_stack_split_merge_probe.clone(),
+            inventory_drag_transactions_probe: self.inventory_drag_transactions_probe.clone(),
+            vanilla_combat_reference_probe: self.vanilla_combat_reference_probe.clone(),
+            vanilla_combat_armor_reference_probe: self.vanilla_combat_armor_reference_probe.clone(),
+            arrow_policy_config: self.arrow_policy_config.clone(),
+            arrow_policy_reload_request: self.arrow_policy_reload_request.clone(),
+            ctf_score_limit_win_probe: self.ctf_score_limit_win_probe.clone(),
+            ctf_race_probe: self.ctf_race_probe.clone(),
+            ctf_spawn_team_reset_probe: self.ctf_spawn_team_reset_probe.clone(),
+            ctf_invalid_return_drop_probe: self.ctf_invalid_return_drop_probe.clone(),
+            ctf_invalid_opponent_base_return_drop_probe: self
+                .ctf_invalid_opponent_base_return_drop_probe
+                .clone(),
+            projectile_probe: self.projectile_probe.clone(),
+            armor_mitigation_probe: self.armor_mitigation_probe.clone(),
+            equipment_update_probe: self.equipment_update_probe.clone(),
+        }
+    }
 }
 
 #[cfg(test)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-enum CtfRuntimeConfigIssue {
-    MissingReloadPolicyPath,
-    StaleReloadRequest,
-    DisabledProjectilePolicy,
-}
+use ctf_core::RuntimeConfigIssue as CtfRuntimeConfigIssue;
 
 #[cfg(test)]
 fn ctf_runtime_config_issues(
     previous: Option<&CtfRuntimeConfig>,
     config: &CtfRuntimeConfig,
 ) -> Vec<CtfRuntimeConfigIssue> {
-    let mut issues = Vec::new();
-    if config.arrow_policy.reload_request.is_some() && config.arrow_policy.config_path.is_none() {
-        issues.push(CtfRuntimeConfigIssue::MissingReloadPolicyPath);
-    }
-    if config.arrow_policy.config_path.is_some() && !config.probes.projectile {
-        issues.push(CtfRuntimeConfigIssue::DisabledProjectilePolicy);
-    }
-    if previous
-        .and_then(|previous| previous.arrow_policy.reload_request.as_ref())
-        .is_some_and(|previous| Some(previous) == config.arrow_policy.reload_request.as_ref())
-    {
-        issues.push(CtfRuntimeConfigIssue::StaleReloadRequest);
-    }
-    issues
+    let previous = previous.map(CtfRuntimeConfig::as_core);
+    let config = config.as_core();
+    ctf_core::runtime_config_issues(previous.as_ref(), &config)
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -1066,7 +1037,7 @@ fn setup(
         }
     }
 
-    let red_flag = build_flag(
+    let red_flag = arena::build_flag(
         &mut layer,
         Team::Red,
         BlockPos {
@@ -1075,7 +1046,7 @@ fn setup(
             z: 0,
         },
     );
-    let blue_flag = build_flag(
+    let blue_flag = arena::build_flag(
         &mut layer,
         Team::Blue,
         BlockPos {
@@ -1085,7 +1056,7 @@ fn setup(
         },
     );
 
-    build_spawn_box(&mut layer, SPAWN_BOX, &mut commands);
+    arena::build_spawn_box(&mut layer, SPAWN_BOX, &mut commands);
 
     commands.spawn((layer, CTF_PRIMARY_SCOPE));
 
@@ -1147,205 +1118,6 @@ fn setup(
     commands.insert_resource(ReconnectJoinCounts::default());
     commands.insert_resource(CtfRaceProbeState::default());
     commands.insert_resource(CtfSpawnTeamResetProbeState::default());
-}
-
-/// Build a flag at the given position. `pos` should be the position of the
-/// bottom of the flag.
-///
-/// Returns the block position of the flag.
-fn build_flag(layer: &mut LayerBundle, team: Team, pos: impl Into<BlockPos>) -> BlockPos {
-    let mut pos = pos.into();
-
-    // build the flag pole
-    for _ in 0..3 {
-        layer.chunk.set_block(pos, BlockState::OAK_FENCE);
-        pos.y += 1;
-    }
-    let moving_east = pos.x < 0;
-    layer.chunk.set_block(
-        pos,
-        BlockState::OAK_FENCE.set(
-            if moving_east {
-                PropName::East
-            } else {
-                PropName::West
-            },
-            PropValue::True,
-        ),
-    );
-    pos.x += if pos.x < 0 { 1 } else { -1 };
-    layer.chunk.set_block(
-        pos,
-        BlockState::OAK_FENCE
-            .set(PropName::East, PropValue::True)
-            .set(PropName::West, PropValue::True),
-    );
-    pos.x += if pos.x < 0 { 1 } else { -1 };
-    layer.chunk.set_block(
-        pos,
-        BlockState::OAK_FENCE.set(
-            if moving_east {
-                PropName::West
-            } else {
-                PropName::East
-            },
-            PropValue::True,
-        ),
-    );
-    pos.y -= 1;
-
-    // build the flag
-    layer.chunk.set_block(
-        pos,
-        match team {
-            Team::Red => BlockState::RED_WOOL,
-            Team::Blue => BlockState::BLUE_WOOL,
-        },
-    );
-
-    pos
-}
-
-fn build_spawn_box(layer: &mut LayerBundle, pos: impl Into<BlockPos>, commands: &mut Commands) {
-    let pos = pos.into();
-
-    let spawn_box_block = BlockState::GLASS;
-
-    // build floor and roof
-    for z in -SPAWN_BOX_WIDTH..=SPAWN_BOX_WIDTH {
-        for x in -SPAWN_BOX_WIDTH..=SPAWN_BOX_WIDTH {
-            layer
-                .chunk
-                .set_block([pos.x + x, pos.y, pos.z + z], spawn_box_block);
-            layer.chunk.set_block(
-                [pos.x + x, pos.y + SPAWN_BOX_HEIGHT, pos.z + z],
-                spawn_box_block,
-            );
-        }
-    }
-
-    // build walls
-    for z in [-SPAWN_BOX_WIDTH, SPAWN_BOX_WIDTH] {
-        for x in -SPAWN_BOX_WIDTH..=SPAWN_BOX_WIDTH {
-            for y in pos.y..=pos.y + SPAWN_BOX_HEIGHT - 1 {
-                layer
-                    .chunk
-                    .set_block([pos.x + x, y, pos.z + z], spawn_box_block);
-            }
-        }
-    }
-
-    for x in [-SPAWN_BOX_WIDTH, SPAWN_BOX_WIDTH] {
-        for z in -SPAWN_BOX_WIDTH..=SPAWN_BOX_WIDTH {
-            for y in pos.y..=pos.y + SPAWN_BOX_HEIGHT - 1 {
-                layer
-                    .chunk
-                    .set_block([pos.x + x, y, pos.z + z], spawn_box_block);
-            }
-        }
-    }
-
-    // build team selector portals
-    for (block, offset) in [
-        (
-            BlockState::RED_CONCRETE,
-            BlockPos::new(-SPAWN_BOX_WIDTH, 0, SPAWN_BOX_WIDTH - 2),
-        ),
-        (
-            BlockState::BLUE_CONCRETE,
-            BlockPos::new(SPAWN_BOX_WIDTH - 2, 0, SPAWN_BOX_WIDTH - 2),
-        ),
-    ] {
-        for z in 0..3 {
-            for x in 0..3 {
-                layer.chunk.set_block(
-                    [pos.x + offset.x + x, pos.y + offset.y, pos.z + offset.z + z],
-                    block,
-                );
-            }
-        }
-    }
-
-    let red = [
-        pos.x - SPAWN_BOX_WIDTH + 1,
-        pos.y,
-        pos.z + SPAWN_BOX_WIDTH - 1,
-    ];
-    let red_area = TriggerArea::new(red, red);
-    let blue = [
-        pos.x + SPAWN_BOX_WIDTH - 1,
-        pos.y,
-        pos.z + SPAWN_BOX_WIDTH - 1,
-    ];
-    let blue_area = TriggerArea::new(blue, blue);
-    let portals = Portals {
-        portals: HashMap::from_iter(vec![(Team::Red, red_area), (Team::Blue, blue_area)]),
-    };
-
-    for area in portals.portals.values() {
-        for pos in area.iter_block_pos() {
-            layer.chunk.set_block(pos, BlockState::AIR);
-        }
-        layer
-            .chunk
-            .set_block(area.a.offset(0, -1, 0), BlockState::BARRIER);
-    }
-
-    commands.insert_resource(portals);
-
-    // build instruction signs
-
-    let sign_pos = pos.offset(0, 2, SPAWN_BOX_WIDTH - 1);
-    layer.chunk.set_block(
-        sign_pos,
-        Block {
-            state: BlockState::OAK_WALL_SIGN.set(PropName::Rotation, PropValue::_3),
-            nbt: Some(compound! {
-                "front_text" => compound! {
-                    "messages" => List::String(vec![
-                        "Capture".color(Color::YELLOW).bold().to_string(),
-                        "the".color(Color::YELLOW).bold().to_string(),
-                        "Flag!".color(Color::YELLOW).bold().to_string(),
-                        "Select a Team".color(Color::WHITE).italic().to_string(),
-                    ])
-                },
-            }),
-        },
-    );
-
-    layer.chunk.set_block(
-        sign_pos.offset(-1, 0, 0),
-        Block {
-            state: BlockState::OAK_WALL_SIGN.set(PropName::Rotation, PropValue::_3),
-            nbt: Some(compound! {
-                "front_text" => compound! {
-                    "messages" => List::String(vec![
-                        "".into_text().to_string(),
-                        ("Join ".bold().color(Color::WHITE) + Team::Red.team_text()).to_string(),
-                        "=>".bold().color(Color::WHITE).to_string(),
-                        "".into_text().to_string(),
-                    ])
-                },
-            }),
-        },
-    );
-
-    layer.chunk.set_block(
-        sign_pos.offset(1, 0, 0),
-        Block {
-            state: BlockState::OAK_WALL_SIGN.set(PropName::Rotation, PropValue::_3),
-            nbt: Some(compound! {
-                "front_text" => compound! {
-                    "messages" => List::String(vec![
-                        "".into_text().to_string(),
-                        ("Join ".bold().color(Color::WHITE) + Team::Blue.team_text()).to_string(),
-                        "<=".bold().color(Color::WHITE).to_string(),
-                        "".into_text().to_string(),
-                    ])
-                },
-            }),
-        },
-    );
 }
 
 fn init_clients(
@@ -2225,11 +1997,6 @@ fn place_blocks(
         info!("{milestone}");
         println!("{milestone}");
     }
-}
-
-#[derive(Debug, Resource)]
-struct Portals {
-    portals: HashMap<Team, TriggerArea>,
 }
 
 fn log_inventory_drop_events(
@@ -3932,68 +3699,31 @@ fn projectile_probe_enabled(config: &CtfRuntimeConfig) -> bool {
 }
 
 fn emit_projectile_travel_collision_probe_markers(attacker_name: &str, target_name: &str) {
-    let use_marker = format!(
-        "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} hand=Main sequence={} \
-         expected_sequence={} sequence_matches=true projectile_id={} weapon={} damage={:.1} \
-         policy={} generation={} clamped=false proof_basis={}",
+    let markers = ctf_core::projectile_travel_collision_markers(
         attacker_name,
         target_name,
-        PROJECTILE_PROBE_SEQUENCE,
-        PROJECTILE_PROBE_SEQUENCE,
-        PROJECTILE_PROBE_ID,
-        PROJECTILE_PROBE_WEAPON,
-        PROJECTILE_PROBE_DAMAGE,
-        ARROW_POLICY_ID_DAMAGE_LINEAR,
-        ARROW_POLICY_DEFAULT_GENERATION,
-        PROJECTILE_PROBE_PROOF_BASIS
+        ctf_core::ProjectileProbeContract {
+            sequence: PROJECTILE_PROBE_SEQUENCE,
+            projectile_id: PROJECTILE_PROBE_ID,
+            weapon: PROJECTILE_PROBE_WEAPON,
+            damage: PROJECTILE_PROBE_DAMAGE,
+            policy_id: ARROW_POLICY_ID_DAMAGE_LINEAR,
+            generation: ARROW_POLICY_DEFAULT_GENERATION,
+            proof_basis: PROJECTILE_PROBE_PROOF_BASIS,
+            travel_sample_kind: PROJECTILE_PROBE_TRAVEL_SAMPLE_KIND,
+            travel_sample_index: PROJECTILE_PROBE_TRAVEL_SAMPLE_INDEX,
+            collision_kind: PROJECTILE_PROBE_COLLISION_KIND,
+            player_max_health: PLAYER_MAX_HEALTH,
+        },
     );
-    info!("{}", use_marker);
-    println!("{}", use_marker);
-    let travel = format!(
-        "MC-COMPAT-MILESTONE projectile_travel_sample attacker={} target={} sequence={} \
-         projectile_id={} weapon={} sample={} sample_index={} proof_basis={}",
-        attacker_name,
-        target_name,
-        PROJECTILE_PROBE_SEQUENCE,
-        PROJECTILE_PROBE_ID,
-        PROJECTILE_PROBE_WEAPON,
-        PROJECTILE_PROBE_TRAVEL_SAMPLE_KIND,
-        PROJECTILE_PROBE_TRAVEL_SAMPLE_INDEX,
-        PROJECTILE_PROBE_PROOF_BASIS
-    );
-    info!("{}", travel);
-    println!("{}", travel);
-    let collision = format!(
-        "MC-COMPAT-MILESTONE projectile_collision attacker={} target={} sequence={} \
-         projectile_id={} weapon={} collision={} proof_basis={}",
-        attacker_name,
-        target_name,
-        PROJECTILE_PROBE_SEQUENCE,
-        PROJECTILE_PROBE_ID,
-        PROJECTILE_PROBE_WEAPON,
-        PROJECTILE_PROBE_COLLISION_KIND,
-        PROJECTILE_PROBE_PROOF_BASIS
-    );
-    info!("{}", collision);
-    println!("{}", collision);
-    let hit = format!(
-        "MC-COMPAT-MILESTONE projectile_hit attacker={} victim={} sequence={} projectile_id={} \
-         weapon={} damage={:.1} victim_health_before={:.1} victim_health_after={:.1} policy={} \
-         generation={} clamped=false proof_basis={}",
-        attacker_name,
-        target_name,
-        PROJECTILE_PROBE_SEQUENCE,
-        PROJECTILE_PROBE_ID,
-        PROJECTILE_PROBE_WEAPON,
-        PROJECTILE_PROBE_DAMAGE,
-        PLAYER_MAX_HEALTH,
-        PLAYER_MAX_HEALTH - PROJECTILE_PROBE_DAMAGE,
-        ARROW_POLICY_ID_DAMAGE_LINEAR,
-        ARROW_POLICY_DEFAULT_GENERATION,
-        PROJECTILE_PROBE_PROOF_BASIS
-    );
-    info!("{}", hit);
-    println!("{}", hit);
+    info!("{}", markers.use_marker);
+    println!("{}", markers.use_marker);
+    info!("{}", markers.travel);
+    println!("{}", markers.travel);
+    info!("{}", markers.collision);
+    println!("{}", markers.collision);
+    info!("{}", markers.hit);
+    println!("{}", markers.hit);
 }
 
 fn handle_projectile_events(
@@ -4048,7 +3778,8 @@ fn handle_projectile_events(
         victim_health.0 -= decision.damage;
         victim_client.trigger_status(EntityStatus::PlayAttackSound);
         let target_name = victim_username.as_str();
-        let sequence_matches_probe = event.sequence == PROJECTILE_PROBE_SEQUENCE;
+        let sequence_matches_probe =
+            ctf_core::projectile_sequence_matches(event.sequence, PROJECTILE_PROBE_SEQUENCE);
         let milestone = format!(
             "MC-COMPAT-MILESTONE projectile_use attacker={} victim={} hand={:?} sequence={} \
              expected_sequence={} sequence_matches={} projectile_id={} weapon={} damage={:.1} \

@@ -1,0 +1,16 @@
+# command: rg -n "ctf_boundaries|ctf_functional_core|ctf_parity|ctf_positive_tests|ctf_negative_tests|ctf_validation" cairn/specs/mc-compatibility/spec.md
+# cwd: /home/brittonr/git/mc
+# timestamp_utc: 2026-06-29T15:11:21Z
+2062:r[mc_compatibility.valence_fixture_modularity.ctf_boundaries] The Valence CTF compatibility fixture SHOULD expose cohesive module boundaries for runtime config, arena setup, team and flag rules, scoring rules, inventory probes, combat and projectile probes, schedule contracts, and milestone formatting.
+2066:r[mc_compatibility.valence_fixture_modularity.ctf_boundaries.ownership]
+2074:r[mc_compatibility.valence_fixture_modularity.ctf_functional_core] Non-trivial CTF rule and probe decisions SHOULD live in pure deterministic cores that return explicit decisions for Bevy system shells to apply.
+2078:r[mc_compatibility.valence_fixture_modularity.ctf_functional_core.testable]
+2086:r[mc_compatibility.valence_fixture_modularity.ctf_parity] CTF fixture modularization MUST preserve existing env flags, milestone vocabulary, schedule contracts, dry-run and live evidence boundaries, and non-claims.
+2090:r[mc_compatibility.valence_fixture_modularity.ctf_parity.stable]
+2098:r[mc_compatibility.valence_fixture_modularity.ctf_positive_tests] The change MUST include positive tests for representative flag, score, team-balance, inventory, combat, projectile, runtime-config, and milestone decisions.
+2102:r[mc_compatibility.valence_fixture_modularity.ctf_positive_tests.coverage]
+2109:r[mc_compatibility.valence_fixture_modularity.ctf_negative_tests] The change MUST include negative tests for disabled probes, invalid runtime config, stale flag ownership, duplicate scoring or win emission, malformed inventory events, and unsupported arrow policy input.
+2113:r[mc_compatibility.valence_fixture_modularity.ctf_negative_tests.fail_closed]
+2120:r[mc_compatibility.valence_fixture_modularity.ctf_validation] The change MUST record focused Valence/example tests, affected mc-compat dry-runs, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+2124:r[mc_compatibility.valence_fixture_modularity.ctf_validation.logs]
+exit_status=0

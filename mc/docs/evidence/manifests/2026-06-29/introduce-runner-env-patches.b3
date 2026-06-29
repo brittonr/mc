@@ -1,6 +1,6 @@
 2fca795548e7feb7f5fe2bee77533da7b9ea6278e26f8f080430e8b3cc29df86  cairn/archive/2026-06-29-introduce-runner-env-patches/tasks.md
 bfdbbf781a35a0c3f7a7def536451d5f48de0e7f3284b55d0c5b24059d19824f  cairn/archive/2026-06-29-introduce-runner-env-patches/specs/mc-compatibility/spec.md
-92bf156f00f3b113c06ea94f5393d36b6e459900ace43f198ff2937229144bd9  cairn/specs/mc-compatibility/spec.md
+7bd218214707d6a5a61540f78bc9bae94a39461d2c9ff9ce94cbc473ea3bf587  cairn/specs/mc-compatibility/spec.md
 6f06015e449b0712d6058ecf06a8210e0f08d40cf77aca5a14cd8e0e88ab42be  compat/runner/src/backend_shell.rs
 0ce3efbb3418efa98715fbca113fb4640fa5fd3658fc1dcddda7caee0c79650e  compat/runner/src/client_driver.rs
 d24f4a70d3d4a84fb0b2aba548a596cc4e62d3952d7a60671b593ac5a62c363a  compat/runner/src/env_patch.rs

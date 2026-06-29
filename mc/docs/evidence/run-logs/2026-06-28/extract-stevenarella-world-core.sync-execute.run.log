@@ -1,0 +1,50 @@
+command=nix run .#cairn -- sync extract-stevenarella-world-core --root . --execute
+cwd=/home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/extract-stevenarella-world-core/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/extract-stevenarella-world-core/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "extract-stevenarella-world-core",
+  "delta_specs": [
+    "./cairn/changes/extract-stevenarella-world-core/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "faef39fabac6a5a4943eaca83fd3c7bf5c252b0be7f370d4372fe4da241c687a",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "be65ac3b757b4b0c68fc4d730075b3e1bdac200485ac6cba0144edfd5b1d5028",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "d571d5a196b5ec7118a16407c0b8c8623408ba775a65c15bed1f69728136961c"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "be65ac3b757b4b0c68fc4d730075b3e1bdac200485ac6cba0144edfd5b1d5028",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "d571d5a196b5ec7118a16407c0b8c8623408ba775a65c15bed1f69728136961c"
+    },
+    "kind": "sync",
+    "manifest_hash": "f8bf9eff8ec25f98435642444eaf294f81dbaffe81b726d740856157f4420a91"
+  },
+  "plan_hash": "70b86991835e9a9e2a9b5b3d9f6ffb9c147ddb995c1a1b3945a775c44845aa8b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "501dd0599c8bc7963968363edcd49087ca664bfedd02b33074f82de1ce80c60e"
+}
+exit_status=0

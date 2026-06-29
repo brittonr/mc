@@ -40,7 +40,7 @@ This bounded inventory is generated from `compat/config/scenario-contracts.ncl` 
 | `MC_COMPAT_FLAG_PROBE_PICKUP_ONLY` | `runtime_env` | `canonical` | `stevenarella-client` | `clients/stevenarella/src/server/mod.rs`<br>`compat/runner/src/lib.rs` | shared-generated-or-drift-checked |
 | `MC_COMPAT_FLAG_PROBE_REPEAT` | `runtime_env` | `canonical` | `stevenarella-client` | `clients/stevenarella/src/server/mod.rs`<br>`compat/runner/src/lib.rs` | shared-generated-or-drift-checked |
 | `MC_COMPAT_FLAG_PROBE_TEAM` | `runtime_env` | `canonical` | `stevenarella-client` | `clients/stevenarella/src/server/mod.rs`<br>`compat/runner/src/lib.rs` | shared-generated-or-drift-checked |
-| `MC_COMPAT_IGNORE_DECODE_ERRORS` | `runtime_env` | `canonical` | `stevenarella-client` | `clients/stevenarella/src/server/mod.rs` | drift-checked |
+| `MC_COMPAT_IGNORE_DECODE_ERRORS` | `runtime_env` | `canonical` | `stevenarella-client` | (generated-only) | drift-checked |
 | `MC_COMPAT_INVENTORY_DRAG_TRANSACTIONS_PROBE` | `probe_env` | `canonical` | `runner-client-valence` | `compat/runner/src/lib.rs`<br>`servers/valence/examples/ctf.rs` | shared-generated-or-drift-checked |
 | `MC_COMPAT_INVENTORY_PROBE` | `probe_env` | `canonical` | `stevenarella-client` | `clients/stevenarella/src/server/mod.rs`<br>`compat/runner/src/lib.rs` | shared-generated-or-drift-checked |
 | `MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE` | `probe_env` | `canonical` | `runner-client-valence` | `compat/runner/src/lib.rs`<br>`servers/valence/examples/ctf.rs` | shared-generated-or-drift-checked |
