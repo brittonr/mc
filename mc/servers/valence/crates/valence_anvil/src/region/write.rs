@@ -173,10 +173,7 @@ fn current_timestamp_seconds() -> u32 {
     let Ok(duration) = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH) else {
         return 0;
     };
-    match u32::try_from(duration.as_secs()) {
-        Ok(seconds) => seconds,
-        Err(_) => u32::MAX,
-    }
+    u32::try_from(duration.as_secs()).unwrap_or(u32::MAX)
 }
 
 fn file_padding_len(file_length: u64) -> Result<usize, Error> {

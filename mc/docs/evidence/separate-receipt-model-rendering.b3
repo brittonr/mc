@@ -1,7 +1,7 @@
 ccdf56a2800db7ff89fba36214fba95935b95ba8bb3ba5e05b52994016819f7c  compat/runner/src/lib.rs
 247135128e7b80f34d6610ece2748bda22070840a212684e17b8a7dd960c7b3a  compat/runner/src/receipts.rs
 0603fb1d15ed5e5f085c016831363671364a0ceb89be4ffbc0514b49f7f09b81  compat/runner/src/receipts_colocated_tests.rs
-54e47e80b949cf215b35a565155238b838c0a2605840e76d1f6a6551bbc4e07e  cairn/specs/mc-compatibility/spec.md
+0e487dab62ee5674cbd4e8bb47c41c270ee14de80c714e575af2a150bdc15844  cairn/specs/mc-compatibility/spec.md
 9c3ff1b3c6f1a030b88da6cd8b9b5b3928681912a16506e6d96856c7487141ec  cairn/archive/1970-01-01-separate-receipt-model-rendering/proposal.md
 aca3afc3fabb2b55ceca17287f5f66b893bba0182cd642cf41a651817be76725  cairn/archive/1970-01-01-separate-receipt-model-rendering/design.md
 1b0cb512be44cd8aea04d47f4f85abf44937eeaa7b1d633e6ccb231e087ae07e  cairn/archive/1970-01-01-separate-receipt-model-rendering/tasks.md

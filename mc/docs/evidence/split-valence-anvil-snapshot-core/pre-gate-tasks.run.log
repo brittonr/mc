@@ -1,0 +1,24 @@
+command=nix run .#cairn -- gate tasks split-valence-anvil-snapshot-core --root .
+{
+  "change": "split-valence-anvil-snapshot-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7992b8cfcc7cc2c2ae07e0918235adce0fda91f87a39c6a8e57cc32b09044b4c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "d3a8870f313e22f3b6f5ffa2f3933a62b24eec0e6f95df7ca6f5d017c7faf3c7",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+
+exit_status=0

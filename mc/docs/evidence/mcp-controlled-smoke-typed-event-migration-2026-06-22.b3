@@ -3,7 +3,7 @@
 fed89c9aae7a973930b08beb8e687cebcb4dcd8bd58e1e9658c0a53121f11e47  cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/design.md
 bb6471b6732954340790da4847b78e4d3919e48943847b509bcd9d74c03af871  cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/tasks.md
 5ebe979dd5f6dcb99b26d85f7d336658875c958d13f5413698781a96310c027d  cairn/archive/2026-06-22-mcp-controlled-smoke-typed-event-migration/specs/mc-compatibility/spec.md
-54e47e80b949cf215b35a565155238b838c0a2605840e76d1f6a6551bbc4e07e  cairn/specs/mc-compatibility/spec.md
+0e487dab62ee5674cbd4e8bb47c41c270ee14de80c714e575af2a150bdc15844  cairn/specs/mc-compatibility/spec.md
 f1600c9059d5d98fb217a14fd9801c7d508d5f2bbc89f5d7e96c6659d037c0e9  compat/config/scenario-manifest.ncl
 27ed62890ab38193d1a7de7e6da98da68dc72ba46d5170cf2f1a7c357a39dfa9  compat/runner/src/main.rs
 24fc3b15fae95e333634118eca6398d275f6630a067f6f427d1dcc058f21b08c  compat/runner/src/scenario_manifest_generated.rs

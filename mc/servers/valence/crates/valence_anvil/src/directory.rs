@@ -16,6 +16,10 @@ const REGION_FILE_EXTENSION: &str = "mca";
 const REGION_FILE_PREFIX: &str = "r";
 const REGION_WIDTH_CHUNKS: i32 = 32;
 
+const _: () = {
+    assert!(REGION_FILE_COMPONENTS > 0);
+};
+
 #[derive(Debug)]
 pub struct RegionFolder {
     /// Region files. An LRU cache is used to limit the number of open file
@@ -175,7 +179,6 @@ impl RegionFolder {
         fn extract_file_coordinates(
             file: std::io::Result<DirEntry>,
         ) -> Result<Option<(i32, i32)>, RegionError> {
-            debug_assert!(REGION_FILE_COMPONENTS > 0);
             let file = file?;
 
             if !file.file_type()?.is_file() {
