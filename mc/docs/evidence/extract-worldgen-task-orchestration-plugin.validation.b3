@@ -1,6 +1,6 @@
 c8e3ff18692c1b70703a55f8c16746844994587883364d6328bcb26d83f75997  docs/evidence/extract-worldgen-task-orchestration-plugin.inventory.md
 0e57ef53041e67d68239f0e9e9c2272d6c9c029ea8bedc7eb2ddae122ef5c9ed  docs/evidence/extract-worldgen-task-orchestration-plugin.implementation.md
-70d8e8b61a5be88884cb6c4c0ab3e06607df1e94a481adc14501016c49a6c972  docs/evidence/extract-worldgen-task-orchestration-plugin.implementation.b3
+c7356b4fca9b5f8f2ee16d50ad732c95367db16c9da79a95e45579f2ddfa8dbe  docs/evidence/extract-worldgen-task-orchestration-plugin.implementation.b3
 96aeb5d00441905723adb2936cb620056bc018934816fe4d4f261f2993450973  docs/evidence/run-logs/2026-06-25/extract-worldgen-task-orchestration-plugin-pre-gates.run.log
 853128f28c411f22505ae3b8b68d26ca46fe4e2ab64993a40685f1876f8ab15e  docs/evidence/run-logs/2026-06-25/extract-worldgen-task-orchestration-plugin-baseline.run.log
 b8e9740c168390a96e6d97bbedbda1500657f36325ebb065cf93a425a9fd6a79  docs/evidence/run-logs/2026-06-25/extract-worldgen-task-orchestration-plugin-terrain-tests.run.log
@@ -23,4 +23,4 @@ f44095e27956a528f3f7b18d1018e465d021b7c077c2ccddfade29a257da9809  cairn/archive/
 fd48bb595e70b6dd2eb498d392dcd905b733f705bee3e2fdc0969b1e683df2be  cairn/archive/2026-06-25-extract-worldgen-task-orchestration-plugin/design.md
 b13205f06977b4f1df40f505faf67cd295c107e2c36b899a0dac7df8e05cd311  cairn/archive/2026-06-25-extract-worldgen-task-orchestration-plugin/tasks.md
 aecb16b1d14111c6a5ed72384967bd3b75c3d8fa6f8390241dced0f54aa8be50  cairn/archive/2026-06-25-extract-worldgen-task-orchestration-plugin/specs/valence-bevy-ecs/spec.md
-eaf499dee7562c0f445f93d39bfa03f2266d88fab5680acb2f88269ab928a908  cairn/specs/valence-bevy-ecs/spec.md
+a23f082ec1aca21ead371048b71f3330d1a293b175c0c2fff433243389a99dd9  cairn/specs/valence-bevy-ecs/spec.md

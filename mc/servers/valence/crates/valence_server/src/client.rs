@@ -679,13 +679,6 @@ fn handle_layer_messages(
             let block_pos = BlockPos::from(old_view.old_pos.get());
             let old_view = old_view.get();
 
-            fn in_radius(p0: BlockPos, p1: BlockPos, radius_squared: u32) -> bool {
-                let dist_squared =
-                    (p1.x - p0.x).pow(2) + (p1.y - p0.y).pow(2) + (p1.z - p0.z).pow(2);
-
-                dist_squared as u32 <= radius_squared
-            }
-
             // Chunk layer messages
             if let Ok(chunk_layer) = chunk_layers.get(old_visible_chunk_layer.get()) {
                 let messages = chunk_layer.messages();
@@ -693,15 +686,8 @@ fn handle_layer_messages(
 
                 // Global messages
                 for (msg, range) in messages.iter_global() {
-                    match msg {
-                        crate::layer::chunk::GlobalMsg::Packet => {
-                            client.write_packet_bytes(&bytes[range]);
-                        }
-                        crate::layer::chunk::GlobalMsg::PacketExcept { except } => {
-                            if self_entity != except {
-                                client.write_packet_bytes(&bytes[range]);
-                            }
-                        }
+                    if crate::layer::chunk::global_message_targets_client(msg, self_entity) {
+                        client.write_packet_bytes(&bytes[range]);
                     }
                 }
 
@@ -709,28 +695,15 @@ fn handle_layer_messages(
 
                 // Local messages
                 messages.query_local(old_view, |msg, range| match msg {
-                    crate::layer::chunk::LocalMsg::PacketAt { .. } => {
-                        client.write_packet_bytes(&bytes[range]);
-                    }
-                    crate::layer::chunk::LocalMsg::PacketAtExcept { except, .. } => {
-                        if self_entity != except {
-                            client.write_packet_bytes(&bytes[range]);
-                        }
-                    }
-                    crate::layer::chunk::LocalMsg::RadiusAt {
-                        center,
-                        radius_squared,
-                    } => {
-                        if in_radius(block_pos, center, radius_squared) {
-                            client.write_packet_bytes(&bytes[range]);
-                        }
-                    }
-                    crate::layer::chunk::LocalMsg::RadiusAtExcept {
-                        center,
-                        radius_squared,
-                        except,
-                    } => {
-                        if self_entity != except && in_radius(block_pos, center, radius_squared) {
+                    crate::layer::chunk::LocalMsg::PacketAt { .. }
+                    | crate::layer::chunk::LocalMsg::PacketAtExcept { .. }
+                    | crate::layer::chunk::LocalMsg::RadiusAt { .. }
+                    | crate::layer::chunk::LocalMsg::RadiusAtExcept { .. } => {
+                        if crate::layer::chunk::local_message_targets_client(
+                            msg,
+                            self_entity,
+                            block_pos,
+                        ) {
                             client.write_packet_bytes(&bytes[range]);
                         }
                     }
@@ -741,24 +714,26 @@ fn handle_layer_messages(
                         });
                     }
                     crate::layer::chunk::LocalMsg::ChangeChunkState { pos } => {
-                        match &bytes[range] {
-                            [ChunkLayer::LOAD, .., ChunkLayer::UNLOAD] => {
+                        match crate::layer::chunk::chunk_state_message_plan(&bytes[range]) {
+                            crate::layer::chunk::ChunkStateMessagePlan::Noop => {
                                 // Chunk is being loaded and unloaded on the
                                 // same tick, so there's no need to do anything.
                                 debug_assert!(chunk_layer.chunk(pos).is_none());
                             }
-                            [.., ChunkLayer::LOAD | ChunkLayer::OVERWRITE] => {
+                            crate::layer::chunk::ChunkStateMessagePlan::Load => {
                                 // Load chunk.
                                 let chunk = chunk_layer.chunk(pos).expect("chunk must exist");
                                 chunk.write_init_packets(&mut *client, pos, chunk_layer.info());
                                 chunk.inc_viewer_count();
                             }
-                            [.., ChunkLayer::UNLOAD] => {
+                            crate::layer::chunk::ChunkStateMessagePlan::Unload => {
                                 // Unload chunk.
                                 client.write_packet(&UnloadChunkS2c { pos });
                                 debug_assert!(chunk_layer.chunk(pos).is_none());
                             }
-                            _ => unreachable!("invalid message data while changing chunk state"),
+                            crate::layer::chunk::ChunkStateMessagePlan::Invalid => {
+                                unreachable!("invalid message data while changing chunk state")
+                            }
                         }
                     }
                 });
@@ -877,7 +852,11 @@ fn handle_layer_messages(
                             center,
                             radius_squared,
                         } => {
-                            if in_radius(block_pos, center, radius_squared) {
+                            if crate::layer::chunk::targeting::block_pos_within_radius_squared(
+                                block_pos,
+                                center,
+                                radius_squared,
+                            ) {
                                 client.write_packet_bytes(&bytes[range]);
                             }
                         }
@@ -886,7 +865,12 @@ fn handle_layer_messages(
                             radius_squared,
                             except,
                         } => {
-                            if self_entity != except && in_radius(block_pos, center, radius_squared)
+                            if self_entity != except
+                                && crate::layer::chunk::targeting::block_pos_within_radius_squared(
+                                    block_pos,
+                                    center,
+                                    radius_squared,
+                                )
                             {
                                 client.write_packet_bytes(&bytes[range]);
                             }

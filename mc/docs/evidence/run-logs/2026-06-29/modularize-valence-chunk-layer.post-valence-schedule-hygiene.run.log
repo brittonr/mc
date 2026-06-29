@@ -1,0 +1,4 @@
+command=tools/check_valence_schedule_hygiene.rs --root .
+cwd=/home/brittonr/git/mc
+valence schedule hygiene check passed
+exit_status=0

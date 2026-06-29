@@ -1,0 +1,122 @@
+command=cargo test -p valence_server layer::chunk -- --nocapture
+cwd=/home/brittonr/git/mc/servers/valence
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.17s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_server-71bc1cc27c5c81f4)
+
+running 30 tests
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_1' (3009330) panicked at crates/valence_server/src/layer/chunk/chunk.rs:357:15:
+chunk block offsets of (0, 0, 16) are out of bounds
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_3' (3009332) panicked at crates/valence_server/src/layer/chunk/chunk.rs:373:15:
+chunk block offsets of (0, 0, 16) are out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_5' (3009334) panicked at crates/valence_server/src/layer/chunk/chunk.rs:389:15:
+chunk biome offsets of (0, 0, 4) are out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_7' (3009336) panicked at crates/valence_server/src/layer/chunk/chunk.rs:405:15:
+chunk section offset of 32 is out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_9' (3009338) panicked at crates/valence_server/src/layer/chunk/chunk.rs:421:15:
+chunk section offset of 32 is out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_2' (3009331) panicked at crates/valence_server/src/layer/chunk/chunk.rs:365:15:
+chunk block offsets of (0, 0, 16) are out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_0' (3009329) panicked at crates/valence_server/src/layer/chunk/chunk.rs:349:15:
+chunk block offsets of (0, 0, 16) are out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_4' (3009333) panicked at crates/valence_server/src/layer/chunk/chunk.rs:381:15:
+chunk biome offsets of (0, 0, 4) are out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_6' (3009335) panicked at crates/valence_server/src/layer/chunk/chunk.rs:397:15:
+chunk section offset of 32 is out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_8' (3009337) panicked at crates/valence_server/src/layer/chunk/chunk.rs:413:15:
+chunk section offset of 32 is out of bounds
+
+thread 'layer::chunk::paletted_container::tests::invalid_index_panics_without_corrupting_in_range_values' (3009355) panicked at crates/valence_server/src/layer/chunk/paletted_container.rs:495:61:
+assertion failed: idx < LEN
+
+thread 'layer::chunk::paletted_container::tests::invalid_index_panics_without_corrupting_in_range_values' (3009355) panicked at crates/valence_server/src/layer/chunk/paletted_container.rs:499:61:
+assertion failed: idx < LEN
+test layer::chunk::loaded::tests::loaded_chunk_unviewed_no_changes ... ok
+test layer::chunk::loaded::tests::section_non_air_count_tracks_storage_transitions ... ok
+test layer::chunk::paletted_container::tests::count_matching_tracks_mutations_without_cached_unique_data ... ok
+test layer::chunk::paletted_container::tests::fill_and_shrink_drop_stale_representation_data ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_4 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_3 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_5 - should panic ... ok
+test layer::chunk::egress_cache::tests::missing_light_inputs_fail_closed ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_1 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_0 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_9 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_2 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_8 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_6 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_get_set ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_7 - should panic ... ok
+test layer::chunk::paletted_container::tests::indirect_direct_encode_parity_when_indirect_uses_direct_path ... ok
+test layer::chunk::paletted_container::tests::transitions_preserve_values ... ok
+test layer::chunk::paletted_container::tests::invalid_index_panics_without_corrupting_in_range_values ... ok
+test layer::chunk::egress_cache::tests::compression_change_misses_cache ... ok
+test layer::chunk::egress_cache::tests::content_version_change_misses_stale_bytes ... ok
+test layer::chunk::egress_cache::tests::cache_hit_returns_stored_bytes ... ok
+test layer::chunk::egress_cache::tests::render_setting_changes_miss_cache ... ok
+test layer::chunk::egress_cache::tests::dimension_change_misses_cache ... ok
+test layer::chunk::egress_cache::tests::same_snapshot_renders_same_packet_and_key ... ok
+test layer::chunk::unloaded::tests::unloaded_chunk_resize_removes_block_entities ... ok
+test layer::chunk::loaded::tests::loaded_chunk_cache_hit_reuses_identical_packet_bytes ... ok
+test layer::chunk::loaded::tests::loaded_chunk_default_uncached_writer_keeps_packet_cache_empty ... ok
+test layer::chunk::loaded::tests::loaded_chunk_changes_invalidate_optional_packet_cache ... ok
+test layer::chunk::paletted_container::tests::random_assignments ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 65 filtered out; finished in 0.01s
+
+exit_status=0

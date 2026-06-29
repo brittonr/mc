@@ -1,0 +1,138 @@
+command=cargo test -p valence_server layer::chunk -- --nocapture
+cwd=/home/brittonr/git/mc/servers/valence
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+    Finished `test` profile [optimized + debuginfo] target(s) in 1.03s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_server-71bc1cc27c5c81f4)
+
+running 45 tests
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_0' (3881678) panicked at crates/valence_server/src/layer/chunk/chunk.rs:349:15:
+chunk block offsets of (0, 0, 16) are out of bounds
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_1' (3881679) panicked at crates/valence_server/src/layer/chunk/chunk.rs:357:15:
+chunk block offsets of (0, 0, 16) are out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_2' (3881680) panicked at crates/valence_server/src/layer/chunk/chunk.rs:365:15:
+chunk block offsets of (0, 0, 16) are out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_3' (3881681) panicked at crates/valence_server/src/layer/chunk/chunk.rs:373:15:
+chunk block offsets of (0, 0, 16) are out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_4' (3881682) panicked at crates/valence_server/src/layer/chunk/chunk.rs:381:15:
+chunk biome offsets of (0, 0, 4) are out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_5' (3881683) panicked at crates/valence_server/src/layer/chunk/chunk.rs:389:15:
+chunk biome offsets of (0, 0, 4) are out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_7' (3881685) panicked at crates/valence_server/src/layer/chunk/chunk.rs:405:15:
+chunk section offset of 32 is out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_6' (3881684) panicked at crates/valence_server/src/layer/chunk/chunk.rs:397:15:
+chunk section offset of 32 is out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_8' (3881686) panicked at crates/valence_server/src/layer/chunk/chunk.rs:413:15:
+chunk section offset of 32 is out of bounds
+
+thread 'layer::chunk::chunk::tests::chunk_debug_oob_9' (3881687) panicked at crates/valence_server/src/layer/chunk/chunk.rs:421:15:
+chunk section offset of 32 is out of bounds
+test layer::chunk::chunk::tests::chunk_debug_oob_1 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_2 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_0 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_3 - should panic ... ok
+
+thread 'layer::chunk::paletted_container::tests::invalid_index_panics_without_corrupting_in_range_values' (3881712) panicked at crates/valence_server/src/layer/chunk/paletted_container.rs:495:61:
+assertion failed: idx < LEN
+test layer::chunk::chunk::tests::chunk_debug_oob_4 - should panic ... ok
+
+thread 'layer::chunk::paletted_container::tests::invalid_index_panics_without_corrupting_in_range_values' (3881712) panicked at crates/valence_server/src/layer/chunk/paletted_container.rs:499:61:
+assertion failed: idx < LEN
+test layer::chunk::chunk::tests::chunk_debug_oob_5 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_7 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_6 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_8 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_9 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_get_set ... ok
+test layer::chunk::egress_cache::tests::cache_hit_returns_stored_bytes ... ok
+test layer::chunk::egress_cache::tests::compression_change_misses_cache ... ok
+test layer::chunk::egress_cache::tests::content_version_change_misses_stale_bytes ... ok
+test layer::chunk::egress_cache::tests::dimension_change_misses_cache ... ok
+test layer::chunk::egress_cache::tests::missing_light_inputs_fail_closed ... ok
+test layer::chunk::egress_cache::tests::render_setting_changes_miss_cache ... ok
+test layer::chunk::entry::tests::chunk_state_messages_select_load_unload_and_noop_plans ... ok
+test layer::chunk::egress_cache::tests::same_snapshot_renders_same_packet_and_key ... ok
+test layer::chunk::entry::tests::entry_transitions_cover_occupied_and_vacant_writes ... ok
+test layer::chunk::entry::tests::invalid_state_messages_fail_closed ... ok
+test layer::chunk::entry::tests::missing_or_stale_entries_do_not_emit_state_changes ... ok
+test layer::chunk::loaded::tests::section_non_air_count_tracks_storage_transitions ... ok
+test layer::chunk::loaded::tests::loaded_chunk_unviewed_no_changes ... ok
+test layer::chunk::messages::tests::local_messages_fail_closed_for_excluded_or_out_of_radius_clients ... ok
+test layer::chunk::messages::tests::local_messages_report_their_owner_chunk ... ok
+test layer::chunk::messages::tests::global_messages_respect_exception_filters ... ok
+test layer::chunk::messages::tests::local_packet_and_radius_messages_select_target_clients ... ok
+test layer::chunk::paletted_container::tests::count_matching_tracks_mutations_without_cached_unique_data ... ok
+test layer::chunk::paletted_container::tests::fill_and_shrink_drop_stale_representation_data ... ok
+test layer::chunk::paletted_container::tests::indirect_direct_encode_parity_when_indirect_uses_direct_path ... ok
+test layer::chunk::paletted_container::tests::invalid_index_panics_without_corrupting_in_range_values ... ok
+test layer::chunk::targeting::tests::exception_filter_allows_non_excluded_clients_only ... ok
+test layer::chunk::paletted_container::tests::transitions_preserve_values ... ok
+test layer::chunk::targeting::tests::radius_targeting_rejects_out_of_range_and_invalid_radii ... ok
+test layer::chunk::targeting::tests::radius_targeting_accepts_clients_inside_the_radius ... ok
+test layer::chunk::targeting::tests::update_plans_preserve_pre_and_post_client_order ... ok
+test layer::chunk::targeting::tests::update_plans_reject_invalid_order_assumptions ... ok
+test layer::chunk::targeting::tests::view_membership_accepts_chunks_inside_the_view ... ok
+test layer::chunk::targeting::tests::view_membership_rejects_chunks_outside_or_empty_views ... ok
+test layer::chunk::unloaded::tests::unloaded_chunk_resize_removes_block_entities ... ok
+test layer::chunk::loaded::tests::loaded_chunk_cache_hit_reuses_identical_packet_bytes ... ok
+test layer::chunk::loaded::tests::loaded_chunk_default_uncached_writer_keeps_packet_cache_empty ... ok
+test layer::chunk::loaded::tests::loaded_chunk_changes_invalidate_optional_packet_cache ... ok
+test layer::chunk::paletted_container::tests::random_assignments ... ok
+
+test result: ok. 45 passed; 0 failed; 0 ignored; 0 measured; 65 filtered out; finished in 0.00s
+
+exit_status=0

@@ -1,0 +1,82 @@
+command=CAIRN_ARCHIVE_DATE=2026-06-29 nix run .#cairn -- archive modularize-valence-chunk-layer --root . --execute
+cwd=/home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: modularize-valence-chunk-layer",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-29-modularize-valence-chunk-layer"
+    }
+  ],
+  "blocked": false,
+  "change": "modularize-valence-chunk-layer",
+  "dry_run": false,
+  "input_hash": "0be9fcebbf3f725cd40bc0ace72dbb9daa5c0b05abe166ac31ba9aa5c4b8820f",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "87bf46124a4f7d3d1de701feb6a9c7875962aefa1218edc9e2f77879e06df2fe",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-valence-chunk-layer/design.md"
+        },
+        {
+          "content_hash": "16068701f90208d15dbdff89221e7d524041b6a2d35db344455a2660bc3e9ea2",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-valence-chunk-layer/proposal.md"
+        },
+        {
+          "content_hash": "84d83e8233d8f05bd584a0116759d25f0b73803bc2518d3b8a22aa2bb1ab03df",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-valence-chunk-layer/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "831f07addb1aa34b49048d780c59ba39cd6abba843303726a086840484c55623",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-valence-chunk-layer/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/modularize-valence-chunk-layer"
+        }
+      ],
+      "manifest_hash": "204db1bbc528b7465b76aafb70b86c7148514e5c7b5daa068d953c4e5e9709f2"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "87bf46124a4f7d3d1de701feb6a9c7875962aefa1218edc9e2f77879e06df2fe",
+          "exists": true,
+          "path": "./cairn/changes/modularize-valence-chunk-layer/design.md"
+        },
+        {
+          "content_hash": "16068701f90208d15dbdff89221e7d524041b6a2d35db344455a2660bc3e9ea2",
+          "exists": true,
+          "path": "./cairn/changes/modularize-valence-chunk-layer/proposal.md"
+        },
+        {
+          "content_hash": "84d83e8233d8f05bd584a0116759d25f0b73803bc2518d3b8a22aa2bb1ab03df",
+          "exists": true,
+          "path": "./cairn/changes/modularize-valence-chunk-layer/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "831f07addb1aa34b49048d780c59ba39cd6abba843303726a086840484c55623",
+          "exists": true,
+          "path": "./cairn/changes/modularize-valence-chunk-layer/tasks.md"
+        }
+      ],
+      "manifest_hash": "793a3e4ed140a859746e74c128a964b29559cbfe2fc46a0f3c2c457247eba29a"
+    },
+    "kind": "archive",
+    "manifest_hash": "36d405f6b642cea27b21c5b54cde7f13291c9ad8d593c14442564391f9d4ccd2"
+  },
+  "plan_hash": "4656e0d283c5afcec6a9149e5437c49c9f956c4cc8d7198d2d980b04b471b1cf",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "87aa999dd4c57c6ddffba033f4e1f50ead3d97a85eacaae24f1cb6b29f374744"
+}
+exit_status=0
