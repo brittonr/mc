@@ -1,0 +1,265 @@
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test capture -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+   Compiling stevenarella v0.0.1 (/home/brittonr/git/mc/clients/stevenarella)
+warning: unreachable pattern
+   --> src/server/login.rs:190:9
+    |
+190 |         (phase, event) => LoginDecision::Fail(LoginFailure {
+    |         ^^^^^^^^^^^^^^ no value can reach this
+    |
+note: multiple earlier patterns match some of the same values
+   --> src/server/login.rs:190:9
+    |
+162 |           (_, LoginEvent::SetCompression(compression)) => {
+    |           -------------------------------------------- matches some of the same values
+...
+165 |           (LoginPhase::Initial, LoginEvent::EncryptionRequest(request)) => {
+    |           ------------------------------------------------------------- matches some of the same values
+...
+168 |           (LoginPhase::Encrypted, LoginEvent::EncryptionRequest(request)) => {
+    |           --------------------------------------------------------------- matches some of the same values
+...
+174 | /         (LoginPhase::Initial, LoginEvent::Success(outcome))
+175 | |         | (LoginPhase::Encrypted, LoginEvent::Success(outcome)) => LoginDecision::Complete(outcome),
+    | |_______________________________________________________________- matches some of the same values
+...
+190 |           (phase, event) => LoginDecision::Fail(LoginFailure {
+    |           ^^^^^^^^^^^^^^ ...and 4 other patterns collectively make this unreachable
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: enum `TraversalPlanError` is never used
+  --> src/ui/container.rs:18:17
+   |
+18 | pub(crate) enum TraversalPlanError {
+   |                 ^^^^^^^^^^^^^^^^^^
+
+warning: function `draw_order` is never used
+  --> src/ui/container.rs:22:15
+   |
+22 | pub(crate) fn draw_order(draw_indices: &[isize]) -> Vec<usize> {
+   |               ^^^^^^^^^^
+
+warning: function `clicked_index` is never used
+  --> src/ui/container.rs:35:15
+   |
+35 | pub(crate) fn clicked_index(regions: &[Region], x: f64, y: f64) -> Option<usize> {
+   |               ^^^^^^^^^^^^^
+
+warning: function `checked_draw_order` is never used
+  --> src/ui/container.rs:39:15
+   |
+39 | pub(crate) fn checked_draw_order(
+   |               ^^^^^^^^^^^^^^^^^^
+
+warning: enum `LayoutBoundsError` is never used
+  --> src/ui/layout.rs:48:17
+   |
+48 | pub(crate) enum LayoutBoundsError {
+   |                 ^^^^^^^^^^^^^^^^^
+
+warning: associated function `checked` is never used
+  --> src/ui/layout.rs:71:19
+   |
+70 | impl Region {
+   | ----------- associated function in this implementation
+71 |     pub(crate) fn checked(x: f64, y: f64, w: f64, h: f64) -> Result<Self, LayoutBoundsError> {
+   |                   ^^^^^^^
+
+warning: function `validate_region_numbers` is never used
+  --> src/ui/layout.rs:88:15
+   |
+88 | pub(crate) fn validate_region_numbers(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Unsupported` is never constructed
+  --> src/ui/textbox.rs:34:5
+   |
+32 | pub(crate) enum ClipboardPath {
+   |                 ------------- variant in this enum
+33 |     Supported,
+34 |     Unsupported,
+   |     ^^^^^^^^^^^
+   |
+   = note: `ClipboardPath` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `clamp_cursor_position` is never used
+  --> src/ui/textbox.rs:59:15
+   |
+59 | pub(crate) fn clamp_cursor_position(input: &str, requested_position: usize) -> usize {
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:76:21
+    |
+ 76 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+226 | / define_elements! {
+227 | |     Image,
+228 | |     Batch,
+229 | |     Text,
+...   |
+232 | |     TextBox,
+233 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+ 76 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 14 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (lib test) generated 3 warnings (3 duplicates)
+warning: `stevenarella` (bin "stevenarella" test) generated 3 warnings (3 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 50.34s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 49 tests
+test capture::tests::artifact_path_escape_is_rejected ... ok
+test capture::tests::capture_queue_rejects_recording_request_before_enqueue ... ok
+test capture::tests::capture_queue_reports_closed_after_pending_receiver_drop ... ok
+test capture::tests::capture_queue_services_one_screenshot_after_frame_readback ... ok
+test capture::tests::capture_queue_services_one_latest_frame_after_frame_readback ... ok
+test capture::tests::focused_validation_covers_vertical_flip_normalization ... ok
+test capture::tests::focused_validation_rejects_invalid_format ... ok
+test capture::tests::focused_validation_rejects_capture_rate_limit ... ok
+test capture::tests::focused_validation_rejects_path_traversal ... ok
+test capture::tests::invalid_digest_is_rejected ... ok
+test capture::tests::focused_validation_rejects_unbounded_recording ... ok
+test capture::tests::latest_frame_default_artifact_path_uses_stable_directory_and_width ... ok
+test capture::tests::metadata_validation_rejects_oversized_artifact ... ok
+test capture::tests::one_shot_artifact_size_guard_rejects_before_write ... ok
+test capture::tests::one_shot_capture_rejects_ui_exclusion_before_readback ... ok
+test capture::tests::recording_cadence_decision_is_pure_over_session_snapshot ... ok
+test capture::tests::recording_frame_rate_above_policy_is_rejected ... ok
+test capture::tests::recording_inline_output_is_rejected ... ok
+test capture::tests::focused_validation_covers_valid_screenshot_metadata ... ok
+test capture::tests::bounded_recording_writes_contained_frames_and_respects_fps ... ok
+test capture::tests::recording_without_explicit_bounds_is_rejected ... ok
+test capture::tests::rgba_readback_normalizes_gl_bottom_left_origin ... ok
+test capture::tests::rgba_readback_rejects_empty_dimensions ... ok
+test capture::tests::rgba_readback_rejects_wrong_buffer_length ... ok
+test capture::tests::unsupported_format_fails_closed ... ok
+test capture::tests::valid_artifact_metadata_is_accepted ... ok
+test capture::tests::valid_recording_bounds_are_accepted ... ok
+test capture::tests::valid_screenshot_artifact_request_is_planned ... ok
+test capture::tests::zero_dimensions_are_rejected ... ok
+test capture::tests::one_shot_artifact_capture_writes_png_and_metadata ... ok
+test game_shell::capture_startup::tests::default_startup_options_do_not_request_recording ... ok
+test game_shell::capture_startup::tests::duration_conversion_saturates_large_values ... ok
+test game_shell::capture_startup::tests::startup_recording_plan_builds_bounded_recording_request ... ok
+test game_shell::capture_startup::tests::startup_recording_plan_rejects_missing_frame_rate ... ok
+test game_shell::capture_startup::tests::startup_recording_plan_requires_local_capture_dir ... ok
+test game_shell::mcp_control::tests::capture_queue_errors_preserve_response_vocabulary ... ok
+test game_shell::mcp_control::tests::control_capture_enqueue_reaches_post_render_capture_queue ... ok
+test game_shell::mcp_control::tests::control_capture_enqueue_rejects_missing_capture_queue ... ok
+test game_shell::mcp_control::tests::plans_capture_actions_and_rejects_unavailable_queue ... ok
+test mcp::capture_adapter::tests::capture_request_rejects_non_object_arguments_before_enqueue ... ok
+test mcp::capture_adapter::tests::capture_metadata_records_inline_identity ... ok
+test mcp::protocol::tests::pure_route_returns_capture_effect_without_capture_queue_side_effects ... ok
+test mcp::tests::jsonrpc_capture_tool_rejects_invalid_format_before_enqueue ... ok
+test mcp::tests::tools_and_resources_list_include_capture_when_configured ... ok
+test game_shell::mcp_control::tests::control_capture_enqueue_uses_capture_dir_artifact_output ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_capture_command_for_main_thread_drain ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_inline_image_and_metadata ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_artifact_path_and_digest ... ok
+test mcp::tests::jsonrpc_capture_resource_read_returns_inline_blob ... ok
+
+test result: ok. 49 passed; 0 failed; 0 ignored; 0 measured; 283 filtered out; finished in 0.01s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 49 tests
+test capture::tests::artifact_path_escape_is_rejected ... ok
+test capture::tests::capture_queue_rejects_recording_request_before_enqueue ... ok
+test capture::tests::capture_queue_reports_closed_after_pending_receiver_drop ... ok
+test capture::tests::capture_queue_services_one_latest_frame_after_frame_readback ... ok
+test capture::tests::capture_queue_services_one_screenshot_after_frame_readback ... ok
+test capture::tests::focused_validation_covers_vertical_flip_normalization ... ok
+test capture::tests::focused_validation_rejects_capture_rate_limit ... ok
+test capture::tests::focused_validation_rejects_invalid_format ... ok
+test capture::tests::focused_validation_rejects_path_traversal ... ok
+test capture::tests::focused_validation_rejects_unbounded_recording ... ok
+test capture::tests::invalid_digest_is_rejected ... ok
+test capture::tests::latest_frame_default_artifact_path_uses_stable_directory_and_width ... ok
+test capture::tests::metadata_validation_rejects_oversized_artifact ... ok
+test capture::tests::one_shot_capture_rejects_ui_exclusion_before_readback ... ok
+test capture::tests::recording_cadence_decision_is_pure_over_session_snapshot ... ok
+test capture::tests::one_shot_artifact_size_guard_rejects_before_write ... ok
+test capture::tests::recording_inline_output_is_rejected ... ok
+test capture::tests::recording_frame_rate_above_policy_is_rejected ... ok
+test capture::tests::focused_validation_covers_valid_screenshot_metadata ... ok
+test capture::tests::recording_without_explicit_bounds_is_rejected ... ok
+test capture::tests::one_shot_artifact_capture_writes_png_and_metadata ... ok
+test capture::tests::rgba_readback_normalizes_gl_bottom_left_origin ... ok
+test capture::tests::rgba_readback_rejects_empty_dimensions ... ok
+test capture::tests::rgba_readback_rejects_wrong_buffer_length ... ok
+test capture::tests::unsupported_format_fails_closed ... ok
+test capture::tests::bounded_recording_writes_contained_frames_and_respects_fps ... ok
+test capture::tests::valid_artifact_metadata_is_accepted ... ok
+test capture::tests::valid_recording_bounds_are_accepted ... ok
+test capture::tests::valid_screenshot_artifact_request_is_planned ... ok
+test capture::tests::zero_dimensions_are_rejected ... ok
+test game_shell::capture_startup::tests::default_startup_options_do_not_request_recording ... ok
+test game_shell::capture_startup::tests::duration_conversion_saturates_large_values ... ok
+test game_shell::capture_startup::tests::startup_recording_plan_builds_bounded_recording_request ... ok
+test game_shell::capture_startup::tests::startup_recording_plan_rejects_missing_frame_rate ... ok
+test game_shell::capture_startup::tests::startup_recording_plan_requires_local_capture_dir ... ok
+test game_shell::mcp_control::tests::control_capture_enqueue_rejects_missing_capture_queue ... ok
+test game_shell::mcp_control::tests::capture_queue_errors_preserve_response_vocabulary ... ok
+test game_shell::mcp_control::tests::control_capture_enqueue_reaches_post_render_capture_queue ... ok
+test game_shell::mcp_control::tests::plans_capture_actions_and_rejects_unavailable_queue ... ok
+test mcp::capture_adapter::tests::capture_request_rejects_non_object_arguments_before_enqueue ... ok
+test mcp::capture_adapter::tests::capture_metadata_records_inline_identity ... ok
+test mcp::protocol::tests::pure_route_returns_capture_effect_without_capture_queue_side_effects ... ok
+test game_shell::mcp_control::tests::control_capture_enqueue_uses_capture_dir_artifact_output ... ok
+test mcp::tests::jsonrpc_capture_tool_rejects_invalid_format_before_enqueue ... ok
+test mcp::tests::tools_and_resources_list_include_capture_when_configured ... ok
+test mcp::tests::jsonrpc_capture_resource_read_returns_inline_blob ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_capture_command_for_main_thread_drain ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_inline_image_and_metadata ... ok
+test mcp::tests::jsonrpc_capture_tool_returns_artifact_path_and_digest ... ok
+
+test result: ok. 49 passed; 0 failed; 0 ignored; 0 measured; 283 filtered out; finished in 0.00s
+
+exit_status=0

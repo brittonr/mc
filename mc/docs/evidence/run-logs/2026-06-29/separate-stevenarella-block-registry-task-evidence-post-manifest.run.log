@@ -1,0 +1,7 @@
+# separate-stevenarella-block-registry post-manifest task evidence gate
+cwd=/home/brittonr/git/mc
+started_at=2026-06-29T18:59:40Z
+## rustc tools/check_cairn_task_evidence.rs && target/check-cairn-task-evidence cairn/changes/separate-stevenarella-block-registry/tasks.md
+task evidence gate passed: 7 completed tasks checked across 1 task files
+finished_at=2026-06-29T18:59:40Z
+exit_status=0

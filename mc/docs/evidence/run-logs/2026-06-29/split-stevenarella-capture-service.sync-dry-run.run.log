@@ -1,0 +1,26 @@
+$ nix run .#cairn -- sync split-stevenarella-capture-service --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/split-stevenarella-capture-service/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/split-stevenarella-capture-service/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "split-stevenarella-capture-service",
+  "delta_specs": [
+    "./cairn/changes/split-stevenarella-capture-service/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "e125638b44d688c9d07d33f149458df97a7469d6fbf58dbe93476b3a43668d93",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "6b3665db8bc244963b48511b73860c0a14a06816b95242e8f9e574dda3477028",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "87bad4800b32b6927d82a633ad192a999b83ab7cbc30dd0fee5ff67037582e0c"
+}
+exit_status=0

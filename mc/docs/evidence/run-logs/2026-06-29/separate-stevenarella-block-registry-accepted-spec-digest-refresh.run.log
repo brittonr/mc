@@ -1,0 +1,8 @@
+# separate-stevenarella-block-registry accepted spec digest refresh
+cwd=/home/brittonr/git/mc
+started_at=2026-06-29T19:03:07Z
+expected_digest=aede7d448abee7065067b05d22a43fa263db2fd33a330ea13020b64be0e4daf5
+aede7d448abee7065067b05d22a43fa263db2fd33a330ea13020b64be0e4daf5  cairn/specs/mc-compatibility/spec.md
+accepted-spec digest rows refreshed
+finished_at=2026-06-29T19:03:07Z
+exit_status=0

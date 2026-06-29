@@ -1,0 +1,6 @@
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c rustfmt src/capture.rs src/capture/model.rs src/capture/persistence.rs src/capture/queue.rs src/capture/readback.rs src/capture/recording.rs src/capture/service.rs src/capture/tests.rs src/capture/validation.rs
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+exit_status=0

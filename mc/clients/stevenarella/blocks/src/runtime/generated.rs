@@ -1,0 +1,6590 @@
+use super::*;
+use crate::id_map::{
+    VanillaIDMap, FLATTENING_PROTOCOL_VERSION, LEGACY_BLOCK_DATA_VALUE_COUNT, LEGACY_BLOCK_ID_SHIFT,
+};
+use std::collections::HashMap;
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! create_ids {
+    ($t:ty, ) => ();
+    ($t:ty, prev($prev:ident), $name:ident) => (
+        #[allow(non_upper_case_globals)]
+        pub const $name: $t = $prev + 1;
+    );
+    ($t:ty, prev($prev:ident), $name:ident, $($n:ident),+) => (
+        #[allow(non_upper_case_globals)]
+        pub const $name: $t = $prev + 1;
+        create_ids!($t, prev($name), $($n),+);
+    );
+    ($t:ty, $name:ident, $($n:ident),+) => (
+        #[allow(non_upper_case_globals)]
+        pub const $name: $t = 0;
+        create_ids!($t, prev($name), $($n),+);
+    );
+    ($t:ty, $name:ident) => (
+        #[allow(non_upper_case_globals)]
+        pub const $name: $t = 0;
+    );
+}
+
+macro_rules! define_blocks {
+    (
+        $(
+            $name:ident {
+                $(modid $modid:expr,)?
+                props {
+                    $(
+                        $fname:ident : $ftype:ty = [$($val:expr),+],
+                    )*
+                },
+                $(data $datafunc:expr,)?
+                $(offset $offsetfunc:expr,)?
+                $(offsets $offsetsfunc:expr,)?
+                $(material $mat:expr,)?
+                model $model:expr,
+                $(variant $variant:expr,)?
+                $(tint $tint:expr,)?
+                $(collision $collision:expr,)?
+                $(update_state ($world:ident, $pos:ident) => $update_state:expr,)?
+                $(multipart ($mkey:ident, $mval:ident) => $multipart:expr,)?
+                $(hardness $hardness:expr,)?
+                $(harvest_tools [ $($harvest_tool:pat,)+ ],)?
+                $(best_tools [ $($best_tools:pat,)+ ],)?
+            }
+        )+
+    ) => (
+        #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+        pub enum Block {
+            $(
+                $name {
+                    $(
+                        $fname : $ftype,
+                    )?
+                },
+            )+
+        }
+        mod internal_ids {
+            $crate::create_ids!(usize, $($name),+);
+        }
+
+        impl Block {
+            #[allow(unused_variables, unreachable_code)]
+            pub fn get_internal_id(&self) -> usize {
+                match *self {
+                    $(
+                        Block::$name {
+                            $($fname,)?
+                        } => {
+                            internal_ids::$name
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables, unreachable_code)]
+            pub fn get_hierarchical_data(&self) -> Option<usize> {
+                match *self {
+                    $(
+                        Block::$name {
+                            $($fname,)?
+                        } => {
+                            $(
+                                let data: Option<usize> = ($datafunc).map(|v| v);
+                                return data;
+                            )?
+                            Some(0)
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables, unreachable_code)]
+            #[allow(clippy::redundant_closure_call)] // TODO: fix 'try not to call a closure in the expression where it is declared'
+            pub fn get_flat_offset(&self, protocol_version: i32) -> Option<usize> {
+                match *self {
+                    $(
+                        Block::$name {
+                            $($fname,)?
+                        } => {
+                            $(
+                                let offset: Option<usize> = ($offsetsfunc)(protocol_version).map(|v| v);
+                                return offset;
+                            )?
+                            $(
+                                let offset: Option<usize> = ($offsetfunc).map(|v| v);
+                                return offset;
+                            )?
+                            $(
+                                let data: Option<usize> = ($datafunc).map(|v| v);
+                                return data;
+                            )?
+                            Some(0)
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables, unreachable_code)]
+            pub fn get_modid(&self) -> Option<&str> {
+                match *self {
+                    $(
+                        Block::$name {
+                            $($fname,)?
+                        } => {
+                            $(
+                                return Some($modid);
+                            )?
+                            None
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables, unreachable_code)]
+            pub fn get_material(&self) -> Material {
+                match *self {
+                    $(
+                        Block::$name {
+                            $($fname,)?
+                        } => {
+                            $(return $mat;)?
+                            material::SOLID
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables)]
+            pub fn get_model(&self) -> (String, String) {
+                match *self {
+                    $(
+                        Block::$name {
+                            $($fname,)?
+                        } => {
+                            let parts = $model;
+                            (String::from(parts.0), String::from(parts.1))
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables, unreachable_code)]
+            pub fn get_model_variant(&self) -> String {
+                match *self {
+                    $(
+                        Block::$name {
+                            $($fname,)?
+                        } => {
+                            $(return String::from($variant);)?
+                            "normal".to_owned()
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables, unreachable_code)]
+            pub fn get_tint(&self) -> TintType {
+                match *self {
+                    $(
+                        Block::$name {
+                            $($fname,)?
+                        } => {
+                            $(return $tint;)?
+                            TintType::Default
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables, unreachable_code)]
+            pub fn get_collision_boxes(&self) -> Vec<Aabb3<f64>> {
+                match *self {
+                    $(
+                        Block::$name {
+                            $($fname,)?
+                        } => {
+                            $(return $collision;)?
+                            vec![Aabb3::new(
+                                Point3::new(0.0, 0.0, 0.0),
+                                Point3::new(1.0, 1.0, 1.0)
+                            )]
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables, unreachable_code)]
+            pub fn get_hardness(&self) -> Option<f64> {
+                match *self {
+                    $(
+                        Block::$name {
+                            $($fname,)?
+                        } => {
+                            $(return Some($hardness);)?
+                            None
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables, unreachable_code)]
+            pub fn update_state<W: WorldAccess>(&self, world: &W, pos: Position) -> Block {
+                match *self {
+                    $(
+                        Block::$name {
+                            $($fname,)?
+                        } => {
+                            $(
+                                let $world = world;
+                                let $pos = pos;
+                                return $update_state;
+                            )?
+                            Block::$name {
+                                $($fname,)?
+                            }
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables, unreachable_code)]
+            pub fn match_multipart(&self, key: &str, val: &str) -> bool {
+                match *self {
+                    $(
+                        Block::$name {
+                            $($fname,)?
+                        } => {
+                            $(
+                                let $mkey = key;
+                                let $mval = val;
+                                return $multipart;
+                            )?
+                            false
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables, unreachable_code)]
+            pub fn is_best_tool(&self, tool: &Option<Tool>) -> bool {
+                match *self {
+                    $(
+                        Block::$name { .. } => {
+                            $(
+                                return match tool {
+                                    $(Some($best_tools) => true,)+
+                                    _ => false,
+                                };
+                            )?
+                            true
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables, unreachable_code)]
+            pub fn can_harvest(&self, tool: &Option<Tool>) -> bool {
+                match *self {
+                    $(
+                        Block::$name { .. } => {
+                            $(return match *tool {
+                                $(Some($harvest_tool) => true,)+
+                                _ =>  false,
+                            };)?
+                            true
+                        }
+                    )+
+                }
+            }
+
+            #[allow(unused_variables, unreachable_code)]
+            pub fn get_mining_time(&self, tool: &Option<Tool>) -> Option<std::time::Duration> {
+                let mut speed_multiplier = 1.0;
+
+                let tool_multiplier = tool.map(|t| t.get_multiplier()).unwrap_or(1.0);
+
+                let is_best_tool = self.is_best_tool(tool);
+                let can_harvest: bool = self.can_harvest(tool);
+
+                if is_best_tool {
+                    speed_multiplier = tool_multiplier;
+                }
+
+                // TODO: Apply tool efficiency
+                // TODO: Apply haste effect
+                // TODO: Apply mining fatigue effect
+                // TODO: Apply in water multiplier
+                // TODO: Apply on ground multiplier
+
+                let mut damage = match self.get_hardness() {
+                    // Instant mine
+                    Some(n) if n == 0.0 => return Some(std::time::Duration::from_secs_f64(0.05)),
+                    // Impossible to mine
+                    None => return None,
+                    Some(n) => speed_multiplier / n,
+                };
+
+                if can_harvest {
+                    damage /= 30.0;
+                } else {
+                    damage /= 100.0;
+                }
+
+                // Instant breaking
+                if damage > 1.0 {
+                    return Some(std::time::Duration::from_secs_f64(0.05));
+                }
+
+                let ticks = (1.0 / damage).ceil();
+                let seconds = ticks / 20.0;
+                Some(std::time::Duration::from_secs_f64(seconds))
+            }
+        }
+
+        mod block_registration_functions {
+            use super::*;
+            $(
+                #[allow(non_snake_case)]
+                pub fn $name(
+                    protocol_version: i32,
+                    blocks_flat: &mut Vec<Option<Block>>,
+                    blocks_hier: &mut Vec<Option<Block>>,
+                    blocks_modded: &mut HashMap<String, [Option<Block>; LEGACY_BLOCK_DATA_VALUE_COUNT]>,
+                    flat_id: &mut usize,
+                    last_internal_id: &mut usize,
+                    hier_block_id: &mut usize,
+                    ) {
+                    #[allow(non_camel_case_types, dead_code)]
+                    struct CombinationIter<$($fname),*> {
+                        first: bool,
+                        finished: bool,
+                        state: CombinationIterState<$($fname),*>,
+                        orig: CombinationIterOrig<$($fname),*>,
+                        current: CombinationIterCurrent,
+                    }
+                    #[allow(non_camel_case_types)]
+                    struct CombinationIterState<$($fname),*> {
+                        $($fname: $fname,)?
+                    }
+                    #[allow(non_camel_case_types)]
+                    struct CombinationIterOrig<$($fname),*> {
+                        $($fname: $fname,)?
+                    }
+                    #[allow(non_camel_case_types)]
+                    struct CombinationIterCurrent {
+                        $($fname: $ftype,)?
+                    }
+
+                    #[allow(non_camel_case_types)]
+                    impl <$($fname : Iterator<Item=$ftype> + Clone),*> Iterator for CombinationIter<$($fname),*> {
+                        type Item = Block;
+
+                        #[allow(unused_mut, unused_variables, unreachable_code, unused_assignments, clippy::never_loop)]
+                        fn next(&mut self) -> Option<Self::Item> {
+                            if self.finished {
+                                return None;
+                            }
+                            if self.first {
+                                self.first = false;
+                                return Some(Block::$name {
+                                    $(
+                                        $fname: self.current.$fname,
+                                    )?
+                                });
+                            }
+                            let mut has_value = false;
+                            loop {
+                                $(
+                                    if let Some(val) = self.state.$fname.next() {
+                                        self.current.$fname = val;
+                                        has_value = true;
+                                        break;
+                                    }
+                                    self.state.$fname = self.orig.$fname.clone();
+                                    self.current.$fname = self.state.$fname.next().unwrap();
+                                )?
+                                self.finished = true;
+                                return None;
+                            }
+                            if has_value {
+                                Some(Block::$name {
+                                    $(
+                                        $fname: self.current.$fname,
+                                    )?
+                                })
+                            } else {
+                                None
+                            }
+                        }
+                    }
+                    #[allow(non_camel_case_types)]
+                    impl <$($fname : Iterator<Item=$ftype> + Clone),*> CombinationIter<$($fname),*> {
+                        #[allow(clippy::too_many_arguments)]
+                        fn new($(mut $fname:$fname),*) -> CombinationIter<$($fname),*> {
+                            CombinationIter {
+                                finished: false,
+                                first: true,
+                                orig: CombinationIterOrig {
+                                    $($fname: $fname.clone(),)?
+                                },
+                                current: CombinationIterCurrent {
+                                    $($fname: $fname.next().unwrap(),)?
+                                },
+                                state: CombinationIterState {
+                                    $($fname,)?
+                                }
+                            }
+                        }
+                    }
+                    let iter = CombinationIter::new(
+                        $({
+                            let vals = vec![$($val),+];
+                            vals.into_iter()
+                        }),*
+                    );
+                    let mut last_offset: isize = -1;
+                    let debug_blocks = std::env::var("DEBUG_BLOCKS").is_ok();
+                    for block in iter {
+                        let internal_id = block.get_internal_id();
+                        let hier_data: Option<usize> = block.get_hierarchical_data();
+                        if let Some(modid) = block.get_modid() {
+                            let hier_data = hier_data.unwrap();
+                            if !(*blocks_modded).contains_key(modid) {
+                                (*blocks_modded).insert(modid.to_string(), [None; LEGACY_BLOCK_DATA_VALUE_COUNT]);
+                            }
+                            let block_from_data = (*blocks_modded).get_mut(modid).unwrap();
+                            block_from_data[hier_data] = Some(block);
+                            continue
+                        }
+
+                        let vanilla_id =
+                            if let Some(hier_data) = hier_data {
+                                if internal_id != *last_internal_id {
+                                    *hier_block_id += 1;
+                                }
+                                *last_internal_id = internal_id;
+                                Some((*hier_block_id << 4) + hier_data)
+                            } else {
+                                None
+                            };
+
+                        let offset = block.get_flat_offset(protocol_version);
+                        if let Some(offset) = offset {
+                            let id = *flat_id + offset;
+                            if debug_blocks {
+                                if let Some(vanilla_id) = vanilla_id {
+                                    println!("{} block state = {:?} hierarchical {}:{} offset={}", id, block, vanilla_id >> 4, vanilla_id & 0xF, offset);
+                                } else {
+                                    println!("{} block state = {:?} hierarchical none, offset={}", id, block, offset);
+                                }
+                            }
+                            if offset as isize > last_offset {
+                                last_offset = offset as isize;
+                            }
+
+                            if (*blocks_flat).len() <= id {
+                                (*blocks_flat).resize(id + 1, None);
+                            }
+                            if (*blocks_flat)[id].is_none() {
+                                (*blocks_flat)[id] = Some(block);
+                            } else {
+                                panic!(
+                                    "Tried to register {:#?} to {} but {:#?} was already registered",
+                                    block,
+                                    id,
+                                    (*blocks_flat)[id]
+                                );
+                            }
+                        }
+
+                        if let Some(vanilla_id) = vanilla_id {
+                            if debug_blocks {
+                                if offset.is_none() {
+                                    println!("(no flat) block state = {:?} hierarchical {}:{}", block, vanilla_id >> 4, vanilla_id & 0xF);
+                                }
+                            }
+
+                            if (*blocks_hier).len() <= vanilla_id {
+                                (*blocks_hier).resize(vanilla_id + 1, None);
+                            }
+                            if (*blocks_hier)[vanilla_id].is_none() {
+                                (*blocks_hier)[vanilla_id] = Some(block);
+                            } else {
+                                panic!(
+                                    "Tried to register {:#?} to {} but {:#?} was already registered",
+                                    block,
+                                    vanilla_id,
+                                    (*blocks_hier)[vanilla_id]
+                                );
+                            }
+                        }
+                    }
+
+                    #[allow(unused_assignments)]
+                    {
+                        *flat_id += (last_offset + 1) as usize;
+                    }
+                }
+            )+
+        }
+
+        pub fn gen_id_map(protocol_version: i32) -> VanillaIDMap {
+            let mut blocks_flat = vec![];
+            let mut blocks_hier = vec![];
+            let mut blocks_modded: HashMap<String, [Option<Block>; LEGACY_BLOCK_DATA_VALUE_COUNT]> = HashMap::new();
+            let mut flat_id = 0;
+            let mut last_internal_id = 0;
+            let mut hier_block_id = 0;
+            $(
+                block_registration_functions::$name(protocol_version,
+                                                    &mut blocks_flat,
+                                                    &mut blocks_hier,
+                                                    &mut blocks_modded,
+                                                    &mut flat_id,
+                                                    &mut last_internal_id,
+                                                    &mut hier_block_id);
+            )+
+
+            VanillaIDMap::from_parts(protocol_version, blocks_flat, blocks_hier, blocks_modded)
+        }
+    );
+}
+
+use self::Block::*;
+
+define_blocks! {
+    Air {
+        props {},
+        material material::Material {
+            collidable: false,
+            .. material::INVISIBLE
+        },
+        model { ("minecraft", "air") },
+        collision vec![],
+        hardness 0.0,
+    }
+    Stone {
+        props {
+            variant: StoneVariant = [
+                StoneVariant::Normal,
+                StoneVariant::Granite,
+                StoneVariant::SmoothGranite,
+                StoneVariant::Diorite,
+                StoneVariant::SmoothDiorite,
+                StoneVariant::Andesite,
+                StoneVariant::SmoothAndesite
+            ],
+        },
+        data Some(variant.data()),
+        model { ("minecraft", variant.as_string() ) },
+        hardness 1.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Grass {
+        props {
+            snowy: bool = [false, true],
+        },
+        data { if snowy { None } else { Some(0) } },
+        offset { if snowy { Some(0) } else { Some(1) } },
+        model { ("minecraft", "grass_block") },
+        variant format!("snowy={}", snowy),
+        tint TintType::Grass,
+        update_state (world, pos) => Block::Grass{snowy: is_snowy(world, pos)},
+        hardness 0.6,
+        best_tools [ Tool::Shovel(_), ],
+    }
+    Dirt {
+        props {
+            snowy: bool = [false, true],
+            variant: DirtVariant = [
+                DirtVariant::Normal,
+                DirtVariant::Coarse,
+                DirtVariant::Podzol
+            ],
+        },
+        data if !snowy { Some(variant.data()) } else { None },
+        offset {
+            if variant == DirtVariant::Podzol {
+                Some(variant.data() + if snowy { 0 } else { 1 })
+            } else {
+                if snowy {
+                    None
+                } else {
+                    Some(variant.data())
+                }
+            }
+        },
+        model { ("minecraft", variant.as_string()) },
+        variant {
+            if variant == DirtVariant::Podzol {
+                format!("snowy={}", snowy)
+            } else {
+                "normal".to_owned()
+            }
+        },
+        update_state (world, pos) => if variant == DirtVariant::Podzol {
+            Block::Dirt{snowy: is_snowy(world, pos), variant}
+        } else {
+            Block::Dirt{snowy, variant}
+        },
+        hardness 0.5,
+        best_tools [ Tool::Shovel(_), ],
+    }
+    Cobblestone {
+        props {},
+        model { ("minecraft", "cobblestone") },
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Planks {
+        props {
+            variant: TreeVariant = [
+                TreeVariant::Oak,
+                TreeVariant::Spruce,
+                TreeVariant::Birch,
+                TreeVariant::Jungle,
+                TreeVariant::Acacia,
+                TreeVariant::DarkOak
+            ],
+        },
+        data Some(variant.plank_data()),
+        model { ("minecraft", format!("{}_planks", variant.as_string()) ) },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Sapling {
+        props {
+            variant: TreeVariant = [
+                TreeVariant::Oak,
+                TreeVariant::Spruce,
+                TreeVariant::Birch,
+                TreeVariant::Jungle,
+                TreeVariant::Acacia,
+                TreeVariant::DarkOak
+            ],
+            stage: u8 = [0, 1],
+        },
+        data Some(variant.plank_data() | ((stage as usize) << 3)),
+        offset Some((variant.plank_data() << 1) | (stage as usize)),
+        material material::NON_SOLID,
+        model { ("minecraft", format!("{}_sapling", variant.as_string()) ) },
+        variant format!("stage={}", stage),
+        collision vec![],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Bedrock {
+        props {},
+        model { ("minecraft", "bedrock") },
+    }
+    FlowingWater {
+        props {
+            level: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data Some(level as usize),
+        offset None,
+        material Material {
+            absorbed_light: 2,
+            ..material::TRANSPARENT
+        },
+        model { ("minecraft", "flowing_water") },
+        collision vec![],
+        hardness 100.0,
+    }
+    Water {
+        props {
+            level: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data Some(level as usize),
+        material Material {
+            absorbed_light: 2,
+            ..material::TRANSPARENT
+        },
+        model { ("minecraft", "water") },
+        collision vec![],
+        hardness 100.0,
+    }
+    FlowingLava {
+        props {
+            level: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data Some(level as usize),
+        offset None,
+        material Material {
+            absorbed_light: 15,
+            emitted_light: 15,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "flowing_lava") },
+        collision vec![],
+        hardness 100.0,
+    }
+    Lava {
+        props {
+            level: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data Some(level as usize),
+        material Material {
+            absorbed_light: 15,
+            emitted_light: 15,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "lava") },
+        collision vec![],
+        hardness 100.0,
+    }
+    Sand {
+        props {
+            red: bool = [false, true],
+        },
+        data Some(if red { 1 } else { 0 }),
+        model { ("minecraft", if red { "red_sand" } else { "sand" } ) },
+        hardness 0.5,
+        best_tools [ Tool::Shovel(_), ],
+    }
+    Gravel {
+        props {},
+        model { ("minecraft", "gravel") },
+        hardness 0.6,
+        best_tools [ Tool::Shovel(_), ],
+    }
+    GoldOre {
+        props {},
+        model { ("minecraft", "gold_ore") },
+        hardness 3.0,
+        harvest_tools [
+            Tool::Pickaxe(ToolMaterial::Iron),
+            Tool::Pickaxe(ToolMaterial::Diamond),
+            Tool::Pickaxe(ToolMaterial::Netherite),
+        ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    IronOre {
+        props {},
+        model { ("minecraft", "iron_ore") },
+        hardness 3.0,
+        harvest_tools [
+            Tool::Pickaxe(ToolMaterial::Stone),
+            Tool::Pickaxe(ToolMaterial::Iron),
+            Tool::Pickaxe(ToolMaterial::Diamond),
+            Tool::Pickaxe(ToolMaterial::Netherite),
+        ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    CoalOre {
+        props {},
+        model { ("minecraft", "coal_ore") },
+        hardness 3.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    NetherGoldOre {
+        props {},
+        data None,
+        offsets |protocol_version| { if protocol_version >= 735 { Some(0) } else { None } },
+        model { ("minecraft", "nether_gold_ore") },
+        hardness 3.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Log {
+        props {
+            variant: TreeVariant = [
+                TreeVariant::Oak,
+                TreeVariant::Spruce,
+                TreeVariant::Birch,
+                TreeVariant::Jungle,
+                TreeVariant::Acacia,
+                TreeVariant::DarkOak,
+                TreeVariant::StrippedSpruce,
+                TreeVariant::StrippedBirch,
+                TreeVariant::StrippedJungle,
+                TreeVariant::StrippedAcacia,
+                TreeVariant::StrippedDarkOak,
+                TreeVariant::StrippedOak
+            ],
+            axis: Axis = [Axis::Y, Axis::Z, Axis::X, Axis::None],
+        },
+        data match variant {
+            TreeVariant::Oak | TreeVariant::Spruce | TreeVariant::Birch | TreeVariant::Jungle =>
+                Some(variant.data() | (axis.index() << 2)),
+            _ => None,
+        },
+        offset match axis {
+            Axis::None => None,
+            Axis::X => Some(variant.offset() * 3 + 0),
+            Axis::Y => Some(variant.offset() * 3 + 1),
+            Axis::Z => Some(variant.offset() * 3 + 2),
+        },
+        model { ("minecraft", format!("{}_log", variant.as_string()) ) },
+        variant format!("axis={}", axis.as_string()),
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Wood {
+        props {
+            variant: TreeVariant = [
+                TreeVariant::Oak,
+                TreeVariant::Spruce,
+                TreeVariant::Birch,
+                TreeVariant::Jungle,
+                TreeVariant::Acacia,
+                TreeVariant::DarkOak,
+                TreeVariant::StrippedSpruce,
+                TreeVariant::StrippedBirch,
+                TreeVariant::StrippedJungle,
+                TreeVariant::StrippedAcacia,
+                TreeVariant::StrippedDarkOak,
+                TreeVariant::StrippedOak
+            ],
+            axis: Axis = [Axis::X, Axis::Y, Axis::Z],
+        },
+        data None::<usize>,
+        offset Some(variant.offset() * 3 + axis.index()),
+        model { ("minecraft", format!("{}_wood", variant.as_string()) ) },
+        variant format!("axis={}", axis.as_string()),
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Leaves {
+        props {
+            variant: TreeVariant = [
+                TreeVariant::Oak,
+                TreeVariant::Spruce,
+                TreeVariant::Birch,
+                TreeVariant::Jungle,
+                TreeVariant::Acacia,
+                TreeVariant::DarkOak
+            ],
+            decayable: bool = [false, true],
+            check_decay: bool = [false, true],
+            distance: u8 = [1, 2, 3, 4, 5, 6, 7],
+        },
+        data match variant {
+            TreeVariant::Oak | TreeVariant::Spruce | TreeVariant::Birch | TreeVariant::Jungle =>
+                if distance == 1 {
+                    Some(variant.data()
+                          | (if decayable { 0x4 } else { 0x0 })
+                          | (if check_decay { 0x8 } else { 0x0 }))
+                } else {
+                    None
+                },
+            _ => None,
+        },
+        offset if check_decay {
+            None
+        } else {
+            Some(variant.offset() * (7 * 2) + ((distance as usize - 1) << 1) + (if decayable { 0 } else { 1 }))
+        },
+        material material::LEAVES,
+        model { ("minecraft", format!("{}_leaves", variant.as_string()) ) },
+        tint TintType::Foliage,
+        hardness 0.2,
+        best_tools [ Tool::Shears, Tool::Hoe(_), ],
+    }
+    Sponge {
+        props {
+            wet: bool = [false, true],
+        },
+        data Some(if wet { 1 } else { 0 }),
+        model { ("minecraft", "sponge") },
+        variant format!("wet={}", wet),
+        hardness 0.6,
+        best_tools [ Tool::Hoe(_), ],
+    }
+    Glass {
+        props {},
+        material material::NON_SOLID,
+        model { ("minecraft", "glass") },
+        hardness 0.3,
+    }
+    LapisOre {
+        props {},
+        model { ("minecraft", "lapis_ore") },
+        hardness 3.0,
+        harvest_tools [
+            Tool::Pickaxe(ToolMaterial::Stone),
+            Tool::Pickaxe(ToolMaterial::Iron),
+            Tool::Pickaxe(ToolMaterial::Diamond),
+            Tool::Pickaxe(ToolMaterial::Netherite),
+        ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    LapisBlock {
+        props {},
+        model { ("minecraft", "lapis_block") },
+        hardness 3.0,
+        harvest_tools [
+            Tool::Pickaxe(ToolMaterial::Stone),
+            Tool::Pickaxe(ToolMaterial::Iron),
+            Tool::Pickaxe(ToolMaterial::Diamond),
+            Tool::Pickaxe(ToolMaterial::Netherite),
+        ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Dispenser {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            triggered: bool = [false, true],
+        },
+        data Some(facing.index() | (if triggered { 0x8 } else { 0x0 })),
+        offset Some((facing.offset() << 1) | (if triggered { 0 } else { 1 })),
+        model { ("minecraft", "dispenser") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 3.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Sandstone {
+        props {
+            variant: SandstoneVariant = [
+                SandstoneVariant::Normal,
+                SandstoneVariant::Chiseled,
+                SandstoneVariant::Smooth
+            ],
+        },
+        data Some(variant.data()),
+        model { ("minecraft", variant.as_string() ) },
+        hardness 0.8,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    NoteBlock {
+        props {
+            instrument: NoteBlockInstrument = [
+                NoteBlockInstrument::Harp,
+                NoteBlockInstrument::BaseDrum,
+                NoteBlockInstrument::Snare,
+                NoteBlockInstrument::Hat,
+                NoteBlockInstrument::Bass,
+                NoteBlockInstrument::Flute,
+                NoteBlockInstrument::Bell,
+                NoteBlockInstrument::Guitar,
+                NoteBlockInstrument::Chime,
+                NoteBlockInstrument::Xylophone,
+                NoteBlockInstrument::IronXylophone,
+                NoteBlockInstrument::CowBell,
+                NoteBlockInstrument::Didgeridoo,
+                NoteBlockInstrument::Bit,
+                NoteBlockInstrument::Banjo,
+                NoteBlockInstrument::Pling
+            ],
+            note: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+            powered: bool = [true, false],
+        },
+        data if instrument == NoteBlockInstrument::Harp && note == 0 && powered { Some(0) } else { None },
+        offsets |protocol_version| instrument.offsets(protocol_version)
+            .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+        model { ("minecraft", "noteblock") },
+        hardness 0.8,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Bed {
+        props {
+            color: ColoredVariant = [
+                ColoredVariant::White,
+                ColoredVariant::Orange,
+                ColoredVariant::Magenta,
+                ColoredVariant::LightBlue,
+                ColoredVariant::Yellow,
+                ColoredVariant::Lime,
+                ColoredVariant::Pink,
+                ColoredVariant::Gray,
+                ColoredVariant::Silver,
+                ColoredVariant::Cyan,
+                ColoredVariant::Purple,
+                ColoredVariant::Blue,
+                ColoredVariant::Brown,
+                ColoredVariant::Green,
+                ColoredVariant::Red,
+                ColoredVariant::Black
+            ],
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            occupied: bool = [false, true],
+            part: BedPart = [BedPart::Head, BedPart::Foot],
+        },
+        data if color != ColoredVariant::White { None } else { Some(facing.horizontal_index()
+                  | (if occupied { 0x4 } else { 0x0 })
+                  | (if part == BedPart::Head { 0x8 } else { 0x0 }))},
+        offset Some(color.data() * (2 * 2 * 4)
+                  + (facing.horizontal_offset() * (2 * 2))
+                  + (if occupied { 0 } else { 2 })
+                  + (if part == BedPart::Head { 0 } else { 1 })),
+        material material::NON_SOLID,
+        model { ("minecraft", "bed") },
+        variant format!("facing={},part={}", facing.as_string(), part.as_string()),
+        collision vec![Aabb3::new(Point3::new(0.0, 0.0, 0.0), Point3::new(1.0, 9.0/16.0, 1.0))],
+        hardness 0.2,
+    }
+    GoldenRail {
+        props {
+            powered: bool = [false, true],
+            shape: RailShape = [
+                RailShape::NorthSouth,
+                RailShape::EastWest,
+                RailShape::AscendingNorth,
+                RailShape::AscendingSouth,
+                RailShape::AscendingEast,
+                RailShape::AscendingWest
+            ],
+        },
+        data Some(shape.data() | (if powered { 0x8 } else { 0x0 })),
+        offset Some(shape.data() + (if powered { 0 } else { 6 })),
+        material material::NON_SOLID,
+        model { ("minecraft", "golden_rail") },
+        variant format!("powered={},shape={}", powered, shape.as_string()),
+        collision vec![],
+        hardness 0.7,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    DetectorRail {
+        props {
+            powered: bool = [false, true],
+            shape: RailShape = [
+                RailShape::NorthSouth,
+                RailShape::EastWest,
+                RailShape::AscendingNorth,
+                RailShape::AscendingSouth,
+                RailShape::AscendingEast,
+                RailShape::AscendingWest
+            ],
+        },
+        data Some(shape.data() | (if powered { 0x8 } else { 0x0 })),
+        offset Some(shape.data() + (if powered { 0 } else { 6 })),
+        material material::NON_SOLID,
+        model { ("minecraft", "detector_rail") },
+        variant format!("powered={},shape={}", powered, shape.as_string()),
+        collision vec![],
+        hardness 0.7,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    StickyPiston {
+        props {
+            extended: bool = [false, true],
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index() | (if extended { 0x8 } else { 0x0 })),
+        offset Some(facing.offset() + (if extended { 0 } else { 6 })),
+        material Material {
+            should_cull_against: !extended,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "sticky_piston") },
+        variant format!("extended={},facing={}", extended, facing.as_string()),
+        collision piston_collision(extended, facing),
+        hardness 0.5,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Web {
+        props {},
+        material material::NON_SOLID,
+        model { ("minecraft", "web") },
+        collision vec![],
+        hardness 4.0,
+        harvest_tools [ Tool::Sword(_), Tool::Shears, ],
+        best_tools [ Tool::Sword(_), Tool::Shears, ],
+    }
+    TallGrass {
+        props {
+            variant: TallGrassVariant = [
+                TallGrassVariant::DeadBush,
+                TallGrassVariant::TallGrass,
+                TallGrassVariant::Fern
+            ],
+        },
+        data Some(variant.data()),
+        offset Some(variant.offset()),
+        material material::NON_SOLID,
+        model { ("minecraft", variant.as_string() ) },
+        tint TintType::Grass,
+        collision vec![],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Seagrass {
+        props {},
+        data None::<usize>,
+        offset Some(0),
+        material material::NON_SOLID,
+        model { ("minecraft", "seagrass") },
+        collision vec![],
+        hardness 0.0,
+    }
+    TallSeagrass {
+        props {
+            half: TallSeagrassHalf = [
+                TallSeagrassHalf::Upper,
+                TallSeagrassHalf::Lower
+            ],
+        },
+        data None::<usize>,
+        offset Some(half.offset()),
+        material material::NON_SOLID,
+        model { ("minecraft", "tall_seagrass") },
+        collision vec![],
+        hardness 0.0,
+    }
+    DeadBush {
+        props {},
+        offset None,
+        material material::NON_SOLID,
+        model { ("minecraft", "dead_bush") },
+        collision vec![],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Piston {
+        props {
+            extended: bool = [false, true],
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index() | (if extended { 0x8 } else { 0x0 })),
+        offset Some(facing.offset() + (if extended { 0 } else { 6 })),
+        material Material {
+            should_cull_against: !extended,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "piston") },
+        variant format!("extended={},facing={}", extended, facing.as_string()),
+        collision piston_collision(extended, facing),
+        hardness 0.5,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    PistonHead {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            short: bool = [false, true],
+            variant: PistonType = [PistonType::Normal, PistonType::Sticky],
+        },
+        data if !short { Some(facing.index() | if variant == PistonType::Sticky { 0x8 } else { 0x0 })} else { None },
+        offset Some(facing.offset() * 4 +
+                    (if short { 0 } else { 2 }) +
+                    (if variant == PistonType::Normal { 0 } else { 1 })),
+        material material::NON_SOLID,
+        model { ("minecraft", "piston_head") },
+        variant format!("facing={},short={},type={}", facing.as_string(), short, variant.as_string()),
+        collision {
+            let (min_x, min_y, min_z, max_x, max_y, max_z) = match facing {
+                Direction::Up => (3.0/8.0, -0.25, 3.0/8.0, 5.0/8.0, 0.75, 5.0/8.0),
+                Direction::Down => (3.0/8.0, 0.25, 3.0/8.0, 5.0/8.0, 1.25, 0.625),
+                Direction::North => (3.0/8.0, 3.0/8.0, 0.25, 5.0/8.0, 5.0/8.0, 1.25),
+                Direction::South => (3.0/8.0, 3.0/8.0, -0.25, 5.0/8.0, 5.0/8.0, 0.75),
+                Direction::West => (0.25, 3.0/8.0, 3.0/8.0, 1.25, 5.0/8.0, 5.0/8.0),
+                Direction::East => (-0.25, 3.0/8.0, 3.0/8.0, 0.75, 5.0/8.0, 5.0/8.0),
+                _ => unreachable!(),
+            };
+
+            vec![Aabb3::new(
+                Point3::new(min_x, min_y, min_z),
+                Point3::new(max_x, max_y, max_z)
+            )]
+        },
+        hardness 0.5,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Wool {
+        props {
+            color: ColoredVariant = [
+                ColoredVariant::White,
+                ColoredVariant::Orange,
+                ColoredVariant::Magenta,
+                ColoredVariant::LightBlue,
+                ColoredVariant::Yellow,
+                ColoredVariant::Lime,
+                ColoredVariant::Pink,
+                ColoredVariant::Gray,
+                ColoredVariant::Silver,
+                ColoredVariant::Cyan,
+                ColoredVariant::Purple,
+                ColoredVariant::Blue,
+                ColoredVariant::Brown,
+                ColoredVariant::Green,
+                ColoredVariant::Red,
+                ColoredVariant::Black
+            ],
+        },
+        data Some(color.data()),
+        model { ("minecraft", format!("{}_wool", color.as_string()) ) },
+        hardness 0.8,
+    }
+    ThermalExpansionRockwool {
+        modid "ThermalExpansion:Rockwool",
+        props {
+            color: ColoredVariant = [
+                ColoredVariant::White,
+                ColoredVariant::Orange,
+                ColoredVariant::Magenta,
+                ColoredVariant::LightBlue,
+                ColoredVariant::Yellow,
+                ColoredVariant::Lime,
+                ColoredVariant::Pink,
+                ColoredVariant::Gray,
+                ColoredVariant::Silver,
+                ColoredVariant::Cyan,
+                ColoredVariant::Purple,
+                ColoredVariant::Blue,
+                ColoredVariant::Brown,
+                ColoredVariant::Green,
+                ColoredVariant::Red,
+                ColoredVariant::Black
+            ],
+        },
+        data Some(color.data()),
+        model { ("minecraft", format!("{}_wool", color.as_string()) ) },
+        hardness 0.8,
+    }
+    ThermalFoundationRockwool {
+        modid "thermalfoundation:rockwool",
+        props {
+            color: ColoredVariant = [
+                ColoredVariant::White,
+                ColoredVariant::Orange,
+                ColoredVariant::Magenta,
+                ColoredVariant::LightBlue,
+                ColoredVariant::Yellow,
+                ColoredVariant::Lime,
+                ColoredVariant::Pink,
+                ColoredVariant::Gray,
+                ColoredVariant::Silver,
+                ColoredVariant::Cyan,
+                ColoredVariant::Purple,
+                ColoredVariant::Blue,
+                ColoredVariant::Brown,
+                ColoredVariant::Green,
+                ColoredVariant::Red,
+                ColoredVariant::Black
+            ],
+        },
+        data Some(color.data()),
+        model { ("minecraft", format!("{}_wool", color.as_string()) ) },
+        hardness 0.8,
+    }
+    PistonExtension {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            variant: PistonType = [PistonType::Normal, PistonType::Sticky],
+        },
+        data if facing == Direction::Up && variant == PistonType::Normal { Some(0) } else { None },
+        offset Some(facing.offset() * 2 + (if variant == PistonType::Normal { 0 } else { 1 })),
+        material material::INVISIBLE,
+        model { ("minecraft", "piston_extension") },
+    }
+    YellowFlower {
+        props {},
+        material material::NON_SOLID,
+        model { ("minecraft", "dandelion") },
+        collision vec![],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    RedFlower {
+        props {
+            variant: RedFlowerVariant = [
+                RedFlowerVariant::Poppy,
+                RedFlowerVariant::BlueOrchid,
+                RedFlowerVariant::Allium,
+                RedFlowerVariant::AzureBluet,
+                RedFlowerVariant::RedTulip,
+                RedFlowerVariant::OrangeTulip,
+                RedFlowerVariant::WhiteTulip,
+                RedFlowerVariant::PinkTulip,
+                RedFlowerVariant::OxeyeDaisy,
+                RedFlowerVariant::Cornflower,
+                RedFlowerVariant::WitherRose,
+                RedFlowerVariant::LilyOfTheValley
+            ],
+        },
+        data Some(variant.data()),
+        offsets |protocol_version| variant.offsets(protocol_version),
+        material material::NON_SOLID,
+        model { ("minecraft", variant.as_string()) },
+        collision vec![],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    BrownMushroom {
+        props {},
+        material Material {
+            emitted_light: 1,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "brown_mushroom") },
+        collision vec![],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    RedMushroom {
+        props {},
+        material material::NON_SOLID,
+        model { ("minecraft", "red_mushroom") },
+        collision vec![],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    GoldBlock {
+        props {},
+        model { ("minecraft", "gold_block") },
+        hardness 3.0,
+        harvest_tools [
+            Tool::Pickaxe(ToolMaterial::Iron),
+            Tool::Pickaxe(ToolMaterial::Diamond),
+            Tool::Pickaxe(ToolMaterial::Netherite),
+        ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    IronBlock {
+        props {},
+        model { ("minecraft", "iron_block") },
+        hardness 5.0,
+        harvest_tools [
+            Tool::Pickaxe(ToolMaterial::Stone),
+            Tool::Pickaxe(ToolMaterial::Iron),
+            Tool::Pickaxe(ToolMaterial::Diamond),
+            Tool::Pickaxe(ToolMaterial::Netherite),
+        ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    DoubleStoneSlab {
+        props {
+            seamless: bool = [false, true],
+            variant: StoneSlabVariant = [
+                StoneSlabVariant::Stone,
+                StoneSlabVariant::Sandstone,
+                StoneSlabVariant::PetrifiedWood,
+                StoneSlabVariant::Cobblestone,
+                StoneSlabVariant::Brick,
+                StoneSlabVariant::StoneBrick,
+                StoneSlabVariant::NetherBrick,
+                StoneSlabVariant::Quartz
+            ],
+        },
+        data {
+            let data = if seamless {
+                match variant {
+                    StoneSlabVariant::Stone => 8,
+                    StoneSlabVariant::Sandstone => 9,
+                    StoneSlabVariant::Quartz => 15,
+                    _ => return None,
+                }
+            } else {
+                variant.data()
+            };
+
+            Some(data)
+        },
+        offset None,
+        model { ("minecraft", format!("{}_double_slab", variant.as_string()) ) },
+        variant if seamless { "all" } else { "normal" },
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    StoneSlab {
+        props {
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            variant: StoneSlabVariant = [
+                StoneSlabVariant::Stone,
+                StoneSlabVariant::Sandstone,
+                StoneSlabVariant::PetrifiedWood,
+                StoneSlabVariant::Cobblestone,
+                StoneSlabVariant::Brick,
+                StoneSlabVariant::StoneBrick,
+                StoneSlabVariant::NetherBrick,
+                StoneSlabVariant::Quartz
+            ],
+        },
+        data Some(variant.data() | (if half == BlockHalf::Top { 0x8 } else { 0x0 })),
+        offset None,
+        material material::NON_SOLID,
+        model { ("minecraft", format!("{}_slab", variant.as_string()) ) },
+        variant format!("half={}", half.as_string()),
+        collision slab_collision(half),
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    BrickBlock {
+        props {},
+        model { ("minecraft", "brick_block") },
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    TNT {
+        props {
+            explode: bool = [false, true],
+        },
+        data Some(if explode { 1 } else { 0 }),
+        offset Some(if explode { 0 } else { 1 }),
+        model { ("minecraft", "tnt") },
+        hardness 0.0,
+    }
+    BookShelf {
+        props {},
+        model { ("minecraft", "bookshelf") },
+        hardness 1.5,
+        best_tools [ Tool::Axe(_), ],
+    }
+    MossyCobblestone {
+        props {},
+        model { ("minecraft", "mossy_cobblestone") },
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Obsidian {
+        props {},
+        model { ("minecraft", "obsidian") },
+        hardness 50.0,
+        harvest_tools [
+            Tool::Pickaxe(ToolMaterial::Diamond),
+            Tool::Pickaxe(ToolMaterial::Netherite),
+        ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Torch {
+        props {
+            facing: Direction = [
+                Direction::East,
+                Direction::West,
+                Direction::South,
+                Direction::North,
+                Direction::Up
+            ],
+        },
+        data {
+            Some(match facing {
+                Direction::East => 1,
+                Direction::West => 2,
+                Direction::South => 3,
+                Direction::North => 4,
+                Direction::Up => 5,
+                _ => unreachable!(),
+            })
+        },
+        offset {
+            Some(match facing {
+                Direction::Up => 0,
+                Direction::North => 1,
+                Direction::South => 2,
+                Direction::West => 3,
+                Direction::East => 4,
+                _ => unreachable!(),
+            })
+        },
+        material Material {
+            emitted_light: 14,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "torch") },
+        variant format!("facing={}", facing.as_string()),
+        collision vec![],
+        hardness 0.0,
+    }
+    Fire {
+        props {
+            age: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+            up: bool = [false, true],
+            north: bool = [false, true],
+            south: bool = [false, true],
+            west: bool = [false, true],
+            east: bool = [false, true],
+        },
+        data if !up && !north && !south && !west && !east { Some(age as usize) } else { None },
+        offset Some(
+            if west  { 0 } else { 1<<0 } |
+            if up    { 0 } else { 1<<1 } |
+            if south { 0 } else { 1<<2 } |
+            if north { 0 } else { 1<<3 } |
+            if east  { 0 } else { 1<<4 } |
+            ((age as usize) << 5)),
+        material Material {
+            emitted_light: 15,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "fire") },
+        collision vec![],
+        update_state (world, pos) => {
+            Fire{
+                age,
+                up: can_burn(world, pos.shift(Direction::Up)),
+                north: can_burn(world, pos.shift(Direction::North)),
+                south: can_burn(world, pos.shift(Direction::South)),
+                west: can_burn(world, pos.shift(Direction::West)),
+                east: can_burn(world, pos.shift(Direction::East))
+            }
+        },
+        multipart (key, val) => match key {
+            "up" => up == (val == "true"),
+            "north" => north == (val == "true"),
+            "south" => south == (val == "true"),
+            "west" => west == (val == "true"),
+            "east" => east == (val == "true"),
+            _ => false,
+        },
+        hardness 0.0,
+    }
+    SoulFire {
+        props {},
+        data None,
+        offsets |protocol_version| { if protocol_version >= 735 { Some(0) } else { None } },
+        model { ("minecraft", "soul_fire") },
+        collision vec![],
+        hardness 0.0,
+    }
+    MobSpawner {
+        props {},
+        material material::NON_SOLID,
+        model { ("minecraft", "mob_spawner") },
+        hardness 5.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    OakStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "oak_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::OakStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Chest {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            type_: ChestType = [
+                ChestType::Single,
+                ChestType::Left,
+                ChestType::Right
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data if type_ == ChestType::Single && !waterlogged { Some(facing.index()) } else { None },
+        offset Some(if waterlogged { 0 } else { 1 } +
+            type_.offset() * 2 +
+            facing.horizontal_offset() * (2 * 3)),
+        material material::NON_SOLID,
+        model { ("minecraft", "chest") },
+        hardness 2.5,
+        best_tools [ Tool::Axe(_), ],
+    }
+    RedstoneWire {
+        props {
+            north: RedstoneSide = [RedstoneSide::None, RedstoneSide::Side, RedstoneSide::Up],
+            south: RedstoneSide = [RedstoneSide::None, RedstoneSide::Side, RedstoneSide::Up],
+            west: RedstoneSide = [RedstoneSide::None, RedstoneSide::Side, RedstoneSide::Up],
+            east: RedstoneSide = [RedstoneSide::None, RedstoneSide::Side, RedstoneSide::Up],
+            power: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data {
+            if north == RedstoneSide::None && south == RedstoneSide::None
+                && west == RedstoneSide::None && east == RedstoneSide::None {
+                Some(power as usize)
+            } else {
+                None
+            }
+        },
+        offset Some(
+            west.offset() +
+            south.offset() * 3 +
+            (power as usize) * (3 * 3) +
+            north.offset() * (3 * 3 * 16) +
+            east.offset() * (3 * 3 * 16 * 3)),
+        material material::NON_SOLID,
+        model { ("minecraft", "redstone_wire") },
+        tint TintType::Color{r: ((255.0 / 30.0) * (f64::from(power)) + 14.0) as u8, g: 0, b: 0},
+        collision vec![],
+        update_state (world, pos) => Block::RedstoneWire {
+            north: can_connect_redstone(world, pos, Direction::North),
+            south: can_connect_redstone(world, pos, Direction::South),
+            west: can_connect_redstone(world, pos, Direction::West),
+            east: can_connect_redstone(world, pos, Direction::East),
+            power
+        },
+        multipart (key, val) => match key {
+            "north" => val.contains(north.as_string()),
+            "south" => val.contains(south.as_string()),
+            "west" => val.contains(west.as_string()),
+            "east" => val.contains(east.as_string()),
+            _ => false,
+        },
+        hardness 0.0,
+    }
+    DiamondOre {
+        props {},
+        model { ("minecraft", "diamond_ore") },
+        hardness 3.0,
+        harvest_tools [
+            Tool::Pickaxe(ToolMaterial::Iron),
+            Tool::Pickaxe(ToolMaterial::Diamond),
+            Tool::Pickaxe(ToolMaterial::Netherite),
+        ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    DiamondBlock {
+        props {},
+        model { ("minecraft", "diamond_block") },
+        hardness 5.0,
+        harvest_tools [
+            Tool::Pickaxe(ToolMaterial::Iron),
+            Tool::Pickaxe(ToolMaterial::Diamond),
+            Tool::Pickaxe(ToolMaterial::Netherite),
+        ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    CraftingTable {
+        props {},
+        model { ("minecraft", "crafting_table") },
+        hardness 2.5,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Wheat {
+        props {
+            age: u8 = [0, 1, 2, 3, 4, 5, 6, 7],
+        },
+        data Some(age as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "wheat") },
+        variant format!("age={}", age),
+        collision vec![],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Farmland {
+        props {
+            moisture: u8 = [0, 1, 2, 3, 4, 5, 6, 7],
+        },
+        data Some(moisture as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "farmland") },
+        variant format!("moisture={}", moisture),
+        collision vec![Aabb3::new(
+            Point3::new(0.0, 0.0, 0.0),
+            Point3::new(1.0, 15.0/16.0, 1.0)
+        )],
+        hardness 0.6,
+        best_tools [ Tool::Shovel(_), ],
+    }
+    Furnace {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            lit: bool = [true, false],
+        },
+        data if !lit { Some(facing.index()) } else { None },
+        offset Some(if lit { 0 } else { 1 } + facing.horizontal_offset() * 2),
+        model { ("minecraft", "furnace") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 3.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    FurnaceLit {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset None,
+        material Material {
+            emitted_light: 13,
+            ..material::SOLID
+        },
+        model { ("minecraft", "lit_furnace") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 3.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    StandingSign {
+        props {
+            rotation: Rotation = [
+                Rotation::South,
+                Rotation::SouthSouthWest,
+                Rotation::SouthWest,
+                Rotation::WestSouthWest,
+                Rotation::West,
+                Rotation::WestNorthWest,
+                Rotation::NorthWest,
+                Rotation::NorthNorthWest,
+                Rotation::North,
+                Rotation::NorthNorthEast,
+                Rotation::NorthEast,
+                Rotation::EastNorthEast,
+                Rotation::East,
+                Rotation::EastSouthEast,
+                Rotation::SouthEast,
+                Rotation::SouthSouthEast
+            ],
+            waterlogged: bool = [true, false],
+            wood: TreeVariant = [
+                TreeVariant::Oak,
+                TreeVariant::Spruce,
+                TreeVariant::Birch,
+                TreeVariant::Jungle,
+                TreeVariant::Acacia,
+                TreeVariant::DarkOak
+            ],
+        },
+        data if wood == TreeVariant::Oak && !waterlogged { Some(rotation.data()) } else { None },
+        offsets |protocol_version| {
+            let o = rotation.data() * 2 + if waterlogged { 0 } else { 1 };
+            if protocol_version >= 477 {
+                Some(wood.offset() * 2 * 16 + o)
+            } else {
+                if wood == TreeVariant::Oak {
+                    Some(o)
+                } else {
+                    None
+                }
+            }
+        },
+        material material::INVISIBLE,
+        model { ("minecraft", "standing_sign") },
+        collision vec![],
+        hardness 1.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    WoodenDoor {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: DoorHalf = [DoorHalf::Upper, DoorHalf::Lower],
+            hinge: Side = [Side::Left, Side::Right],
+            open: bool = [false, true],
+            powered: bool = [false, true],
+        },
+        data door_data(facing, half, hinge, open, powered),
+        offset door_offset(facing, half, hinge, open, powered),
+        material material::NON_SOLID,
+        model { ("minecraft", "wooden_door") },
+        variant format!("facing={},half={},hinge={},open={}", facing.as_string(), half.as_string(), hinge.as_string(), open),
+        collision door_collision(facing, hinge, open),
+        update_state (world, pos) => {
+            let (facing, hinge, open, powered) = update_door_state(world, pos, half, facing, hinge, open, powered);
+            Block::WoodenDoor{facing, half, hinge, open, powered}
+        },
+        hardness 3.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Ladder {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data if !waterlogged { Some(facing.index()) } else { None },
+        offset Some(if waterlogged { 0 } else { 1 } + facing.horizontal_offset() * 2),
+        material material::NON_SOLID,
+        model { ("minecraft", "ladder") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 0.4,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Rail {
+        props {
+            shape: RailShape = [
+                RailShape::NorthSouth,
+                RailShape::EastWest,
+                RailShape::NorthEast,
+                RailShape::NorthWest,
+                RailShape::SouthEast,
+                RailShape::SouthWest,
+                RailShape::AscendingNorth,
+                RailShape::AscendingSouth,
+                RailShape::AscendingEast,
+                RailShape::AscendingWest
+            ],
+        },
+        data Some(shape.data()),
+        material material::NON_SOLID,
+        model { ("minecraft", "rail") },
+        variant format!("shape={}", shape.as_string()),
+        collision vec![],
+        hardness 0.7,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    StoneStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "stone_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::StoneStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    WallSign {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            waterlogged: bool = [true, false],
+            wood: TreeVariant = [
+                TreeVariant::Oak,
+                TreeVariant::Spruce,
+                TreeVariant::Birch,
+                TreeVariant::Jungle,
+                TreeVariant::Acacia,
+                TreeVariant::DarkOak
+            ],
+        },
+        data if wood == TreeVariant::Oak && !waterlogged { Some(facing.index()) } else { None },
+        offsets |protocol_version| {
+            let o = if waterlogged { 0 } else { 1 } + facing.horizontal_offset() * 2;
+            if protocol_version >= 477 {
+                Some(wood.offset() * 2 * 4 + o)
+            } else {
+                if wood == TreeVariant::Oak {
+                    Some(o)
+                } else {
+                    None
+                }
+            }
+        },
+        material material::INVISIBLE,
+        model { ("minecraft", "wall_sign") },
+        variant format!("facing={}", facing.as_string()),
+        collision vec![],
+        hardness 1.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Lever {
+        props {
+            face: AttachedFace = [
+                AttachedFace::Floor,
+                AttachedFace::Wall,
+                AttachedFace::Ceiling
+            ],
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            powered: bool = [false, true],
+        },
+        data face.data_with_facing_and_powered(facing, powered),
+        offset Some(face.offset() * (4 * 2) + facing.horizontal_offset() * 2 + if powered { 0 } else { 1 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "lever") },
+        variant format!("facing={},powered={}", face.variant_with_facing(facing), powered),
+        collision vec![],
+        hardness 0.5,
+    }
+    StonePressurePlate {
+        props {
+            powered: bool = [false, true],
+        },
+        data Some(if powered { 1 } else { 0 }),
+        offset Some(if powered { 0 } else { 1 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "stone_pressure_plate") },
+        variant format!("powered={}", powered),
+        collision vec![],
+        hardness 0.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    IronDoor {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: DoorHalf = [DoorHalf::Upper, DoorHalf::Lower],
+            hinge: Side = [Side::Left, Side::Right],
+            open: bool = [false, true],
+            powered: bool = [false, true],
+        },
+        data door_data(facing, half, hinge, open, powered),
+        offset door_offset(facing, half, hinge, open, powered),
+        material material::NON_SOLID,
+        model { ("minecraft", "iron_door") },
+        variant format!("facing={},half={},hinge={},open={}", facing.as_string(), half.as_string(), hinge.as_string(), open),
+        collision door_collision(facing, hinge, open),
+        update_state (world, pos) => {
+            let (facing, hinge, open, powered) = update_door_state(world, pos, half, facing, hinge, open, powered);
+            Block::IronDoor{facing, half, hinge, open, powered}
+        },
+        hardness 5.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    WoodenPressurePlate {
+        props {
+            wood: TreeVariant = [
+                TreeVariant::Oak,
+                TreeVariant::Spruce,
+                TreeVariant::Birch,
+                TreeVariant::Jungle,
+                TreeVariant::Acacia,
+                TreeVariant::DarkOak
+            ],
+            powered: bool = [false, true],
+        },
+        data if wood == TreeVariant::Oak { Some(if powered { 1 } else { 0 }) } else { None },
+        offset Some(wood.offset() * 2 + if powered { 0 } else { 1 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "wooden_pressure_plate") },
+        variant format!("powered={}", powered),
+        collision vec![],
+        hardness 0.5,
+        best_tools [ Tool::Axe(_), ],
+    }
+    RedstoneOre {
+        props {
+            lit: bool = [true, false],
+        },
+        data if !lit { Some(0) } else { None },
+        offset Some(if lit { 0 } else { 1 }),
+        model { ("minecraft", if lit { "lit_redstone_ore" } else { "redstone_ore" }) },
+        hardness 3.0,
+        harvest_tools [
+            Tool::Pickaxe(ToolMaterial::Iron),
+            Tool::Pickaxe(ToolMaterial::Diamond),
+            Tool::Pickaxe(ToolMaterial::Netherite),
+        ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    RedstoneOreLit {
+        props {},
+        offset None,
+        material Material {
+            emitted_light: 9,
+            ..material::SOLID
+        },
+        model { ("minecraft", "lit_redstone_ore") },
+        hardness 0.0,
+    }
+    RedstoneTorchUnlit {
+        props {
+            facing: Direction = [
+                Direction::East,
+                Direction::West,
+                Direction::South,
+                Direction::North,
+                Direction::Up
+            ],
+        },
+        data {
+            Some(match facing {
+                Direction::East => 1,
+                Direction::West => 2,
+                Direction::South => 3,
+                Direction::North => 4,
+                Direction::Up => 5,
+                _ => unreachable!(),
+            })
+        },
+        offset None,
+        material material::NON_SOLID,
+        model { ("minecraft", "unlit_redstone_torch") },
+        variant format!("facing={}", facing.as_string()),
+        collision vec![],
+        hardness 0.0,
+    }
+    RedstoneTorchLit {
+        props {
+            facing: Direction = [
+                Direction::East,
+                Direction::West,
+                Direction::South,
+                Direction::North,
+                Direction::Up
+            ],
+        },
+        data {
+            Some(match facing {
+                Direction::East => 1,
+                Direction::West => 2,
+                Direction::South => 3,
+                Direction::North => 4,
+                Direction::Up => 5,
+                _ => unreachable!(),
+            })
+        },
+        offset None,
+        material Material {
+            emitted_light: 7,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "redstone_torch") },
+        variant format!("facing={}", facing.as_string()),
+        collision vec![],
+        hardness 0.0,
+    }
+    RedstoneTorchStanding {
+        props {
+            lit: bool = [true, false],
+        },
+        data None::<usize>,
+        offset Some(if lit { 0 } else { 1 }),
+        material material::NON_SOLID,
+        model { ("minecraft", if lit { "redstone_torch" } else { "unlit_redstone_torch" }) },
+        variant "facing=up",
+        collision vec![],
+        hardness 0.0,
+    }
+    RedstoneTorchWall {
+        props {
+            facing: Direction = [
+                Direction::East,
+                Direction::West,
+                Direction::South,
+                Direction::North
+            ],
+            lit: bool = [true, false],
+        },
+        data None::<usize>,
+        offset Some(if lit { 0 } else { 1 } + facing.horizontal_offset() * 2),
+        material Material {
+            emitted_light: 7,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", if lit { "redstone_torch" } else { "unlit_redstone_torch" }) },
+        variant format!("facing={}", facing.as_string()),
+        collision vec![],
+        hardness 0.0,
+    }
+    StoneButton {
+        props {
+            face: AttachedFace = [
+                AttachedFace::Floor,
+                AttachedFace::Wall,
+                AttachedFace::Ceiling
+            ],
+            facing: Direction = [
+                Direction::East,
+                Direction::West,
+                Direction::South,
+                Direction::North
+            ],
+            powered: bool = [false, true],
+        },
+        data face.data_with_facing_and_powered(facing, powered),
+        offset Some(face.offset() * (4 * 2) + facing.horizontal_offset() * 2 + if powered { 0 } else { 1 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "stone_button") },
+        variant format!("facing={},powered={}", face.variant_with_facing(facing), powered),
+        hardness 0.5,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    SnowLayer {
+        props {
+            layers: u8 = [1, 2, 3, 4, 5, 6, 7, 8],
+        },
+        data Some(layers as usize - 1),
+        material material::NON_SOLID,
+        model { ("minecraft", "snow_layer") },
+        variant format!("layers={}", layers),
+        collision vec![Aabb3::new(
+            Point3::new(0.0, 0.0, 0.0),
+            Point3::new(1.0, (f64::from(layers) - 1.0)/8.0, 1.0),
+        )],
+        hardness 0.1,
+        harvest_tools [ Tool::Shovel(_), ],
+        best_tools [ Tool::Shovel(_), ],
+    }
+    Ice {
+        props {},
+        material Material {
+            absorbed_light: 2,
+            ..material::TRANSPARENT
+        },
+        model { ("minecraft", "ice") },
+        hardness 0.5,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Snow {
+        props {},
+        model { ("minecraft", "snow") },
+        hardness 0.2,
+        harvest_tools [ Tool::Shovel(_), ],
+        best_tools [ Tool::Shovel(_), ],
+    }
+    Cactus {
+        props {
+            age: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data Some(age as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "cactus") },
+        collision vec![Aabb3::new(
+            Point3::new(1.0/16.0, 0.0, 1.0/16.0),
+            Point3::new(1.0 - (1.0/16.0), 1.0 - (1.0/16.0), 1.0 - (1.0/16.0))
+        )],
+        hardness 0.4,
+    }
+    Clay {
+        props {},
+        model { ("minecraft", "clay") },
+        hardness 0.6,
+        best_tools [ Tool::Shovel(_), ],
+    }
+    Reeds {
+        props {
+            age: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data Some(age as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "reeds") },
+        tint TintType::Foliage,
+        collision vec![],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Jukebox {
+        props {
+            has_record: bool = [false, true],
+        },
+        data Some(if has_record { 1 } else { 0 }),
+        offset Some(if has_record { 0 } else { 1 }),
+        model { ("minecraft", "jukebox") },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Fence {
+        props {
+            north: bool = [false, true],
+            south: bool = [false, true],
+            west: bool = [false, true],
+            east: bool = [false, true],
+            waterlogged: bool = [false, true],
+        },
+        data if !north && !south && !east && !west && !waterlogged { Some(0) } else { None },
+        offset Some(if west { 0 } else { 1<<0 } +
+            if waterlogged { 0 } else { 1<<1 } +
+            if south { 0 } else { 1<<2 } +
+            if north { 0 } else { 1<<3 } +
+            if east { 0 } else { 1<<4 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "fence") },
+        collision fence_collision(north, south, west, east),
+        update_state (world, pos) => {
+            let (north, south, west, east) = can_connect_sides(world, pos, &can_connect_fence);
+            Block::Fence{north, south, west, east, waterlogged}
+        },
+        multipart (key, val) => match key {
+            "north" => north == (val == "true"),
+            "south" => south == (val == "true"),
+            "west" => west == (val == "true"),
+            "east" => east == (val == "true"),
+            _ => false,
+        },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    PumpkinFace {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            without_face: bool = [false, true],
+        },
+        data Some(facing.horizontal_index() | (if without_face { 0x4 } else { 0x0 })),
+        offset None,
+        model { ("minecraft", "pumpkin") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.0,
+        best_tools [ Tool::Shears, Tool::Axe(_), ],
+    }
+    Pumpkin {
+        props {},
+        data None::<usize>,
+        offset Some(0),
+        model { ("minecraft", "pumpkin") },
+        hardness 1.0,
+        best_tools [ Tool::Shears, Tool::Axe(_), ],
+    }
+    Netherrack {
+        props {},
+        model { ("minecraft", "netherrack") },
+        hardness 0.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    SoulSand {
+        props {},
+        material material::NON_SOLID,
+        model { ("minecraft", "soul_sand") },
+        collision vec![Aabb3::new(
+            Point3::new(0.0, 0.0, 0.0),
+            Point3::new(1.0, 7.0/8.0, 1.0)
+        )],
+        hardness 0.5,
+        best_tools [ Tool::Shovel(_), ],
+    }
+    SoulSoil {
+        props {},
+        data None,
+        offsets |protocol_version| { if protocol_version >= 735 { Some(0) } else { None } },
+        model { ("minecraft", "soul_soil") },
+        hardness 0.5,
+        best_tools [ Tool::Shovel(_), ],
+    }
+    Basalt {
+        props {
+            axis: Axis = [Axis::X, Axis::Y, Axis::Z],
+        },
+        data None,
+        offsets |protocol_version| { if protocol_version >= 735 { Some(
+            match axis {
+                Axis::X => 0,
+                Axis::Y => 1,
+                Axis::Z => 2,
+                _ => unreachable!()
+            }) } else { None } },
+        model { ("minecraft", "basalt") },
+        hardness 1.25,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    PolishedBasalt {
+        props {
+            axis: Axis = [Axis::X, Axis::Y, Axis::Z],
+        },
+        data None,
+        offsets |protocol_version| { if protocol_version >= 735 { Some(
+            match axis {
+                Axis::X => 0,
+                Axis::Y => 1,
+                Axis::Z => 2,
+                _ => unreachable!()
+            }) } else { None } },
+        model { ("minecraft", "polished_basalt") },
+        hardness 1.25,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    SoulTorch {
+        props {},
+        data None,
+        offsets |protocol_version| { if protocol_version >= 735 { Some(0) } else { None } },
+        model { ("minecraft", "soul_torch") },
+        hardness 0.0,
+    }
+    SoulWallTorch {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data None,
+        offsets |protocol_version| { if protocol_version >= 735 { Some(facing.offset()) } else { None } },
+        model { ("minecraft", "soul_wall_torch") },
+        hardness 0.0,
+    }
+    Glowstone {
+        props {},
+        material Material {
+            emitted_light: 15,
+            ..material::SOLID
+        },
+        model { ("minecraft", "glowstone") },
+        hardness 0.3,
+    }
+    Portal {
+        props {
+            axis: Axis = [Axis::X, Axis::Z],
+        },
+        data Some(axis.index()),
+        offset Some(axis.index() - 1),
+        material Material {
+            emitted_light: 11,
+            ..material::TRANSPARENT
+        },
+        model { ("minecraft", "portal") },
+        variant format!("axis={}", axis.as_string()),
+        collision vec![],
+    }
+    PumpkinCarved {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data None::<usize>,
+        offset Some(facing.horizontal_offset()),
+        material Material {
+            emitted_light: 15,
+            ..material::SOLID
+        },
+        model { ("minecraft", "carved_pumpkin") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.0,
+        best_tools [ Tool::Shears, Tool::Axe(_), ],
+    }
+    PumpkinLit {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            without_face: bool = [false, true],
+        },
+        data Some(facing.horizontal_index() | (if without_face { 0x4 } else { 0x0 })),
+        offset if without_face { None } else { Some(facing.horizontal_offset()) },
+        material Material {
+            emitted_light: 15,
+            ..material::SOLID
+        },
+        model { ("minecraft", "lit_pumpkin") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.0,
+        best_tools [ Tool::Shears, Tool::Axe(_), ],
+    }
+    Cake {
+        props {
+            bites: u8 = [0, 1, 2, 3, 4, 5, 6],
+        },
+        data Some(bites as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "cake") },
+        variant format!("bites={}", bites),
+        collision vec![Aabb3::new(
+            Point3::new((1.0 + (f64::from(bites) * 2.0)) / 16.0, 0.0, 1.0/16.0),
+            Point3::new(1.0 - (1.0/16.0), 0.5, 1.0 - (1.0/16.0))
+        )],
+        hardness 0.5,
+    }
+    Repeater {
+        props {
+            delay: u8 = [1, 2, 3, 4],
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            locked: bool = [false, true],
+            powered: bool = [true, false],
+        },
+        data if powered { None } else { if !locked { Some(facing.horizontal_index() | (delay as usize - 1) << 2) } else { None } },
+        offset Some(if powered { 0 } else { 1<<0 } +
+            if locked { 0 } else { 1<<1 } +
+            facing.horizontal_offset() * (2 * 2) +
+            ((delay - 1) as usize) * (2 * 2 * 4)),
+        material material::NON_SOLID,
+        model { ("minecraft", if powered { "powered_repeater" } else { "unpowered_repeater" }) },
+        variant format!("delay={},facing={},locked={}", delay, facing.as_string(), locked),
+        collision vec![Aabb3::new(
+            Point3::new(0.0, 0.0, 0.0),
+            Point3::new(1.0, 1.0/8.0, 1.0)
+        )],
+        update_state (world, pos) => Repeater{delay, facing, locked: update_repeater_state(world, pos, facing), powered},
+        hardness 0.0,
+    }
+    RepeaterPowered {
+        props {
+            delay: u8 = [1, 2, 3, 4],
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            locked: bool = [false, true],
+        },
+        data if !locked { Some(facing.horizontal_index() | (delay as usize - 1) << 2) } else { None },
+        offset None,
+        material material::NON_SOLID,
+        model { ("minecraft", "powered_repeater") },
+        variant format!("delay={},facing={},locked={}", delay, facing.as_string(), locked),
+        collision vec![Aabb3::new(
+            Point3::new(0.0, 0.0, 0.0),
+            Point3::new(1.0, 1.0/8.0, 1.0)
+        )],
+        update_state (world, pos) => RepeaterPowered{delay, facing, locked: update_repeater_state(world, pos, facing)},
+        hardness 0.0,
+    }
+    StainedGlass {
+        props {
+            color: ColoredVariant = [
+                ColoredVariant::White,
+                ColoredVariant::Orange,
+                ColoredVariant::Magenta,
+                ColoredVariant::LightBlue,
+                ColoredVariant::Yellow,
+                ColoredVariant::Lime,
+                ColoredVariant::Pink,
+                ColoredVariant::Gray,
+                ColoredVariant::Silver,
+                ColoredVariant::Cyan,
+                ColoredVariant::Purple,
+                ColoredVariant::Blue,
+                ColoredVariant::Brown,
+                ColoredVariant::Green,
+                ColoredVariant::Red,
+                ColoredVariant::Black
+            ],
+        },
+        data Some(color.data()),
+        material material::TRANSPARENT,
+        model { ("minecraft", format!("{}_stained_glass", color.as_string()) ) },
+        hardness 0.3,
+    }
+    TrapDoor {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            open: bool = [false, true],
+            waterlogged: bool = [true, false],
+            powered: bool = [true, false],
+            wood: TreeVariant = [
+                TreeVariant::Oak,
+                TreeVariant::Spruce,
+                TreeVariant::Birch,
+                TreeVariant::Jungle,
+                TreeVariant::Acacia,
+                TreeVariant::DarkOak
+            ],
+        },
+        data if waterlogged || powered || wood != TreeVariant::Oak { None } else { Some(match facing {
+            Direction::North => 0,
+            Direction::South => 1,
+            Direction::West => 2,
+            Direction::East => 3,
+            _ => unreachable!(),
+        } | (if open { 0x4 } else { 0x0 }) | (if half == BlockHalf::Top { 0x8 } else { 0x0 }))},
+        offset Some(if waterlogged { 0 } else { 1<<0 } +
+            if powered { 0 } else { 1<<1 } +
+            if open { 0 } else { 1<<2 } +
+            if half == BlockHalf::Top { 0 } else { 1<<3 } +
+            facing.horizontal_offset() * (2 * 2 * 2 * 2) +
+            wood.offset() * (2 * 2 * 2 * 2 * 4)),
+        material material::NON_SOLID,
+        model { ("minecraft", "trapdoor") },
+        variant format!("facing={},half={},open={}", facing.as_string(), half.as_string(), open),
+        collision trapdoor_collision(facing, half, open),
+        hardness 3.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    MonsterEgg {
+        props {
+            variant: MonsterEggVariant = [
+                MonsterEggVariant::Stone,
+                MonsterEggVariant::Cobblestone,
+                MonsterEggVariant::StoneBrick,
+                MonsterEggVariant::MossyBrick,
+                MonsterEggVariant::CrackedBrick,
+                MonsterEggVariant::ChiseledBrick
+            ],
+        },
+        data Some(variant.data()),
+        model { ("minecraft", format!("{}_monster_egg", variant.as_string())) },
+        hardness if variant == MonsterEggVariant::Stone { 1.0 } else { 0.75 },
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    StoneBrick {
+        props {
+            variant: StoneBrickVariant = [
+                StoneBrickVariant::Normal,
+                StoneBrickVariant::Mossy,
+                StoneBrickVariant::Cracked,
+                StoneBrickVariant::Chiseled
+            ],
+        },
+        data Some(variant.data()),
+        model { ("minecraft", variant.as_string() ) },
+        hardness 1.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    BrownMushroomBlock {
+        props {
+            is_stem: bool = [true, false],
+            west: bool = [true, false],
+            up: bool = [true, false],
+            south: bool = [true, false],
+            north: bool = [true, false],
+            east: bool = [true, false],
+            down: bool = [true, false],
+        },
+        data mushroom_block_data(is_stem, west, up, south, north, east, down),
+        offset mushroom_block_offset(is_stem, west, up, south, north, east, down),
+        model { ("minecraft", "brown_mushroom_block") },
+        variant format!("variant={}", mushroom_block_variant(is_stem, west, up, south, north, east, down)),
+        hardness 0.2,
+        best_tools [ Tool::Axe(_), ],
+    }
+    RedMushroomBlock {
+        props {
+            is_stem: bool = [true, false],
+            west: bool = [true, false],
+            up: bool = [true, false],
+            south: bool = [true, false],
+            north: bool = [true, false],
+            east: bool = [true, false],
+            down: bool = [true, false],
+        },
+        data mushroom_block_data(is_stem, west, up, south, north, east, down),
+        offset mushroom_block_offset(is_stem, west, up, south, north, east, down),
+        model { ("minecraft", "red_mushroom_block") },
+        variant format!("variant={}", mushroom_block_variant(is_stem, west, up, south, north, east, down)),
+        hardness 0.2,
+        best_tools [ Tool::Axe(_), ],
+    }
+    MushroomStem {
+        props {
+            west: bool = [true, false],
+            up: bool = [true, false],
+            south: bool = [true, false],
+            north: bool = [true, false],
+            east: bool = [true, false],
+            down: bool = [true, false],
+        },
+        data None::<usize>,
+        offset mushroom_block_offset(false, west, up, south, north, east, down),
+        model { ("minecraft", "mushroom_stem") },
+        variant "variant=all_stem".to_string(),
+        hardness 0.2,
+        best_tools [ Tool::Axe(_), ],
+    }
+    IronBars {
+        props {
+            north: bool = [false, true],
+            south: bool = [false, true],
+            west: bool = [false, true],
+            east: bool = [false, true],
+            waterlogged: bool = [true, false],
+        },
+        data if !waterlogged && !north && !south && !west && !east { Some(0) } else { None },
+        offset Some(if west { 0 } else { 1<<0 } +
+                    if waterlogged { 0 } else { 1<<1 } +
+                    if south { 0 } else { 1<<2 } +
+                    if north { 0 } else { 1<<3 } +
+                    if east { 0 } else { 1<<4 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "iron_bars") },
+        collision pane_collision(north, south, east, west),
+        update_state (world, pos) => {
+            let f = |block| matches!(block, Block::IronBars{..});
+
+            let (north, south, west, east) = can_connect_sides(world, pos, &f);
+            Block::IronBars{north, south, west, east, waterlogged}
+        },
+        multipart (key, val) => match key {
+            "north" => north == (val == "true"),
+            "south" => south == (val == "true"),
+            "west" => west == (val == "true"),
+            "east" => east == (val == "true"),
+            _ => false,
+        },
+        hardness 5.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Chain {
+        props {
+            waterlogged: bool = [true, false],
+            axis: Axis = [Axis::X, Axis::Y, Axis::Z],
+        },
+        data None,
+        offsets |protocol_version| {
+            if protocol_version >= 735 {
+                let o = if waterlogged { 1 } else { 0 };
+                if protocol_version >= 751 {
+                    Some(match axis {
+                        Axis::X => 0,
+                        Axis::Y => 1,
+                        Axis::Z => 2,
+                        _ => unreachable!()
+                        } * 2 + o)
+                } else {
+                    match axis {
+                        Axis::Y => Some(o),
+                        _ => None,
+                    }
+                }
+            } else {
+                None
+            }
+        },
+        model { ("minecraft", "chain") },
+        hardness 5.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    GlassPane {
+        props {
+            north: bool = [false, true],
+            south: bool = [false, true],
+            west: bool = [false, true],
+            east: bool = [false, true],
+            waterlogged: bool = [true, false],
+        },
+        data if !waterlogged && !north && !south && !west && !east { Some(0) } else { None },
+        offset Some(if west { 0 } else { 1<<0 } +
+                    if waterlogged { 0 } else { 1<<1 } +
+                    if south { 0 } else { 1<<2 } +
+                    if north { 0 } else { 1<<3 } +
+                    if east { 0 } else { 1<<4 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "glass_pane") },
+        collision pane_collision(north, south, east, west),
+        update_state (world, pos) => {
+            let (north, south, west, east) = can_connect_sides(world, pos, &can_connect_glasspane);
+            Block::GlassPane{north, south, west, east, waterlogged}
+        },
+        multipart (key, val) => match key {
+            "north" => north == (val == "true"),
+            "south" => south == (val == "true"),
+            "west" => west == (val == "true"),
+            "east" => east == (val == "true"),
+            _ => false,
+        },
+        hardness 0.3,
+    }
+    MelonBlock {
+        props {},
+        model { ("minecraft", "melon_block") },
+        hardness 1.0,
+        best_tools [ Tool::Shears, Tool::Axe(_), ],
+    }
+    AttachedPumpkinStem {
+        props {
+             facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data None::<usize>,
+        offset Some(facing.horizontal_offset()),
+        material material::NON_SOLID,
+        model { ("minecraft", "pumpkin_stem") },
+        variant format!("facing={}", facing.as_string()),
+        collision vec![],
+        update_state (world, pos) => {
+            let facing = match (world.get_block(pos.shift(Direction::East)), world.get_block(pos.shift(Direction::West)),
+                                world.get_block(pos.shift(Direction::North)), world.get_block(pos.shift(Direction::South))) {
+                (Block::Pumpkin{ .. }, _, _, _) => Direction::East,
+                (_, Block::Pumpkin{ .. }, _, _) => Direction::West,
+                (_, _, Block::Pumpkin{ .. }, _) => Direction::North,
+                (_, _, _, Block::Pumpkin{ .. }) => Direction::South,
+                _ => Direction::Up,
+            };
+
+            Block::AttachedPumpkinStem{facing}
+        },
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    AttachedMelonStem {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data None::<usize>,
+        offset Some(facing.horizontal_offset()),
+        material material::NON_SOLID,
+        model { ("minecraft", "melon_stem") },
+        variant format!("facing={}", facing.as_string()),
+        collision vec![],
+        update_state (world, pos) => {
+            let facing = match (world.get_block(pos.shift(Direction::East)), world.get_block(pos.shift(Direction::West)),
+                                world.get_block(pos.shift(Direction::North)), world.get_block(pos.shift(Direction::South))) {
+                (Block::MelonBlock{ .. }, _, _, _) => Direction::East,
+                (_, Block::MelonBlock{ .. }, _, _) => Direction::West,
+                (_, _, Block::MelonBlock{ .. }, _) => Direction::North,
+                (_, _, _, Block::MelonBlock{ .. }) => Direction::South,
+                _ => Direction::Up,
+            };
+
+            Block::AttachedMelonStem{facing}
+        },
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    PumpkinStem {
+        props {
+            age: u8 = [0, 1, 2, 3, 4, 5, 6, 7],
+            facing: Direction = [
+                Direction::Up,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data if facing == Direction::Up { Some(age as usize) } else { None },
+        material material::NON_SOLID,
+        model { ("minecraft", "pumpkin_stem") },
+        variant {
+            if facing == Direction::Up {
+                format!("age={},facing={}", age, facing.as_string())
+            } else {
+                format!("facing={}", facing.as_string())
+            }
+        },
+        tint TintType::Color{r: age as u8 * 32, g: 255 - (age as u8 * 8), b: age as u8 * 4},
+        collision vec![],
+        update_state (world, pos) => {
+            let facing = match (world.get_block(pos.shift(Direction::East)), world.get_block(pos.shift(Direction::West)),
+                                world.get_block(pos.shift(Direction::North)), world.get_block(pos.shift(Direction::South))) {
+                (Block::Pumpkin{ .. }, _, _, _) => Direction::East,
+                (_, Block::Pumpkin{ .. }, _, _) => Direction::West,
+                (_, _, Block::Pumpkin{ .. }, _) => Direction::North,
+                (_, _, _, Block::Pumpkin{ .. }) => Direction::South,
+                _ => Direction::Up,
+            };
+
+            Block::PumpkinStem{age, facing}
+        },
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    MelonStem {
+        props {
+            age: u8 = [0, 1, 2, 3, 4, 5, 6, 7],
+            facing: Direction = [
+                Direction::Up,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data if facing == Direction::North { Some(age as usize) } else { None },
+        material material::NON_SOLID,
+        model { ("minecraft", "melon_stem") },
+        variant {
+            if facing == Direction::Up {
+                format!("age={},facing={}", age, facing.as_string())
+            } else {
+                format!("facing={}", facing.as_string())
+            }
+        },
+        tint TintType::Color{r: age as u8 * 32, g: 255 - (age as u8 * 8), b: age as u8 * 4},
+        collision vec![],
+        update_state (world, pos) => {
+            let facing = match (world.get_block(pos.shift(Direction::East)), world.get_block(pos.shift(Direction::West)),
+                                world.get_block(pos.shift(Direction::North)), world.get_block(pos.shift(Direction::South))) {
+                (Block::MelonBlock{ .. }, _, _, _) => Direction::East,
+                (_, Block::MelonBlock{ .. }, _, _) => Direction::West,
+                (_, _, Block::MelonBlock{ .. }, _) => Direction::North,
+                (_, _, _, Block::MelonBlock{ .. }) => Direction::South,
+                _ => Direction::Up,
+            };
+
+            Block::MelonStem{age, facing}
+        },
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Vine {
+        props {
+             up: bool = [false, true],
+             south: bool = [false, true],
+             west: bool = [false, true],
+             north: bool = [false, true],
+             east: bool = [false, true],
+        },
+        data if !up {
+            Some((if south { 0x1 } else { 0x0 })
+                | (if west { 0x2 } else { 0x0 })
+                | (if north { 0x4 } else { 0x0 })
+                | (if east { 0x8 } else { 0x0 }))
+        } else {
+            None
+        },
+        offset Some(if west { 0 } else { 1<<0 } +
+                    if up { 0 } else { 1<<1 } +
+                    if south { 0 } else { 1<<2 } +
+                    if north { 0 } else { 1<<3 } +
+                    if east { 0 } else { 1<<4 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "vine") },
+        variant format!("east={},north={},south={},up={},west={}", east, north, south, up, west),
+        tint TintType::Foliage,
+        collision vec![],
+        update_state (world, pos) => {
+            let mat = world.get_block(pos.shift(Direction::Up)).get_material();
+            let up = mat.renderable && (mat.should_cull_against || mat.never_cull /* Because leaves */);
+            Vine{up, south, west, north, east}
+        },
+        hardness 0.2,
+        best_tools [ Tool::Axe(_), ],
+    }
+    FenceGate {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            in_wall: bool = [false, true],
+            open: bool = [false, true],
+            powered: bool = [false, true],
+        },
+        data fence_gate_data(facing, in_wall, open, powered),
+        offset fence_gate_offset(facing, in_wall, open, powered),
+        material material::NON_SOLID,
+        model { ("minecraft", "fence_gate") },
+        variant format!("facing={},in_wall={},open={}", facing.as_string(), in_wall, open),
+        collision fence_gate_collision(facing, in_wall, open),
+        update_state (world, pos) => Block::FenceGate{
+            facing,
+            in_wall: fence_gate_update_state(world, pos, facing),
+            open,
+            powered
+        },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    BrickStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "brick_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::BrickStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    StoneBrickStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "stone_brick_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::StoneBrickStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 1.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Mycelium {
+        props {
+            snowy: bool = [false, true],
+        },
+        data if snowy { None } else { Some(0) },
+        offset Some(if snowy { 0 } else { 1 }),
+        material material::SOLID,
+        model { ("minecraft", "mycelium") },
+        variant format!("snowy={}", snowy),
+        update_state (world, pos) => Block::Mycelium{snowy: is_snowy(world, pos)},
+        hardness 0.6,
+        best_tools [ Tool::Shovel(_), ],
+    }
+    Waterlily {
+        props {},
+        material material::NON_SOLID,
+        model { ("minecraft", "waterlily") },
+        tint TintType::Foliage,
+        collision vec![Aabb3::new(
+            Point3::new(1.0/16.0, 0.0, 1.0/16.0),
+            Point3::new(15.0/16.0, 3.0/32.0, 15.0/16.0))
+        ],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    NetherBrick {
+        props {},
+        model { ("minecraft", "nether_brick") },
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    NetherBrickFence {
+        props {
+            north: bool = [false, true],
+            south: bool = [false, true],
+            west: bool = [false, true],
+            east: bool = [false, true],
+            waterlogged: bool = [true, false],
+        },
+        data if !north && !south && !west && !east && !waterlogged { Some(0) } else { None },
+        offset Some(if west { 0 } else { 1<<0 } +
+            if waterlogged { 0 } else { 1<<1 } +
+            if south { 0 } else { 1<<2 } +
+            if north { 0 } else { 1<<3 } +
+            if east { 0 } else { 1<<4 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "nether_brick_fence") },
+        collision fence_collision(north, south, west, east),
+        update_state (world, pos) => {
+            let f = |block| matches!(block, Block::NetherBrickFence{..} |
+                Block::FenceGate{..} |
+                Block::SpruceFenceGate{..} |
+                Block::BirchFenceGate{..} |
+                Block::JungleFenceGate{..} |
+                Block::DarkOakFenceGate{..} |
+                Block::AcaciaFenceGate{..});
+
+            let (north, south, west, east) = can_connect_sides(world, pos, &f);
+            Block::NetherBrickFence{north, south, west, east, waterlogged}
+        },
+        multipart (key, val) => match key {
+            "north" => north == (val == "true"),
+            "south" => south == (val == "true"),
+            "west" => west == (val == "true"),
+            "east" => east == (val == "true"),
+            _ => false,
+        },
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    NetherBrickStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "nether_brick_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::NetherBrickStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    NetherWart {
+        props {
+            age: u8 = [0, 1, 2, 3],
+        },
+        data Some(age as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "nether_wart") },
+        variant format!("age={}", age),
+        collision vec![],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    EnchantingTable {
+        props {},
+        material material::NON_SOLID,
+        model { ("minecraft", "enchanting_table") },
+        collision vec![Aabb3::new(
+            Point3::new(0.0, 0.0, 0.0),
+            Point3::new(1.0, 0.75, 1.0))
+        ],
+        hardness 5.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    BrewingStand {
+        props {
+            has_bottle_0: bool = [false, true],
+            has_bottle_1: bool = [false, true],
+            has_bottle_2: bool = [false, true],
+        },
+        data Some((if has_bottle_0 { 0x1 } else { 0x0 })
+                  | (if has_bottle_1 { 0x2 } else { 0x0 })
+                  | (if has_bottle_2 { 0x4 } else { 0x0 })),
+        offset Some(if has_bottle_0 { 0 } else { 1<<0 } +
+                    if has_bottle_1 { 0 } else { 1<<1 } +
+                    if has_bottle_2 { 0 } else { 1<<2 }),
+        material Material {
+            emitted_light: 1,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "brewing_stand") },
+        multipart (key, val) => match key {
+            "has_bottle_0" => (val == "true") == has_bottle_0,
+            "has_bottle_1" => (val == "true") == has_bottle_1,
+            "has_bottle_2" => (val == "true") == has_bottle_2,
+            _ => false,
+        },
+        hardness 0.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Cauldron {
+        props {
+            level: u8 = [0, 1, 2, 3],
+        },
+        data Some(level as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "cauldron") },
+        variant format!("level={}", level),
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    EndPortal {
+        props {},
+        material Material {
+            emitted_light: 15,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "end_portal") },
+        collision vec![],
+    }
+    EndPortalFrame {
+        props {
+            eye: bool = [false, true],
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::East,
+                Direction::West
+            ],
+        },
+        data Some(facing.horizontal_index() | (if eye { 0x4 } else { 0x0 })),
+        offset Some(facing.horizontal_offset() + (if eye { 0 } else { 4 })),
+        material Material {
+            emitted_light: 1,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "end_portal_frame") },
+        variant format!("eye={},facing={}", eye, facing.as_string()),
+        collision {
+            let mut collision = vec![Aabb3::new(
+                Point3::new(0.0, 0.0, 0.0),
+                Point3::new(1.0, 13.0/16.0, 1.0)
+            )];
+
+            if eye {
+                collision.push(Aabb3::new(
+                    Point3::new(5.0/16.0, 13.0/16.0, 5.0/16.0),
+                    Point3::new(11.0/16.0, 1.0, 11.0/16.0)
+                ));
+            }
+
+            collision
+        },
+    }
+    EndStone {
+        props {},
+        model { ("minecraft", "end_stone") },
+        hardness 3.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    DragonEgg {
+        props {},
+        material Material {
+            emitted_light: 1,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "dragon_egg") },
+        collision vec![Aabb3::new(
+            Point3::new(1.0/16.0, 0.0, 1.0/16.0),
+            Point3::new(15.0/16.0, 1.0, 15.0/16.0)
+        )],
+        hardness 3.0,
+    }
+    RedstoneLamp {
+        props {},
+        model { ("minecraft", "redstone_lamp") },
+        hardness 0.3,
+    }
+    RedstoneLampLit {
+        props {},
+        material Material {
+            emitted_light: 15,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "lit_redstone_lamp") },
+        hardness 0.3,
+    }
+    DoubleWoodenSlab {
+        props {
+            variant: WoodSlabVariant = [
+                WoodSlabVariant::Oak,
+                WoodSlabVariant::Spruce,
+                WoodSlabVariant::Birch,
+                WoodSlabVariant::Jungle,
+                WoodSlabVariant::Acacia,
+                WoodSlabVariant::DarkOak
+            ],
+        },
+        data Some(variant.data()),
+        offset None,
+        model { ("minecraft", format!("{}_double_slab", variant.as_string()) ) },
+        hardness 2.0,
+    }
+    WoodenSlab {
+        props {
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            variant: WoodSlabVariant = [
+                WoodSlabVariant::Oak,
+                WoodSlabVariant::Spruce,
+                WoodSlabVariant::Birch,
+                WoodSlabVariant::Jungle,
+                WoodSlabVariant::Acacia,
+                WoodSlabVariant::DarkOak
+            ],
+        },
+        data Some(variant.data() | (if half == BlockHalf::Top { 0x8 } else { 0x0 })),
+        offset None,
+        material material::NON_SOLID,
+        model { ("minecraft", format!("{}_slab", variant.as_string()) ) },
+        variant format!("half={}", half.as_string()),
+        collision slab_collision(half),
+        hardness 2.0,
+    }
+    Cocoa {
+        props {
+            age: u8 = [0, 1, 2],
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index() | ((age as usize) << 2)),
+        offset Some(facing.horizontal_offset() + ((age as usize) * 4)),
+        material material::NON_SOLID,
+        model { ("minecraft", "cocoa") },
+        variant format!("age={},facing={}", age, facing.as_string()),
+        collision {
+            let i = 4.0 + f64::from(age) * 2.0;
+            let j = 5.0 + f64::from(age) * 2.0;
+            let f = i / 2.0;
+
+            let (min_x, min_y, min_z, max_x, max_y, max_z) = match facing {
+                Direction::North => (8.0 - f, 12.0 - j, 1.0, 8.0 + f, 12.0, 8.0 + i),
+                Direction::South => (8.0 - f, 12.0 - j, 15.0 - i, 8.0 + f, 12.0, 15.0),
+                Direction::West => (1.0, 12.0 - j, 8.0 - f, 1.0 + i, 12.0, 8.0 + f),
+                Direction::East => (15.0 - i, 12.0 - j, 8.0 - f, 15.0, 12.0, 8.0 + f),
+                _ => unreachable!(),
+            };
+
+            vec![Aabb3::new(
+                Point3::new(min_x / 16.0, min_y / 16.0, min_z / 16.0),
+                Point3::new(max_x / 16.0, max_y / 16.0, max_z / 16.0))
+            ]
+        },
+        hardness 0.2,
+        best_tools [ Tool::Axe(_), ],
+    }
+    SandstoneStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "sandstone_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::SandstoneStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 0.8,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    EmeraldOre {
+        props {},
+        material material::SOLID,
+        model { ("minecraft", "emerald_ore") },
+        hardness 3.0,
+        harvest_tools [
+            Tool::Pickaxe(ToolMaterial::Iron),
+            Tool::Pickaxe(ToolMaterial::Diamond),
+            Tool::Pickaxe(ToolMaterial::Netherite),
+        ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    EnderChest {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data if waterlogged { None } else { Some(facing.index()) },
+        offset Some(if waterlogged { 0 } else { 1 } + facing.horizontal_offset() * 2),
+        material Material {
+            emitted_light: 7,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "ender_chest") },
+        variant format!("facing={}", facing.as_string()),
+        collision vec![Aabb3::new(
+            Point3::new(1.0/16.0, 0.0, 1.0/16.0),
+            Point3::new(15.0/16.0, 7.0/8.0, 15.0/16.0)
+        )],
+        hardness 22.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    TripwireHook {
+        props {
+            attached: bool = [false, true],
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            powered: bool = [false, true],
+        },
+        data Some(facing.horizontal_index()
+                  | (if attached { 0x4 } else { 0x0 })
+                  | (if powered { 0x8 } else { 0x0 })),
+        offset Some(if powered { 0 } else { 1 } +
+                    facing.horizontal_offset() * 2 +
+                    if attached { 0 } else { 2 * 4 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "tripwire_hook") },
+        variant format!("attached={},facing={},powered={}", attached, facing.as_string(), powered),
+        collision vec![],
+        hardness 0.0,
+    }
+    Tripwire {
+        props {
+            powered: bool = [false, true],
+            attached: bool = [false, true],
+            disarmed: bool = [false, true],
+            north: bool = [false, true],
+            south: bool = [false, true],
+            west: bool = [false, true],
+            east: bool = [false, true],
+            mojang_cant_even: bool = [false, true],
+        },
+        data if !north && !south && !east && !west {
+            Some((if powered { 0x1 } else { 0x0 })
+                 | (if attached { 0x4 } else { 0x0 })
+                 | (if disarmed { 0x8 } else { 0x0 })
+                 | (if mojang_cant_even { 0x2 } else { 0x0 }))
+        } else {
+            None
+        },
+        offset if mojang_cant_even {
+            None
+        } else {
+            Some(if west { 0 } else { 1<<0 } +
+                 if south { 0 } else { 1<<1 } +
+                 if powered { 0 } else { 1<<2 } +
+                 if north { 0 } else { 1<<3 } +
+                 if east { 0 } else { 1<<4 } +
+                 if disarmed { 0 } else { 1<<5 } +
+                 if attached { 0 } else { 1<<6 })
+        },
+        material material::TRANSPARENT,
+        model { ("minecraft", "tripwire") },
+        variant format!("attached={},east={},north={},south={},west={}", attached, east, north, south, west),
+        collision vec![],
+        update_state (world, pos) => {
+            let f = |dir| {
+                match world.get_block(pos.shift(dir)) {
+                    Block::TripwireHook{facing, ..} => facing.opposite() == dir,
+                    Block::Tripwire{..} => true,
+                    _ => false,
+                }
+            };
+
+            Tripwire{
+                powered,
+                attached,
+                disarmed,
+                north: f(Direction::North),
+                south: f(Direction::South),
+                west: f(Direction::West),
+                east: f(Direction::East),
+                mojang_cant_even
+            }
+        },
+        hardness 0.0,
+    }
+    EmeraldBlock {
+        props {},
+        model { ("minecraft", "emerald_block") },
+        hardness 5.0,
+        harvest_tools [
+            Tool::Pickaxe(ToolMaterial::Iron),
+            Tool::Pickaxe(ToolMaterial::Diamond),
+            Tool::Pickaxe(ToolMaterial::Netherite),
+        ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    SpruceStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "spruce_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::SpruceStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    BirchStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "birch_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::BirchStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    JungleStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "jungle_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::JungleStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    CommandBlock {
+        props {
+            conditional: bool = [false, true],
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index() | (if conditional { 0x8 } else { 0x0 })),
+        offset Some(facing.offset() + (if conditional { 0 } else { 6 })),
+        model { ("minecraft", "command_block") },
+        variant format!("conditional={},facing={}", conditional, facing.as_string()),
+    }
+    Beacon {
+        props {},
+        material Material {
+            emitted_light: 15,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "beacon") },
+        hardness 3.0,
+    }
+    CobblestoneWall {
+        props {
+            up: bool = [false, true],
+            north: bool = [false, true],
+            south: bool = [false, true],
+            west: bool = [false, true],
+            east: bool = [false, true],
+            variant: CobblestoneWallVariant = [
+                CobblestoneWallVariant::Normal,
+                CobblestoneWallVariant::Mossy
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data if !north && !south && !east && !west && !up && !waterlogged { Some(variant.data()) } else { None },
+        offset Some(if west { 0 } else { 1<<0 } +
+                    if waterlogged { 0 } else { 1<<1 } +
+                    if up { 0 } else { 1<<2 } +
+                    if south { 0 } else { 1<<3 } +
+                    if north { 0 } else { 1<<4 } +
+                    if east { 0 } else { 1<<5 } +
+                    if variant == CobblestoneWallVariant::Normal { 0 } else { 1<<6 }),
+        material material::NON_SOLID,
+        model { ("minecraft", format!("{}_wall", variant.as_string())) },
+        update_state (world, pos) => {
+            let f = |block| matches!(block, Block::CobblestoneWall{..} |
+                Block::FenceGate{..} |
+                Block::SpruceFenceGate{..} |
+                Block::BirchFenceGate{..} |
+                Block::JungleFenceGate{..} |
+                Block::DarkOakFenceGate{..} |
+                Block::AcaciaFenceGate{..});
+
+            let (north, south, west, east) = can_connect_sides(world, pos, &f);
+            let up = !(matches!(world.get_block(pos.shift(Direction::Up)), Block::Air{..}))
+            || !((north && south && !west && !east) || (!north && !south && west && east));
+            Block::CobblestoneWall{up, north, south, west, east, variant, waterlogged}
+        },
+        multipart (key, val) => match key {
+            "up" => up == (val == "true"),
+            "north" => north == (val == "true"),
+            "south" => south == (val == "true"),
+            "east" => east == (val == "true"),
+            "west" => west == (val == "true"),
+            _ => false,
+        },
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    FlowerPot {
+        props {
+            contents: FlowerPotVariant = [
+                FlowerPotVariant::Empty,
+                FlowerPotVariant::Poppy,
+                FlowerPotVariant::Dandelion,
+                FlowerPotVariant::OakSapling,
+                FlowerPotVariant::SpruceSapling,
+                FlowerPotVariant::BirchSapling,
+                FlowerPotVariant::JungleSapling,
+                FlowerPotVariant::RedMushroom,
+                FlowerPotVariant::BrownMushroom,
+                FlowerPotVariant::Cactus,
+                FlowerPotVariant::DeadBush,
+                FlowerPotVariant::Fern,
+                FlowerPotVariant::AcaciaSapling,
+                FlowerPotVariant::DarkOakSapling,
+                FlowerPotVariant::BlueOrchid,
+                FlowerPotVariant::Allium,
+                FlowerPotVariant::AzureBluet,
+                FlowerPotVariant::RedTulip,
+                FlowerPotVariant::OrangeTulip,
+                FlowerPotVariant::WhiteTulip,
+                FlowerPotVariant::PinkTulip,
+                FlowerPotVariant::Oxeye,
+                FlowerPotVariant::Cornflower,
+                FlowerPotVariant::LilyOfTheValley,
+                FlowerPotVariant::WitherRose
+            ],
+            legacy_data: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data if contents == FlowerPotVariant::Empty { Some(legacy_data as usize) } else { None },
+        offsets |protocol_version | {
+            if legacy_data != 0 { None } else { contents.offsets(protocol_version) }
+        },
+        material material::NON_SOLID,
+        model { ("minecraft", "flower_pot") },
+        hardness 0.0,
+    }
+    Carrots {
+        props {
+            age: u8 = [0, 1, 2, 3, 4, 5, 6, 7],
+        },
+        data Some(age as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "carrots") },
+        variant format!("age={}", age),
+        collision vec![],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Potatoes {
+        props {
+            age: u8 = [0, 1, 2, 3, 4, 5, 6, 7],
+        },
+        data Some(age as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "potatoes") },
+        variant format!("age={}", age),
+        collision vec![],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    WoodenButton {
+        props {
+            face: AttachedFace = [
+                AttachedFace::Floor,
+                AttachedFace::Wall,
+                AttachedFace::Ceiling
+            ],
+            facing: Direction = [
+                Direction::East,
+                Direction::West,
+                Direction::South,
+                Direction::North
+            ],
+            powered: bool = [false, true],
+            variant: TreeVariant = [
+                TreeVariant::Oak,
+                TreeVariant::Spruce,
+                TreeVariant::Birch,
+                TreeVariant::Jungle,
+                TreeVariant::Acacia,
+                TreeVariant::DarkOak
+            ],
+        },
+        data if variant == TreeVariant::Oak { face.data_with_facing_and_powered(facing, powered) } else { None },
+        offset Some(variant.offset() * (3 * 4 * 2) + face.offset() * (4 * 2) + facing.horizontal_offset() * 2 + if powered { 0 } else { 1 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "wooden_button") },
+        variant format!("facing={},powered={}", face.variant_with_facing(facing), powered),
+        hardness 0.5,
+        best_tools [ Tool::Axe(_), ],
+    }
+    SkullSkeletonWall {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            nodrop: bool = [false, true],
+        },
+        data if !nodrop { Some(facing.index()) } else { None },
+        offset if !nodrop && facing != Direction::Up { Some(facing.horizontal_offset()) } else { None },
+        material material::NON_SOLID,
+        model { ("minecraft", "skull") },
+        variant format!("facing={},nodrop={}", facing.as_string(), nodrop),
+        collision {
+            let (min_x, min_y, min_z, max_x, max_y, max_z) = match facing {
+                Direction::Up => (0.25, 0.0, 0.25, 0.75, 0.5, 0.75),
+                Direction::North => (0.25, 0.25, 0.5, 0.75, 0.75, 1.0),
+                Direction::South => (0.25, 0.25, 0.0, 0.75, 0.75, 0.5),
+                Direction::West => (0.5, 0.25, 0.25, 1.0, 0.75, 0.75),
+                Direction::East => (0.0, 0.25, 0.25, 0.5, 0.75, 0.75),
+                _ => unreachable!(),
+            };
+
+            vec![Aabb3::new(
+                Point3::new(min_x, min_y, min_z),
+                Point3::new(max_x, max_y, max_z)
+            )]
+        },
+        hardness 1.0,
+    }
+    SkullSkeleton
+    {
+        props {
+            rotation: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data None::<usize>,
+        offset Some(rotation as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "skull") },
+        collision {
+            let (min_x, min_y, min_z, max_x, max_y, max_z) = (0.25, 0.0, 0.25, 0.75, 0.5, 0.75);
+
+            vec![Aabb3::new(
+                Point3::new(min_x, min_y, min_z),
+                Point3::new(max_x, max_y, max_z)
+            )]
+        },
+        hardness 1.0,
+    }
+    SkullWitherSkeletonWall {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data None::<usize>,
+        offset Some(facing.horizontal_offset()),
+        material material::NON_SOLID,
+        model { ("minecraft", "skull") },
+        collision {
+            let (min_x, min_y, min_z, max_x, max_y, max_z) = match facing {
+                Direction::North => (0.25, 0.25, 0.5, 0.75, 0.75, 1.0),
+                Direction::South => (0.25, 0.25, 0.0, 0.75, 0.75, 0.5),
+                Direction::West => (0.5, 0.25, 0.25, 1.0, 0.75, 0.75),
+                Direction::East => (0.0, 0.25, 0.25, 0.5, 0.75, 0.75),
+                _ => unreachable!(),
+            };
+
+            vec![Aabb3::new(
+                Point3::new(min_x, min_y, min_z),
+                Point3::new(max_x, max_y, max_z)
+            )]
+        },
+        hardness 1.0,
+    }
+    SkullWitherSkeleton {
+        props {
+            rotation: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data None::<usize>,
+        offset Some(rotation as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "skull") },
+        collision {
+            let (min_x, min_y, min_z, max_x, max_y, max_z) = (0.25, 0.0, 0.25, 0.75, 0.5, 0.75);
+
+            vec![Aabb3::new(
+                Point3::new(min_x, min_y, min_z),
+                Point3::new(max_x, max_y, max_z)
+            )]
+        },
+        hardness 1.0,
+    }
+    ZombieWallHead {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data None::<usize>,
+        offset Some(facing.horizontal_offset()),
+        material material::NON_SOLID,
+        model { ("minecraft", "zombie_wall_head") },
+        hardness 1.0,
+    }
+    ZombieHead {
+        props {
+            rotation: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data None::<usize>,
+        offset Some(rotation as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "zombie_head") },
+        hardness 1.0,
+    }
+    PlayerWallHead {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data None::<usize>,
+        offset Some(facing.horizontal_offset()),
+        material material::NON_SOLID,
+        model { ("minecraft", "player_wall_head") },
+        hardness 1.0,
+    }
+    PlayerHead {
+        props {
+            rotation: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data None::<usize>,
+        offset Some(rotation as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "player_head") },
+        hardness 1.0,
+    }
+    CreeperWallHead {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data None::<usize>,
+        offset Some(facing.horizontal_offset()),
+        material material::NON_SOLID,
+        model { ("minecraft", "creeper_wall_head") },
+        hardness 1.0,
+    }
+    CreeperHead {
+        props {
+            rotation: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data None::<usize>,
+        offset Some(rotation as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "creeper_head") },
+        hardness 1.0,
+    }
+    DragonWallHead {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data None::<usize>,
+        offset Some(facing.horizontal_offset()),
+        material material::NON_SOLID,
+        model { ("minecraft", "dragon_wall_head") },
+        hardness 1.0,
+    }
+    DragonHead {
+        props {
+            rotation: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data None::<usize>,
+        offset Some(rotation as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "dragon_head") },
+        hardness 1.0,
+    }
+    Anvil {
+        props {
+            damage: u8 = [0, 1, 2],
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index() | (match damage { 0 => 0x0, 1 => 0x4, 2 => 0x8, _ => unreachable!() })),
+        offset Some(facing.horizontal_offset() + (damage as usize) * 4),
+        material material::NON_SOLID,
+        model { ("minecraft", "anvil") },
+        variant format!("damage={},facing={}", damage, facing.as_string()),
+        collision match facing.axis() {
+            Axis::Z => vec![Aabb3::new(
+                Point3::new(1.0/8.0, 0.0, 0.0),
+                Point3::new(7.0/8.0, 1.0, 1.0)
+            )],
+            Axis::X => vec![Aabb3::new(
+                Point3::new(0.0, 0.0, 1.0/8.0),
+                Point3::new(1.0, 1.0, 7.0/8.0)
+            )],
+            _ => unreachable!(),
+        },
+        hardness 5.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    TrappedChest {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            type_: ChestType = [
+                ChestType::Single,
+                ChestType::Left,
+                ChestType::Right
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data if type_ == ChestType::Single && !waterlogged { Some(facing.index()) } else { None },
+        offset Some(if waterlogged { 0 } else { 1 } +
+            type_.offset() * 2 +
+            facing.horizontal_offset() * (2 * 3)),
+        material material::NON_SOLID,
+        model { ("minecraft", "trapped_chest") },
+        variant format!("facing={}", facing.as_string()),
+        collision vec![Aabb3::new(
+            Point3::new(1.0/16.0, 0.0, 1.0/16.0),
+            Point3::new(15.0/16.0, 7.0/8.0, 15.0/16.0)
+        )],
+        hardness 2.5,
+        best_tools [ Tool::Axe(_), ],
+    }
+    LightWeightedPressurePlate {
+        props {
+            power: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data Some(power as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "light_weighted_pressure_plate") },
+        variant format!("power={}", power),
+        collision vec![],
+        hardness 0.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    HeavyWeightedPressurePlate {
+        props {
+            power: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data Some(power as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "heavy_weighted_pressure_plate") },
+        variant format!("power={}", power),
+        collision vec![],
+        hardness 0.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    ComparatorUnpowered {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            mode: ComparatorMode = [ComparatorMode::Compare, ComparatorMode::Subtract],
+            powered: bool = [false, true],
+        },
+        data Some(facing.horizontal_index()
+                  | (if mode == ComparatorMode::Subtract { 0x4 } else { 0x0 })
+                  | (if powered { 0x8 } else { 0x0 })),
+        offset Some(if powered { 0 } else { 1<<0 } +
+                    if mode == ComparatorMode::Compare { 0 } else { 1<<1 } +
+                    facing.horizontal_offset() * (1<<2)),
+        material material::NON_SOLID,
+        model { ("minecraft", "unpowered_comparator") },
+        variant format!("facing={},mode={},powered={}", facing.as_string(), mode.as_string(), powered),
+        collision vec![Aabb3::new(
+            Point3::new(0.0, 0.0, 0.0),
+            Point3::new(1.0, 1.0/8.0, 1.0)
+        )],
+        hardness 0.0,
+    }
+    ComparatorPowered {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            mode: ComparatorMode = [ComparatorMode::Compare, ComparatorMode::Subtract],
+            powered: bool = [false, true],
+        },
+        data Some(facing.horizontal_index()
+                  | (if mode == ComparatorMode::Subtract { 0x4 } else { 0x0 })
+                  | (if powered { 0x8 } else { 0x0 })),
+        offset None,
+        material material::NON_SOLID,
+        model { ("minecraft", "powered_comparator") },
+        variant format!("facing={},mode={},powered={}", facing.as_string(), mode.as_string(), powered),
+        collision vec![Aabb3::new(
+            Point3::new(0.0, 0.0, 0.0),
+            Point3::new(1.0, 1.0/8.0, 1.0)
+        )],
+        hardness 0.0,
+    }
+    DaylightDetector {
+        props {
+            power: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+            inverted: bool = [true, false],
+        },
+        data if inverted { None } else { Some(power as usize) },
+        offset Some((power as usize) + if inverted { 0 } else { 16 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "daylight_detector") },
+        variant format!("power={}", power),
+        collision vec![Aabb3::new(
+            Point3::new(0.0, 0.0, 0.0),
+            Point3::new(1.0, 3.0/8.0, 1.0)
+        )],
+        hardness 0.2,
+        best_tools [ Tool::Axe(_), ],
+    }
+    RedstoneBlock {
+        props {},
+        model { ("minecraft", "redstone_block") },
+        hardness 5.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    QuartzOre {
+        props {},
+        model { ("minecraft", "quartz_ore") },
+        hardness 3.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Hopper {
+        props {
+            enabled: bool = [false, true],
+            facing: Direction = [
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index() | (if enabled { 0x8 } else { 0x0 })),
+        offset Some(match facing {
+            Direction::Down => 0,
+            Direction::North => 1,
+            Direction::South => 2,
+            Direction::West => 3,
+            Direction::East => 4,
+            _ => unreachable!(),
+        } + if enabled { 0 } else { 5 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "hopper") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 3.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    QuartzBlock {
+        props {
+            variant: QuartzVariant = [
+                QuartzVariant::Normal,
+                QuartzVariant::Chiseled,
+                QuartzVariant::PillarVertical,
+                QuartzVariant::PillarNorthSouth,
+                QuartzVariant::PillarEastWest
+            ],
+        },
+        data Some(variant.data()),
+        model { ("minecraft", match variant {
+            QuartzVariant::Normal => "quartz_block",
+            QuartzVariant::Chiseled => "chiseled_quartz_block",
+            QuartzVariant::PillarVertical |
+            QuartzVariant::PillarNorthSouth |
+            QuartzVariant::PillarEastWest => "quartz_column",
+        } ) },
+        variant variant.as_string(),
+        hardness 0.8,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    QuartzStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "quartz_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::QuartzStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 0.8,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    ActivatorRail {
+        props {
+            shape: RailShape = [
+                RailShape::NorthSouth,
+                RailShape::EastWest,
+                RailShape::AscendingNorth,
+                RailShape::AscendingSouth,
+                RailShape::AscendingEast,
+                RailShape::AscendingWest
+            ],
+            powered: bool = [false, true],
+        },
+        data Some(shape.data() | (if powered { 0x8 } else { 0x0 })),
+        offset Some(shape.data() + (if powered { 0 } else { 6 })),
+        material material::NON_SOLID,
+        model { ("minecraft", "activator_rail") },
+        variant format!("powered={},shape={}", powered, shape.as_string()),
+        collision vec![],
+        hardness 0.7,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Dropper {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            triggered: bool = [false, true],
+        },
+        data Some(facing.index() | (if triggered { 0x8 } else { 0x0 })),
+        offset Some(if triggered { 0 } else { 1 } + facing.offset() * 2),
+        model { ("minecraft", "dropper") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 3.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    StainedHardenedClay {
+        props {
+            color: ColoredVariant = [
+                ColoredVariant::White,
+                ColoredVariant::Orange,
+                ColoredVariant::Magenta,
+                ColoredVariant::LightBlue,
+                ColoredVariant::Yellow,
+                ColoredVariant::Lime,
+                ColoredVariant::Pink,
+                ColoredVariant::Gray,
+                ColoredVariant::Silver,
+                ColoredVariant::Cyan,
+                ColoredVariant::Purple,
+                ColoredVariant::Blue,
+                ColoredVariant::Brown,
+                ColoredVariant::Green,
+                ColoredVariant::Red,
+                ColoredVariant::Black
+            ],
+        },
+        data Some(color.data()),
+        model { ("minecraft", format!("{}_stained_hardened_clay", color.as_string()) ) },
+        hardness 1.25,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    StainedGlassPane {
+        props {
+            color: ColoredVariant = [
+                ColoredVariant::White,
+                ColoredVariant::Orange,
+                ColoredVariant::Magenta,
+                ColoredVariant::LightBlue,
+                ColoredVariant::Yellow,
+                ColoredVariant::Lime,
+                ColoredVariant::Pink,
+                ColoredVariant::Gray,
+                ColoredVariant::Silver,
+                ColoredVariant::Cyan,
+                ColoredVariant::Purple,
+                ColoredVariant::Blue,
+                ColoredVariant::Brown,
+                ColoredVariant::Green,
+                ColoredVariant::Red,
+                ColoredVariant::Black
+            ],
+            north: bool = [false, true],
+            south: bool = [false, true],
+            east: bool = [false, true],
+            west: bool = [false, true],
+            waterlogged: bool = [true, false],
+        },
+        data if !north && !south && !east && !west && !waterlogged { Some(color.data()) } else { None },
+        offset Some(if west { 0 } else { 1<<0 } +
+                    if waterlogged { 0 } else { 1<<1 } +
+                    if south { 0 } else { 1<<2 } +
+                    if north { 0 } else { 1<<3 } +
+                    if east { 0 } else { 1<<4 } +
+                    color.data() * (1<<5)),
+        material material::TRANSPARENT,
+        model { ("minecraft", format!("{}_stained_glass_pane", color.as_string()) ) },
+        collision pane_collision(north, south, east, west),
+        update_state (world, pos) => {
+            let (north, south, west, east) = can_connect_sides(world, pos, &can_connect_glasspane);
+            Block::StainedGlassPane{color, north, south, west, east, waterlogged}
+        },
+        multipart (key, val) => match key {
+            "north" => north == (val == "true"),
+            "south" => south == (val == "true"),
+            "east" => east == (val == "true"),
+            "west" => west == (val == "true"),
+            _ => false,
+        },
+        hardness 0.3,
+    }
+    Leaves2 {
+        props {
+            check_decay: bool = [false, true],
+            decayable: bool = [false, true],
+            variant: TreeVariant = [
+                TreeVariant::Acacia,
+                TreeVariant::DarkOak
+            ],
+        },
+        data Some(variant.data()
+                  | (if decayable { 0x4 } else { 0x0 })
+                  | (if check_decay { 0x8 } else { 0x0 })),
+        offset None,
+        material material::LEAVES,
+        model { ("minecraft", format!("{}_leaves", variant.as_string()) ) },
+        tint TintType::Foliage,
+        hardness 0.2,
+        best_tools [ Tool::Shears, Tool::Hoe(_), ],
+    }
+    Log2 {
+        props {
+            axis: Axis = [Axis::None, Axis::X, Axis::Y, Axis::Z],
+            variant: TreeVariant = [
+                TreeVariant::Acacia,
+                TreeVariant::DarkOak
+            ],
+        },
+        data Some(variant.data() | (axis.index() << 2)),
+        offset None,
+        model { ("minecraft", format!("{}_log", variant.as_string()) ) },
+        variant format!("axis={}", axis.as_string()),
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    AcaciaStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "acacia_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::AcaciaStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    DarkOakStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "dark_oak_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::DarkOakStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    Slime {
+        props {},
+        material material::TRANSPARENT,
+        model { ("minecraft", "slime") },
+        hardness 0.0,
+    }
+    Barrier {
+        props {},
+        material material::INVISIBLE,
+        model { ("minecraft", "barrier") },
+    }
+    IronTrapDoor {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            open: bool = [false, true],
+            waterlogged: bool = [true, false],
+            powered: bool = [true, false],
+        },
+        data if waterlogged || powered { None } else { Some(match facing {
+            Direction::North => 0,
+            Direction::South => 1,
+            Direction::West => 2,
+            Direction::East => 3,
+            _ => unreachable!(),
+        } | (if open { 0x4 } else { 0x0 }) | (if half == BlockHalf::Top { 0x8 } else { 0x0 }))},
+        offset Some(if waterlogged { 0 } else { 1<<0 } +
+            if powered { 0 } else { 1<<1 } +
+            if open { 0 } else { 1<<2 } +
+            if half == BlockHalf::Top { 0 } else { 1<<3 } +
+            facing.horizontal_offset() * (1<<4)),
+        material material::NON_SOLID,
+        model { ("minecraft", "iron_trapdoor") },
+        variant format!("facing={},half={},open={}", facing.as_string(), half.as_string(), open),
+        collision trapdoor_collision(facing, half, open),
+        hardness 5.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Prismarine {
+        props {
+            variant: PrismarineVariant = [
+                PrismarineVariant::Normal,
+                PrismarineVariant::Brick,
+                PrismarineVariant::Dark
+            ],
+        },
+        data Some(variant.data()),
+        model { ("minecraft", variant.as_string() ) },
+        hardness 1.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    PrismarineStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+            variant: PrismarineVariant = [
+                    PrismarineVariant::Normal,
+                    PrismarineVariant::Brick,
+                    PrismarineVariant::Dark
+                ],
+        },
+        data None::<usize>,
+        offset Some(stair_offset(facing, half, shape, waterlogged).unwrap() + (2 * 5 * 2 * 4) * variant.data()),
+        material material::NON_SOLID,
+        model { ("minecraft", match variant {
+            PrismarineVariant::Normal => "prismarine_stairs",
+            PrismarineVariant::Brick => "prismarine_brick_stairs",
+            PrismarineVariant::Dark => "dark_prismarine_stairs",
+        }) },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::PrismarineStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged, variant},
+        hardness 1.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    PrismarineSlab {
+        props {
+            type_: BlockHalf = [
+                BlockHalf::Top,
+                BlockHalf::Bottom,
+                BlockHalf::Double
+            ],
+            waterlogged: bool = [true, false],
+            variant: PrismarineVariant = [
+                    PrismarineVariant::Normal,
+                    PrismarineVariant::Brick,
+                    PrismarineVariant::Dark
+                ],
+        },
+        data None::<usize>,
+        offset Some(if waterlogged { 0 } else { 1 } + type_.offset() * 2 + variant.data() * (2 * 3)),
+        material material::NON_SOLID,
+        model { ("minecraft", match variant {
+            PrismarineVariant::Normal => "prismarine_slab",
+            PrismarineVariant::Brick => "prismarine_brick_slab",
+            PrismarineVariant::Dark => "dark_prismarine_slab",
+        }) },
+        variant format!("type={}", type_.as_string()),
+        collision slab_collision(type_),
+        hardness 1.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    SeaLantern {
+        props {},
+        material Material {
+            emitted_light: 15,
+            ..material::SOLID
+        },
+        model { ("minecraft", "sea_lantern") },
+        hardness 0.3,
+    }
+    HayBlock {
+        props {
+            axis: Axis = [Axis::X, Axis::Y, Axis::Z],
+        },
+        data Some(match axis { Axis::X => 0x4, Axis::Y => 0x0, Axis::Z => 0x8, _ => unreachable!() }),
+        offset Some(match axis { Axis::X => 0, Axis::Y => 1, Axis::Z => 2, _ => unreachable!() }),
+        model { ("minecraft", "hay_block") },
+        variant format!("axis={}", axis.as_string()),
+        hardness 0.5,
+        best_tools [ Tool::Hoe(_), ],
+    }
+    Carpet {
+        props {
+            color: ColoredVariant = [
+                ColoredVariant::White,
+                ColoredVariant::Orange,
+                ColoredVariant::Magenta,
+                ColoredVariant::LightBlue,
+                ColoredVariant::Yellow,
+                ColoredVariant::Lime,
+                ColoredVariant::Pink,
+                ColoredVariant::Gray,
+                ColoredVariant::Silver,
+                ColoredVariant::Cyan,
+                ColoredVariant::Purple,
+                ColoredVariant::Blue,
+                ColoredVariant::Brown,
+                ColoredVariant::Green,
+                ColoredVariant::Red,
+                ColoredVariant::Black
+            ],
+        },
+        data Some(color.data()),
+        material material::NON_SOLID,
+        model { ("minecraft", format!("{}_carpet", color.as_string()) ) },
+        collision vec![Aabb3::new(
+            Point3::new(0.0, 0.0, 0.0),
+            Point3::new(1.0, 1.0/16.0, 1.0)
+        )],
+        hardness 0.1,
+    }
+    HardenedClay {
+        props {},
+        model { ("minecraft", "hardened_clay") },
+        hardness 1.25,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    CoalBlock {
+        props {},
+        model { ("minecraft", "coal_block") },
+        hardness 5.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    PackedIce {
+        props {},
+        model { ("minecraft", "packed_ice") },
+        hardness 0.5,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    DoublePlant {
+        props {
+            half: BlockHalf = [BlockHalf::Lower, BlockHalf::Upper],
+            variant: DoublePlantVariant = [
+                DoublePlantVariant::Sunflower,
+                DoublePlantVariant::Lilac,
+                DoublePlantVariant::DoubleTallgrass,
+                DoublePlantVariant::LargeFern,
+                DoublePlantVariant::RoseBush,
+                DoublePlantVariant::Peony
+            ],
+        },
+        data Some(variant.data() | (if half == BlockHalf::Upper { 0x8 } else { 0x0 })),
+        offset Some(half.offset() + variant.offset() * 2),
+        material material::NON_SOLID,
+        model { ("minecraft", variant.as_string()) },
+        variant format!("half={}", half.as_string()),
+        tint TintType::Foliage,
+        collision vec![],
+        update_state (world, pos) => {
+            let (half, variant) = update_double_plant_state(world, pos, half, variant);
+            Block::DoublePlant{half, variant}
+        },
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    StandingBanner {
+        props {
+            rotation: Rotation = [
+                Rotation::South,
+                Rotation::SouthSouthWest,
+                Rotation::SouthWest,
+                Rotation::WestSouthWest,
+                Rotation::West,
+                Rotation::WestNorthWest,
+                Rotation::NorthWest,
+                Rotation::NorthNorthWest,
+                Rotation::North,
+                Rotation::NorthNorthEast,
+                Rotation::NorthEast,
+                Rotation::EastNorthEast,
+                Rotation::East,
+                Rotation::EastSouthEast,
+                Rotation::SouthEast,
+                Rotation::SouthSouthEast
+            ],
+            color: ColoredVariant = [
+                ColoredVariant::White,
+                ColoredVariant::Orange,
+                ColoredVariant::Magenta,
+                ColoredVariant::LightBlue,
+                ColoredVariant::Yellow,
+                ColoredVariant::Lime,
+                ColoredVariant::Pink,
+                ColoredVariant::Gray,
+                ColoredVariant::Silver,
+                ColoredVariant::Cyan,
+                ColoredVariant::Purple,
+                ColoredVariant::Blue,
+                ColoredVariant::Brown,
+                ColoredVariant::Green,
+                ColoredVariant::Red,
+                ColoredVariant::Black
+            ],
+        },
+        data if color != ColoredVariant::White { None } else { Some(rotation.data()) },
+        offset Some(rotation.data() + color.data() * 16),
+        material material::NON_SOLID,
+        model { ("minecraft", "standing_banner") },
+        variant format!("rotation={}", rotation.as_string()),
+        hardness 1.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    WallBanner {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            color: ColoredVariant = [
+                ColoredVariant::White,
+                ColoredVariant::Orange,
+                ColoredVariant::Magenta,
+                ColoredVariant::LightBlue,
+                ColoredVariant::Yellow,
+                ColoredVariant::Lime,
+                ColoredVariant::Pink,
+                ColoredVariant::Gray,
+                ColoredVariant::Silver,
+                ColoredVariant::Cyan,
+                ColoredVariant::Purple,
+                ColoredVariant::Blue,
+                ColoredVariant::Brown,
+                ColoredVariant::Green,
+                ColoredVariant::Red,
+                ColoredVariant::Black
+            ],
+        },
+        data if color != ColoredVariant::White { None } else { Some(facing.index()) },
+        offset Some(facing.horizontal_offset() + color.data() * 4),
+        material material::NON_SOLID,
+        model { ("minecraft", "wall_banner") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    DaylightDetectorInverted {
+        props {
+            power: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        },
+        data Some(power as usize),
+        offset None,
+        material material::NON_SOLID,
+        model { ("minecraft", "daylight_detector_inverted") },
+        variant format!("power={}", power),
+        collision vec![Aabb3::new(
+            Point3::new(0.0, 0.0, 0.0),
+            Point3::new(1.0, 3.0/8.0, 1.0)
+        )],
+        hardness 0.2,
+    }
+    RedSandstone {
+        props {
+            variant: RedSandstoneVariant = [
+                RedSandstoneVariant::Normal,
+                RedSandstoneVariant::Chiseled,
+                RedSandstoneVariant::Smooth
+            ],
+        },
+        data Some(variant.data()),
+        model { ("minecraft", variant.as_string()) },
+        hardness 0.8,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    RedSandstoneStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "red_sandstone_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::RedSandstoneStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 0.8,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    WoodenSlabFlat {
+        props {
+            type_: BlockHalf = [
+                BlockHalf::Top,
+                BlockHalf::Bottom,
+                BlockHalf::Double
+            ],
+            waterlogged: bool = [true, false],
+            variant: WoodSlabVariant = [
+                WoodSlabVariant::Oak,
+                WoodSlabVariant::Spruce,
+                WoodSlabVariant::Birch,
+                WoodSlabVariant::Jungle,
+                WoodSlabVariant::Acacia,
+                WoodSlabVariant::DarkOak
+            ],
+        },
+        data None::<usize>,
+        offset Some(if waterlogged { 0 } else { 1 } + type_.offset() * 2 + variant.data() * (2 * 3)),
+        material material::NON_SOLID,
+        model { ("minecraft", format!("{}_slab", variant.as_string()) ) },
+        variant format!("type={}", type_.as_string()),
+        collision slab_collision(type_),
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    StoneSlabFlat {
+        props {
+            type_: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom, BlockHalf::Double],
+            variant: StoneSlabVariant = [
+                StoneSlabVariant::Stone,
+                StoneSlabVariant::SmoothStone,
+                StoneSlabVariant::Sandstone,
+                StoneSlabVariant::CutSandstone,
+                StoneSlabVariant::PetrifiedWood,
+                StoneSlabVariant::Cobblestone,
+                StoneSlabVariant::Brick,
+                StoneSlabVariant::StoneBrick,
+                StoneSlabVariant::NetherBrick,
+                StoneSlabVariant::Quartz,
+                StoneSlabVariant::RedSandstone,
+                StoneSlabVariant::CutRedSandstone,
+                StoneSlabVariant::Purpur
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data None::<usize>,
+        offsets |protocol_version| {
+            variant.offsets(protocol_version).map(|o| if waterlogged { 0 } else { 1 } + type_.offset() * 2 + o * (2 * 3))
+        },
+        material material::NON_SOLID,
+        model { ("minecraft", format!("{}_slab", variant.as_string()) ) },
+        variant format!("type={}", type_.as_string()),
+        collision slab_collision(type_),
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    DoubleStoneSlab2 {
+        props {
+            seamless: bool = [false, true],
+            variant: StoneSlabVariant = [
+                StoneSlabVariant::RedSandstone
+            ],
+        },
+        data Some(variant.data() | (if seamless { 0x8 } else { 0x0 })),
+        offset None,
+        material material::SOLID,
+        model { ("minecraft", format!("{}_double_slab", variant.as_string()) ) },
+        variant if seamless { "all" } else { "normal" },
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    StoneSlab2 {
+        props {
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            variant: StoneSlabVariant = [StoneSlabVariant::RedSandstone],
+        },
+        data Some(variant.data() | (if half == BlockHalf::Top { 0x8 } else { 0x0 })),
+        offset None,
+        material material::NON_SOLID,
+        model { ("minecraft", format!("{}_slab", variant.as_string()) ) },
+        variant format!("half={}", half.as_string()),
+        collision slab_collision(half),
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    SmoothStone {
+        props {
+            variant: StoneSlabVariant = [
+                StoneSlabVariant::Stone,
+                StoneSlabVariant::Sandstone,
+                StoneSlabVariant::Quartz,
+                StoneSlabVariant::RedSandstone
+            ],
+        },
+        data None::<usize>,
+        offset Some(match variant {
+            StoneSlabVariant::Stone => 0,
+            StoneSlabVariant::Sandstone => 1,
+            StoneSlabVariant::Quartz => 2,
+            StoneSlabVariant::RedSandstone => 3,
+            _ => unreachable!(),
+        }),
+        model { ("minecraft", format!("smooth_{}", variant.as_string()) ) },
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    SpruceFenceGate {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            in_wall: bool = [false, true],
+            open: bool = [false, true],
+            powered: bool = [false, true],
+        },
+        data fence_gate_data(facing, in_wall, open, powered),
+        offset fence_gate_offset(facing, in_wall, open, powered),
+        material material::NON_SOLID,
+        model { ("minecraft", "spruce_fence_gate") },
+        variant format!("facing={},in_wall={},open={}", facing.as_string(), in_wall, open),
+        collision fence_gate_collision(facing, in_wall, open),
+        update_state (world, pos) => Block::SpruceFenceGate{
+            facing,
+            in_wall: fence_gate_update_state(world, pos, facing),
+            open,
+            powered
+        },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    BirchFenceGate {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            in_wall: bool = [false, true],
+            open: bool = [false, true],
+            powered: bool = [false, true],
+        },
+        data fence_gate_data(facing, in_wall, open, powered),
+        offset fence_gate_offset(facing, in_wall, open, powered),
+        material material::NON_SOLID,
+        model { ("minecraft", "birch_fence_gate") },
+        variant format!("facing={},in_wall={},open={}", facing.as_string(), in_wall, open),
+        collision fence_gate_collision(facing, in_wall, open),
+        update_state (world, pos) => Block::BirchFenceGate{
+            facing,
+            in_wall: fence_gate_update_state(world, pos, facing),
+            open,
+            powered
+        },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    JungleFenceGate {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            in_wall: bool = [false, true],
+            open: bool = [false, true],
+            powered: bool = [false, true],
+        },
+        data fence_gate_data(facing, in_wall, open, powered),
+        offset fence_gate_offset(facing, in_wall, open, powered),
+        material material::NON_SOLID,
+        model { ("minecraft", "jungle_fence_gate") },
+        variant format!("facing={},in_wall={},open={}", facing.as_string(), in_wall, open),
+        collision fence_gate_collision(facing, in_wall, open),
+        update_state (world, pos) => Block::JungleFenceGate{
+            facing,
+            in_wall: fence_gate_update_state(world, pos, facing),
+            open,
+            powered
+        },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    DarkOakFenceGate {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            in_wall: bool = [false, true],
+            open: bool = [false, true],
+            powered: bool = [false, true],
+        },
+        data fence_gate_data(facing, in_wall, open, powered),
+        offset fence_gate_offset(facing, in_wall, open, powered),
+        material material::NON_SOLID,
+        model { ("minecraft", "dark_oak_fence_gate") },
+        variant format!("facing={},in_wall={},open={}", facing.as_string(), in_wall, open),
+        collision fence_gate_collision(facing, in_wall, open),
+        update_state (world, pos) => Block::DarkOakFenceGate{
+            facing,
+            in_wall: fence_gate_update_state(world, pos, facing),
+            open,
+            powered
+        },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    AcaciaFenceGate {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            in_wall: bool = [false, true],
+            open: bool = [false, true],
+            powered: bool = [false, true],
+        },
+        data fence_gate_data(facing, in_wall, open, powered),
+        offset fence_gate_offset(facing, in_wall, open, powered),
+        material material::NON_SOLID,
+        model { ("minecraft", "acacia_fence_gate") },
+        variant format!("facing={},in_wall={},open={}", facing.as_string(), in_wall, open),
+        collision fence_gate_collision(facing, in_wall, open),
+        update_state (world, pos) => Block::AcaciaFenceGate{
+            facing,
+            in_wall: fence_gate_update_state(world, pos, facing),
+            open,
+            powered
+        },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    SpruceFence {
+        props {
+            north: bool = [false, true],
+            south: bool = [false, true],
+            west: bool = [false, true],
+            east: bool = [false, true],
+            waterlogged: bool = [true, false],
+        },
+        data if !north && !south && !west && !east && !waterlogged { Some(0) } else { None },
+        offset Some(if west { 0 } else { 1<<0 } +
+                    if waterlogged { 0 } else { 1<<1 } +
+                    if south { 0 } else { 1<<2 } +
+                    if north { 0 } else { 1<<3 } +
+                    if east { 0 } else { 1<<4 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "spruce_fence") },
+        collision fence_collision(north, south, west, east),
+        update_state (world, pos) => {
+            let (north, south, west, east) = can_connect_sides(world, pos, &can_connect_fence);
+            Block::SpruceFence{north, south, west, east, waterlogged}
+        },
+        multipart (key, val) => match key {
+            "north" => north == (val == "true"),
+            "south" => south == (val == "true"),
+            "west" => west == (val == "true"),
+            "east" => east == (val == "true"),
+            _ => false,
+        },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    BirchFence {
+        props {
+            north: bool = [false, true],
+            south: bool = [false, true],
+            west: bool = [false, true],
+            east: bool = [false, true],
+            waterlogged: bool = [true, false],
+        },
+        data if !north && !south && !west && !east && !waterlogged { Some(0) } else { None },
+        offset Some(if west { 0 } else { 1<<0 } +
+                    if waterlogged { 0 } else { 1<<1 } +
+                    if south { 0 } else { 1<<2 } +
+                    if north { 0 } else { 1<<3 } +
+                    if east { 0 } else { 1<<4 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "birch_fence") },
+        collision fence_collision(north, south, west, east),
+        update_state (world, pos) => {
+            let (north, south, west, east) = can_connect_sides(world, pos, &can_connect_fence);
+            Block::BirchFence{north, south, west, east, waterlogged}
+        },
+        multipart (key, val) => match key {
+            "north" => north == (val == "true"),
+            "south" => south == (val == "true"),
+            "west" => west == (val == "true"),
+            "east" => east == (val == "true"),
+            _ => false,
+        },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    JungleFence {
+        props {
+            north: bool = [false, true],
+            south: bool = [false, true],
+            west: bool = [false, true],
+            east: bool = [false, true],
+            waterlogged: bool = [true, false],
+        },
+        data if !north && !south && !west && !east && !waterlogged { Some(0) } else { None },
+        offset Some(if west { 0 } else { 1<<0 } +
+                    if waterlogged { 0 } else { 1<<1 } +
+                    if south { 0 } else { 1<<2 } +
+                    if north { 0 } else { 1<<3 } +
+                    if east { 0 } else { 1<<4 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "jungle_fence") },
+        collision fence_collision(north, south, west, east),
+        update_state (world, pos) => {
+            let (north, south, west, east) = can_connect_sides(world, pos, &can_connect_fence);
+            Block::JungleFence{north, south, west, east, waterlogged}
+        },
+        multipart (key, val) => match key {
+            "north" => north == (val == "true"),
+            "south" => south == (val == "true"),
+            "west" => west == (val == "true"),
+            "east" => east == (val == "true"),
+            _ => false,
+        },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    DarkOakFence {
+        props {
+            north: bool = [false, true],
+            south: bool = [false, true],
+            west: bool = [false, true],
+            east: bool = [false, true],
+            waterlogged: bool = [true, false],
+        },
+        data if !north && !south && !west && !east && !waterlogged { Some(0) } else { None },
+        offset Some(if west { 0 } else { 1<<0 } +
+                    if waterlogged { 0 } else { 1<<1 } +
+                    if south { 0 } else { 1<<2 } +
+                    if north { 0 } else { 1<<3 } +
+                    if east { 0 } else { 1<<4 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "dark_oak_fence") },
+        collision fence_collision(north, south, west, east),
+        update_state (world, pos) => {
+            let (north, south, west, east) = can_connect_sides(world, pos, &can_connect_fence);
+            Block::DarkOakFence{north, south, west, east, waterlogged}
+        },
+        multipart (key, val) => match key {
+            "north" => north == (val == "true"),
+            "south" => south == (val == "true"),
+            "west" => west == (val == "true"),
+            "east" => east == (val == "true"),
+            _ => false,
+        },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    AcaciaFence {
+        props {
+            north: bool = [false, true],
+            south: bool = [false, true],
+            west: bool = [false, true],
+            east: bool = [false, true],
+            waterlogged: bool = [true, false],
+        },
+        data if !north && !south && !west && !east && !waterlogged { Some(0) } else { None },
+        offset Some(if west { 0 } else { 1<<0 } +
+                    if waterlogged { 0 } else { 1<<1 } +
+                    if south { 0 } else { 1<<2 } +
+                    if north { 0 } else { 1<<3 } +
+                    if east { 0 } else { 1<<4 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "acacia_fence") },
+        collision fence_collision(north, south, west, east),
+        update_state (world, pos) => {
+            let (north, south, west, east) = can_connect_sides(world, pos, &can_connect_fence);
+            Block::AcaciaFence{north, south, west, east, waterlogged}
+        },
+        multipart (key, val) => match key {
+            "north" => north == (val == "true"),
+            "south" => south == (val == "true"),
+            "west" => west == (val == "true"),
+            "east" => east == (val == "true"),
+            _ => false,
+        },
+        hardness 2.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    SpruceDoor {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: DoorHalf = [DoorHalf::Upper, DoorHalf::Lower],
+            hinge: Side = [Side::Left, Side::Right],
+            open: bool = [false, true],
+            powered: bool = [false, true],
+        },
+        data door_data(facing, half, hinge, open, powered),
+        offset door_offset(facing, half, hinge, open, powered),
+        material material::NON_SOLID,
+        model { ("minecraft", "spruce_door") },
+        variant format!("facing={},half={},hinge={},open={}", facing.as_string(), half.as_string(), hinge.as_string(), open),
+        collision door_collision(facing, hinge, open),
+        update_state (world, pos) => {
+            let (facing, hinge, open, powered) = update_door_state(world, pos, half, facing, hinge, open, powered);
+            Block::SpruceDoor{facing, half, hinge, open, powered}
+        },
+        hardness 3.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    BirchDoor {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: DoorHalf = [DoorHalf::Upper, DoorHalf::Lower],
+            hinge: Side = [Side::Left, Side::Right],
+            open: bool = [false, true],
+            powered: bool = [false, true],
+        },
+        data door_data(facing, half, hinge, open, powered),
+        offset door_offset(facing, half, hinge, open, powered),
+        material material::NON_SOLID,
+        model { ("minecraft", "birch_door") },
+        variant format!("facing={},half={},hinge={},open={}", facing.as_string(), half.as_string(), hinge.as_string(), open),
+        collision door_collision(facing, hinge, open),
+        update_state (world, pos) => {
+            let (facing, hinge, open, powered) = update_door_state(world, pos, half, facing, hinge, open, powered);
+            Block::BirchDoor{facing, half, hinge, open, powered}
+        },
+        hardness 3.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    JungleDoor {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: DoorHalf = [DoorHalf::Upper, DoorHalf::Lower],
+            hinge: Side = [Side::Left, Side::Right],
+            open: bool = [false, true],
+            powered: bool = [false, true],
+        },
+        data door_data(facing, half, hinge, open, powered),
+        offset door_offset(facing, half, hinge, open, powered),
+        material material::NON_SOLID,
+        model { ("minecraft", "jungle_door") },
+        variant format!("facing={},half={},hinge={},open={}", facing.as_string(), half.as_string(), hinge.as_string(), open),
+        collision door_collision(facing, hinge, open),
+        update_state (world, pos) => {
+            let (facing, hinge, open, powered) = update_door_state(world, pos, half, facing, hinge, open, powered);
+            Block::JungleDoor{facing, half, hinge, open, powered}
+        },
+        hardness 3.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    AcaciaDoor {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: DoorHalf = [DoorHalf::Upper, DoorHalf::Lower],
+            hinge: Side = [Side::Left, Side::Right],
+            open: bool = [false, true],
+            powered: bool = [false, true],
+        },
+        data door_data(facing, half, hinge, open, powered),
+        offset door_offset(facing, half, hinge, open, powered),
+        material material::NON_SOLID,
+        model { ("minecraft", "acacia_door") },
+        variant format!("facing={},half={},hinge={},open={}", facing.as_string(), half.as_string(), hinge.as_string(), open),
+        collision door_collision(facing, hinge, open),
+        update_state (world, pos) => {
+            let (facing, hinge, open, powered) = update_door_state(world, pos, half, facing, hinge, open, powered);
+            Block::AcaciaDoor{facing, half, hinge, open, powered}
+        },
+        hardness 3.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    DarkOakDoor {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: DoorHalf = [DoorHalf::Upper, DoorHalf::Lower],
+            hinge: Side = [Side::Left, Side::Right],
+            open: bool = [false, true],
+            powered: bool = [false, true],
+        },
+        data door_data(facing, half, hinge, open, powered),
+        offset door_offset(facing, half, hinge, open, powered),
+        material material::NON_SOLID,
+        model { ("minecraft", "dark_oak_door") },
+        variant format!("facing={},half={},hinge={},open={}", facing.as_string(), half.as_string(), hinge.as_string(), open),
+        collision door_collision(facing, hinge, open),
+        update_state (world, pos) => {
+            let (facing, hinge, open, powered) = update_door_state(world, pos, half, facing, hinge, open, powered);
+            Block::DarkOakDoor{facing, half, hinge, open, powered}
+        },
+        hardness 3.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    EndRod {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        material Material {
+            emitted_light: 14,
+            ..material::NON_SOLID
+        },
+        model { ("minecraft", "end_rod") },
+        variant format!("facing={}", facing.as_string()),
+        collision {
+            match facing.axis() {
+                Axis::Y => vec![Aabb3::new(
+                    Point3::new(3.0/8.0, 0.0, 3.0/8.0),
+                    Point3::new(5.0/8.0, 1.0, 5.0/8.0))
+                ],
+                Axis::Z => vec![Aabb3::new(
+                    Point3::new(3.0/8.0, 3.0/8.0, 0.0),
+                    Point3::new(5.0/8.0, 5.0/8.0, 1.0))
+                ],
+                Axis::X => vec![Aabb3::new(
+                    Point3::new(0.0, 3.0/8.0, 3.0/8.0),
+                    Point3::new(1.0, 5.0/8.0, 5.0/8.0))
+                ],
+                _ => unreachable!(),
+            }
+        },
+        hardness 0.0,
+    }
+    ChorusPlant {
+        props {
+            up: bool = [false, true],
+            down: bool = [false, true],
+            north: bool = [false, true],
+            south: bool = [false, true],
+            west: bool = [false, true],
+            east: bool = [false, true],
+        },
+        data if !up && !down && !north && !south && !west && !east { Some(0) } else { None },
+        offset Some(if west { 0 } else { 1<<0 } +
+                    if up { 0 } else { 1<<1 } +
+                    if south { 0 } else { 1<<2 } +
+                    if north { 0 } else { 1<<3 } +
+                    if east { 0 } else { 1<<4 } +
+                    if down { 0 } else { 1<<5 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "chorus_plant") },
+        collision {
+            let mut collision = vec![Aabb3::new(
+                Point3::new(3.0/16.0, 3.0/16.0, 3.0/16.0),
+                Point3::new(13.0/16.0, 13.0/16.0, 13.0/16.0))
+            ];
+
+            if up {
+                collision.push(Aabb3::new(
+                    Point3::new(3.0/16.0, 13.0/16.0, 3.0/16.0),
+                    Point3::new(13.0/16.0, 1.0, 13.0/16.0))
+                );
+            }
+
+            if down {
+                collision.push(Aabb3::new(
+                    Point3::new(3.0/16.0, 0.0, 3.0/16.0),
+                    Point3::new(13.0/16.0, 3.0/16.0, 13.0/16.0))
+                );
+            }
+
+            if north {
+                collision.push(Aabb3::new(
+                    Point3::new(3.0/16.0, 3.0/16.0, 0.0),
+                    Point3::new(13.0/16.0, 13.0/16.0, 3.0/16.0))
+                );
+            }
+
+            if south {
+                collision.push(Aabb3::new(
+                    Point3::new(3.0/16.0, 3.0/16.0, 13.0/16.0),
+                    Point3::new(13.0/16.0, 13.0/16.0, 1.0))
+                );
+            }
+
+            if east {
+                collision.push(Aabb3::new(
+                    Point3::new(13.0/16.0, 3.0/16.0, 3.0/16.0),
+                    Point3::new(1.0, 13.0/16.0, 13.0/16.0))
+                );
+            }
+
+            if west {
+                collision.push(Aabb3::new(
+                    Point3::new(0.0, 3.0/16.0, 3.0/16.0),
+                    Point3::new(3.0/16.0, 13.0/16.0, 13.0/16.0))
+                );
+            }
+
+            collision
+        },
+        update_state (world, pos) => Block::ChorusPlant {
+            up: matches!(world.get_block(pos.shift(Direction::Up)), Block::ChorusPlant{..} | Block::ChorusFlower{..}),
+            down: matches!(world.get_block(pos.shift(Direction::Down)), Block::ChorusPlant{..} | Block::ChorusFlower{..} | Block::EndStone{..}),
+            north: matches!(world.get_block(pos.shift(Direction::North)), Block::ChorusPlant{..} | Block::ChorusFlower{..}),
+            south: matches!(world.get_block(pos.shift(Direction::South)), Block::ChorusPlant{..} | Block::ChorusFlower{..}),
+            west: matches!(world.get_block(pos.shift(Direction::West)), Block::ChorusPlant{..} | Block::ChorusFlower{..}),
+            east: matches!(world.get_block(pos.shift(Direction::East)), Block::ChorusPlant{..} | Block::ChorusFlower{..}),
+        },
+        multipart (key, val) => match key {
+            "up" => up == (val == "true"),
+            "down" => down == (val == "true"),
+            "north" => north == (val == "true"),
+            "south" => south == (val == "true"),
+            "east" => east == (val == "true"),
+            "west" => west == (val == "true"),
+            _ => false,
+        },
+        hardness 0.4,
+        best_tools [ Tool::Axe(_), ],
+    }
+    ChorusFlower {
+        props {
+            age: u8 = [0, 1, 2, 3, 4, 5],
+        },
+        data Some(age as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "chorus_flower") },
+        variant format!("age={}", age),
+        hardness 0.4,
+        best_tools [ Tool::Axe(_), ],
+    }
+    PurpurBlock {
+        props {},
+        model { ("minecraft", "purpur_block") },
+        hardness 1.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    PurpurPillar {
+        props {
+            axis: Axis = [Axis::X, Axis::Y, Axis::Z],
+        },
+        data Some(match axis { Axis::X => 0x4, Axis::Y => 0x0, Axis::Z => 0x8, _ => unreachable!() }),
+        offset Some(match axis { Axis::X => 0, Axis::Y => 1, Axis::Z => 2, _ => unreachable!() }),
+        model { ("minecraft", "purpur_pillar") },
+        variant format!("axis={}", axis.as_string()),
+        hardness 1.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    PurpurStairs {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            shape: StairShape = [
+                StairShape::Straight,
+                StairShape::InnerLeft,
+                StairShape::InnerRight,
+                StairShape::OuterLeft,
+                StairShape::OuterRight
+            ],
+            waterlogged: bool = [true, false],
+        },
+        data stair_data(facing, half, shape, waterlogged),
+        offset stair_offset(facing, half, shape, waterlogged),
+        material material::NON_SOLID,
+        model { ("minecraft", "purpur_stairs") },
+        variant format!("facing={},half={},shape={}", facing.as_string(), half.as_string(), shape.as_string()),
+        collision stair_collision(facing, shape, half),
+        update_state (world, pos) => Block::PurpurStairs{facing, half, shape: update_stair_shape(world, pos, facing), waterlogged},
+        hardness 1.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    PurpurDoubleSlab {
+        props {
+            variant: StoneSlabVariant = [StoneSlabVariant::Purpur],
+        },
+        offset None,
+        model { ("minecraft", format!("{}_double_slab", variant.as_string()) ) },
+        hardness 1.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    PurpurSlab {
+        props {
+            half: BlockHalf = [BlockHalf::Top, BlockHalf::Bottom],
+            variant: StoneSlabVariant = [StoneSlabVariant::Purpur],
+        },
+        data if half == BlockHalf::Top { Some(0x8) } else { Some(0) },
+        offset None,
+        material material::NON_SOLID,
+        model { ("minecraft", format!("{}_slab", variant.as_string()) ) },
+        variant format!("half={},variant=default", half.as_string()),
+        collision slab_collision(half),
+        hardness 1.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    EndBricks {
+        props {},
+        model { ("minecraft", "end_bricks") },
+        hardness 3.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Beetroots {
+        props {
+            age: u8 = [0, 1, 2, 3],
+        },
+        data Some(age as usize),
+        material material::NON_SOLID,
+        model { ("minecraft", "beetroots") },
+        variant format!("age={}", age),
+        collision vec![],
+        hardness 0.0,
+        best_tools [ Tool::Axe(_), ],
+    }
+    GrassPath {
+        props {},
+        material material::NON_SOLID,
+        model { ("minecraft", "grass_path") },
+        collision vec![Aabb3::new(
+            Point3::new(0.0, 0.0, 0.0),
+            Point3::new(1.0, 15.0/16.0, 1.0)
+        )],
+        hardness 0.65,
+        best_tools [ Tool::Shovel(_), ],
+    }
+    EndGateway {
+        props {},
+        material material::NON_SOLID,
+        model { ("minecraft", "end_gateway") },
+        collision vec![],
+    }
+    RepeatingCommandBlock {
+        props {
+            conditional: bool = [false, true],
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index() | (if conditional { 0x8 } else { 0x0 })),
+        offset Some(facing.offset() + (if conditional { 0 } else { 6 })),
+        model { ("minecraft", "repeating_command_block") },
+        variant format!("conditional={},facing={}", conditional, facing.as_string()),
+    }
+    ChainCommandBlock {
+        props {
+            conditional: bool = [false, true],
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index() | (if conditional { 0x8 } else { 0x0 })),
+        offset Some(facing.offset() + (if conditional { 0 } else { 6 })),
+        model { ("minecraft", "chain_command_block") },
+        variant format!("conditional={},facing={}", conditional, facing.as_string()),
+    }
+    FrostedIce {
+        props {
+            age: u8 = [ 0, 1, 2, 3 ],
+        },
+        data if age == 0 { Some(0) } else { None },
+        offset Some(age as usize),
+        model { ("minecraft", "frosted_ice") },
+        hardness 0.5,
+    }
+    MagmaBlock {
+        props {},
+        model { ("minecraft", "magma") },
+        hardness 0.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    NetherWartBlock {
+        props {},
+        model { ("minecraft", "nether_wart_block") },
+        hardness 1.0,
+        best_tools [ Tool::Hoe(_), ],
+    }
+    RedNetherBrick {
+        props {},
+        model { ("minecraft", "red_nether_brick") },
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    BoneBlock {
+        props {
+            axis: Axis = [Axis::Y, Axis::Z, Axis::X],
+        },
+        data Some(axis.index() << 2),
+        offset Some(match axis { Axis::X => 0, Axis::Y => 1, Axis::Z => 2, _ => unreachable!() }),
+        model { ("minecraft", "bone_block") },
+        variant format!("axis={}", axis.as_string()),
+        hardness 2.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    StructureVoid {
+        props {},
+        material material::Material {
+            collidable: false,
+            .. material::INVISIBLE
+        },
+        model { ("minecraft", "structure_void") },
+        // TODO: a small hit box but no collision
+        collision vec![],
+        hardness 0.0,
+    }
+    Observer {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            powered: bool = [false, true],
+        },
+        data Some(facing.index() | (if powered { 0x8 } else { 0x0 })),
+        offset Some(if powered { 0 } else { 1 } + facing.offset() * 2),
+        model { ("minecraft", "observer") },
+        variant format!("facing={},powered={}", facing.as_string(), powered),
+        hardness 3.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    // TODO: Shulker box textures (1.11+), since there is no model, we use wool for now
+    // The textures should be built from textures/blocks/shulker_top_<color>.png
+    // and textures/entity/shulker/shulker_<color>.png
+    ShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data None::<usize>,
+        offset Some(facing.offset()),
+        model { ("minecraft", "sponge") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    WhiteShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "white_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    OrangeShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "orange_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    MagentaShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "magenta_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    LightBlueShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "light_blue_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    YellowShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "yellow_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    LimeShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "lime_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    PinkShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "pink_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    GrayShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "gray_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    LightGrayShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "light_gray_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    CyanShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "cyan_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    PurpleShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "purple_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    BlueShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "blue_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    BrownShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "brown_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    GreenShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "green_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    RedShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "red_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    BlackShulkerBox {
+        props {
+            facing: Direction = [
+                Direction::Up,
+                Direction::Down,
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.index()),
+        offset Some(facing.offset()),
+        model { ("minecraft", "black_wool") },
+        hardness 2.0,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    WhiteGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "white_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    OrangeGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "orange_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    MagentaGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "magenta_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    LightBlueGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "light_blue_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    YellowGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "yellow_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    LimeGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "lime_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    PinkGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "pink_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    GrayGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "gray_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    LightGrayGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "silver_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    CyanGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "cyan_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    PurpleGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "purple_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    BlueGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "blue_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    BrownGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "brown_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    GreenGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "green_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    RedGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "red_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    BlackGlazedTerracotta {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+        },
+        data Some(facing.horizontal_index()),
+        offset Some(facing.horizontal_offset()),
+        model { ("minecraft", "black_glazed_terracotta") },
+        variant format!("facing={}", facing.as_string()),
+        hardness 1.4,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Concrete {
+        props {
+            color: ColoredVariant = [
+                ColoredVariant::White,
+                ColoredVariant::Orange,
+                ColoredVariant::Magenta,
+                ColoredVariant::LightBlue,
+                ColoredVariant::Yellow,
+                ColoredVariant::Lime,
+                ColoredVariant::Pink,
+                ColoredVariant::Gray,
+                ColoredVariant::Silver,
+                ColoredVariant::Cyan,
+                ColoredVariant::Purple,
+                ColoredVariant::Blue,
+                ColoredVariant::Brown,
+                ColoredVariant::Green,
+                ColoredVariant::Red,
+                ColoredVariant::Black
+            ],
+        },
+        data Some(color.data()),
+        model { ("minecraft", format!("{}_concrete", color.as_string()) ) },
+        hardness 1.8,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    ConcretePowder {
+        props {
+            color: ColoredVariant = [
+                ColoredVariant::White,
+                ColoredVariant::Orange,
+                ColoredVariant::Magenta,
+                ColoredVariant::LightBlue,
+                ColoredVariant::Yellow,
+                ColoredVariant::Lime,
+                ColoredVariant::Pink,
+                ColoredVariant::Gray,
+                ColoredVariant::Silver,
+                ColoredVariant::Cyan,
+                ColoredVariant::Purple,
+                ColoredVariant::Blue,
+                ColoredVariant::Brown,
+                ColoredVariant::Green,
+                ColoredVariant::Red,
+                ColoredVariant::Black
+            ],
+        },
+        data Some(color.data()),
+        model { ("minecraft", format!("{}_concrete_powder", color.as_string()) ) },
+        hardness 0.5,
+        best_tools [ Tool::Shovel(_), ],
+    }
+    Kelp {
+        props {
+            age: u8 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25],
+        },
+        data None::<usize>,
+        offset Some(age as usize),
+        model { ("minecraft", "kelp") },
+        hardness 0.0,
+    }
+    KelpPlant {
+        props {},
+        data None::<usize>,
+        offset Some(0),
+        model { ("minecraft", "kelp_plant") },
+        hardness 0.0,
+    }
+    DriedKelpBlock {
+        props {},
+        data None::<usize>,
+        offset Some(0),
+        model { ("minecraft", "dried_kelp_block") },
+        hardness 0.5,
+        best_tools [ Tool::Hoe(_), ],
+    }
+    TurtleEgg {
+        props {
+            age: u8 = [1, 2, 3, 4],
+            hatch: u8 = [0, 1, 2],
+        },
+        data None::<usize>,
+        offset Some((hatch as usize) + ((age - 1) as usize) * 3),
+        model { ("minecraft", "turtle_egg") },
+        hardness 0.5,
+    }
+    CoralBlock {
+        props {
+            variant: CoralVariant = [
+                CoralVariant::DeadTube,
+                CoralVariant::DeadBrain,
+                CoralVariant::DeadBubble,
+                CoralVariant::DeadFire,
+                CoralVariant::DeadHorn,
+                CoralVariant::Tube,
+                CoralVariant::Brain,
+                CoralVariant::Bubble,
+                CoralVariant::Fire,
+                CoralVariant::Horn
+            ],
+        },
+        data None::<usize>,
+        offset Some(variant.offset()),
+        model { ("minecraft", format!("{}_block", variant.as_string())) },
+        hardness 1.5,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Coral {
+        props {
+            waterlogged: bool = [true, false],
+            variant: CoralVariant = [
+                CoralVariant::DeadTube,
+                CoralVariant::DeadBrain,
+                CoralVariant::DeadBubble,
+                CoralVariant::DeadFire,
+                CoralVariant::DeadHorn,
+                CoralVariant::Tube,
+                CoralVariant::Brain,
+                CoralVariant::Bubble,
+                CoralVariant::Fire,
+                CoralVariant::Horn
+            ],
+        },
+        data None::<usize>,
+        offset Some(if waterlogged { 0 } else { 1 } + variant.offset() * 2),
+        model { ("minecraft", variant.as_string()) },
+        hardness 0.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    CoralWallFan {
+        props {
+            facing: Direction = [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East
+            ],
+            waterlogged: bool = [true, false],
+            variant: CoralVariant = [
+                CoralVariant::DeadTube,
+                CoralVariant::DeadBrain,
+                CoralVariant::DeadBubble,
+                CoralVariant::DeadFire,
+                CoralVariant::DeadHorn,
+                CoralVariant::Tube,
+                CoralVariant::Brain,
+                CoralVariant::Bubble,
+                CoralVariant::Fire,
+                CoralVariant::Horn
+            ],
+        },
+        data None::<usize>,
+        offset Some(if waterlogged { 0 } else { 1 } +
+                    facing.horizontal_offset() * 2 +
+                    variant.offset() * (2 * 4)),
+        model { ("minecraft", format!("{}_wall_fan", variant.as_string())) },
+        hardness 0.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    CoralFan {
+        props {
+            waterlogged: bool = [true, false],
+            variant: CoralVariant = [
+                CoralVariant::DeadTube,
+                CoralVariant::DeadBrain,
+                CoralVariant::DeadBubble,
+                CoralVariant::DeadFire,
+                CoralVariant::DeadHorn,
+                CoralVariant::Tube,
+                CoralVariant::Brain,
+                CoralVariant::Bubble,
+                CoralVariant::Fire,
+                CoralVariant::Horn
+            ],
+        },
+        data None::<usize>,
+        offset Some(if waterlogged { 0 } else { 1 } +
+                    variant.offset() * 2),
+        model { ("minecraft", format!("{}_fan", variant.as_string())) },
+        hardness 0.0,
+        harvest_tools [ Tool::Pickaxe(_), ],
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    SeaPickle {
+        props {
+            age: u8 = [1, 2, 3, 4],
+            waterlogged: bool = [true, false],
+        },
+        data None::<usize>,
+        offset Some(if waterlogged { 0 } else { 1 } +
+                    ((age - 1) as usize) * 2),
+        model { ("minecraft", "sea_pickle") },
+        variant format!("age={}", age),
+        hardness 0.0,
+    }
+    BlueIce {
+        props {},
+        data None::<usize>,
+        offset Some(0),
+        model { ("minecraft", "blue_ice") },
+        hardness 2.8,
+        best_tools [ Tool::Pickaxe(_), ],
+    }
+    Conduit {
+        props {
+            waterlogged: bool = [true, false],
+        },
+        data None::<usize>,
+        offset Some(if waterlogged { 0 } else { 1 }),
+        material material::NON_SOLID,
+        model { ("minecraft", "conduit") },
+        hardness 3.0,
+    }
+    VoidAir {
+        props {},
+        data None::<usize>,
+        offset Some(0),
+        material material::Material {
+            collidable: false,
+            .. material::INVISIBLE
+        },
+        model { ("minecraft", "air") },
+        collision vec![],
+        hardness 0.0,
+    }
+    CaveAir {
+        props {},
+        data None::<usize>,
+        offset Some(0),
+        material material::Material {
+            collidable: false,
+            .. material::INVISIBLE
+        },
+        model { ("minecraft", "air") },
+        collision vec![],
+        hardness 0.0,
+    }
+    BubbleColumn {
+        props {
+            drag: bool = [true, false],
+        },
+        data None::<usize>,
+        offset Some(if drag { 0 } else { 1 }),
+        model { ("minecraft", "bubble_column") },
+        hardness 0.0,
+    }
+    Missing253 {
+        props {},
+        data Some(0),
+        offset None,
+        model { ("steven", "missing_block") },
+        hardness 0.0,
+    }
+    Missing254 {
+        props {},
+        data Some(0),
+        offset None,
+        model { ("steven", "missing_block") },
+        hardness 0.0,
+    }
+    StructureBlock {
+        props {
+            mode: StructureBlockMode = [
+                StructureBlockMode::Save,
+                StructureBlockMode::Load,
+                StructureBlockMode::Corner,
+                StructureBlockMode::Data
+            ],
+        },
+        data Some(mode.data()),
+        model { ("minecraft", "structure_block") },
+        variant format!("mode={}", mode.as_string()),
+    }
+
+    Missing {
+        props {},
+        data None::<usize>,
+        model { ("steven", "missing_block") },
+    }
+}
+
+pub const GENERATED_BLOCK_DATA_OWNER: &str = "clients/stevenarella/blocks/src/runtime/generated.rs";
+const PROTOCOL_1_12_2: i32 = 340;
+const PROTOCOL_1_14: i32 = 477;
+const PROTOCOL_1_16: i32 = 735;
+const STRUCTURE_BLOCK_BASE_ID: usize = 255;
+const STRUCTURE_BLOCK_DATA_MODE_DATA: usize = 3;
+const STRUCTURE_BLOCK_SAVE_HIERARCHICAL_ID: usize =
+    STRUCTURE_BLOCK_BASE_ID << LEGACY_BLOCK_ID_SHIFT;
+const STRUCTURE_BLOCK_DATA_HIERARCHICAL_ID: usize =
+    STRUCTURE_BLOCK_SAVE_HIERARCHICAL_ID | STRUCTURE_BLOCK_DATA_MODE_DATA;
+const STRUCTURE_BLOCK_SAVE_FLAT_ID_1_13_2: usize = 8595;
+const STRUCTURE_BLOCK_DATA_FLAT_ID_1_13_2: usize = 8598;
+const CONDUIT_WATERLOGGED_FLAT_ID_1_14: usize = 9113;
+const NOTE_BLOCK_PLING_LAST_NOTE_FLAT_ID_1_16: usize = 1048;
+const NOTE_BLOCK_LAST_NOTE: u8 = 24;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct GeneratedDataSample {
+    pub protocol_version: i32,
+    pub vanilla_id: usize,
+    pub expected: Block,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct GeneratedDataFreshnessError {
+    pub owner: &'static str,
+    pub protocol_version: i32,
+    pub vanilla_id: usize,
+    pub expected: Block,
+    pub actual: Block,
+}
+
+pub const GENERATED_DATA_SAMPLES: &[GeneratedDataSample] = &[
+    GeneratedDataSample {
+        protocol_version: PROTOCOL_1_12_2,
+        vanilla_id: STRUCTURE_BLOCK_SAVE_HIERARCHICAL_ID,
+        expected: Block::StructureBlock {
+            mode: StructureBlockMode::Save,
+        },
+    },
+    GeneratedDataSample {
+        protocol_version: PROTOCOL_1_12_2,
+        vanilla_id: STRUCTURE_BLOCK_DATA_HIERARCHICAL_ID,
+        expected: Block::StructureBlock {
+            mode: StructureBlockMode::Data,
+        },
+    },
+    GeneratedDataSample {
+        protocol_version: FLATTENING_PROTOCOL_VERSION,
+        vanilla_id: STRUCTURE_BLOCK_SAVE_FLAT_ID_1_13_2,
+        expected: Block::StructureBlock {
+            mode: StructureBlockMode::Save,
+        },
+    },
+    GeneratedDataSample {
+        protocol_version: FLATTENING_PROTOCOL_VERSION,
+        vanilla_id: STRUCTURE_BLOCK_DATA_FLAT_ID_1_13_2,
+        expected: Block::StructureBlock {
+            mode: StructureBlockMode::Data,
+        },
+    },
+    GeneratedDataSample {
+        protocol_version: PROTOCOL_1_14,
+        vanilla_id: CONDUIT_WATERLOGGED_FLAT_ID_1_14,
+        expected: Block::Conduit { waterlogged: true },
+    },
+    GeneratedDataSample {
+        protocol_version: PROTOCOL_1_16,
+        vanilla_id: NOTE_BLOCK_PLING_LAST_NOTE_FLAT_ID_1_16,
+        expected: Block::NoteBlock {
+            instrument: NoteBlockInstrument::Pling,
+            note: NOTE_BLOCK_LAST_NOTE,
+            powered: false,
+        },
+    },
+];
+
+pub fn check_generated_data_freshness() -> Result<(), GeneratedDataFreshnessError> {
+    validate_generated_data_samples(GENERATED_DATA_SAMPLES)
+}
+
+pub fn validate_generated_data_samples(
+    samples: &[GeneratedDataSample],
+) -> Result<(), GeneratedDataFreshnessError> {
+    let modded_block_ids = HashMap::new();
+
+    for sample in samples {
+        let id_map = VanillaIDMap::new(sample.protocol_version);
+        let actual = id_map.by_vanilla_id(sample.vanilla_id, &modded_block_ids);
+        if actual != sample.expected {
+            return Err(GeneratedDataFreshnessError {
+                owner: GENERATED_BLOCK_DATA_OWNER,
+                protocol_version: sample.protocol_version,
+                vanilla_id: sample.vanilla_id,
+                expected: sample.expected,
+                actual,
+            });
+        }
+    }
+
+    Ok(())
+}

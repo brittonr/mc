@@ -1,0 +1,23 @@
+$ nix run .#cairn -- gate proposal split-stevenarella-capture-service --root .
+{
+  "change": "split-stevenarella-capture-service",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c9920042bad71ba7e0dbbff1c3e051e9e9f240d760a6bd624421be9e508bef2c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "2443f62a13181efe455bbb6cb3193d0172dc150ad97f1b2fc23b00e74e8010b6",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

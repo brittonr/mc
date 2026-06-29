@@ -1,0 +1,16 @@
+# separate-stevenarella-block-registry post-sync validate
+cwd=/home/brittonr/git/mc
+started_at=2026-06-29T19:03:20Z
+## nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 9,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 14,
+  "valid": true
+}
+finished_at=2026-06-29T19:03:21Z
+exit_status=0

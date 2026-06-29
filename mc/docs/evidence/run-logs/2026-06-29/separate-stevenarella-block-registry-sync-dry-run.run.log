@@ -1,0 +1,30 @@
+# separate-stevenarella-block-registry sync dry-run
+cwd=/home/brittonr/git/mc
+started_at=2026-06-29T19:00:00Z
+## nix run .#cairn -- sync separate-stevenarella-block-registry --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/separate-stevenarella-block-registry/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/separate-stevenarella-block-registry/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "separate-stevenarella-block-registry",
+  "delta_specs": [
+    "./cairn/changes/separate-stevenarella-block-registry/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "41206b4f07f8a4323272db310707e72f40019d015d291c7f69aed3e79f6452e3",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "9c52b1db9f1cdfb54d503449d5ac51d67642ab103e1bdb0bbbe1845d48632856",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "a5cf209bec65cfebe51ea4afad7d357db346f84e36780c3cbb21fdd6026afcfd"
+}
+finished_at=2026-06-29T19:00:00Z
+exit_status=0

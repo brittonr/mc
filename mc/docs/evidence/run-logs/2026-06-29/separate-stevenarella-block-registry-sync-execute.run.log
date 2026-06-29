@@ -1,0 +1,53 @@
+# separate-stevenarella-block-registry sync execute
+cwd=/home/brittonr/git/mc
+started_at=2026-06-29T19:00:13Z
+## nix run .#cairn -- sync separate-stevenarella-block-registry --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/separate-stevenarella-block-registry/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/separate-stevenarella-block-registry/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "separate-stevenarella-block-registry",
+  "delta_specs": [
+    "./cairn/changes/separate-stevenarella-block-registry/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "41206b4f07f8a4323272db310707e72f40019d015d291c7f69aed3e79f6452e3",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "cf57576a2d00d324a608e3a4699836c6e9e6dc8c81106c03f1cd2bd490c852a5",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "560515b7d0b7d8b082e162248b5c47fe4325331a0a307849f845ec7dd0bd655f"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "cf57576a2d00d324a608e3a4699836c6e9e6dc8c81106c03f1cd2bd490c852a5",
+          "exists": true,
+          "path": "./cairn/specs/mc-compatibility/spec.md"
+        }
+      ],
+      "manifest_hash": "560515b7d0b7d8b082e162248b5c47fe4325331a0a307849f845ec7dd0bd655f"
+    },
+    "kind": "sync",
+    "manifest_hash": "d9f3952b9d49b7e5aa4867616edf8ad4dcc42dda0138759956c2333bf1afdb2a"
+  },
+  "plan_hash": "496486c7f89cb55f9d0c5fa98b65110eb674ac4011c3c27d1cc8577e443c0455",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "fa723931a9390ac13b14e4b6c40110a14f271ef077be830d53f34cbf8e7e27b9"
+}
+finished_at=2026-06-29T19:00:19Z
+exit_status=0

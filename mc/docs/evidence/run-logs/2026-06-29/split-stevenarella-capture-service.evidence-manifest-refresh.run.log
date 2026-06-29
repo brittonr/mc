@@ -1,0 +1,3 @@
+$ nix run .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=553; entries=5676; current=5676; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=79
+exit_status=0

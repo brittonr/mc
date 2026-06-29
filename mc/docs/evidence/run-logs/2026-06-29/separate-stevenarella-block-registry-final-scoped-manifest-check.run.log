@@ -1,0 +1,7 @@
+# separate-stevenarella-block-registry final scoped manifest check
+cwd=/home/brittonr/git/mc
+started_at=2026-06-29T19:05:29Z
+## nix run .#evidence-manifest-refresh -- --check --evidence-dir docs/evidence/manifests/2026-06-29
+evidence manifest refresh ok: mode=check; passes=0; manifests=7; entries=232; current=232; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+finished_at=2026-06-29T19:05:31Z
+exit_status=0

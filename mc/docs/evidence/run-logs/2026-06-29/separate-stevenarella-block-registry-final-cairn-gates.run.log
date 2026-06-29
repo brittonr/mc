@@ -1,0 +1,86 @@
+# separate-stevenarella-block-registry final Cairn gates
+cwd=/home/brittonr/git/mc
+started_at=2026-06-29T18:57:24Z
+## nix run .#cairn -- gate proposal separate-stevenarella-block-registry --root .
+{
+  "change": "separate-stevenarella-block-registry",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1064b6cd0b5fc8d1628dfd05b9cacc51c6b6cc843f88ae1e2b25be0d63a1891d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e3caad6b99b2e7884d8a044c2cf1e4a8580323c3ebcfd020265ffd5428fa9cc8",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+## nix run .#cairn -- gate design separate-stevenarella-block-registry --root .
+{
+  "change": "separate-stevenarella-block-registry",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "31bbc9c19e15009145a633302c30cfe12be859b45ae4c7b68be31ab383752a58",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "2484c6f238fdf3ce29913ac986fd4deec48e02d7ba44654d7f59e8f665ed16ec",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+## nix run .#cairn -- gate tasks separate-stevenarella-block-registry --root .
+{
+  "change": "separate-stevenarella-block-registry",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1025937720fc0cb6b5dda27f169cda95bac52b4c2034410fda9f83e09643b76b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "c83b42cffc0b33ade86cb4c75c9b2d63ec330f5ba99afb8995f94b426c1b9441",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+## nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 9,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 14,
+  "valid": true
+}
+command_exit_status=0
+finished_at=2026-06-29T18:57:24Z
+exit_status=0
