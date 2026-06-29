@@ -1,0 +1,14 @@
+command=grep -q stevenarella_ui cairn/specs/mc-compatibility/spec.md
+8173:r[mc_compatibility.stevenarella_ui.widget_boundaries] Stevenarella UI code SHOULD expose cohesive boundaries for layout regions, containers, image and batch elements, text and formatted text, buttons, text boxes, and input or focus helpers.
+8177:r[mc_compatibility.stevenarella_ui.widget_boundaries.ownership]
+8185:r[mc_compatibility.stevenarella_ui.widget_core] UI layout, attachment, focus, text-formatting, button-state, and textbox-edit decisions SHOULD be pure over explicit inputs.
+8189:r[mc_compatibility.stevenarella_ui.widget_core.testable]
+8196:r[mc_compatibility.stevenarella_ui.parity] UI modularization MUST preserve public UI builders, widget behavior, text formatting, input semantics, renderer boundaries, and evidence non-claims.
+8200:r[mc_compatibility.stevenarella_ui.parity.stable]
+8207:r[mc_compatibility.stevenarella_ui.positive_tests] The change MUST include positive tests for layout regions, attachment calculations, formatted text, button state, textbox editing, focus changes, and container traversal.
+8211:r[mc_compatibility.stevenarella_ui.positive_tests.coverage]
+8218:r[mc_compatibility.stevenarella_ui.negative_tests] The change MUST include negative tests for invalid layout bounds, empty text, malformed formatting, disabled widgets, invalid cursor positions, focus loss, and unsupported clipboard paths.
+8222:r[mc_compatibility.stevenarella_ui.negative_tests.fail_closed]
+8229:r[mc_compatibility.stevenarella_ui.validation] The change MUST record focused Stevenarella UI tests, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+8233:r[mc_compatibility.stevenarella_ui.validation.logs]
+exit_status=0

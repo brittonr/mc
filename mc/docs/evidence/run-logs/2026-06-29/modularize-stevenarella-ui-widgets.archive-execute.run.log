@@ -1,0 +1,81 @@
+command=CAIRN_ARCHIVE_DATE=2026-06-29 nix run .#cairn -- archive modularize-stevenarella-ui-widgets --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: modularize-stevenarella-ui-widgets",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-29-modularize-stevenarella-ui-widgets"
+    }
+  ],
+  "blocked": false,
+  "change": "modularize-stevenarella-ui-widgets",
+  "dry_run": false,
+  "input_hash": "472c0005da471f4886ed164b31b0cf1e05e7f2020a73f6463e31ed9df67b2ad0",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "dc9e3c67c38edb945ba6d0eb712b388593dfd2c50dcc1367a680162d55115865",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-stevenarella-ui-widgets/design.md"
+        },
+        {
+          "content_hash": "a7b7e554c4c37839f65111feee8af47ea59e60e7de13ae242c0274b175ed471b",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-stevenarella-ui-widgets/proposal.md"
+        },
+        {
+          "content_hash": "b83ddc7e250b261098b81b00491b0452a2092e9373e995252fbb3ddfacb4ac74",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-stevenarella-ui-widgets/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "5f835aa5fbffaa851aaef355c85219de78ef91a21da99bcd9aa5bb25b9418408",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-stevenarella-ui-widgets/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/modularize-stevenarella-ui-widgets"
+        }
+      ],
+      "manifest_hash": "72b402ea0221a5a7065589fdb46743c00b436cc19b2d019b6e83f97153a15df4"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "dc9e3c67c38edb945ba6d0eb712b388593dfd2c50dcc1367a680162d55115865",
+          "exists": true,
+          "path": "./cairn/changes/modularize-stevenarella-ui-widgets/design.md"
+        },
+        {
+          "content_hash": "a7b7e554c4c37839f65111feee8af47ea59e60e7de13ae242c0274b175ed471b",
+          "exists": true,
+          "path": "./cairn/changes/modularize-stevenarella-ui-widgets/proposal.md"
+        },
+        {
+          "content_hash": "b83ddc7e250b261098b81b00491b0452a2092e9373e995252fbb3ddfacb4ac74",
+          "exists": true,
+          "path": "./cairn/changes/modularize-stevenarella-ui-widgets/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "5f835aa5fbffaa851aaef355c85219de78ef91a21da99bcd9aa5bb25b9418408",
+          "exists": true,
+          "path": "./cairn/changes/modularize-stevenarella-ui-widgets/tasks.md"
+        }
+      ],
+      "manifest_hash": "1a6c920967da600fbd9b79a357564d0da6dd342cb51899277425200e2814ecf1"
+    },
+    "kind": "archive",
+    "manifest_hash": "79eeb5eb5300918b2dbc9b442bfbbf46a01b768314519ba714e8212710e90870"
+  },
+  "plan_hash": "1f59723705456c5c9df801078a5253d2ea8054f80cde38b173816fec7945f5e8",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "911996f7cb345bf732ae013b4cbdf10941dd8d1701b4ee9713c3159f1179ce7d"
+}
+exit_status=0

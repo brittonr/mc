@@ -280,7 +280,12 @@ fn rotate_face_uv(
 ) -> (i16, i16, i16, i16) {
     let (ux1, ux2, uy1, uy2) = uv;
     match rotation {
-        270 => (uy1, uy2, tw * MODEL_UV_EXTENT - ux2, tw * MODEL_UV_EXTENT - ux1),
+        270 => (
+            uy1,
+            uy2,
+            tw * MODEL_UV_EXTENT - ux2,
+            tw * MODEL_UV_EXTENT - ux1,
+        ),
         180 => (
             tw * MODEL_UV_EXTENT - ux2,
             tw * MODEL_UV_EXTENT - ux1,
@@ -419,7 +424,10 @@ mod tests {
     #[test]
     fn block_state_model_resource_rejects_unsafe_references() {
         assert_eq!(block_state_model_resource(DEFAULT_PLUGIN, ""), None);
-        assert_eq!(block_state_model_resource(DEFAULT_PLUGIN, "minecraft:"), None);
+        assert_eq!(
+            block_state_model_resource(DEFAULT_PLUGIN, "minecraft:"),
+            None
+        );
     }
 
     #[test]
@@ -447,7 +455,10 @@ mod tests {
             BuiltinType::Generated
         );
         assert_eq!(resolve_builtin_type("builtin/entity"), BuiltinType::Entity);
-        assert_eq!(resolve_builtin_type("builtin/compass"), BuiltinType::Compass);
+        assert_eq!(
+            resolve_builtin_type("builtin/compass"),
+            BuiltinType::Compass
+        );
         assert_eq!(resolve_builtin_type("builtin/clock"), BuiltinType::Clock);
     }
 
@@ -706,10 +717,10 @@ impl Factory {
                         Entry::Vacant(e) => {
                             let mut res: Option<Model> = None;
                             for rule in &model.multipart {
-                                let ok = eval_multipart_rules(
-                                    &rule.rules,
-                                    &|rule_key, rule_val| block.match_multipart(rule_key, rule_val),
-                                );
+                                let ok =
+                                    eval_multipart_rules(&rule.rules, &|rule_key, rule_val| {
+                                        block.match_multipart(rule_key, rule_val)
+                                    });
                                 if ok {
                                     if res.is_some() {
                                         res.as_mut().unwrap().join(rule.apply.choose_model(rng));

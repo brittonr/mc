@@ -12,6 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+mod button;
+mod container;
+mod formatting;
+mod image;
+mod input;
+mod layout;
+mod text;
+mod textbox;
+
 pub mod logo;
 
 use crate::format;
@@ -22,45 +31,10 @@ use std::cell::{RefCell, RefMut};
 use std::rc::{Rc, Weak};
 use winit::event::VirtualKeyCode;
 
-const SCALED_WIDTH: f64 = 854.0;
-const SCALED_HEIGHT: f64 = 480.0;
+pub use self::layout::{HAttach, Mode, VAttach};
+use self::layout::{Region, WidgetGeometry, SCREEN};
 
-#[derive(Clone, Copy, PartialEq)]
-pub enum Mode {
-    Scaled,
-    Unscaled(f64),
-}
-
-#[derive(Clone, Copy, PartialEq, Eq)]
-pub enum VAttach {
-    Top,
-    Middle,
-    Bottom,
-}
-
-#[derive(Clone, Copy, PartialEq, Eq)]
-pub enum HAttach {
-    Left,
-    Center,
-    Right,
-}
-
-#[derive(Clone)]
-struct Region {
-    x: f64,
-    y: f64,
-    w: f64,
-    h: f64,
-}
-
-impl Region {
-    fn intersects(&self, o: &Region) -> bool {
-        !(self.x + self.w < o.x
-            || self.x > o.x + o.w
-            || self.y + self.h < o.y
-            || self.y > o.y + o.h)
-    }
-}
+const INITIAL_RENDER_VERSION: usize = 0xFFFF;
 
 macro_rules! define_elements {
     (
@@ -257,13 +231,6 @@ define_elements! {
     Button,
     TextBox,
 }
-const SCREEN: Region = Region {
-    x: 0.0,
-    y: 0.0,
-    w: SCALED_WIDTH,
-    h: SCALED_HEIGHT,
-};
-
 pub trait ElementHolder {
     fn add(&mut self, el: Element, auto_free: bool);
 }
@@ -296,7 +263,7 @@ impl Container {
 
             mode: Mode::Scaled,
             last_mode: Mode::Scaled,
-            version: 0xFFFF,
+            version: INITIAL_RENDER_VERSION,
 
             last_sw: 0.0,
             last_sh: 0.0,
@@ -306,10 +273,7 @@ impl Container {
     }
 
     pub fn tick(&mut self, renderer: &mut render::Renderer, delta: f64, width: f64, height: f64) {
-        let (sw, sh) = match self.mode {
-            Mode::Scaled => (SCALED_WIDTH / width, SCALED_HEIGHT / height),
-            Mode::Unscaled(scale) => (scale, scale),
-        };
+        let (sw, sh) = layout::scale_for_mode(self.mode, width, height);
 
         if self.last_sw != sw
             || self.last_sh != sh
@@ -335,13 +299,12 @@ impl Container {
         self.focusable_elements.retain(|v| v.upgrade().is_some());
 
         // If we don't have an element focused, focus one
-        if !self.focusable_elements.is_empty()
-            && !self
-                .focusable_elements
-                .iter()
-                .flat_map(|v| v.upgrade())
-                .any(|v| v.is_focused())
-        {
+        let any_focused = self
+            .focusable_elements
+            .iter()
+            .flat_map(|v| v.upgrade())
+            .any(|v| v.is_focused());
+        if input::should_auto_focus(self.focusable_elements.len(), any_focused) {
             self.cycle_focus()
         }
 
@@ -358,12 +321,8 @@ impl Container {
     }
 
     pub fn hover_at(&mut self, game: &mut crate::Game, x: f64, y: f64, width: f64, height: f64) {
-        let (sw, sh) = match self.mode {
-            Mode::Scaled => (SCALED_WIDTH / width, SCALED_HEIGHT / height),
-            Mode::Unscaled(scale) => (scale, scale),
-        };
-        let mx = (x / width) * SCALED_WIDTH;
-        let my = (y / height) * SCALED_HEIGHT;
+        let (sw, sh) = layout::scale_for_mode(self.mode, width, height);
+        let (mx, my) = layout::mouse_to_scaled(x, y, width, height);
 
         for e in &self.elements {
             let r = Self::compute_draw_region(e, sw, sh, &SCREEN);
@@ -372,17 +331,13 @@ impl Container {
     }
 
     pub fn click_at(&mut self, game: &mut crate::Game, x: f64, y: f64, width: f64, height: f64) {
-        let (sw, sh) = match self.mode {
-            Mode::Scaled => (SCALED_WIDTH / width, SCALED_HEIGHT / height),
-            Mode::Unscaled(scale) => (scale, scale),
-        };
-        let mx = (x / width) * SCALED_WIDTH;
-        let my = (y / height) * SCALED_HEIGHT;
+        let (sw, sh) = layout::scale_for_mode(self.mode, width, height);
+        let (mx, my) = layout::mouse_to_scaled(x, y, width, height);
 
         let mut clicked_element: Option<&Element> = None;
         for e in &self.elements {
             let r = Self::compute_draw_region(e, sw, sh, &SCREEN);
-            if mx >= r.x && mx <= r.x + r.w && my >= r.y && my <= r.y + r.h {
+            if r.contains(mx, my) {
                 e.click_at(&r, game, mx, my, sw, sh);
                 clicked_element = Some(e);
             }
@@ -407,9 +362,6 @@ impl Container {
     }
 
     pub fn cycle_focus(&mut self) {
-        if self.focusable_elements.is_empty() {
-            return;
-        }
         let focusables = self
             .focusable_elements
             .iter()
@@ -418,7 +370,10 @@ impl Container {
 
         // Find the last focused element if there is one
         let last_focus = focusables.iter().position(|v| v.is_focused());
-        let next_focus = last_focus.map_or(0, |v| v + 1) % focusables.len();
+        let next_focus = match input::next_focus_index(last_focus, focusables.len()) {
+            Some(index) => index,
+            None => return,
+        };
 
         // Clear the last focus
         if let Some(focus) = last_focus {
@@ -449,7 +404,7 @@ impl Container {
     }
 
     pub fn key_type(&mut self, game: &mut crate::Game, c: char) {
-        if c < ' ' && c != '\x08' {
+        if !input::accepts_typed_char(c) {
             return;
         }
         for el in self.focusable_elements.iter().flat_map(|v| v.upgrade()) {
@@ -460,30 +415,21 @@ impl Container {
     }
 
     fn compute_draw_region(el: &Element, sw: f64, sh: f64, super_region: &Region) -> Region {
-        let mut r = Region {
-            x: 0.0,
-            y: 0.0,
-            w: 0.0,
-            h: 0.0,
-        };
-        let (w, h) = el.get_size();
-        let (ox, oy) = el.get_position();
-        r.w = w * sw;
-        r.h = h * sh;
+        let (width, height) = el.get_size();
+        let (x, y) = el.get_position();
         let (v_attach, h_attach) = el.get_attachment();
-        match h_attach {
-            HAttach::Left => r.x = ox * sw,
-            HAttach::Center => r.x = (super_region.w / 2.0) - (r.w / 2.0) + ox * sw,
-            HAttach::Right => r.x = super_region.w - ox * sw - r.w,
-        }
-        match v_attach {
-            VAttach::Top => r.y = oy * sh,
-            VAttach::Middle => r.y = (super_region.h / 2.0) - (r.h / 2.0) + oy * sh,
-            VAttach::Bottom => r.y = super_region.h - oy * sh - r.h,
-        }
-        r.x += super_region.x;
-        r.y += super_region.y;
-        r
+        layout::compute_draw_region(
+            WidgetGeometry {
+                x,
+                y,
+                width,
+                height,
+                v_attach,
+                h_attach,
+            },
+            (sw, sh),
+            super_region,
+        )
     }
 }
 
@@ -493,7 +439,7 @@ impl ElementHolder for Container {
             panic!("Auto free elements are not allowed on root");
         }
         self.elements.push(el);
-        self.elements.sort_by_key(|v| v.get_draw_index());
+        container::sort_by_draw_index(&mut self.elements, |v| v.get_draw_index());
     }
 }
 
@@ -571,7 +517,7 @@ macro_rules! element {
         impl ElementHolder for $name {
             fn add(&mut self, el: Element, auto_free: bool) {
                 self.elements.push((auto_free, el));
-                self.elements.sort_by_key(|v| v.1.get_draw_index());
+                container::sort_by_draw_index(&mut self.elements, |v| v.1.get_draw_index());
             }
         }
 
@@ -641,7 +587,7 @@ macro_rules! element {
                     }
                 }
                 if handle_self {
-                    let state = mx >= super_region.x && mx <= super_region.x + super_region.w && my >= super_region.y && my <= super_region.y + super_region.h;
+                    let state = super_region.contains(mx, my);
                     if state != self.hover_state {
                         self.hover_state = state;
                         let len = self.hover_funcs.len();
@@ -669,10 +615,8 @@ macro_rules! element {
                 let mut handle_self = true;
                 for e in &self.elements {
                     let r = Container::compute_draw_region(&e.1, sw, sh, &super_region);
-                    if mx >= r.x && mx <= r.x + r.w && my >= r.y && my <= r.y + r.h {
-                        if e.1.click_at(&r, game, mx, my, sw, sh) {
-                            handle_self = false;
-                        }
+                    if r.contains(mx, my) && e.1.click_at(&r, game, mx, my, sw, sh) {
+                        handle_self = false;
                     }
                 }
                 if handle_self {
@@ -837,11 +781,11 @@ element! {
     }
     builder ImageBuilder {
         hardcode last_texture = "".into(),
-        hardcode last_colour = (0, 0, 0, 0),
-        hardcode last_texture_coords = (0.0, 0.0, 0.0, 0.0),
+        hardcode last_colour = image::TRANSPARENT_IMAGE_COLOUR,
+        hardcode last_texture_coords = image::DEFAULT_TEXTURE_COORDS,
         simple texture: String,
-        optional colour: (u8, u8, u8, u8) = (255, 255, 255, 255),
-        optional texture_coords: (f64, f64, f64, f64) = (0.0, 0.0, 1.0, 1.0),
+        optional colour: (u8, u8, u8, u8) = image::DEFAULT_IMAGE_COLOUR,
+        optional texture_coords: (f64, f64, f64, f64) = image::DEFAULT_TEXTURE_COORDS,
         noset width: f64 = |b| b.width.expect("Missing required field width"),
         noset height: f64 = |b| b.height.expect("Missing required field height"),
     }
@@ -902,9 +846,18 @@ impl UIElement for Image {
     }
 
     fn is_dirty(&self) -> bool {
-        self.last_texture != self.texture
-            || self.last_colour != self.colour
-            || self.last_texture_coords != self.texture_coords
+        image::image_visual_state_changed(
+            &image::ImageRenderState {
+                texture: &self.last_texture,
+                colour: self.last_colour,
+                texture_coords: self.last_texture_coords,
+            },
+            &image::ImageRenderState {
+                texture: &self.texture,
+                colour: self.colour,
+                texture_coords: self.texture_coords,
+            },
+        )
     }
 }
 
@@ -955,7 +908,7 @@ impl UIElement for Batch {
     }
 
     fn is_dirty(&self) -> bool {
-        false
+        image::batch_visual_state_changed()
     }
 }
 
@@ -977,17 +930,17 @@ element! {
     }
     builder TextBuilder {
         hardcode width = 0.0,
-        hardcode height = 18.0,
+        hardcode height = text::TEXT_DEFAULT_HEIGHT,
         hardcode last_text = "".into(),
         hardcode last_scale_x = 0.0,
         hardcode last_scale_y = 0.0,
-        hardcode last_colour = (0, 0, 0, 0),
-        hardcode last_rotation = 0.0,
+        hardcode last_colour = text::TEXT_TRANSPARENT_COLOUR,
+        hardcode last_rotation = text::TEXT_DEFAULT_ROTATION,
         simple text: String,
-        optional scale_x: f64 = 1.0,
-        optional scale_y: f64 = 1.0,
-        optional colour: (u8, u8, u8, u8) = (255, 255, 255, 255),
-        optional rotation: f64 = 0.0,
+        optional scale_x: f64 = text::TEXT_DEFAULT_SCALE,
+        optional scale_y: f64 = text::TEXT_DEFAULT_SCALE,
+        optional colour: (u8, u8, u8, u8) = text::TEXT_DEFAULT_COLOUR,
+        optional rotation: f64 = text::TEXT_DEFAULT_ROTATION,
     }
 }
 
@@ -1058,18 +1011,31 @@ impl UIElement for Text {
     }
 
     fn get_size(&self) -> (f64, f64) {
-        (
-            (self.width + 2.0) * self.scale_x,
-            self.height * self.scale_y,
-        )
+        text::scaled_text_size(text::TextMetrics {
+            width: self.width,
+            height: self.height,
+            scale_x: self.scale_x,
+            scale_y: self.scale_y,
+        })
     }
 
     fn is_dirty(&self) -> bool {
-        self.last_text != self.text
-            || self.last_colour != self.colour
-            || self.last_scale_x != self.scale_x
-            || self.last_scale_y != self.scale_y
-            || self.last_rotation != self.rotation
+        text::text_visual_state_changed(
+            (
+                &self.last_text,
+                self.last_colour,
+                self.last_scale_x,
+                self.last_scale_y,
+                self.last_rotation,
+            ),
+            (
+                &self.text,
+                self.colour,
+                self.scale_x,
+                self.scale_y,
+                self.rotation,
+            ),
+        )
     }
 }
 
@@ -1091,17 +1057,17 @@ element! {
     }
     builder FormattedBuilder {
         hardcode width = 0.0,
-        hardcode height = 18.0,
+        hardcode height = text::TEXT_DEFAULT_HEIGHT,
         hardcode text_elements = vec![],
         hardcode last_text = Default::default(),
         hardcode last_scale_x = 0.0,
         hardcode last_scale_y = 0.0,
-        hardcode last_max_width = -1.0,
+        hardcode last_max_width = formatting::FORMATTED_NO_WRAP_WIDTH,
         hardcode dirty = true,
         simple text: format::Component,
-        optional scale_x: f64 = 1.0,
-        optional scale_y: f64 = 1.0,
-        optional max_width: f64 = -1.0,
+        optional scale_x: f64 = text::TEXT_DEFAULT_SCALE,
+        optional scale_y: f64 = text::TEXT_DEFAULT_SCALE,
+        optional max_width: f64 = formatting::FORMATTED_NO_WRAP_WIDTH,
     }
 }
 
@@ -1120,18 +1086,8 @@ impl UIElement for Formatted {
             self.data.clear();
 
             self.elements.clear();
-            {
-                let mut state = FormatState {
-                    lines: 0,
-                    width: 0.0,
-                    offset: 0.0,
-                    text: Vec::new(),
-                    max_width: self.max_width,
-                    renderer,
-                };
-                state.build(&self.text, format::Color::White);
-                self.text_elements = state.text;
-            }
+            self.text_elements =
+                build_formatted_text_elements(renderer, &self.text, self.max_width);
 
             for e in &self.text_elements {
                 if self.needs_rebuild {
@@ -1162,10 +1118,12 @@ impl UIElement for Formatted {
     }
 
     fn get_size(&self) -> (f64, f64) {
-        (
-            (self.width + 2.0) * self.scale_x,
-            self.height * self.scale_y,
-        )
+        text::scaled_text_size(text::TextMetrics {
+            width: self.width,
+            height: self.height,
+            scale_x: self.scale_x,
+            scale_y: self.scale_y,
+        })
     }
 
     fn is_dirty(&self) -> bool {
@@ -1187,93 +1145,41 @@ impl Formatted {
         text: &format::Component,
         max_width: f64,
     ) -> (f64, f64) {
-        let mut state = FormatState {
-            lines: 0,
-            width: 0.0,
-            offset: 0.0,
-            text: Vec::new(),
-            max_width,
-            renderer,
-        };
-        state.build(text, format::Color::White);
-        (state.width + 2.0, (state.lines + 1) as f64 * 18.0)
+        let plan = formatting::plan_formatted_text(text, max_width, |character| {
+            renderer.ui.size_of_char(character)
+        });
+        (plan.width, plan.height)
     }
 }
 
-struct FormatState<'a> {
-    max_width: f64,
-    lines: usize,
-    offset: f64,
-    width: f64,
+struct FormattedTextElements {
     text: Vec<Element>,
-    renderer: &'a render::Renderer,
 }
 
-impl<'a> ElementHolder for FormatState<'a> {
+impl ElementHolder for FormattedTextElements {
     fn add(&mut self, el: Element, _: bool) {
         self.text.push(el);
     }
 }
 
-impl<'a> FormatState<'a> {
-    fn build(&mut self, c: &format::Component, color: format::Color) {
-        match *c {
-            format::Component::Text(ref txt) => {
-                let col = FormatState::get_color(&txt.modifier, color);
-                self.append_text(&txt.text, col);
-                let modi = &txt.modifier;
-                if let Some(ref extra) = modi.extra {
-                    for e in extra {
-                        self.build(e, col);
-                    }
-                }
-            }
-        }
+fn build_formatted_text_elements(
+    renderer: &render::Renderer,
+    component: &format::Component,
+    max_width: f64,
+) -> Vec<Element> {
+    let plan = formatting::plan_formatted_text(component, max_width, |character| {
+        renderer.ui.size_of_char(character)
+    });
+    let mut elements = FormattedTextElements { text: Vec::new() };
+    for run in plan.runs {
+        let (red, green, blue) = run.color.to_rgb();
+        TextBuilder::new()
+            .text(run.text)
+            .position(run.x, run.y)
+            .colour((red, green, blue, text::TEXT_OPAQUE_ALPHA))
+            .create(&mut elements);
     }
-
-    fn append_text(&mut self, txt: &str, color: format::Color) {
-        let mut width = 0.0;
-        let mut last = 0;
-        for (i, c) in txt.char_indices() {
-            let size = self.renderer.ui.size_of_char(c) + 2.0;
-            if (self.max_width > 0.0 && self.offset + width + size > self.max_width) || c == '\n' {
-                let (rr, gg, bb) = color.to_rgb();
-                TextBuilder::new()
-                    .text(&txt[last..i])
-                    .position(self.offset, (self.lines * 18 + 1) as f64)
-                    .colour((rr, gg, bb, 255))
-                    .create(self);
-                last = i;
-                if c == '\n' {
-                    last += 1;
-                }
-                self.offset = 0.0;
-                self.lines += 1;
-                width = 0.0;
-            }
-            width += size;
-            if self.offset + width > self.width {
-                self.width = self.offset + width;
-            }
-        }
-
-        if last != txt.len() {
-            let (rr, gg, bb) = color.to_rgb();
-            TextBuilder::new()
-                .text(&txt[last..])
-                .position(self.offset, (self.lines * 18 + 1) as f64)
-                .colour((rr, gg, bb, 255))
-                .create(self);
-            self.offset += self.renderer.ui.size_of_string(&txt[last..]) + 2.0;
-            if self.offset > self.width {
-                self.width = self.offset;
-            }
-        }
-    }
-
-    fn get_color(modi: &format::Modifier, color: format::Color) -> format::Color {
-        modi.color.unwrap_or(color)
-    }
+    elements.text
 }
 
 element! {
@@ -1319,13 +1225,17 @@ impl UIElement for Button {
     ) -> &mut [u8] {
         if self.check_rebuild() {
             self.data.clear();
-            let offset = match (self.disabled, self.hovered) {
-                (true, _) => 46.0,
-                (false, true) => 86.0,
-                (false, false) => 66.0,
-            };
+            let offset = button::texture_y_offset(button::ButtonState {
+                disabled: self.disabled,
+                hovered: self.hovered,
+            });
             let texture = render::Renderer::get_texture(renderer.get_textures_ref(), "gui/widgets")
-                .relative(0.0, offset / 256.0, 200.0 / 256.0, 20.0 / 256.0);
+                .relative(
+                    0.0,
+                    offset / button::BUTTON_TEXTURE_ATLAS_SIZE,
+                    button::BUTTON_TEXTURE_WIDTH / button::BUTTON_TEXTURE_ATLAS_SIZE,
+                    button::BUTTON_TEXTURE_HEIGHT / button::BUTTON_TEXTURE_ATLAS_SIZE,
+                );
 
             self.data.extend(
                 render::ui::UIElement::new(
@@ -1474,14 +1384,23 @@ impl UIElement for Button {
     }
 
     fn is_dirty(&self) -> bool {
-        self.last_disabled != self.disabled || self.last_hovered != self.hovered
+        button::visual_state_changed(
+            button::ButtonState {
+                disabled: self.last_disabled,
+                hovered: self.last_hovered,
+            },
+            button::ButtonState {
+                disabled: self.disabled,
+                hovered: self.hovered,
+            },
+        )
     }
 
     fn post_init(s: Rc<RefCell<Self>>) {
         s.borrow_mut().add_hover_func(move |this, hover, _| {
             this.hovered = hover;
             for text in &this.texts {
-                text.borrow_mut().colour.2 = if hover { 160 } else { 255 };
+                text.borrow_mut().colour.2 = button::hover_text_blue_channel(hover);
             }
             true
         })
@@ -1551,10 +1470,13 @@ impl UIElement for TextBox {
             // TODO: wasm clipboard pasting, Clipboard API: https://www.w3.org/TR/clipboard-apis/
             #[cfg(not(target_arch = "wasm32"))]
             (VirtualKeyCode::V, true) => {
-                if ctrl_pressed {
-                    let mut clipboard: ClipboardContext = ClipboardProvider::new().unwrap();
-                    if let Ok(text) = clipboard.get_contents() {
-                        self.input.push_str(&text)
+                if textbox::clipboard_paste_allowed(ctrl_pressed, textbox::ClipboardPath::Supported)
+                {
+                    let clipboard: Result<ClipboardContext, _> = ClipboardProvider::new();
+                    if let Ok(mut clipboard) = clipboard {
+                        if let Ok(text) = clipboard.get_contents() {
+                            self.input.push_str(&text)
+                        }
                     }
                 }
             }
@@ -1563,13 +1485,7 @@ impl UIElement for TextBox {
     }
 
     fn key_type(&mut self, _game: &mut crate::Game, c: char) {
-        if c == '\x7f' || c == '\x08' {
-            // Backspace
-            self.input.pop();
-            return;
-        }
-
-        self.input.push(c);
+        textbox::apply_typed_char(&mut self.input, c);
     }
 
     fn draw(
@@ -1584,18 +1500,15 @@ impl UIElement for TextBox {
     ) -> &mut [u8] {
         if self.check_rebuild() {
             self.data.clear();
-            self.cursor_tick += delta;
-            if self.cursor_tick > 3000.0 {
-                self.cursor_tick -= 3000.0;
-            }
+            self.cursor_tick = textbox::advance_cursor_tick(self.cursor_tick, delta);
             let mut text = self.transform_input();
             {
                 let mut btn = self.button.as_mut().unwrap().borrow_mut();
                 btn.width = self.width;
                 btn.height = self.height;
                 let mut txt = self.text.as_mut().unwrap().borrow_mut();
-                if self.focused && ((self.cursor_tick / 30.0) as i32) % 2 == 0 {
-                    text.push('|');
+                if textbox::cursor_is_visible(self.focused, self.cursor_tick) {
+                    text.push(textbox::CURSOR_CHAR);
                 }
                 txt.text = text;
             }
@@ -1644,10 +1557,6 @@ impl TextBox {
     }
 
     fn transform_input(&self) -> String {
-        if self.password {
-            "*".repeat(self.input.len())
-        } else {
-            self.input.clone()
-        }
+        textbox::transformed_input(&self.input, self.password)
     }
 }

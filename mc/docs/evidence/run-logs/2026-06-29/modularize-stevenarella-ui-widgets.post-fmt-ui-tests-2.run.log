@@ -1,0 +1,275 @@
+command=nix command=develop command=--no-update-lock-file command=/home/brittonr/git/mc command=-c command=cargo command=test command=ui command=-- command=--nocapture 
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 | ...n| (instrument.offsets(protocol_version)
+     |       ^
+1053 | ... * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                       ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 | ...rsion| (variant.offsets(protocol_version)),
+     |           ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+   Compiling stevenarella v0.0.1 (/home/brittonr/git/mc/clients/stevenarella)
+warning: unreachable pattern
+   --> src/server/login.rs:190:9
+    |
+190 |         (phase, event) => LoginDecision::Fail(LoginFailure {
+    |         ^^^^^^^^^^^^^^ no value can reach this
+    |
+note: multiple earlier patterns match some of the same values
+   --> src/server/login.rs:190:9
+    |
+162 |           (_, LoginEvent::SetCompression(compression)) => {
+    |           -------------------------------------------- matches some of the same values
+...
+165 |           (LoginPhase::Initial, LoginEvent::EncryptionRequest(request)) => {
+    |           ------------------------------------------------------------- matches some of the same values
+...
+168 |           (LoginPhase::Encrypted, LoginEvent::EncryptionRequest(request)) => {
+    |           --------------------------------------------------------------- matches some of the same values
+...
+174 | /         (LoginPhase::Initial, LoginEvent::Success(outcome))
+175 | |         | (LoginPhase::Encrypted, LoginEvent::Success(outcome)) => LoginDecision::Complete(outcome),
+    | |_______________________________________________________________- matches some of the same values
+...
+190 |           (phase, event) => LoginDecision::Fail(LoginFailure {
+    |           ^^^^^^^^^^^^^^ ...and 4 other patterns collectively make this unreachable
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: enum `TraversalPlanError` is never used
+  --> src/ui/container.rs:18:17
+   |
+18 | pub(crate) enum TraversalPlanError {
+   |                 ^^^^^^^^^^^^^^^^^^
+
+warning: function `draw_order` is never used
+  --> src/ui/container.rs:22:15
+   |
+22 | pub(crate) fn draw_order(draw_indices: &[isize]) -> Vec<usize> {
+   |               ^^^^^^^^^^
+
+warning: function `clicked_index` is never used
+  --> src/ui/container.rs:35:15
+   |
+35 | pub(crate) fn clicked_index(regions: &[Region], x: f64, y: f64) -> Option<usize> {
+   |               ^^^^^^^^^^^^^
+
+warning: function `checked_draw_order` is never used
+  --> src/ui/container.rs:39:15
+   |
+39 | pub(crate) fn checked_draw_order(
+   |               ^^^^^^^^^^^^^^^^^^
+
+warning: enum `LayoutBoundsError` is never used
+  --> src/ui/layout.rs:48:17
+   |
+48 | pub(crate) enum LayoutBoundsError {
+   |                 ^^^^^^^^^^^^^^^^^
+
+warning: associated function `checked` is never used
+  --> src/ui/layout.rs:71:19
+   |
+70 | impl Region {
+   | ----------- associated function in this implementation
+71 |     pub(crate) fn checked(x: f64, y: f64, w: f64, h: f64) -> Result<Self, LayoutBoundsError> {
+   |                   ^^^^^^^
+
+warning: function `validate_region_numbers` is never used
+  --> src/ui/layout.rs:88:15
+   |
+88 | pub(crate) fn validate_region_numbers(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Unsupported` is never constructed
+  --> src/ui/textbox.rs:34:5
+   |
+32 | pub(crate) enum ClipboardPath {
+   |                 ------------- variant in this enum
+33 |     Supported,
+34 |     Unsupported,
+   |     ^^^^^^^^^^^
+   |
+   = note: `ClipboardPath` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `clamp_cursor_position` is never used
+  --> src/ui/textbox.rs:59:15
+   |
+59 | pub(crate) fn clamp_cursor_position(input: &str, requested_position: usize) -> usize {
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:76:21
+    |
+ 76 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+226 | / define_elements! {
+227 | |     Image,
+228 | |     Batch,
+229 | |     Text,
+...   |
+232 | |     TextBox,
+233 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+ 76 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib test) generated 3 warnings (3 duplicates)
+warning: `stevenarella` (lib) generated 14 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (bin "stevenarella" test) generated 3 warnings (3 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 7.05s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 36 tests
+
+thread 'server::login::tests::malformed_string_uuid_panics_when_shell_reads_protocol_uuid' (1996738) panicked at src/server/login.rs:204:81:
+called `Result::unwrap()` on an `Err` value: UUIDParseError
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test capture::tests::one_shot_capture_rejects_ui_exclusion_before_readback ... ok
+test game_shell::mcp_control::tests::status_connect_and_disconnect_do_not_require_an_existing_connection ... ok
+test control::tests::rejects_missing_required_command_field ... ok
+test game_shell::capture_startup::tests::startup_recording_plan_builds_bounded_recording_request ... ok
+test game_shell::capture_startup::tests::startup_recording_plan_requires_local_capture_dir ... ok
+test mcp::auth::tests::loopback_auth_does_not_require_token ... ok
+test mcp::tests::jsonrpc_handler_requires_matching_auth_token_when_configured ... ok
+test mcp::tests::stdio_transport_is_accepted_and_requires_clean_stdout ... ok
+test model::tests::resolve_builtin_type_defaults_unknown_builtins_to_false ... ok
+test model::tests::parent_model_resource_preserves_absolute_and_builtin_paths ... ok
+test model::tests::resolve_builtin_type_recognizes_known_builtins ... ok
+test model::tests::should_load_parent_model_skips_empty_and_builtin_parents ... ok
+test server::inventory::tests::ready_window_state_requires_positive_state_id ... ok
+test server::login::tests::login_success_uuid_normalizes_offline_outcome ... ok
+test server::probes::tests::ctf_score_limit_chat_requires_both_score_terms ... ok
+test server::probes::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test server::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test ui::button::tests::button_state_selects_normal_hover_and_disabled_texture_rows ... ok
+test server::login::tests::malformed_string_uuid_panics_when_shell_reads_protocol_uuid ... ok
+test ui::button::tests::disabled_widgets_ignore_hover_texture_and_detect_noop_state ... ok
+test ui::container::tests::container_traversal_visits_draw_indices_in_order ... ok
+test ui::container::tests::missing_draw_index_and_outside_click_fail_closed ... ok
+test ui::formatting::tests::empty_and_malformed_formatting_are_contained ... ok
+test ui::image::tests::batch_state_has_no_own_visual_dirty_flag ... ok
+test ui::formatting::tests::formatted_text_plans_colored_runs_and_wrapping ... ok
+test ui::image::tests::image_state_detects_texture_and_colour_changes ... ok
+test ui::input::tests::focus_changes_advance_and_wrap ... ok
+test ui::input::tests::focus_loss_and_control_input_fail_closed ... ok
+test ui::layout::tests::attachment_calculations_handle_right_and_bottom_edges ... ok
+test ui::layout::tests::invalid_layout_bounds_are_rejected ... ok
+test ui::layout::tests::layout_regions_compute_center_and_middle_attachment ... ok
+test ui::text::tests::empty_text_metrics_stay_bounded ... ok
+test ui::text::tests::text_metrics_include_padding_and_scale ... ok
+test ui::textbox::tests::empty_text_invalid_cursor_and_unsupported_clipboard_fail_closed ... ok
+test ui::textbox::tests::textbox_editing_inserts_removes_and_masks_text ... ok
+test mcp::tests::non_loopback_tcp_transport_requires_token_per_request ... ok
+
+test result: ok. 36 passed; 0 failed; 0 ignored; 0 measured; 292 filtered out; finished in 0.02s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 36 tests
+
+thread 'server::login::tests::malformed_string_uuid_panics_when_shell_reads_protocol_uuid' (1996778) panicked at src/server/login.rs:204:81:
+called `Result::unwrap()` on an `Err` value: UUIDParseError
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test capture::tests::one_shot_capture_rejects_ui_exclusion_before_readback ... ok
+test control::tests::rejects_missing_required_command_field ... ok
+test game_shell::capture_startup::tests::startup_recording_plan_builds_bounded_recording_request ... ok
+test game_shell::mcp_control::tests::status_connect_and_disconnect_do_not_require_an_existing_connection ... ok
+test game_shell::capture_startup::tests::startup_recording_plan_requires_local_capture_dir ... ok
+test mcp::auth::tests::loopback_auth_does_not_require_token ... ok
+test mcp::tests::stdio_transport_is_accepted_and_requires_clean_stdout ... ok
+test mcp::tests::jsonrpc_handler_requires_matching_auth_token_when_configured ... ok
+test model::tests::parent_model_resource_preserves_absolute_and_builtin_paths ... ok
+test model::tests::resolve_builtin_type_defaults_unknown_builtins_to_false ... ok
+test model::tests::resolve_builtin_type_recognizes_known_builtins ... ok
+test model::tests::should_load_parent_model_skips_empty_and_builtin_parents ... ok
+test server::inventory::tests::ready_window_state_requires_positive_state_id ... ok
+test server::login::tests::login_success_uuid_normalizes_offline_outcome ... ok
+test server::probes::tests::ctf_score_limit_chat_requires_both_score_terms ... ok
+test server::probes::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test server::login::tests::malformed_string_uuid_panics_when_shell_reads_protocol_uuid ... ok
+test server::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test ui::button::tests::button_state_selects_normal_hover_and_disabled_texture_rows ... ok
+test ui::button::tests::disabled_widgets_ignore_hover_texture_and_detect_noop_state ... ok
+test ui::container::tests::container_traversal_visits_draw_indices_in_order ... ok
+test ui::container::tests::missing_draw_index_and_outside_click_fail_closed ... ok
+test ui::formatting::tests::empty_and_malformed_formatting_are_contained ... ok
+test ui::formatting::tests::formatted_text_plans_colored_runs_and_wrapping ... ok
+test ui::image::tests::batch_state_has_no_own_visual_dirty_flag ... ok
+test ui::image::tests::image_state_detects_texture_and_colour_changes ... ok
+test ui::input::tests::focus_changes_advance_and_wrap ... ok
+test ui::input::tests::focus_loss_and_control_input_fail_closed ... ok
+test ui::layout::tests::attachment_calculations_handle_right_and_bottom_edges ... ok
+test ui::layout::tests::invalid_layout_bounds_are_rejected ... ok
+test ui::layout::tests::layout_regions_compute_center_and_middle_attachment ... ok
+test ui::text::tests::empty_text_metrics_stay_bounded ... ok
+test ui::text::tests::text_metrics_include_padding_and_scale ... ok
+test ui::textbox::tests::empty_text_invalid_cursor_and_unsupported_clipboard_fail_closed ... ok
+test ui::textbox::tests::textbox_editing_inserts_removes_and_masks_text ... ok
+test mcp::tests::non_loopback_tcp_transport_requires_token_per_request ... ok
+
+test result: ok. 36 passed; 0 failed; 0 ignored; 0 measured; 292 filtered out; finished in 0.02s
+
+exit_status=0
