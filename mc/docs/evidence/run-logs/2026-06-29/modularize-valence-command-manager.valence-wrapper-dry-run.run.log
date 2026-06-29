@@ -1,0 +1,17 @@
+cwd=/home/brittonr/git/mc
+command=nix run .#valence -- --dry-run
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2059 ms: Could not connect to server; retrying in 91 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 118 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server; retrying in 206 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2065 ms: Could not connect to server; retrying in 141 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/llbijyk253xwl2zzgyg5l52jsxgv4n2k-valence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/llbijyk253xwl2zzgyg5l52jsxgv4n2k-valence.drv'...
+repo=/home/brittonr/git/mc/servers/valence
+example=ctf
+target_dir=/home/brittonr/git/mc/target/nix-run-valence
+cd /home/brittonr/git/mc/servers/valence && cargo run --example ctf --
+exit_status=0

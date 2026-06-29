@@ -22,7 +22,7 @@ f8e04580f3c9b72f39daead72b34377189f7c1152843f2f484a3be6b603a8fae  docs/evidence/
 c63a07e0af3aaa6cc465bab71da350adf0331903c04d940b5b64ce3159b49ecb  cairn/archive/2026-06-26-promote-remaining-packet-semantics-to-typed-events/design.md
 705de1a6f0f817e466241fe88ff62b48248c02d63025060ad2a275bf919d65e3  cairn/archive/2026-06-26-promote-remaining-packet-semantics-to-typed-events/tasks.md
 f2f27c37d89959ddd9c99e901c6ebe2bc38ea05ded3e30d8f69efa2044f111da  cairn/archive/2026-06-26-promote-remaining-packet-semantics-to-typed-events/specs/valence-bevy-ecs/spec.md
-a23f082ec1aca21ead371048b71f3330d1a293b175c0c2fff433243389a99dd9  cairn/specs/valence-bevy-ecs/spec.md
+9fb9ce030b6047793a75d1ef2c8766de54e1fa5fb04587e7b200e43d853c2fad  cairn/specs/valence-bevy-ecs/spec.md
 eff72cf0aa123e5e5b2958466b926fc2cf3c95abdb5cb81782bb2a547bada308  servers/valence/crates/valence_inventory/README.md
 e188f53bc4d38f89d9aab9f88a605fd5225b49655256a494bbb4278828406f03  servers/valence/crates/valence_command/README.md
 132a2163f4623f8ed862fbf373c7f680b21ebafb3ecc7492b69be92bdf96f9e4  servers/valence/crates/valence_server/README.md
