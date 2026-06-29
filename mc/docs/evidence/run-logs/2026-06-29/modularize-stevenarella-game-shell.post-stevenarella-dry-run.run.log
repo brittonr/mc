@@ -1,0 +1,8 @@
+command=nix run .#stevenarella -- --dry-run
+cwd=/home/brittonr/git/mc
+started_at=2026-06-29T05:49:16-04:00
+repo=/home/brittonr/git/mc/clients/stevenarella
+target_dir=/home/brittonr/git/mc/target/nix-run-stevenarella
+cd /home/brittonr/git/mc/clients/stevenarella && cargo run --
+finished_at=2026-06-29T05:49:17-04:00
+exit_status=0

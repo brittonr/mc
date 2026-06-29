@@ -1,0 +1,84 @@
+command=CAIRN_ARCHIVE_DATE=2026-06-29 nix run .#cairn -- archive modularize-stevenarella-game-shell --root . --execute
+cwd=/home/brittonr/git/mc
+started_at=2026-06-29T05:58:49-04:00
+{
+  "actions": [
+    {
+      "description": "move active change to archive: modularize-stevenarella-game-shell",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-29-modularize-stevenarella-game-shell"
+    }
+  ],
+  "blocked": false,
+  "change": "modularize-stevenarella-game-shell",
+  "dry_run": false,
+  "input_hash": "f252f92590466ae20683aa7a86ebfea2b876b187dcf84fecdf13fab791a9367f",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "b979bbb3aecce2c188f4450654d4403bb379b80924373e2c342e4de7467bc431",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-stevenarella-game-shell/design.md"
+        },
+        {
+          "content_hash": "60513c04a2ec45f6711bcd68a387df84cb595aab1356c7c4afb0fe9628411b67",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-stevenarella-game-shell/proposal.md"
+        },
+        {
+          "content_hash": "95e2c4dc5b3c2872816188a3eec8bd97b2154bd7b51b0d5659f79ed5f798ad6f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-stevenarella-game-shell/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "6569287a1f42eddc5b1cdaed9f5b3efb34f38901dbf20439cea5758f58265b1d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-stevenarella-game-shell/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/modularize-stevenarella-game-shell"
+        }
+      ],
+      "manifest_hash": "3d32e689d01a09dbd8c8c9df5539a631bf093842e68c81341dec72a829e1f8b9"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "b979bbb3aecce2c188f4450654d4403bb379b80924373e2c342e4de7467bc431",
+          "exists": true,
+          "path": "./cairn/changes/modularize-stevenarella-game-shell/design.md"
+        },
+        {
+          "content_hash": "60513c04a2ec45f6711bcd68a387df84cb595aab1356c7c4afb0fe9628411b67",
+          "exists": true,
+          "path": "./cairn/changes/modularize-stevenarella-game-shell/proposal.md"
+        },
+        {
+          "content_hash": "95e2c4dc5b3c2872816188a3eec8bd97b2154bd7b51b0d5659f79ed5f798ad6f",
+          "exists": true,
+          "path": "./cairn/changes/modularize-stevenarella-game-shell/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "6569287a1f42eddc5b1cdaed9f5b3efb34f38901dbf20439cea5758f58265b1d",
+          "exists": true,
+          "path": "./cairn/changes/modularize-stevenarella-game-shell/tasks.md"
+        }
+      ],
+      "manifest_hash": "432a17824e87f2ed1bfce3f735b72097c7e38e64d615a8a6b0740094dd8f3bec"
+    },
+    "kind": "archive",
+    "manifest_hash": "0b218c0623fb7a47d13fe2ea8aecf44e1e9c664a02956cac94ef6f68bbf4727e"
+  },
+  "plan_hash": "298ebab1bd9a27faec2507f888a5b6aebbb2196a3c3a6b616e18633a171e4bb1",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "2905adb7957b6baed72943f01de70831565a6ce45153515e9e8d4aafd1c3b61e"
+}
+finished_at=2026-06-29T05:58:50-04:00
+exit_status=0

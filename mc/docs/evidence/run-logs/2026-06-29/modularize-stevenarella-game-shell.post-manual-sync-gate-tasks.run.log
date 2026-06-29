@@ -1,0 +1,26 @@
+command=nix run .#cairn -- gate tasks modularize-stevenarella-game-shell --root .
+cwd=/home/brittonr/git/mc
+started_at=2026-06-29T05:56:23-04:00
+{
+  "change": "modularize-stevenarella-game-shell",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "cba5d52584200a041e4fddf9d361fadf202507afb1ebed60408105284df0e247",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "7a3a74dde019216e594dfbc0d76a661cf3fba76d7ec2c5bca6566ee6ce9cf31b",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+finished_at=2026-06-29T05:56:23-04:00
+exit_status=0
