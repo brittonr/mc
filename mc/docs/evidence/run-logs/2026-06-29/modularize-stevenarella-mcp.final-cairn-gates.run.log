@@ -1,0 +1,70 @@
+$ nix run .#cairn -- gate proposal modularize-stevenarella-mcp --root .
+{
+  "change": "modularize-stevenarella-mcp",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1471e4fd98f550fac577acafaf1676f22fcd5d642372dbbfe9911faa65bec742",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "9fe9e6bca031384f5729e10fdcfd3cb2d1c4f91b2f9a968c0ac4bd32dd142265",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_proposal_exit_status=0
+$ nix run .#cairn -- gate design modularize-stevenarella-mcp --root .
+{
+  "change": "modularize-stevenarella-mcp",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ac2005b4ece969311035f3a2be4c891e96766859b725926f8b3f7b229c1509e4",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "196804fc9f06faf3074c11d3515b5314463e6d96266c29b1d57b46e4465c4982",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_design_exit_status=0
+$ nix run .#cairn -- gate tasks modularize-stevenarella-mcp --root .
+{
+  "change": "modularize-stevenarella-mcp",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "567aceb47aeac45086468d0dab1f738cb73c24e53a67d0c4830b80a66155dcbb",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "ee482214d65cd5f9d23d0937fc6e4b5fcc00feeca68c35f20a8d4d3a3148ab30",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+gate_tasks_exit_status=0
+exit_status=0

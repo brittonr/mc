@@ -1,0 +1,3 @@
+$ rg 'std::fs|std::env|std::process|std::thread|Tcp|Buf|mpsc|recv|send|sleep|read_line|write|println!|eprintln!|enqueue' clients/stevenarella/src/mcp/protocol.rs
+no forbidden transport/channel/io tokens found in protocol.rs
+exit_status=0

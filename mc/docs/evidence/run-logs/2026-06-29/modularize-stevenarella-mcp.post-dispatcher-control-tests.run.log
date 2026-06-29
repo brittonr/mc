@@ -1,0 +1,243 @@
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test control -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1052:36
+     |
+1052 | ...n| (instrument.offsets(protocol_version)
+     |       ^
+1053 | ... * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 })),
+     |                                                                       ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1052 ~         offsets |protocol_version| instrument.offsets(protocol_version)
+1053 ~             .map(|offset| offset * (25 * 2) + ((note as usize) << 1) + if powered { 0 } else { 1 }),
+     |
+
+warning: unnecessary parentheses around closure body
+    --> blocks/src/lib.rs:1407:36
+     |
+1407 | ...rsion| (variant.offsets(protocol_version)),
+     |           ^                                 ^
+     |
+help: remove these parentheses
+     |
+1407 -         offsets |protocol_version| (variant.offsets(protocol_version)),
+1407 +         offsets |protocol_version| variant.offsets(protocol_version),
+     |
+
+warning: `steven_blocks` (lib) generated 2 warnings (run `cargo fix --lib -p steven_blocks` to apply 2 suggestions)
+warning: unreachable pattern
+   --> src/server/login.rs:190:9
+    |
+190 |         (phase, event) => LoginDecision::Fail(LoginFailure {
+    |         ^^^^^^^^^^^^^^ no value can reach this
+    |
+note: multiple earlier patterns match some of the same values
+   --> src/server/login.rs:190:9
+    |
+162 |           (_, LoginEvent::SetCompression(compression)) => {
+    |           -------------------------------------------- matches some of the same values
+...
+165 |           (LoginPhase::Initial, LoginEvent::EncryptionRequest(request)) => {
+    |           ------------------------------------------------------------- matches some of the same values
+...
+168 |           (LoginPhase::Encrypted, LoginEvent::EncryptionRequest(request)) => {
+    |           --------------------------------------------------------------- matches some of the same values
+...
+174 | /         (LoginPhase::Initial, LoginEvent::Success(outcome))
+175 | |         | (LoginPhase::Encrypted, LoginEvent::Success(outcome)) => LoginDecision::Complete(outcome),
+    | |_______________________________________________________________- matches some of the same values
+...
+190 |           (phase, event) => LoginDecision::Fail(LoginFailure {
+    |           ^^^^^^^^^^^^^^ ...and 4 other patterns collectively make this unreachable
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:102:21
+    |
+102 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+252 | / define_elements! {
+253 | |     Image,
+254 | |     Batch,
+255 | |     Text,
+...   |
+258 | |     TextBox,
+259 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+102 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 5 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (lib test) generated 3 warnings (3 duplicates)
+warning: `stevenarella` (bin "stevenarella" test) generated 3 warnings (3 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.12s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 55 tests
+test control::tests::classifies_command_facts_without_game_state ... ok
+test control::tests::classifies_response_vocabulary_without_mcp_transport ... ok
+test control::tests::parses_resource_pack_status_decline_for_owned_local_offer ... ok
+test control::tests::parses_sign_editor_update_for_matching_open_state ... ok
+test control::tests::parses_all_key_aliases ... ok
+test control::tests::parses_json_string_entrypoint ... ok
+test control::tests::parses_valid_initial_command_set ... ok
+test control::tests::rejects_blank_chat_message ... ok
+test control::tests::rejects_external_resource_pack_url_before_protocol_response ... ok
+test control::tests::rejects_command_payload_schema_mismatches ... ok
+test control::tests::rejects_invalid_key_name ... ok
+test control::tests::rejects_invalid_mouse_button ... ok
+test control::tests::rejects_malformed_json_entrypoint ... ok
+test control::tests::rejects_missing_action_field ... ok
+test control::tests::rejects_missing_payloads_for_commands ... ok
+test control::tests::rejects_missing_required_command_field ... ok
+test control::tests::rejects_non_object_and_action_schema_mismatches ... ok
+test control::tests::rejects_out_of_range_look_delta ... ok
+test control::tests::rejects_oversized_chat_message ... ok
+test control::tests::rejects_oversized_resource_pack_url_before_redaction_boundary ... ok
+test control::tests::rejects_resource_pack_offer_with_blank_identity ... ok
+test control::tests::rejects_resource_pack_status_without_offer_state ... ok
+test control::tests::rejects_sign_editor_malformed_payload ... ok
+test control::tests::rejects_sign_editor_overclaim ... ok
+test control::tests::rejects_sign_editor_overlong_line ... ok
+test control::tests::rejects_sign_editor_update_for_wrong_open_position ... ok
+test control::tests::rejects_sign_editor_update_without_open_state ... ok
+test control::tests::rejects_sign_editor_wrong_line_count ... ok
+test control::tests::rejects_unknown_action ... ok
+test control::tests::rejects_unsupported_resource_pack_status ... ok
+test game_shell::mcp_control::tests::capture_queue_errors_preserve_response_vocabulary ... ok
+test game_shell::mcp_control::tests::control_capture_enqueue_rejects_missing_capture_queue ... ok
+test game_shell::mcp_control::tests::control_capture_enqueue_reaches_post_render_capture_queue ... ok
+test game_shell::mcp_control::tests::disconnected_operations_return_rejected_response ... ok
+test game_shell::mcp_control::tests::maps_control_block_position_to_protocol_position ... ok
+test game_shell::mcp_control::tests::maps_control_keys_to_internal_steven_keys ... ok
+test game_shell::mcp_control::tests::pitch_bounds_match_window_input_clamp ... ok
+test game_shell::mcp_control::tests::out_of_range_look_input_is_rejected_before_shell_plan ... ok
+test game_shell::mcp_control::tests::plan_rejects_missing_player_before_look_side_effects ... ok
+test game_shell::mcp_control::tests::plans_capture_actions_and_rejects_unavailable_queue ... ok
+test game_shell::mcp_control::tests::plans_connected_movement_and_protocol_actions ... ok
+test game_shell::mcp_control::tests::plans_sign_editor_update_only_for_matching_open_state ... ok
+test game_shell::mcp_control::tests::plans_status_connect_and_disconnect_actions ... ok
+test game_shell::mcp_control::tests::sign_editor_open_match_is_position_exact ... ok
+test game_shell::mcp_control::tests::status_connect_and_disconnect_do_not_require_an_existing_connection ... ok
+test game_shell::mcp_control::tests::status_message_reports_connection_state ... ok
+test mcp::control_queue::tests::command_queue_drains_pending_command_with_main_thread_handler ... ok
+test mcp::control_queue::tests::command_queue_rejects_enqueue_after_receiver_drop ... ok
+test mcp::control_queue::tests::command_queue_respects_per_frame_drain_limit ... ok
+test mcp::dispatcher::tests::dispatcher_rejects_closed_control_queue_after_pure_routing ... ok
+test mcp::protocol::tests::pure_route_returns_control_effect_without_queue_side_effects ... ok
+test mcp::protocol::tests::shell_helper_renders_control_response_after_adapter_result ... ok
+test mcp::control_queue::tests::command_queue_reports_timeout_when_main_thread_does_not_drain ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_control_command_for_main_thread_drain ... ok
+test game_shell::mcp_control::tests::control_capture_enqueue_uses_capture_dir_artifact_output ... ok
+
+test result: ok. 55 passed; 0 failed; 0 ignored; 0 measured; 240 filtered out; finished in 0.01s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 55 tests
+test control::tests::classifies_command_facts_without_game_state ... ok
+test control::tests::classifies_response_vocabulary_without_mcp_transport ... ok
+test control::tests::parses_all_key_aliases ... ok
+test control::tests::parses_json_string_entrypoint ... ok
+test control::tests::parses_resource_pack_status_decline_for_owned_local_offer ... ok
+test control::tests::parses_sign_editor_update_for_matching_open_state ... ok
+test control::tests::parses_valid_initial_command_set ... ok
+test control::tests::rejects_blank_chat_message ... ok
+test control::tests::rejects_command_payload_schema_mismatches ... ok
+test control::tests::rejects_external_resource_pack_url_before_protocol_response ... ok
+test control::tests::rejects_invalid_key_name ... ok
+test control::tests::rejects_invalid_mouse_button ... ok
+test control::tests::rejects_malformed_json_entrypoint ... ok
+test control::tests::rejects_missing_action_field ... ok
+test control::tests::rejects_missing_payloads_for_commands ... ok
+test control::tests::rejects_missing_required_command_field ... ok
+test control::tests::rejects_non_object_and_action_schema_mismatches ... ok
+test control::tests::rejects_out_of_range_look_delta ... ok
+test control::tests::rejects_oversized_chat_message ... ok
+test control::tests::rejects_oversized_resource_pack_url_before_redaction_boundary ... ok
+test control::tests::rejects_resource_pack_offer_with_blank_identity ... ok
+test control::tests::rejects_resource_pack_status_without_offer_state ... ok
+test control::tests::rejects_sign_editor_malformed_payload ... ok
+test control::tests::rejects_sign_editor_overclaim ... ok
+test control::tests::rejects_sign_editor_overlong_line ... ok
+test control::tests::rejects_sign_editor_update_for_wrong_open_position ... ok
+test control::tests::rejects_sign_editor_update_without_open_state ... ok
+test control::tests::rejects_sign_editor_wrong_line_count ... ok
+test control::tests::rejects_unknown_action ... ok
+test control::tests::rejects_unsupported_resource_pack_status ... ok
+test game_shell::mcp_control::tests::capture_queue_errors_preserve_response_vocabulary ... ok
+test game_shell::mcp_control::tests::control_capture_enqueue_rejects_missing_capture_queue ... ok
+test game_shell::mcp_control::tests::control_capture_enqueue_reaches_post_render_capture_queue ... ok
+test game_shell::mcp_control::tests::disconnected_operations_return_rejected_response ... ok
+test game_shell::mcp_control::tests::maps_control_block_position_to_protocol_position ... ok
+test game_shell::mcp_control::tests::maps_control_keys_to_internal_steven_keys ... ok
+test game_shell::mcp_control::tests::out_of_range_look_input_is_rejected_before_shell_plan ... ok
+test game_shell::mcp_control::tests::pitch_bounds_match_window_input_clamp ... ok
+test game_shell::mcp_control::tests::plan_rejects_missing_player_before_look_side_effects ... ok
+test game_shell::mcp_control::tests::plans_capture_actions_and_rejects_unavailable_queue ... ok
+test game_shell::mcp_control::tests::plans_connected_movement_and_protocol_actions ... ok
+test game_shell::mcp_control::tests::plans_sign_editor_update_only_for_matching_open_state ... ok
+test game_shell::mcp_control::tests::plans_status_connect_and_disconnect_actions ... ok
+test game_shell::mcp_control::tests::sign_editor_open_match_is_position_exact ... ok
+test game_shell::mcp_control::tests::status_connect_and_disconnect_do_not_require_an_existing_connection ... ok
+test game_shell::mcp_control::tests::status_message_reports_connection_state ... ok
+test mcp::control_queue::tests::command_queue_drains_pending_command_with_main_thread_handler ... ok
+test mcp::control_queue::tests::command_queue_rejects_enqueue_after_receiver_drop ... ok
+test mcp::control_queue::tests::command_queue_respects_per_frame_drain_limit ... ok
+test mcp::dispatcher::tests::dispatcher_rejects_closed_control_queue_after_pure_routing ... ok
+test mcp::protocol::tests::shell_helper_renders_control_response_after_adapter_result ... ok
+test mcp::protocol::tests::pure_route_returns_control_effect_without_queue_side_effects ... ok
+test game_shell::mcp_control::tests::control_capture_enqueue_uses_capture_dir_artifact_output ... ok
+test mcp::control_queue::tests::command_queue_reports_timeout_when_main_thread_does_not_drain ... ok
+test mcp::tests::jsonrpc_tools_call_enqueues_control_command_for_main_thread_drain ... ok
+
+test result: ok. 55 passed; 0 failed; 0 ignored; 0 measured; 240 filtered out; finished in 0.00s
+
+exit_status=0
