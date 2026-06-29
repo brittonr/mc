@@ -2,6 +2,9 @@ use bevy_ecs::prelude::*;
 use indexmap::IndexMap;
 use valence_protocol::status_effects::StatusEffect;
 
+const DEFAULT_STATUS_EFFECT_DURATION_TICKS: i32 = 600;
+const TICKS_PER_SECOND: f32 = 20.0;
+
 /// Represents a change in the [`ActiveStatusEffects`] of an [`Entity`].
 #[derive(Debug)]
 enum StatusEffectChange {
@@ -32,6 +35,66 @@ pub struct ActiveStatusEffects {
     /// order of duration.
     current_effects: IndexMap<StatusEffect, Vec<ActiveStatusEffect>>,
     changes: Vec<StatusEffectChange>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct StatusEffectApplication {
+    applied: bool,
+    effects: Vec<ActiveStatusEffect>,
+}
+
+fn apply_status_effect_core(
+    current_effects: &[ActiveStatusEffect],
+    effect: ActiveStatusEffect,
+) -> StatusEffectApplication {
+    let mut effects = current_effects.to_vec();
+    let applied = apply_status_effect_to_vec(&mut effects, effect);
+
+    StatusEffectApplication { applied, effects }
+}
+
+fn apply_status_effect_to_vec(
+    effects: &mut Vec<ActiveStatusEffect>,
+    effect: ActiveStatusEffect,
+) -> bool {
+    let duration = effect.remaining_duration();
+    let amplifier = effect.amplifier();
+
+    if let Some(index) = effects.iter().position(|e| e.amplifier() <= amplifier) {
+        let active_status_effect = &effects[index];
+
+        if active_status_effect.remaining_duration() < duration
+            || active_status_effect.amplifier() < amplifier
+        {
+            effects[index] = effect;
+
+            let mut remaining_effects = effects.split_off(index + 1);
+            remaining_effects.retain(|e| e.remaining_duration() >= duration);
+            effects.append(&mut remaining_effects);
+            true
+        } else if active_status_effect.remaining_duration() > duration
+            && active_status_effect.amplifier() < amplifier
+        {
+            effects.insert(index, effect);
+            true
+        } else {
+            false
+        }
+    } else if let Some(last) = effects.last() {
+        if last.remaining_duration() < effect.remaining_duration() {
+            effects.push(effect);
+            true
+        } else {
+            false
+        }
+    } else {
+        effects.push(effect);
+        true
+    }
+}
+
+fn status_effect_expired_core(instant: bool, remaining_duration: Option<i32>) -> bool {
+    instant || remaining_duration.is_some_and(|duration| duration <= 0)
 }
 
 // public API
@@ -144,64 +207,16 @@ impl ActiveStatusEffects {
     ///
     /// Returns true if the effect was applied.
     fn apply_effect(&mut self, effect: ActiveStatusEffect) -> bool {
-        let effects = self
-            .current_effects
-            .entry(effect.status_effect())
-            .or_default();
+        let status_effect = effect.status_effect();
+        let effects = self.current_effects.entry(status_effect).or_default();
+        let application = apply_status_effect_core(effects, effect);
 
-        let duration = effect.remaining_duration();
-        let amplifier = effect.amplifier();
-
-        if let Some(index) = effects.iter().position(|e| e.amplifier() <= amplifier) {
-            // Found an effect with the same or a lower amplifier.
-
-            let active_status_effect = &effects[index];
-
-            if active_status_effect.remaining_duration() < duration
-                || active_status_effect.amplifier() < amplifier
-            {
-                // if its duration is shorter or its amplifier is lower, override it.
-                effects[index] = effect;
-
-                // Remove effects after the current one that have a lower
-                // duration.
-                let mut remaining_effects = effects.split_off(index + 1);
-                remaining_effects.retain(|e| e.remaining_duration() >= duration);
-                effects.append(&mut remaining_effects);
-                true
-            } else if active_status_effect.remaining_duration() > duration
-                && active_status_effect.amplifier() < amplifier
-            {
-                // if its duration is longer and its amplifier is lower, insert
-                // the new effect before it.
-                effects.insert(index, effect);
-                true
-            } else {
-                // if its duration is longer and its amplifier is higher, do
-                // nothing.
-                false
-            }
-        } else {
-            // Found no effect with an equal or lower amplifier.
-            // This means all effects have a higher amplifier or the vec is
-            // empty.
-
-            if let Some(last) = effects.last() {
-                // There is at least one effect with a higher amplifier.
-                if last.remaining_duration() < effect.remaining_duration() {
-                    // if its duration is shorter, we can insert it at the end.
-                    effects.push(effect);
-                    true
-                } else {
-                    // if its duration is longer, do nothing.
-                    false
-                }
-            } else {
-                // The vec is empty.
-                effects.push(effect);
-                true
-            }
+        if application.applied {
+            *effects = application.effects;
+            return true;
         }
+
+        false
     }
 
     /// Replaces an effect.
@@ -336,7 +351,7 @@ impl ActiveStatusEffect {
         Self {
             effect,
             amplifier: 0,
-            initial_duration: Some(600),
+            initial_duration: Some(DEFAULT_STATUS_EFFECT_DURATION_TICKS),
             active_ticks: 0,
             ambient: false,
             show_particles: true,
@@ -358,7 +373,7 @@ impl ActiveStatusEffect {
 
     /// Sets the duration of the [`ActiveStatusEffect`] in seconds.
     pub fn with_duration_seconds(mut self, duration: f32) -> Self {
-        self.initial_duration = Some((duration * 20.0).round() as i32);
+        self.initial_duration = Some((duration * TICKS_PER_SECOND).round() as i32);
         self
     }
 
@@ -437,16 +452,52 @@ impl ActiveStatusEffect {
     /// Returns true if the [`ActiveStatusEffect`] has expired or if it is
     /// instant.
     pub fn expired(&self) -> bool {
-        self.status_effect().instant()
-            || self
-                .remaining_duration()
-                .is_some_and(|duration| duration <= 0)
+        status_effect_expired_core(self.status_effect().instant(), self.remaining_duration())
     }
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
+
+    const SHORT_DURATION_TICKS: i32 = 100;
+    const LONG_DURATION_TICKS: i32 = 200;
+    const LONGER_DURATION_TICKS: i32 = 300;
+    const INVALID_DURATION_TICKS: i32 = -1;
+
+    #[test]
+    fn status_effect_core_inserts_stronger_effect() {
+        let weaker = ActiveStatusEffect::from_effect(StatusEffect::Speed).with_amplifier(1);
+        let stronger = ActiveStatusEffect::from_effect(StatusEffect::Speed).with_amplifier(2);
+
+        let application = apply_status_effect_core(std::slice::from_ref(&weaker), stronger.clone());
+
+        assert!(application.applied);
+        assert_eq!(application.effects, [stronger]);
+    }
+
+    #[test]
+    fn status_effect_core_ignores_weaker_shorter_effect() {
+        let stronger = ActiveStatusEffect::from_effect(StatusEffect::Speed)
+            .with_amplifier(2)
+            .with_duration(LONG_DURATION_TICKS);
+        let weaker = ActiveStatusEffect::from_effect(StatusEffect::Speed)
+            .with_amplifier(1)
+            .with_duration(SHORT_DURATION_TICKS);
+
+        let application = apply_status_effect_core(std::slice::from_ref(&stronger), weaker);
+
+        assert!(!application.applied);
+        assert_eq!(application.effects, [stronger]);
+    }
+
+    #[test]
+    fn invalid_status_duration_expires_immediately() {
+        let effect = ActiveStatusEffect::from_effect(StatusEffect::Speed)
+            .with_duration(INVALID_DURATION_TICKS);
+
+        assert!(effect.expired());
+    }
 
     #[test]
     fn test_apply_effect() {
@@ -493,13 +544,13 @@ mod test {
 
         let effect = ActiveStatusEffect::from_effect(StatusEffect::Speed)
             .with_amplifier(1)
-            .with_duration(100);
+            .with_duration(SHORT_DURATION_TICKS);
         let effect2 = ActiveStatusEffect::from_effect(StatusEffect::Speed)
             .with_amplifier(1)
-            .with_duration(200);
+            .with_duration(LONG_DURATION_TICKS);
         let effect3 = ActiveStatusEffect::from_effect(StatusEffect::Speed)
             .with_amplifier(0)
-            .with_duration(300);
+            .with_duration(LONGER_DURATION_TICKS);
 
         effects.apply(effect.clone());
         effects.apply_changes();

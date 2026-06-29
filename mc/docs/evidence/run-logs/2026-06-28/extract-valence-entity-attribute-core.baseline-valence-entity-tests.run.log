@@ -1,0 +1,20 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_entity --lib
+note=copied from pueue task 741, executed before Valence entity core edits in this session
+test active_status_effects::test::test_apply_effect ... ok
+test active_status_effects::test::test_apply_effect_duration ... ok
+test attributes::tests::test_compute_value ... ok
+test flags::tests::get_set_flags ... ok
+test query::tests::init_packets_send_spawn_before_metadata ... ok
+test tracked_data::tests::clearing_update_values_removes_despawn_stale_metadata ... ok
+test tracked_data::tests::changed_tracked_data_emits_init_and_update_bytes ... ok
+test tracked_data::tests::default_values_are_suppressed_for_spawn_but_update_resets_client ... ok
+test tracked_data::tests::encoding_failure_does_not_mutate_existing_entries ... ok
+test tracked_data::tests::insert_remove_init_tracked_data ... ok
+test tracked_data::tests::invalid_metadata_index_fails_closed ... ok
+test tracked_data::tests::same_tick_updates_keep_final_value_per_index ... ok
+test tracked_data::tests::unchanged_tracked_data_emits_no_packets ... ok
+test tests::despawned_entities_are_removed_from_manager ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0

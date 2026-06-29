@@ -3,10 +3,24 @@
 use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
 use derive_more::Deref;
-use valence_math::{Aabb, UVec3, Vec3Swizzles};
+use valence_math::{Aabb, DVec3, UVec3, Vec3Swizzles};
 use valence_protocol::Direction;
 
 use crate::*;
+
+const HITBOX_MIN_SIZE_COMPONENT: f64 = 0.0;
+const CHILD_HITBOX_SCALE_DIVISOR: f64 = 2.0;
+const AREA_EFFECT_CLOUD_DIAMETER_MULTIPLIER: f64 = 2.0;
+const AREA_EFFECT_CLOUD_HEIGHT: f64 = 0.5;
+const ARMOR_STAND_SMALL_FLAG_BIT: i8 = 1_i8 << 0;
+const ARMOR_STAND_MARKER_FLAG_BIT: i8 = 1_i8 << 4;
+const ARMOR_STAND_MARKER_HITBOX_SIZE: DVec3 = DVec3::ZERO;
+const ARMOR_STAND_SMALL_HITBOX_SIZE: DVec3 = DVec3::new(0.5, 0.9875, 0.5);
+const ARMOR_STAND_NORMAL_HITBOX_SIZE: DVec3 = DVec3::new(0.5, 1.975, 0.5);
+const PLAYER_SLEEPING_HITBOX_SIZE: DVec3 = DVec3::new(0.2, 0.2, 0.2);
+const PLAYER_LOW_POSE_HITBOX_SIZE: DVec3 = DVec3::new(0.6, 0.6, 0.6);
+const PLAYER_SNEAKING_HITBOX_SIZE: DVec3 = DVec3::new(0.6, 1.5, 0.6);
+const PLAYER_STANDING_HITBOX_SIZE: DVec3 = DVec3::new(0.6, 1.8, 0.6);
 
 #[derive(SystemSet, Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub struct HitboxShapeUpdateSet;
@@ -87,7 +101,9 @@ impl HitboxShape {
     }
 
     pub(crate) fn centered(&mut self, size: DVec3) {
-        self.0 = Aabb::from_bottom_size(DVec3::ZERO, size);
+        if let Some(hitbox) = centered_hitbox_core(size) {
+            self.0 = hitbox;
+        }
     }
 
     pub(crate) fn in_world(&self, pos: DVec3) -> Aabb {
@@ -98,6 +114,54 @@ impl HitboxShape {
 impl Hitbox {
     pub fn get(&self) -> Aabb {
         self.0
+    }
+}
+
+fn centered_hitbox_core(size: DVec3) -> Option<Aabb> {
+    if !hitbox_size_is_valid(size) {
+        return None;
+    }
+
+    Some(Aabb::from_bottom_size(DVec3::ZERO, size))
+}
+
+fn hitbox_size_is_valid(size: DVec3) -> bool {
+    size.x.is_finite()
+        && size.y.is_finite()
+        && size.z.is_finite()
+        && size.x >= HITBOX_MIN_SIZE_COMPONENT
+        && size.y >= HITBOX_MIN_SIZE_COMPONENT
+        && size.z >= HITBOX_MIN_SIZE_COMPONENT
+}
+
+fn area_effect_cloud_hitbox_size(radius: f32) -> Option<DVec3> {
+    let radius = f64::from(radius);
+
+    if !radius.is_finite() || radius < HITBOX_MIN_SIZE_COMPONENT {
+        return None;
+    }
+
+    let diameter = radius * AREA_EFFECT_CLOUD_DIAMETER_MULTIPLIER;
+
+    Some([diameter, AREA_EFFECT_CLOUD_HEIGHT, diameter].into())
+}
+
+fn armor_stand_hitbox_size(flags: i8) -> DVec3 {
+    if flags & ARMOR_STAND_MARKER_FLAG_BIT != 0 {
+        ARMOR_STAND_MARKER_HITBOX_SIZE
+    } else if flags & ARMOR_STAND_SMALL_FLAG_BIT != 0 {
+        ARMOR_STAND_SMALL_HITBOX_SIZE
+    } else {
+        ARMOR_STAND_NORMAL_HITBOX_SIZE
+    }
+}
+
+fn player_hitbox_size(pose: Pose) -> DVec3 {
+    match pose {
+        Pose::Sleeping | Pose::Dying => PLAYER_SLEEPING_HITBOX_SIZE,
+        Pose::FallFlying | Pose::Swimming | Pose::SpinAttack => PLAYER_LOW_POSE_HITBOX_SIZE,
+        Pose::Sneaking => PLAYER_SNEAKING_HITBOX_SIZE,
+        _ => PLAYER_STANDING_HITBOX_SIZE,
     }
 }
 
@@ -248,8 +312,9 @@ fn update_area_effect_cloud_hitbox(
     >,
 ) {
     for (mut hitbox, cloud_radius) in &mut query {
-        let diameter = f64::from(cloud_radius.0) * 2.0;
-        hitbox.centered([diameter, 0.5, diameter].into());
+        if let Some(size) = area_effect_cloud_hitbox_size(cloud_radius.0) {
+            hitbox.centered(size);
+        }
     }
 }
 
@@ -260,24 +325,13 @@ fn update_armor_stand_hitbox(
     >,
 ) {
     for (mut hitbox, stand_flags) in &mut query {
-        hitbox.centered(
-            if stand_flags.0 & 16 != 0 {
-                // Marker armor stand
-                [0.0; 3]
-            } else if stand_flags.0 & 1 != 0 {
-                // Small armor stand
-                [0.5, 0.9875, 0.5]
-            } else {
-                [0.5, 1.975, 0.5]
-            }
-            .into(),
-        );
+        hitbox.centered(armor_stand_hitbox_size(stand_flags.0));
     }
 }
 
 fn child_hitbox(child: bool, v: DVec3) -> DVec3 {
     if child {
-        v / 2.0
+        v / CHILD_HITBOX_SCALE_DIVISOR
     } else {
         v
     }
@@ -384,15 +438,7 @@ fn update_player_hitbox(
     >,
 ) {
     for (mut hitbox, pose) in &mut query {
-        hitbox.centered(
-            match pose.0 {
-                Pose::Sleeping | Pose::Dying => [0.2, 0.2, 0.2],
-                Pose::FallFlying | Pose::Swimming | Pose::SpinAttack => [0.6, 0.6, 0.6],
-                Pose::Sneaking => [0.6, 1.5, 0.6],
-                _ => [0.6, 1.8, 0.6],
-            }
-            .into(),
-        );
+        hitbox.centered(player_hitbox_size(pose.0));
     }
 }
 
@@ -545,5 +591,47 @@ fn update_shulker_hitbox(
         }
 
         hitbox.0 = Aabb::new(min, max);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const VALID_CLOUD_RADIUS: f32 = 1.5;
+    const EXPECTED_CLOUD_DIAMETER: f64 = 3.0;
+    const INVALID_HITBOX_SIZE: DVec3 = DVec3::new(-0.1, 1.0, 1.0);
+    const NEGATIVE_CLOUD_RADIUS: f32 = -1.0;
+
+    #[test]
+    fn hitbox_core_selects_player_pose_size() {
+        assert_eq!(
+            player_hitbox_size(Pose::Sneaking),
+            PLAYER_SNEAKING_HITBOX_SIZE
+        );
+        assert_eq!(
+            player_hitbox_size(Pose::Standing),
+            PLAYER_STANDING_HITBOX_SIZE
+        );
+    }
+
+    #[test]
+    fn hitbox_core_calculates_area_effect_cloud_size() {
+        let size = area_effect_cloud_hitbox_size(VALID_CLOUD_RADIUS).unwrap();
+
+        assert_eq!(
+            size,
+            DVec3::new(
+                EXPECTED_CLOUD_DIAMETER,
+                AREA_EFFECT_CLOUD_HEIGHT,
+                EXPECTED_CLOUD_DIAMETER,
+            )
+        );
+    }
+
+    #[test]
+    fn invalid_hitbox_size_fails_closed() {
+        assert!(centered_hitbox_core(INVALID_HITBOX_SIZE).is_none());
+        assert!(area_effect_cloud_hitbox_size(NEGATIVE_CLOUD_RADIUS).is_none());
     }
 }

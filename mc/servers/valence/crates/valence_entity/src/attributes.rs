@@ -7,6 +7,33 @@ pub use valence_generated::attributes::{EntityAttribute, EntityAttributeOperatio
 use valence_protocol::packets::play::entity_attributes_s2c::*;
 use valence_protocol::Ident;
 
+fn compute_attribute_value_core(
+    base_value: f64,
+    min_value: f64,
+    max_value: f64,
+    add_modifiers: impl IntoIterator<Item = f64>,
+    multiply_base_modifiers: impl IntoIterator<Item = f64>,
+    multiply_total_modifiers: impl IntoIterator<Item = f64>,
+) -> f64 {
+    let mut value = base_value;
+
+    for modifier in add_modifiers {
+        value += modifier;
+    }
+
+    let base_plus_add = value;
+
+    for modifier in multiply_base_modifiers {
+        value += base_plus_add * modifier;
+    }
+
+    for modifier in multiply_total_modifiers {
+        value += value * modifier;
+    }
+
+    value.clamp(min_value, max_value)
+}
+
 /// An instance of an Entity Attribute.
 #[derive(Component, Clone, PartialEq, Debug)]
 pub struct EntityAttributeInstance {
@@ -57,26 +84,14 @@ impl EntityAttributeInstance {
 
     /// Gets the computed value of the attribute.
     pub fn compute_value(&self) -> f64 {
-        let mut value = self.base_value;
-
-        // Increment value by modifier
-        for (_, modifier) in &self.add_modifiers {
-            value += modifier;
-        }
-
-        let v = value;
-
-        // Increment value by modifier * v
-        for (_, modifier) in &self.multiply_base_modifiers {
-            value += v * modifier;
-        }
-
-        // Increment value by modifier * value
-        for (_, modifier) in &self.multiply_total_modifiers {
-            value += value * modifier;
-        }
-
-        value.clamp(self.attribute.min_value(), self.attribute.max_value())
+        compute_attribute_value_core(
+            self.base_value,
+            self.attribute.min_value(),
+            self.attribute.max_value(),
+            self.add_modifiers.values().copied(),
+            self.multiply_base_modifiers.values().copied(),
+            self.multiply_total_modifiers.values().copied(),
+        )
     }
 
     /// Sets an add modifier.
@@ -446,8 +461,54 @@ mod tests {
     const FIRST_MULTIPLY_BASE_AMOUNT: f64 = 0.2;
     const SECOND_MULTIPLY_BASE_AMOUNT: f64 = 0.2;
     const MULTIPLY_TOTAL_AMOUNT: f64 = 0.5;
+    const REPLACEMENT_ADD_MODIFIER_AMOUNT: f64 = 12.0;
     const COMPUTED_WITH_ADD_MODIFIER: f64 = 63.0;
     const COMPUTED_AFTER_ADD_REMOVAL: f64 = 42.0;
+    const CLAMPED_MAX_HEALTH_VALUE: f64 = 1_024.0;
+
+    #[test]
+    fn attribute_core_computes_modifier_chain() {
+        let computed = compute_attribute_value_core(
+            BASE_HEALTH,
+            EntityAttribute::GenericMaxHealth.min_value(),
+            EntityAttribute::GenericMaxHealth.max_value(),
+            [ADD_MODIFIER_AMOUNT],
+            [FIRST_MULTIPLY_BASE_AMOUNT, SECOND_MULTIPLY_BASE_AMOUNT],
+            [MULTIPLY_TOTAL_AMOUNT],
+        );
+
+        assert_eq!(computed, COMPUTED_WITH_ADD_MODIFIER);
+    }
+
+    #[test]
+    fn attribute_core_clamps_out_of_range_value() {
+        let computed = compute_attribute_value_core(
+            CLAMPED_MAX_HEALTH_VALUE,
+            EntityAttribute::GenericMaxHealth.min_value(),
+            EntityAttribute::GenericMaxHealth.max_value(),
+            [],
+            [],
+            [],
+        );
+
+        assert_eq!(computed, EntityAttribute::GenericMaxHealth.max_value());
+    }
+
+    #[test]
+    fn duplicate_modifier_replaces_previous_value() {
+        let add_uuid = Uuid::from_u128(ADD_MODIFIER_UUID);
+        let mut attribute =
+            EntityAttributeInstance::new_with_value(EntityAttribute::GenericMaxHealth, BASE_HEALTH);
+
+        attribute.with_add_modifier(add_uuid, ADD_MODIFIER_AMOUNT);
+        attribute.with_add_modifier(add_uuid, REPLACEMENT_ADD_MODIFIER_AMOUNT);
+
+        assert_eq!(attribute.add_modifiers.len(), 1);
+        assert_eq!(
+            attribute.add_modifiers.get(&add_uuid),
+            Some(&REPLACEMENT_ADD_MODIFIER_AMOUNT)
+        );
+    }
 
     #[test]
     fn test_compute_value() {

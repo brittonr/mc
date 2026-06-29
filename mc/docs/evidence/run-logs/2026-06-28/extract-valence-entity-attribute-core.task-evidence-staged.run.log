@@ -1,0 +1,12 @@
+command=nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 66 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 8 ms: Could not connect to server; retrying in 58 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1067 ms: Could not connect to server; retrying in 395 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 319 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1071 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/mk1sn4pwq4z416vvl2i84lvhlw6srvhc-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/mk1sn4pwq4z416vvl2i84lvhlw6srvhc-mc-compat-cairn-task-evidence.drv'...
+exit_status=0

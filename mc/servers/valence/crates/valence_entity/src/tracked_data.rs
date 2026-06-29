@@ -49,6 +49,21 @@ struct TrackedDataEntry {
     byte_len: usize,
 }
 
+#[derive(Clone, Debug, Default)]
+struct TrackedDataCacheSnapshot {
+    data: Vec<u8>,
+    entries: Vec<TrackedDataEntry>,
+}
+
+impl TrackedDataCacheSnapshot {
+    fn from_parts(data: &[u8], entries: &[TrackedDataEntry]) -> Self {
+        Self {
+            data: data.to_vec(),
+            entries: entries.to_vec(),
+        }
+    }
+}
+
 /// Cache for all the tracked data of an entity. Used for the
 /// [`EntityTrackerUpdateS2c`][packet] packet.
 ///
@@ -104,15 +119,10 @@ impl TrackedData {
     ) -> Result<(), TrackedDataError> {
         let encoded_entry = encode_tracked_data_entry(index, type_id, value)?;
 
-        remove_tracked_entry(&mut self.init_data, &mut self.init_entries, index);
-        remove_packet_terminator(&mut self.init_data);
-        append_tracked_entry(
-            &mut self.init_data,
-            &mut self.init_entries,
-            index,
-            &encoded_entry,
-        );
-        self.init_data.push(TRACKED_DATA_TERMINATOR_INDEX);
+        let snapshot =
+            replace_tracked_entry_core(&self.init_data, &self.init_entries, index, &encoded_entry);
+        self.init_data = snapshot.data;
+        self.init_entries = snapshot.entries;
 
         Ok(())
     }
@@ -124,7 +134,12 @@ impl TrackedData {
             return false;
         }
 
-        remove_tracked_entry(&mut self.init_data, &mut self.init_entries, index)
+        let (snapshot, removed) =
+            remove_tracked_entry_core(&self.init_data, &self.init_entries, index);
+        self.init_data = snapshot.data;
+        self.init_entries = snapshot.entries;
+
+        removed
     }
 
     /// Appends an updated tracked value.
@@ -149,15 +164,14 @@ impl TrackedData {
     ) -> Result<(), TrackedDataError> {
         let encoded_entry = encode_tracked_data_entry(index, type_id, value)?;
 
-        remove_tracked_entry(&mut self.update_data, &mut self.update_entries, index);
-        remove_packet_terminator(&mut self.update_data);
-        append_tracked_entry(
-            &mut self.update_data,
-            &mut self.update_entries,
+        let snapshot = replace_tracked_entry_core(
+            &self.update_data,
+            &self.update_entries,
             index,
             &encoded_entry,
         );
-        self.update_data.push(TRACKED_DATA_TERMINATOR_INDEX);
+        self.update_data = snapshot.data;
+        self.update_entries = snapshot.entries;
 
         Ok(())
     }
@@ -191,6 +205,38 @@ fn encode_tracked_data_entry<V: Encode>(
         .map_err(|source| TrackedDataError::EncodeFailed { source })?;
 
     Ok(encoded_entry)
+}
+
+fn replace_tracked_entry_core(
+    data: &[u8],
+    entries: &[TrackedDataEntry],
+    index: u8,
+    encoded_entry: &[u8],
+) -> TrackedDataCacheSnapshot {
+    let mut snapshot = TrackedDataCacheSnapshot::from_parts(data, entries);
+
+    remove_tracked_entry(&mut snapshot.data, &mut snapshot.entries, index);
+    remove_packet_terminator(&mut snapshot.data);
+    append_tracked_entry(
+        &mut snapshot.data,
+        &mut snapshot.entries,
+        index,
+        encoded_entry,
+    );
+    snapshot.data.push(TRACKED_DATA_TERMINATOR_INDEX);
+
+    snapshot
+}
+
+fn remove_tracked_entry_core(
+    data: &[u8],
+    entries: &[TrackedDataEntry],
+    index: u8,
+) -> (TrackedDataCacheSnapshot, bool) {
+    let mut snapshot = TrackedDataCacheSnapshot::from_parts(data, entries);
+    let removed = remove_tracked_entry(&mut snapshot.data, &mut snapshot.entries, index);
+
+    (snapshot, removed)
 }
 
 fn find_tracked_entry_range(
@@ -258,6 +304,8 @@ mod tests {
     const DEFAULT_FLAGS_VALUE: u8 = 0;
     const CUSTOM_NAME_VALUE: &str = "name";
     const REPLACEMENT_CUSTOM_NAME_VALUE: &str = "replacement";
+    const TRACKED_ENTRY_BYTE_LEN: usize = 3;
+    const TRACKED_VALUE_OFFSET: usize = 2;
 
     #[derive(Debug)]
     struct FailingEncode;
@@ -266,6 +314,41 @@ mod tests {
         fn encode(&self, _w: impl std::io::Write) -> anyhow::Result<()> {
             anyhow::bail!("intentional tracked-data fixture failure")
         }
+    }
+
+    #[test]
+    fn tracked_data_core_replaces_entry_without_mutating_input() {
+        let original_data = [
+            FLAGS_INDEX,
+            BYTE_TYPE_ID,
+            FIRST_FLAGS_VALUE,
+            TRACKED_DATA_TERMINATOR_INDEX,
+        ];
+        let original_entries = [TrackedDataEntry {
+            index: FLAGS_INDEX,
+            byte_len: TRACKED_ENTRY_BYTE_LEN,
+        }];
+        let replacement = [FLAGS_INDEX, BYTE_TYPE_ID, SECOND_FLAGS_VALUE];
+
+        let snapshot = replace_tracked_entry_core(
+            &original_data,
+            &original_entries,
+            FLAGS_INDEX,
+            &replacement,
+        );
+
+        assert_eq!(original_data[TRACKED_VALUE_OFFSET], FIRST_FLAGS_VALUE);
+        assert_eq!(snapshot.data[TRACKED_VALUE_OFFSET], SECOND_FLAGS_VALUE);
+        assert_eq!(snapshot.entries.len(), 1);
+    }
+
+    #[test]
+    fn tracked_data_core_reports_missing_entry() {
+        let (snapshot, removed) = remove_tracked_entry_core(&[], &[], FLAGS_INDEX);
+
+        assert!(!removed);
+        assert!(snapshot.data.is_empty());
+        assert!(snapshot.entries.is_empty());
     }
 
     #[test]

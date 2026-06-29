@@ -1,0 +1,26 @@
+command=nix run .#cairn -- sync extract-valence-entity-attribute-core --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/extract-valence-entity-attribute-core/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/extract-valence-entity-attribute-core/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "extract-valence-entity-attribute-core",
+  "delta_specs": [
+    "./cairn/changes/extract-valence-entity-attribute-core/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "aa23074b8b773bdfa9ed00e16b897b00b3e1209285b3d7024e94ae3e40e988f7",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "699f6a5c4fc61f07f96a7ea646f8411e39412ec283dbc5fcf3873d78539282e9",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "4ab0a3d4c97902527a94ae5dd7e108dae797d297fcb182ac884035447c68ed26"
+}
+exit_status=0

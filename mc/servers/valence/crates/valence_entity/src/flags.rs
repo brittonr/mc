@@ -1,5 +1,41 @@
 use super::*;
 
+const FLAG_BIT_COUNT: u8 = 8;
+const FLAG_ENABLED_BIT: i8 = 1;
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+enum FlagError {
+    UnknownOffset { offset: u8 },
+}
+
+const fn flag_bit(offset: u8) -> Result<i8, FlagError> {
+    if offset >= FLAG_BIT_COUNT {
+        return Err(FlagError::UnknownOffset { offset });
+    }
+
+    Ok(FLAG_ENABLED_BIT << offset)
+}
+
+const fn flag_is_set(bits: i8, offset: u8) -> Result<bool, FlagError> {
+    match flag_bit(offset) {
+        Ok(bit) => Ok(bits & bit == bit),
+        Err(error) => Err(error),
+    }
+}
+
+const fn set_flag(bits: i8, offset: u8, enabled: bool) -> Result<i8, FlagError> {
+    match flag_bit(offset) {
+        Ok(bit) => {
+            if enabled {
+                Ok(bits | bit)
+            } else {
+                Ok(bits & !bit)
+            }
+        }
+        Err(error) => Err(error),
+    }
+}
+
 // TODO: should `set_if_neq` behavior be the default behavior for setters?
 macro_rules! flags {
     (
@@ -18,7 +54,10 @@ macro_rules! flags {
                     #[doc = "."]
                     #[inline]
                     pub const fn $flag(&self) -> bool {
-                        (self.0 >> $offset) & 1 == 1
+                        match flag_is_set(self.0, $offset) {
+                            Ok(value) => value,
+                            Err(_) => false,
+                        }
                     }
 
                     paste! {
@@ -27,7 +66,8 @@ macro_rules! flags {
                         #[doc = "."]
                         #[inline]
                         pub fn [< set_$flag >] (&mut self, $flag: bool) {
-                            self.0 = (self.0 & !(1 << $offset)) | ((i8::from($flag)) << $offset);
+                            self.0 = set_flag(self.0, $offset, $flag)
+                                .expect("generated flag offset must be valid");
                         }
                     }
                 )*
@@ -128,6 +168,28 @@ flags! {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn flag_core_sets_and_clears_known_offset() {
+        let flags = set_flag(0, 0, true).unwrap();
+        assert_eq!(flag_is_set(flags, 0), Ok(true));
+
+        let flags = set_flag(flags, 0, false).unwrap();
+        assert_eq!(flag_is_set(flags, 0), Ok(false));
+    }
+
+    #[test]
+    fn unknown_flag_offset_fails_closed() {
+        let error = set_flag(0, FLAG_BIT_COUNT, true).unwrap_err();
+
+        assert_eq!(
+            error,
+            FlagError::UnknownOffset {
+                offset: FLAG_BIT_COUNT
+            }
+        );
+        assert_eq!(flag_is_set(0, FLAG_BIT_COUNT), Err(error));
+    }
 
     #[test]
     fn get_set_flags() {

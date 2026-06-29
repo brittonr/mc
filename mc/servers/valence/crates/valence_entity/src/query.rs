@@ -21,6 +21,43 @@ use crate::{
     ObjectData, OldEntityLayerId, OldPosition, OnGround, Position, Velocity,
 };
 
+const TELEPORT_DELTA_THRESHOLD_BLOCKS: f64 = 8.0;
+const RELATIVE_MOVE_PACKET_SCALE: f64 = 4_096.0;
+const ENTITY_STATUS_PACKET_BIT_COUNT: usize = mem::size_of::<EntityStatuses>();
+const ENTITY_ANIMATION_PACKET_BIT_COUNT: usize = mem::size_of::<EntityAnimations>();
+
+#[derive(Copy, Clone, Debug, PartialEq)]
+struct EntityMovementDecision {
+    position_delta: DVec3,
+    changed_position: bool,
+    needs_teleport: bool,
+}
+
+fn entity_movement_decision(position: DVec3, old_position: DVec3) -> EntityMovementDecision {
+    let position_delta = position - old_position;
+    let needs_teleport = position_delta.abs().max_element() >= TELEPORT_DELTA_THRESHOLD_BLOCKS;
+    let changed_position = position != old_position;
+
+    EntityMovementDecision {
+        position_delta,
+        changed_position,
+        needs_teleport,
+    }
+}
+
+fn relative_move_delta(position_delta: DVec3) -> [i16; 3] {
+    (position_delta * RELATIVE_MOVE_PACKET_SCALE)
+        .to_array()
+        .map(|value| value as i16)
+}
+
+fn active_packet_indices(bits: u64, bit_count: usize) -> Vec<u8> {
+    (0..bit_count)
+        .filter(|index| (bits >> index) & 1 == 1)
+        .map(|index| index as u8)
+        .collect()
+}
+
 #[derive(QueryData)]
 pub struct EntityInitQuery {
     pub entity_id: &'static EntityId,
@@ -108,24 +145,21 @@ impl UpdateEntityQueryItem<'_> {
         // TODO: @RJ I saw you're using UpdateEntityPosition and UpdateEntityRotation sometimes. These two packets are actually broken on the client and will erase previous position/rotation https://bugs.mojang.com/browse/MC-255263 -Moulberry
 
         let entity_id = VarInt(self.id.get());
+        let movement = entity_movement_decision(self.pos.0, self.old_pos.get());
 
-        let position_delta = self.pos.0 - self.old_pos.get();
-        let needs_teleport = position_delta.abs().max_element() >= 8.0;
-        let changed_position = self.pos.0 != self.old_pos.get();
-
-        if changed_position && !needs_teleport && self.look.is_changed() {
+        if movement.changed_position && !movement.needs_teleport && self.look.is_changed() {
             writer.write_packet(&RotateAndMoveRelativeS2c {
                 entity_id,
-                delta: (position_delta * 4096.0).to_array().map(|v| v as i16),
+                delta: relative_move_delta(movement.position_delta),
                 yaw: ByteAngle::from_degrees(self.look.yaw),
                 pitch: ByteAngle::from_degrees(self.look.pitch),
                 on_ground: self.on_ground.0,
             });
         } else {
-            if changed_position && !needs_teleport {
+            if movement.changed_position && !movement.needs_teleport {
                 writer.write_packet(&MoveRelativeS2c {
                     entity_id,
-                    delta: (position_delta * 4096.0).to_array().map(|v| v as i16),
+                    delta: relative_move_delta(movement.position_delta),
                     on_ground: self.on_ground.0,
                 });
             }
@@ -140,7 +174,7 @@ impl UpdateEntityQueryItem<'_> {
             }
         }
 
-        if needs_teleport {
+        if movement.needs_teleport {
             writer.write_packet(&EntityPositionS2c {
                 entity_id,
                 position: self.pos.0,
@@ -171,26 +205,22 @@ impl UpdateEntityQueryItem<'_> {
             });
         }
 
-        if self.statuses.0 != 0 {
-            for i in 0..mem::size_of_val(self.statuses) {
-                if (self.statuses.0 >> i) & 1 == 1 {
-                    writer.write_packet(&EntityStatusS2c {
-                        entity_id: entity_id.0,
-                        entity_status: i as u8,
-                    });
-                }
-            }
+        for entity_status in active_packet_indices(self.statuses.0, ENTITY_STATUS_PACKET_BIT_COUNT)
+        {
+            writer.write_packet(&EntityStatusS2c {
+                entity_id: entity_id.0,
+                entity_status,
+            });
         }
 
-        if self.animations.0 != 0 {
-            for i in 0..mem::size_of_val(self.animations) {
-                if (self.animations.0 >> i) & 1 == 1 {
-                    writer.write_packet(&EntityAnimationS2c {
-                        entity_id,
-                        animation: i as u8,
-                    });
-                }
-            }
+        for animation in active_packet_indices(
+            u64::from(self.animations.0),
+            ENTITY_ANIMATION_PACKET_BIT_COUNT,
+        ) {
+            writer.write_packet(&EntityAnimationS2c {
+                entity_id,
+                animation,
+            });
         }
 
         if let Some(attributes) = self.tracked_attributes {
@@ -216,6 +246,10 @@ mod tests {
     const INIT_METADATA_INDEX: u8 = 0;
     const INIT_METADATA_TYPE_ID: u8 = 0;
     const INIT_METADATA_VALUE: u8 = 1;
+    const RELATIVE_POSITION_DELTA: DVec3 = DVec3::new(1.0, 0.0, 0.0);
+    const TELEPORT_POSITION_DELTA: DVec3 = DVec3::new(TELEPORT_DELTA_THRESHOLD_BLOCKS, 0.0, 0.0);
+    const FIRST_PACKET_BIT: u64 = 0b0000_0001;
+    const EMPTY_PACKET_BIT_COUNT: usize = 0;
 
     #[derive(Default)]
     struct PacketNameWriter {
@@ -232,6 +266,29 @@ mod tests {
         }
 
         fn write_packet_bytes(&mut self, _bytes: &[u8]) {}
+    }
+
+    #[test]
+    fn query_core_selects_relative_movement() {
+        let movement = entity_movement_decision(RELATIVE_POSITION_DELTA, DVec3::ZERO);
+
+        assert!(movement.changed_position);
+        assert!(!movement.needs_teleport);
+        assert_eq!(movement.position_delta, RELATIVE_POSITION_DELTA);
+    }
+
+    #[test]
+    fn query_core_selects_teleport_movement() {
+        let movement = entity_movement_decision(TELEPORT_POSITION_DELTA, DVec3::ZERO);
+
+        assert!(movement.changed_position);
+        assert!(movement.needs_teleport);
+    }
+
+    #[test]
+    fn empty_query_bit_inputs_emit_no_packet_indices() {
+        assert!(active_packet_indices(0, ENTITY_STATUS_PACKET_BIT_COUNT).is_empty());
+        assert!(active_packet_indices(FIRST_PACKET_BIT, EMPTY_PACKET_BIT_COUNT).is_empty());
     }
 
     #[test]

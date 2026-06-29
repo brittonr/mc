@@ -1,0 +1,41 @@
+command=nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_entity --lib
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+
+running 30 tests
+test active_status_effects::test::invalid_status_duration_expires_immediately ... ok
+test active_status_effects::test::status_effect_core_inserts_stronger_effect ... ok
+test active_status_effects::test::status_effect_core_ignores_weaker_shorter_effect ... ok
+test active_status_effects::test::test_apply_effect ... ok
+test attributes::tests::attribute_core_clamps_out_of_range_value ... ok
+test attributes::tests::attribute_core_computes_modifier_chain ... ok
+test active_status_effects::test::test_apply_effect_duration ... ok
+test attributes::tests::duplicate_modifier_replaces_previous_value ... ok
+test attributes::tests::test_compute_value ... ok
+test flags::tests::flag_core_sets_and_clears_known_offset ... ok
+test flags::tests::get_set_flags ... ok
+test flags::tests::unknown_flag_offset_fails_closed ... ok
+test hitbox::tests::hitbox_core_calculates_area_effect_cloud_size ... ok
+test hitbox::tests::hitbox_core_selects_player_pose_size ... ok
+test hitbox::tests::invalid_hitbox_size_fails_closed ... ok
+test query::tests::empty_query_bit_inputs_emit_no_packet_indices ... ok
+test query::tests::init_packets_send_spawn_before_metadata ... ok
+test query::tests::query_core_selects_relative_movement ... ok
+test query::tests::query_core_selects_teleport_movement ... ok
+test tracked_data::tests::changed_tracked_data_emits_init_and_update_bytes ... ok
+test tracked_data::tests::clearing_update_values_removes_despawn_stale_metadata ... ok
+test tracked_data::tests::default_values_are_suppressed_for_spawn_but_update_resets_client ... ok
+test tracked_data::tests::encoding_failure_does_not_mutate_existing_entries ... ok
+test tracked_data::tests::insert_remove_init_tracked_data ... ok
+test tracked_data::tests::invalid_metadata_index_fails_closed ... ok
+test tracked_data::tests::same_tick_updates_keep_final_value_per_index ... ok
+test tracked_data::tests::tracked_data_core_replaces_entry_without_mutating_input ... ok
+test tracked_data::tests::tracked_data_core_reports_missing_entry ... ok
+test tracked_data::tests::unchanged_tracked_data_emits_no_packets ... ok
+test tests::despawned_entities_are_removed_from_manager ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0

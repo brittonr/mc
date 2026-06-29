@@ -1,0 +1,23 @@
+command=nix run .#cairn -- gate design extract-valence-entity-attribute-core --root . 
+{
+  "change": "extract-valence-entity-attribute-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "8eb8ca92a500f0a2010447b6dfee4dcc2241cb8fe705c8846368c06f4c8d4633",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "ebf7d36b7a6101e3c17814c9693fdf756eb7fdfca88f712c3d4e66e49adc6ac4",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
