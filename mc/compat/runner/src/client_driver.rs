@@ -882,9 +882,14 @@ fn spawn_mcp_controlled_client_process(
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::from(err_file));
-    apply_build_env(&mut cmd, &cfg.target_dir);
-    apply_headless_env(&mut cmd);
-    apply_scenario_probe_env(&mut cmd, cfg.scenario, 0, cfg.server_backend);
+    apply_build_env(&mut cmd, &cfg.target_dir)?;
+    apply_headless_env(&mut cmd)?;
+    apply_scenario_probe_env(
+        &mut cmd,
+        cfg.scenario,
+        FIRST_CLIENT_INDEX,
+        cfg.server_backend,
+    )?;
     cmd.spawn()
         .map_err(|err| format!("run MCP-controlled client {}: {err}", cfg.client_username))
 }
@@ -1520,9 +1525,9 @@ fn spawn_client_process(
         .arg(cfg.server_protocol.to_string())
         .stdout(Stdio::from(log_file))
         .stderr(Stdio::from(err_file));
-    apply_build_env(&mut cmd, &cfg.target_dir);
-    apply_headless_env(&mut cmd);
-    apply_scenario_probe_env(&mut cmd, cfg.scenario, client_index, cfg.server_backend);
+    apply_build_env(&mut cmd, &cfg.target_dir)?;
+    apply_headless_env(&mut cmd)?;
+    apply_scenario_probe_env(&mut cmd, cfg.scenario, client_index, cfg.server_backend)?;
     cmd.spawn()
         .map_err(|e| format!("run client {username}: {e}"))
 }
@@ -1548,8 +1553,10 @@ fn apply_scenario_probe_env(
     scenario: Scenario,
     client_index: usize,
     server_backend: ServerBackend,
-) {
-    scenario_behavior(scenario).apply_client_probe_env(cmd, client_index, server_backend);
+) -> Result<(), String> {
+    let patch = scenario_behavior(scenario).client_probe_env_patch(client_index, server_backend)?;
+    apply_env_patch_to_command(cmd, &patch);
+    Ok(())
 }
 
 pub(crate) fn planned_client_usernames(cfg: &Config) -> Vec<String> {

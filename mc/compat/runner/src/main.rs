@@ -1,6 +1,7 @@
 mod backend_shell;
 mod client_driver;
 mod config_patches;
+mod env_patch;
 mod evidence_bundle;
 mod evidence_core;
 mod evidence_receipts;
@@ -35,6 +36,7 @@ use client_driver::{
     world_persistence_pre_restart_server_log_path, world_persistence_restart_phase_path,
     world_persistence_state_dir,
 };
+use env_patch::{EnvPatch, EnvPatchDiagnostic};
 use evidence_bundle::*;
 #[cfg(test)]
 use evidence_core::{
@@ -121,6 +123,10 @@ const MULTI_CLIENT_START_STAGGER_SECS: u64 = PAPER_CONNECTION_THROTTLE_CLEAR_SEC
 const CTF_RACE_ACCEPT_CLIENT_FIRST_TICK: u32 = 760;
 const CTF_RACE_REJECT_CLIENT_FIRST_TICK: u32 = 800;
 const PAPER_PLUGIN_CONTAINER_DIR: &str = "/plugins";
+const PAPER_EULA_ACCEPTED_VALUE: &str = "TRUE";
+const PAPER_SERVER_TYPE: &str = "PAPER";
+const PAPER_ONLINE_MODE_VALUE: &str = "FALSE";
+const PAPER_MEMORY_LIMIT: &str = "1G";
 const PAPER_GRACEFUL_STOP_TIMEOUT_SECS: u64 = 60;
 const PAPER_VIEW_DISTANCE: u32 = 2;
 const PAPER_SIMULATION_DISTANCE: u32 = 2;
@@ -186,6 +192,13 @@ const GIT_STATUS_PORCELAIN_FLAG: &str = "--porcelain";
 const PROJECTILE_DAMAGE_CONTEXT_VELOCITY: f64 = 0.0;
 const PROJECTILE_DAMAGE_CONTEXT_PULL_STRENGTH: f64 = 1.0;
 const XVFB_SERVER_ARGS: &str = "-screen 0 1280x720x24 +extension GLX +render -noreset";
+const ENV_SOURCE_BUILD: &str = "build-env";
+const ENV_SOURCE_HEADLESS: &str = "headless-x11-env";
+const ENV_SOURCE_CLIENT_SCENARIO: &str = "client-scenario-env";
+const ENV_SOURCE_VALENCE_SCENARIO: &str = "valence-scenario-env";
+const ENV_SOURCE_VALENCE_STEEL_CONFIG: &str = "valence-steel-config-env";
+const ENV_SOURCE_PAPER_BASE: &str = "paper-base-env";
+const ENV_SOURCE_PAPER_SCENARIO: &str = "paper-scenario-env";
 const PROJECTILE_DAMAGE_VICTIM_START_HEALTH: f64 = 20.0;
 const INVENTORY_STACK_SPLIT_MERGE_PROBE_ENV: &str =
     scenario_contracts_generated::MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE;
@@ -1898,6 +1911,115 @@ fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
     Ok(server_port_was_set)
 }
 
+trait EnvPatchValue {
+    fn into_env_value(self) -> String;
+}
+
+impl EnvPatchValue for &str {
+    fn into_env_value(self) -> String {
+        self.to_string()
+    }
+}
+
+impl EnvPatchValue for String {
+    fn into_env_value(self) -> String {
+        self
+    }
+}
+
+impl EnvPatchValue for &String {
+    fn into_env_value(self) -> String {
+        self.clone()
+    }
+}
+
+impl EnvPatchValue for &Path {
+    fn into_env_value(self) -> String {
+        self.display().to_string()
+    }
+}
+
+impl EnvPatchValue for PathBuf {
+    fn into_env_value(self) -> String {
+        self.display().to_string()
+    }
+}
+
+impl EnvPatchValue for &PathBuf {
+    fn into_env_value(self) -> String {
+        self.display().to_string()
+    }
+}
+
+struct EnvPatchBuilder {
+    source: String,
+    patch: EnvPatch,
+    diagnostics: Vec<EnvPatchDiagnostic>,
+}
+
+impl EnvPatchBuilder {
+    fn new(source: impl Into<String>) -> Self {
+        Self {
+            source: source.into(),
+            patch: EnvPatch::new(),
+            diagnostics: Vec::new(),
+        }
+    }
+
+    fn env(&mut self, key: impl Into<String>, value: impl EnvPatchValue) -> &mut Self {
+        if let Err(err) = self
+            .patch
+            .push_set(self.source.clone(), key, value.into_env_value())
+        {
+            self.diagnostics.push(err);
+        }
+        self
+    }
+
+    fn env_remove(&mut self, key: impl Into<String>) -> &mut Self {
+        if let Err(err) = self.patch.push_remove(self.source.clone(), key) {
+            self.diagnostics.push(err);
+        }
+        self
+    }
+
+    fn finish(self) -> Result<EnvPatch, String> {
+        let Self {
+            patch, diagnostics, ..
+        } = self;
+        if !diagnostics.is_empty() {
+            return Err(diagnostics
+                .into_iter()
+                .map(|diagnostic| diagnostic.to_string())
+                .collect::<Vec<_>>()
+                .join("; "));
+        }
+        EnvPatch::compose(&[patch]).map_err(|diagnostic| diagnostic.to_string())
+    }
+}
+
+fn apply_env_patch_to_command(cmd: &mut Command, patch: &EnvPatch) {
+    for removal in patch.removals() {
+        cmd.env_remove(&removal.key);
+    }
+    for entry in patch.entries() {
+        cmd.env(&entry.key, &entry.value);
+    }
+}
+
+fn apply_env_patch_to_paper_args(cmd: &mut Command, patch: &EnvPatch) -> Result<(), String> {
+    if let Some(removal) = patch.removals().first() {
+        return Err(format!(
+            "Paper docker env cannot remove key {} from source {}",
+            removal.key, removal.source
+        ));
+    }
+    for entry in patch.entries() {
+        cmd.arg("-e").arg(format!("{}={}", entry.key, entry.value));
+    }
+    Ok(())
+}
+
 fn scenario_behavior(scenario: Scenario) -> &'static dyn ScenarioBehavior {
     scenario_behavior_kind(scenario)
 }
@@ -1923,14 +2045,13 @@ trait ScenarioBehavior {
     fn world_persistence_artifact_dir_name(&self) -> &'static str;
     fn uses_reconnect_session_marker(&self) -> bool;
     fn append_client_count_markers(&self, run_count: usize, output: &mut String);
-    fn apply_client_probe_env(
+    fn client_probe_env_patch(
         &self,
-        cmd: &mut Command,
         client_index: usize,
         server_backend: ServerBackend,
-    );
-    fn apply_valence_server_env(&self, cmd: &mut Command, cfg: &Config);
-    fn apply_paper_server_env(&self, cmd: &mut Command, cfg: &Config) -> Result<(), String>;
+    ) -> Result<EnvPatch, String>;
+    fn valence_server_env_patch(&self, cfg: &Config) -> Result<EnvPatch, String>;
+    fn paper_server_env_patch(&self, cfg: &Config) -> Result<EnvPatch, String>;
 }
 
 impl ScenarioBehavior for ScenarioBehaviorKind {
@@ -2131,12 +2252,12 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
         }
     }
 
-    fn apply_client_probe_env(
+    fn client_probe_env_patch(
         &self,
-        cmd: &mut Command,
         client_index: usize,
         _server_backend: ServerBackend,
-    ) {
+    ) -> Result<EnvPatch, String> {
+        let mut cmd = EnvPatchBuilder::new(ENV_SOURCE_CLIENT_SCENARIO);
         match self {
             ScenarioBehaviorKind::Default => {}
             ScenarioBehaviorKind::CompatBotProbe => {
@@ -2165,7 +2286,7 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                         .env("MC_COMPAT_FLAG_PROBE_REPEAT", PROBE_REPEAT_SINGLE);
                 }
                 if let Some(probe) = negative_probe {
-                    cmd.env("MC_COMPAT_NEGATIVE_PROBE", probe);
+                    cmd.env("MC_COMPAT_NEGATIVE_PROBE", *probe);
                 }
             }
             ScenarioBehaviorKind::InventoryInteraction => {
@@ -2193,7 +2314,7 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                     .env("MC_COMPAT_TEAM_PROBE", PROBE_ENABLED_VALUE)
                     .env("MC_COMPAT_TEAM_PROBE_TEAM", TEAM_RED_VALUE)
                     .env("MC_COMPAT_INVENTORY_PROBE", PROBE_ENABLED_VALUE)
-                    .env("MC_COMPAT_NEGATIVE_PROBE", probe);
+                    .env("MC_COMPAT_NEGATIVE_PROBE", *probe);
             }
             ScenarioBehaviorKind::NegativeCustomPayload => {
                 cmd.env("MC_COMPAT_ACTIVE_PROBE", PROBE_ENABLED_VALUE)
@@ -2206,7 +2327,7 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                 cmd.env("MC_COMPAT_SURVIVAL_CHEST_PROBE", PROBE_ENABLED_VALUE)
                     .env(
                         "MC_COMPAT_SURVIVAL_CHEST_SESSION",
-                        session_env_value(client_index),
+                        required_session_env_value(ENV_SOURCE_CLIENT_SCENARIO, Some(client_index))?,
                     );
             }
             ScenarioBehaviorKind::SurvivalCraftingTable => {
@@ -2219,7 +2340,7 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                 cmd.env(SURVIVAL_FURNACE_PROBE_ENV, PROBE_ENABLED_VALUE)
                     .env(
                         SURVIVAL_FURNACE_SESSION_ENV,
-                        session_env_value(client_index),
+                        required_session_env_value(ENV_SOURCE_CLIENT_SCENARIO, Some(client_index))?,
                     );
             }
             ScenarioBehaviorKind::SurvivalFurnaceSmeltingBreadth => {
@@ -2230,7 +2351,10 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                     )
                     .env(
                         SURVIVAL_FURNACE_SESSION_ENV,
-                        session_env_value(FIRST_CLIENT_INDEX),
+                        required_session_env_value(
+                            ENV_SOURCE_CLIENT_SCENARIO,
+                            Some(FIRST_CLIENT_INDEX),
+                        )?,
                     );
             }
             ScenarioBehaviorKind::SurvivalHungerFood => {
@@ -2256,13 +2380,19 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                     cmd.env(SURVIVAL_BLOCK_ENTITY_PROBE_ENV, PROBE_ENABLED_VALUE)
                         .env(
                             SURVIVAL_BLOCK_ENTITY_SESSION_ENV,
-                            session_env_value(client_index),
+                            required_session_env_value(
+                                ENV_SOURCE_CLIENT_SCENARIO,
+                                Some(client_index),
+                            )?,
                         );
                 } else {
                     cmd.env(SURVIVAL_WORLD_PERSISTENCE_PROBE_ENV, PROBE_ENABLED_VALUE)
                         .env(
                             SURVIVAL_WORLD_PERSISTENCE_SESSION_ENV,
-                            session_env_value(client_index),
+                            required_session_env_value(
+                                ENV_SOURCE_CLIENT_SCENARIO,
+                                Some(client_index),
+                            )?,
                         );
                 }
             }
@@ -2270,7 +2400,7 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                 cmd.env(SURVIVAL_WORLD_MULTICHUNK_PROBE_ENV, PROBE_ENABLED_VALUE)
                     .env(
                         SURVIVAL_WORLD_MULTICHUNK_SESSION_ENV,
-                        session_env_value(client_index),
+                        required_session_env_value(ENV_SOURCE_CLIENT_SCENARIO, Some(client_index))?,
                     );
             }
             ScenarioBehaviorKind::SurvivalContainerBlockEntityBreadth => {
@@ -2445,9 +2575,11 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                 }
             }
         }
+        cmd.finish()
     }
 
-    fn apply_valence_server_env(&self, cmd: &mut Command, cfg: &Config) {
+    fn valence_server_env_patch(&self, cfg: &Config) -> Result<EnvPatch, String> {
+        let mut cmd = EnvPatchBuilder::new(ENV_SOURCE_VALENCE_SCENARIO);
         if self.uses_armor_mitigation_probe() {
             cmd.env("MC_COMPAT_ARMOR_MITIGATION_PROBE", PROBE_ENABLED_VALUE);
         }
@@ -2591,94 +2723,126 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
             }
             _ => {}
         }
+        cmd.finish()
     }
 
-    fn apply_paper_server_env(&self, cmd: &mut Command, cfg: &Config) -> Result<(), String> {
+    fn paper_server_env_patch(&self, cfg: &Config) -> Result<EnvPatch, String> {
+        let mut cmd = EnvPatchBuilder::new(ENV_SOURCE_PAPER_SCENARIO);
         match self {
             ScenarioBehaviorKind::SurvivalChestPersistence => {
-                add_paper_env(cmd, SURVIVAL_CHEST_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+                add_paper_env(&mut cmd, SURVIVAL_CHEST_FIXTURE_ENV, PROBE_ENABLED_VALUE);
             }
             ScenarioBehaviorKind::SurvivalCraftingTable => {
-                add_paper_env(cmd, SURVIVAL_CRAFTING_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+                add_paper_env(&mut cmd, SURVIVAL_CRAFTING_FIXTURE_ENV, PROBE_ENABLED_VALUE);
             }
-            ScenarioBehaviorKind::SurvivalCraftingRecipeBreadth => add_paper_env(
-                cmd,
-                SURVIVAL_CRAFTING_BREADTH_FIXTURE_ENV,
-                PROBE_ENABLED_VALUE,
-            ),
+            ScenarioBehaviorKind::SurvivalCraftingRecipeBreadth => {
+                add_paper_env(
+                    &mut cmd,
+                    SURVIVAL_CRAFTING_BREADTH_FIXTURE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
+            }
             ScenarioBehaviorKind::SurvivalFurnacePersistence => {
-                add_paper_env(cmd, SURVIVAL_FURNACE_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+                add_paper_env(&mut cmd, SURVIVAL_FURNACE_FIXTURE_ENV, PROBE_ENABLED_VALUE);
             }
             ScenarioBehaviorKind::SurvivalFurnaceSmeltingBreadth => {
-                add_paper_env(cmd, SURVIVAL_FURNACE_FIXTURE_ENV, PROBE_ENABLED_VALUE);
+                add_paper_env(&mut cmd, SURVIVAL_FURNACE_FIXTURE_ENV, PROBE_ENABLED_VALUE);
                 add_paper_env(
-                    cmd,
+                    &mut cmd,
                     SURVIVAL_FURNACE_SMELTING_BREADTH_FIXTURE_ENV,
                     PROBE_ENABLED_VALUE,
                 );
             }
             ScenarioBehaviorKind::SurvivalHungerFood => {
-                add_paper_env(cmd, SURVIVAL_HUNGER_FOOD_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+                add_paper_env(
+                    &mut cmd,
+                    SURVIVAL_HUNGER_FOOD_FIXTURE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
             }
             ScenarioBehaviorKind::SurvivalHungerHealthCycle => {
-                add_paper_env(cmd, SURVIVAL_HUNGER_HEALTH_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+                add_paper_env(
+                    &mut cmd,
+                    SURVIVAL_HUNGER_HEALTH_FIXTURE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
             }
             ScenarioBehaviorKind::SurvivalMobDrop => {
-                add_paper_env(cmd, SURVIVAL_MOB_DROP_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+                add_paper_env(&mut cmd, SURVIVAL_MOB_DROP_FIXTURE_ENV, PROBE_ENABLED_VALUE);
             }
             ScenarioBehaviorKind::SurvivalMobAiLootBreadth => {
-                add_paper_env(cmd, SURVIVAL_MOB_AI_LOOT_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+                add_paper_env(
+                    &mut cmd,
+                    SURVIVAL_MOB_AI_LOOT_FIXTURE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
             }
-            ScenarioBehaviorKind::SurvivalRedstoneToggle => add_paper_env(
-                cmd,
-                SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV,
-                PROBE_ENABLED_VALUE,
-            ),
-            ScenarioBehaviorKind::SurvivalRedstoneCircuitBreadth => add_paper_env(
-                cmd,
-                SURVIVAL_REDSTONE_CIRCUIT_FIXTURE_ENV,
-                PROBE_ENABLED_VALUE,
-            ),
+            ScenarioBehaviorKind::SurvivalRedstoneToggle => {
+                add_paper_env(
+                    &mut cmd,
+                    SURVIVAL_REDSTONE_TOGGLE_FIXTURE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
+            }
+            ScenarioBehaviorKind::SurvivalRedstoneCircuitBreadth => {
+                add_paper_env(
+                    &mut cmd,
+                    SURVIVAL_REDSTONE_CIRCUIT_FIXTURE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
+            }
             ScenarioBehaviorKind::WorldPersistenceRestart { block_entity, .. } => {
                 if *block_entity {
-                    add_paper_persistence_env(
-                        cmd,
+                    add_paper_persistence_env_patch(
+                        &mut cmd,
                         cfg,
                         SURVIVAL_BLOCK_ENTITY_FIXTURE_ENV,
                         SURVIVAL_BLOCK_ENTITY_PHASE_ENV,
-                    )?;
+                    );
                 } else {
-                    add_paper_persistence_env(
-                        cmd,
+                    add_paper_persistence_env_patch(
+                        &mut cmd,
                         cfg,
                         SURVIVAL_WORLD_PERSISTENCE_FIXTURE_ENV,
                         SURVIVAL_WORLD_PERSISTENCE_PHASE_ENV,
-                    )?;
+                    );
                 }
             }
-            ScenarioBehaviorKind::SurvivalWorldMultichunkDurability => add_paper_persistence_env(
-                cmd,
-                cfg,
-                SURVIVAL_WORLD_MULTICHUNK_FIXTURE_ENV,
-                SURVIVAL_WORLD_MULTICHUNK_PHASE_ENV,
-            )?,
-            ScenarioBehaviorKind::SurvivalContainerBlockEntityBreadth => add_paper_env(
-                cmd,
-                SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE_ENV,
-                PROBE_ENABLED_VALUE,
-            ),
-            ScenarioBehaviorKind::SurvivalBiomeDimensionState => add_paper_env(
-                cmd,
-                SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV,
-                PROBE_ENABLED_VALUE,
-            ),
-            ScenarioBehaviorKind::SurvivalBiomeDimensionTravel => add_paper_env(
-                cmd,
-                SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE_ENV,
-                PROBE_ENABLED_VALUE,
-            ),
+            ScenarioBehaviorKind::SurvivalWorldMultichunkDurability => {
+                add_paper_persistence_env_patch(
+                    &mut cmd,
+                    cfg,
+                    SURVIVAL_WORLD_MULTICHUNK_FIXTURE_ENV,
+                    SURVIVAL_WORLD_MULTICHUNK_PHASE_ENV,
+                );
+            }
+            ScenarioBehaviorKind::SurvivalContainerBlockEntityBreadth => {
+                add_paper_env(
+                    &mut cmd,
+                    SURVIVAL_CONTAINER_BLOCK_ENTITY_FIXTURE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
+            }
+            ScenarioBehaviorKind::SurvivalBiomeDimensionState => {
+                add_paper_env(
+                    &mut cmd,
+                    SURVIVAL_BIOME_DIMENSION_FIXTURE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
+            }
+            ScenarioBehaviorKind::SurvivalBiomeDimensionTravel => {
+                add_paper_env(
+                    &mut cmd,
+                    SURVIVAL_BIOME_DIMENSION_TRAVEL_FIXTURE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
+            }
             ScenarioBehaviorKind::SurvivalSignEditingLive => {
-                add_paper_env(cmd, SURVIVAL_SIGN_EDITING_FIXTURE_ENV, PROBE_ENABLED_VALUE)
+                add_paper_env(
+                    &mut cmd,
+                    SURVIVAL_SIGN_EDITING_FIXTURE_ENV,
+                    PROBE_ENABLED_VALUE,
+                );
             }
             ScenarioBehaviorKind::Combat {
                 reference_probe,
@@ -2686,11 +2850,15 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
                 ..
             } => {
                 if *reference_probe {
-                    add_paper_env(cmd, VANILLA_COMBAT_REFERENCE_PROBE_ENV, PROBE_ENABLED_VALUE);
+                    add_paper_env(
+                        &mut cmd,
+                        VANILLA_COMBAT_REFERENCE_PROBE_ENV,
+                        PROBE_ENABLED_VALUE,
+                    );
                 }
                 if *armor_reference {
                     add_paper_env(
-                        cmd,
+                        &mut cmd,
                         VANILLA_COMBAT_ARMOR_REFERENCE_PROBE_ENV,
                         PROBE_ENABLED_VALUE,
                     );
@@ -2698,13 +2866,19 @@ impl ScenarioBehavior for ScenarioBehaviorKind {
             }
             _ => {}
         }
-        Ok(())
+        cmd.finish()
     }
 }
 
 fn append_count_marker(output: &mut String, marker: &'static str) {
     output.push_str(marker);
     output.push('\n');
+}
+
+fn required_session_env_value(source: &str, client_index: Option<usize>) -> Result<String, String> {
+    client_index
+        .map(session_env_value)
+        .ok_or_else(|| format!("missing required session value for {source}"))
 }
 
 fn session_env_value(client_index: usize) -> String {
@@ -2727,27 +2901,29 @@ fn indexed_combat_team_role(client_index: usize) -> (&'static str, &'static str)
     }
 }
 
-fn add_paper_env(cmd: &mut Command, key: &'static str, value: &'static str) {
-    cmd.arg("-e").arg(format!("{key}={value}"));
+fn add_paper_env(cmd: &mut EnvPatchBuilder, key: &'static str, value: impl EnvPatchValue) {
+    cmd.env(key, value);
 }
 
-fn add_paper_persistence_env(
-    cmd: &mut Command,
+fn add_paper_persistence_env_patch(
+    cmd: &mut EnvPatchBuilder,
     cfg: &Config,
     fixture_env: &'static str,
     phase_env: &'static str,
-) -> Result<(), String> {
+) {
+    add_paper_env(cmd, fixture_env, PROBE_ENABLED_VALUE);
+    add_paper_env(cmd, phase_env, world_persistence_phase_value(cfg));
+}
+
+fn add_paper_persistence_mount_if_needed(cfg: &Config, cmd: &mut Command) -> Result<(), String> {
+    if !scenario_behavior(cfg.scenario).uses_isolated_restart_storage() {
+        return Ok(());
+    }
     let state_dir = world_persistence_state_dir(cfg, ServerBackend::Paper);
     fs::create_dir_all(&state_dir).map_err(|e| format!("create {}: {e}", state_dir.display()))?;
     let absolute_state_dir = fs::canonicalize(&state_dir)
         .map_err(|e| format!("canonicalize {}: {e}", state_dir.display()))?;
-    add_paper_env(cmd, fixture_env, PROBE_ENABLED_VALUE);
-    cmd.arg("-e")
-        .arg(format!(
-            "{phase_env}={}",
-            world_persistence_phase_value(cfg)
-        ))
-        .arg("-v")
+    cmd.arg("-v")
         .arg(format!("{}:/data", absolute_state_dir.display()));
     Ok(())
 }
@@ -2934,7 +3110,7 @@ fn build_client(cfg: &Config) -> Result<(), String> {
         .arg("build")
         .arg("--bin")
         .arg("stevenarella");
-    apply_build_env(&mut cmd, &cfg.target_dir);
+    apply_build_env(&mut cmd, &cfg.target_dir)?;
     run_cmd(cfg, &mut cmd)
 }
 
@@ -3540,14 +3716,52 @@ fn backend_name(backend: ServerBackend) -> &'static str {
     backend.runtime().name()
 }
 
-fn apply_build_env(cmd: &mut Command, target_dir: &Path) {
-    cmd.env("RUSTC_WRAPPER", "")
+fn build_env_patch(target_dir: &Path) -> Result<EnvPatch, String> {
+    let mut patch = EnvPatchBuilder::new(ENV_SOURCE_BUILD);
+    patch
+        .env("RUSTC_WRAPPER", "")
         .env("CARGO_TARGET_DIR", target_dir)
         .env("CMAKE_POLICY_VERSION_MINIMUM", "3.5");
+    patch.finish()
 }
 
-fn apply_headless_env(cmd: &mut Command) {
-    cmd.env_remove("WAYLAND_DISPLAY")
+fn valence_build_env_patch(target_dir: &Path) -> Result<EnvPatch, String> {
+    let mut patch = EnvPatchBuilder::new(ENV_SOURCE_BUILD);
+    patch
+        .env("RUSTC_WRAPPER", "")
+        .env("CARGO_TARGET_DIR", target_dir);
+    patch.finish()
+}
+
+fn valence_steel_config_env_patch(path: &Path) -> Result<EnvPatch, String> {
+    let mut patch = EnvPatchBuilder::new(ENV_SOURCE_VALENCE_STEEL_CONFIG);
+    patch.env("MC_COMPAT_STEEL_CONFIG", path);
+    patch.finish()
+}
+
+fn paper_base_env_patch(cfg: &Config) -> Result<EnvPatch, String> {
+    let mut patch = EnvPatchBuilder::new(ENV_SOURCE_PAPER_BASE);
+    patch
+        .env("EULA", PAPER_EULA_ACCEPTED_VALUE)
+        .env("TYPE", PAPER_SERVER_TYPE)
+        .env("VERSION", &cfg.server_version)
+        .env("ONLINE_MODE", PAPER_ONLINE_MODE_VALUE)
+        .env("MEMORY", PAPER_MEMORY_LIMIT)
+        .env("VIEW_DISTANCE", PAPER_VIEW_DISTANCE.to_string())
+        .env("SIMULATION_DISTANCE", PAPER_SIMULATION_DISTANCE.to_string());
+    patch.finish()
+}
+
+fn apply_build_env(cmd: &mut Command, target_dir: &Path) -> Result<(), String> {
+    let patch = build_env_patch(target_dir)?;
+    apply_env_patch_to_command(cmd, &patch);
+    Ok(())
+}
+
+fn headless_env_patch() -> Result<EnvPatch, String> {
+    let mut patch = EnvPatchBuilder::new(ENV_SOURCE_HEADLESS);
+    patch
+        .env_remove("WAYLAND_DISPLAY")
         .env_remove("WAYLAND_SOCKET")
         .env_remove("XDG_CURRENT_DESKTOP")
         .env("XDG_SESSION_TYPE", "x11")
@@ -3556,6 +3770,13 @@ fn apply_headless_env(cmd: &mut Command) {
         .env("SDL_VIDEODRIVER", "x11")
         .env("LIBGL_ALWAYS_SOFTWARE", "1")
         .env("MESA_LOADER_DRIVER_OVERRIDE", "llvmpipe");
+    patch.finish()
+}
+
+fn apply_headless_env(cmd: &mut Command) -> Result<(), String> {
+    let patch = headless_env_patch()?;
+    apply_env_patch_to_command(cmd, &patch);
+    Ok(())
 }
 
 fn run_cmd(cfg: &Config, cmd: &mut Command) -> Result<(), String> {
@@ -3611,6 +3832,8 @@ fn log(args: std::fmt::Arguments<'_>) {
 
 #[cfg(test)]
 mod config_colocated_tests;
+#[cfg(test)]
+mod env_patch_baseline_colocated_tests;
 #[cfg(test)]
 mod runner_integration_tests;
 #[cfg(test)]

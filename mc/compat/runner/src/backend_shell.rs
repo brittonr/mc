@@ -562,11 +562,13 @@ pub(crate) fn start_valence_server(cfg: &Config) -> Result<ManagedServer, String
         .arg(&cfg.valence_example)
         .stdout(Stdio::from(log_file))
         .stderr(Stdio::from(err_file));
-    cmd.env("RUSTC_WRAPPER", "")
-        .env("CARGO_TARGET_DIR", &cfg.valence_target_dir);
-    scenario_behavior(cfg.scenario).apply_valence_server_env(&mut cmd, cfg);
+    let build_patch = valence_build_env_patch(&cfg.valence_target_dir)?;
+    apply_env_patch_to_command(&mut cmd, &build_patch);
+    let scenario_patch = scenario_behavior(cfg.scenario).valence_server_env_patch(cfg)?;
+    apply_env_patch_to_command(&mut cmd, &scenario_patch);
     if let Some(path) = &cfg.steel_config_path {
-        cmd.env("MC_COMPAT_STEEL_CONFIG", path);
+        let steel_patch = valence_steel_config_env_patch(path)?;
+        apply_env_patch_to_command(&mut cmd, &steel_patch);
     }
     let child = cmd.spawn().map_err(|e| format!("spawn Valence: {e}"))?;
     fs::write(&cfg.valence_pid_file, child.id().to_string())
@@ -607,22 +609,12 @@ pub(crate) fn configure_paper_run_command(cfg: &Config, cmd: &mut Command) -> Re
         .arg("--name")
         .arg(&cfg.server_name)
         .arg("-p")
-        .arg(format!("127.0.0.1:{}:25565", cfg.server_port))
-        .arg("-e")
-        .arg("EULA=TRUE")
-        .arg("-e")
-        .arg("TYPE=PAPER")
-        .arg("-e")
-        .arg(format!("VERSION={}", cfg.server_version))
-        .arg("-e")
-        .arg("ONLINE_MODE=FALSE")
-        .arg("-e")
-        .arg("MEMORY=1G")
-        .arg("-e")
-        .arg(format!("VIEW_DISTANCE={PAPER_VIEW_DISTANCE}"))
-        .arg("-e")
-        .arg(format!("SIMULATION_DISTANCE={PAPER_SIMULATION_DISTANCE}"));
-    scenario_behavior(cfg.scenario).apply_paper_server_env(cmd, cfg)?;
+        .arg(format!("127.0.0.1:{}:25565", cfg.server_port));
+    let base_patch = paper_base_env_patch(cfg)?;
+    apply_env_patch_to_paper_args(cmd, &base_patch)?;
+    let scenario_patch = scenario_behavior(cfg.scenario).paper_server_env_patch(cfg)?;
+    apply_env_patch_to_paper_args(cmd, &scenario_patch)?;
+    add_paper_persistence_mount_if_needed(cfg, cmd)?;
     add_paper_plugin_mount(cfg, cmd)?;
     cmd.arg(&cfg.docker_image);
     Ok(())

@@ -1,0 +1,181 @@
+command=nix command=develop command=--no-update-lock-file command=/home/brittonr/git/mc command=-c command=cargo command=test command=--manifest-path command=compat/runner/Cargo.toml command=baseline_env_outputs_for_representative_scenario_families command=-- command=--nocapture
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 7 ms: Could not connect to server; retrying in 65 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 86 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3095 ms: Could not connect to server; retrying in 101 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4124 ms: Could not connect to server; retrying in 7 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/1k5ig0b3s8r8jhwvfb9jfxb7x4p2xls6-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/gpg0jg632b7zqsrjb6mnzg230pg3s5w2-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+   Compiling mc-compat-runner v0.1.0 (/home/brittonr/git/mc/compat/runner)
+warning: unused imports: `build_git_revision_evidence`, `cleanup_path`, `git_rev_parse`, `git_revision_evidence`, `is_mc_compat_client_log`, and `valence_source_dir`
+  --> src/main.rs:22:5
+   |
+22 |     build_git_revision_evidence, child_revision_evidence_for_receipt, cleanup_harness_state,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+23 |     cleanup_path, ensure_valence_repo_ready, force_stop_paper_server, force_stop_server,
+   |     ^^^^^^^^^^^^
+24 |     force_stop_valence_server, git_rev_parse, git_revision_evidence, is_mc_compat_client_log,
+   |                                ^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^
+25 |     print_harness_status, probe_status, start_paper_server, start_server, start_valence_server,
+26 |     stop_paper_server, stop_server, stop_valence_server, valence_source_dir,
+   |                                                          ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `mcp_controlled_success_output`, `projectile_damage_dry_run_evidence`, and `projectile_travel_collision_dry_run_evidence`
+  --> src/main.rs:31:38
+   |
+31 |     mcp_controlled_dry_run_evidence, mcp_controlled_success_output, planned_client_usernames,
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+32 |     projectile_damage_dry_run_evidence, projectile_travel_collision_dry_run_evidence,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `biome_dimension_join_state_required_non_claims`, `evaluate_scenario_with_projectile_health`, and `validate_biome_dimension_join_state_record`
+  --> src/main.rs:41:5
+   |
+41 |     biome_dimension_join_state_required_non_claims, evaluate_scenario,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+42 |     evaluate_scenario_with_projectile_health, parse_typed_event_line,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+43 |     validate_biome_dimension_join_state_record,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `evaluate_typed_event_graph`, `typed_event_ordered_edges_for_scenario`, and `typed_event_required_events_for_graph`
+  --> src/main.rs:48:61
+   |
+48 |     evaluate_scenario_for_config, evaluate_server_scenario, evaluate_typed_event_graph,
+   |                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+49 |     normalize_typed_event_timeline, typed_event_oracle_contributes_to_pass_fail,
+50 |     typed_event_oracle_receipt_json, typed_event_ordered_edges_for_scenario,
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+51 |     typed_event_required_events_for_graph, typed_event_timeline_blake3,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `scenario_route_non_claims`
+  --> src/main.rs:58:74
+   |
+58 |     format_plan_diagnostics, harness_plan_from_config, log_harness_plan, scenario_route_non_claims,
+   |                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `receipt_validation::validate_receipt_summary`
+  --> src/main.rs:67:5
+   |
+67 | use receipt_validation::validate_receipt_summary;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `ScenarioMilestone`
+  --> src/main.rs:86:21
+   |
+86 | use scenario_core::{ScenarioMilestone, ALL_SCENARIOS};
+   |                     ^^^^^^^^^^^^^^^^^
+
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/main.rs:335:7
+    |
+335 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `applied_sources` is never read
+   --> src/config_patches.rs:257:16
+    |
+255 | pub(crate) struct ConfigResolution {
+    |                   ---------------- field in this struct
+256 |     pub(crate) config: Config,
+257 |     pub(crate) applied_sources: Vec<ConfigSource>,
+    |                ^^^^^^^^^^^^^^^
+    |
+    = note: `ConfigResolution` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `default_patch_for_tests` is never used
+   --> src/config_patches.rs:712:15
+    |
+712 | pub(crate) fn default_patch_for_tests() -> ConfigPatch {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_string_field` is never used
+  --> src/json_support.rs:12:15
+   |
+12 | pub(crate) fn json_object_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_optional_string_field` is never used
+  --> src/json_support.rs:20:15
+   |
+20 | pub(crate) fn json_object_optional_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_u32_field` is never used
+  --> src/json_support.rs:28:15
+   |
+28 | pub(crate) fn json_object_u32_field(text: &str, object: &str, key: &str) -> Result<u32, String> {
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_bool_field` is never used
+  --> src/json_support.rs:32:15
+   |
+32 | pub(crate) fn json_object_bool_field(text: &str, object: &str, key: &str) -> Result<bool, String> {
+   |               ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Transition` is never constructed
+  --> src/layout.rs:44:5
+   |
+42 | pub enum LayoutKind {
+   |          ---------- variant in this enum
+43 |     RoleBased,
+44 |     Transition,
+   |     ^^^^^^^^^^
+   |
+   = note: `LayoutKind` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: constant `BASELINE_CLIENT_INDEX` is never used
+ --> src/env_patch_baseline_colocated_tests.rs:8:7
+  |
+8 | const BASELINE_CLIENT_INDEX: usize = FIRST_CLIENT_INDEX;
+  |       ^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `TEST_SESSION_ID` is never used
+  --> src/test_support.rs:11:18
+   |
+11 | pub(crate) const TEST_SESSION_ID: &str = "s1";
+   |                  ^^^^^^^^^^^^^^^
+
+warning: constant `TEST_CLIENT_DIR` is never used
+  --> src/test_support.rs:13:18
+   |
+13 | pub(crate) const TEST_CLIENT_DIR: &str = "/tmp/stevenarella";
+   |                  ^^^^^^^^^^^^^^^
+
+warning: `mc-compat-runner` (bin "mc-compat-runner" test) generated 18 warnings (run `cargo fix --bin "mc-compat-runner" -p mc-compat-runner --tests` to apply 7 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.38s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-3e287b8ac8843fbc)
+
+running 1 test
+baseline_env source=client family=inventory scenario=inventory-interaction client_index=0 env={"MC_COMPAT_ACTIVE_PROBE": Some("1"), "MC_COMPAT_INVENTORY_PROBE": Some("1"), "MC_COMPAT_TEAM_PROBE": Some("1"), "MC_COMPAT_TEAM_PROBE_TEAM": Some("red")}
+baseline_env source=client family=survival scenario=survival-chest-persistence client_index=1 env={"MC_COMPAT_SURVIVAL_CHEST_PROBE": Some("1"), "MC_COMPAT_SURVIVAL_CHEST_SESSION": Some("2")}
+baseline_env source=client family=combat scenario=combat-damage client_index=0 env={"MC_COMPAT_ACTIVE_PROBE": Some("1"), "MC_COMPAT_COMBAT_PROBE": Some("1"), "MC_COMPAT_COMBAT_PROBE_ROLE": Some("attacker"), "MC_COMPAT_COMBAT_TARGET_USERNAME": Some("compatbotb"), "MC_COMPAT_TEAM_PROBE": Some("1"), "MC_COMPAT_TEAM_PROBE_TEAM": Some("red")}
+baseline_env source=client family=projectile scenario=projectile-hit client_index=0 env={"MC_COMPAT_ACTIVE_PROBE": Some("1"), "MC_COMPAT_COMBAT_PROBE": Some("1"), "MC_COMPAT_COMBAT_PROBE_ROLE": Some("attacker"), "MC_COMPAT_COMBAT_TARGET_USERNAME": Some("compatbotb"), "MC_COMPAT_PROJECTILE_PROBE": Some("1"), "MC_COMPAT_TEAM_PROBE": Some("1"), "MC_COMPAT_TEAM_PROBE_TEAM": Some("red")}
+baseline_env source=client family=ctf scenario=flag-score-repeat client_index=0 env={"MC_COMPAT_ACTIVE_PROBE": Some("1"), "MC_COMPAT_FLAG_PROBE": Some("1"), "MC_COMPAT_FLAG_PROBE_REPEAT": Some("2"), "MC_COMPAT_FLAG_PROBE_TEAM": Some("red"), "MC_COMPAT_TEAM_PROBE": Some("1"), "MC_COMPAT_TEAM_PROBE_TEAM": Some("red")}
+baseline_env source=client family=reconnect scenario=reconnect-flag-state client_index=0 env={"MC_COMPAT_ACTIVE_PROBE": Some("1"), "MC_COMPAT_FLAG_PROBE": Some("1"), "MC_COMPAT_FLAG_PROBE_PICKUP_ONLY": Some("1"), "MC_COMPAT_FLAG_PROBE_REPEAT": Some("1"), "MC_COMPAT_FLAG_PROBE_TEAM": Some("red"), "MC_COMPAT_TEAM_PROBE": Some("1"), "MC_COMPAT_TEAM_PROBE_TEAM": Some("red")}
+baseline_env source=client family=mcp scenario=mcp-controlled-smoke client_index=0 env={"MC_COMPAT_MCP_CONTROLLED_SMOKE": Some("1")}
+baseline_env source=valence family=inventory scenario=inventory-stack-split-merge env={"MC_COMPAT_INVENTORY_STACK_SPLIT_MERGE_PROBE": Some("1")}
+baseline_env source=valence family=survival scenario=survival-chest-persistence env={"MC_COMPAT_SURVIVAL_CHEST_FIXTURE": Some("1")}
+baseline_env source=valence family=combat scenario=vanilla-combat-reference-parity env={"MC_COMPAT_VANILLA_COMBAT_REFERENCE_PROBE": Some("1")}
+baseline_env source=valence family=projectile scenario=projectile-hit env={"MC_COMPAT_PROJECTILE_PROBE": Some("1")}
+baseline_env source=valence family=ctf scenario=ctf-invalid-return-drop env={"MC_COMPAT_CTF_INVALID_RETURN_DROP_PROBE": Some("1")}
+baseline_env source=valence family=mcp scenario=mcp-controlled-smoke env={}
+baseline_env source=paper family=survival scenario=survival-chest-persistence args=["-e", "MC_COMPAT_SURVIVAL_CHEST_FIXTURE=1"]
+baseline_env source=paper family=combat scenario=vanilla-combat-reference-parity args=["-e", "MC_COMPAT_VANILLA_COMBAT_REFERENCE_PROBE=1"]
+test env_patch_baseline_colocated_tests::baseline_env_outputs_for_representative_scenario_families ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 200 filtered out; finished in 0.00s
+
+
+exit_status=0

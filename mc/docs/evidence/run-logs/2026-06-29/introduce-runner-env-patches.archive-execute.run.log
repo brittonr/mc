@@ -1,0 +1,82 @@
+command=nix run .#cairn -- archive introduce-runner-env-patches --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: introduce-runner-env-patches",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-29-introduce-runner-env-patches"
+    }
+  ],
+  "blocked": false,
+  "change": "introduce-runner-env-patches",
+  "dry_run": false,
+  "input_hash": "fe65e9fc8c4ce4206fd7ddfc122a22c65df5d4d5fe200077bf11358f1a59dbab",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "51559160cc555682230623a1c35a37ec3341da5c08f6997cb67affb6bfb0a338",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-introduce-runner-env-patches/design.md"
+        },
+        {
+          "content_hash": "f52d182e2907a7ace2403d9fdff0592c7ac04566b33f9c438343e235ab12a43b",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-introduce-runner-env-patches/proposal.md"
+        },
+        {
+          "content_hash": "bfdbbf781a35a0c3f7a7def536451d5f48de0e7f3284b55d0c5b24059d19824f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-introduce-runner-env-patches/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "2fca795548e7feb7f5fe2bee77533da7b9ea6278e26f8f080430e8b3cc29df86",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-introduce-runner-env-patches/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/introduce-runner-env-patches"
+        }
+      ],
+      "manifest_hash": "0bc0d647327f3039fd05a4860cc2c34832216b2b4a3a145581514a8b6205629d"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "51559160cc555682230623a1c35a37ec3341da5c08f6997cb67affb6bfb0a338",
+          "exists": true,
+          "path": "./cairn/changes/introduce-runner-env-patches/design.md"
+        },
+        {
+          "content_hash": "f52d182e2907a7ace2403d9fdff0592c7ac04566b33f9c438343e235ab12a43b",
+          "exists": true,
+          "path": "./cairn/changes/introduce-runner-env-patches/proposal.md"
+        },
+        {
+          "content_hash": "bfdbbf781a35a0c3f7a7def536451d5f48de0e7f3284b55d0c5b24059d19824f",
+          "exists": true,
+          "path": "./cairn/changes/introduce-runner-env-patches/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "2fca795548e7feb7f5fe2bee77533da7b9ea6278e26f8f080430e8b3cc29df86",
+          "exists": true,
+          "path": "./cairn/changes/introduce-runner-env-patches/tasks.md"
+        }
+      ],
+      "manifest_hash": "a6f4bcde4458ce1c8490c6443468dbd9f8f778abd4c38ebcb5c70aba9da5f615"
+    },
+    "kind": "archive",
+    "manifest_hash": "1db65732718a79d362668bd8a2b4cda8432047666adf1d74d8a1f1df12e9d710"
+  },
+  "plan_hash": "693a11e1ab0f02ca243cb958d74b7c0d07c1b98c56aacb28aa2abad47dc40083",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "ab462f48d5c9eab9c9e6008c1f5e447564a4da8ca904de94fe7953fd4b62d38d"
+}
+
+exit_status=0

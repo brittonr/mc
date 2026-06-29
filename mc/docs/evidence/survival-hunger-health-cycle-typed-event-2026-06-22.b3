@@ -3,9 +3,9 @@ dc08f03deb02decbe53865cf66f98c28895f6500d12c3826e603362778545e02  cairn/archive/
 3af73eecc1c53cc8566da779b22d0a433260be93dd0727dbc32179cce8255638  cairn/archive/2026-06-22-survival-hunger-health-cycle-typed-event-migration/design.md
 363c812844c36baf716a1f63950bcf6806172c8c5ee2f1208639c4c58193e342  cairn/archive/2026-06-22-survival-hunger-health-cycle-typed-event-migration/tasks.md
 5ee0971feb78c5e1a7006592060015760ff899e998835a9a914e4a586a8ddf96  cairn/archive/2026-06-22-survival-hunger-health-cycle-typed-event-migration/specs/mc-compatibility/spec.md
-97701c8f14f69b1b6e56401af463da24c437018ee4ba7a46f25adfaa5a9eee84  cairn/specs/mc-compatibility/spec.md
+5d507c7e1ce14742455c7ffe9e1c590d16de6298750819f2fb948732a4019951  cairn/specs/mc-compatibility/spec.md
 f1600c9059d5d98fb217a14fd9801c7d508d5f2bbc89f5d7e96c6659d037c0e9  compat/config/scenario-manifest.ncl
-c3cc081d102d76a7960e7b90418cdbdfc5fcee131126fa61616a2c0beab00ab5  compat/runner/src/main.rs
+286aa49022ec0762cc1b4a27b57d3b5bdb808a46430dd008407697c96ed142d6  compat/runner/src/main.rs
 24fc3b15fae95e333634118eca6398d275f6630a067f6f427d1dcc058f21b08c  compat/runner/src/scenario_manifest_generated.rs
 c53a2241b42d59b11a50e619c4e63bfd2b55ebbad74a768eccb5a0043e36b9eb  docs/evidence/mc-compat-scenario-index.generated.md
 1eb0f9d64f69c71725e3322100fdfb8a5e4c500029a546582b3d6180f4f679d6  docs/evidence/survival-hunger-health-cycle-typed-event-baseline-dry-run.run.log
