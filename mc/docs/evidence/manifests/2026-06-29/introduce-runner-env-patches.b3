@@ -1,11 +1,11 @@
 2fca795548e7feb7f5fe2bee77533da7b9ea6278e26f8f080430e8b3cc29df86  cairn/archive/2026-06-29-introduce-runner-env-patches/tasks.md
 bfdbbf781a35a0c3f7a7def536451d5f48de0e7f3284b55d0c5b24059d19824f  cairn/archive/2026-06-29-introduce-runner-env-patches/specs/mc-compatibility/spec.md
-5d507c7e1ce14742455c7ffe9e1c590d16de6298750819f2fb948732a4019951  cairn/specs/mc-compatibility/spec.md
+f35ca289b95f828e4114f2fc500e18c81129024a071abc6a4ca59947b020936d  cairn/specs/mc-compatibility/spec.md
 6f06015e449b0712d6058ecf06a8210e0f08d40cf77aca5a14cd8e0e88ab42be  compat/runner/src/backend_shell.rs
 0ce3efbb3418efa98715fbca113fb4640fa5fd3658fc1dcddda7caee0c79650e  compat/runner/src/client_driver.rs
 d24f4a70d3d4a84fb0b2aba548a596cc4e62d3952d7a60671b593ac5a62c363a  compat/runner/src/env_patch.rs
 1f11e701f865bfa8d4e441e6ccf89d1f0433bf285f21249f9df36956940a900a  compat/runner/src/env_patch_baseline_colocated_tests.rs
-286aa49022ec0762cc1b4a27b57d3b5bdb808a46430dd008407697c96ed142d6  compat/runner/src/main.rs
+27ed62890ab38193d1a7de7e6da98da68dc72ba46d5170cf2f1a7c357a39dfa9  compat/runner/src/main.rs
 09df51916d236d26aee03d8efb14a3496ee10ed92b6cd78c7e5d21f51be68baf  docs/evidence/run-logs/2026-06-29/introduce-runner-env-patches.baseline-runner-tests.run.log
 e8fae3f2a4fd488bfdad4b8704dadb371f84681b4e3b8bc51fed204db2223185  docs/evidence/run-logs/2026-06-29/introduce-runner-env-patches.baseline-env-capture.run.log
 ebcebb748dd71f46f0c8846ae76b03bb8b7c518d5788497ce182eb0d63f968f2  docs/evidence/run-logs/2026-06-29/introduce-runner-env-patches.env-patch-focused-tests.run.log

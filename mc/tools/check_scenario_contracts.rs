@@ -6,7 +6,7 @@ use std::process::ExitCode;
 
 const CONTRACT_PATH: &str = "compat/config/scenario-contracts.ncl";
 const SCENARIO_MANIFEST_PATH: &str = "compat/config/scenario-manifest.ncl";
-const RUNNER_MAIN_PATH: &str = "compat/runner/src/main.rs";
+const RUNNER_LIBRARY_PATH: &str = "compat/runner/src/lib.rs";
 const RUNNER_RECEIPT_VALIDATION_PATH: &str = "compat/runner/src/receipt_validation.rs";
 const STEVENARELLA_SERVER_PATH: &str = "clients/stevenarella/src/server/mod.rs";
 const VALENCE_CTF_PATH: &str = "servers/valence/examples/ctf.rs";
@@ -62,7 +62,7 @@ const ENV_KINDS: &[&str] = &[
 ];
 const SUPPORTED_STATUS: &[&str] = &["canonical", "compatibility_alias", "retired_alias"];
 const CONSUMER_PATHS: &[&str] = &[
-    RUNNER_MAIN_PATH,
+    RUNNER_LIBRARY_PATH,
     RUNNER_RECEIPT_VALIDATION_PATH,
     STEVENARELLA_SERVER_PATH,
     VALENCE_CTF_PATH,
@@ -1163,8 +1163,8 @@ fn fixture_inputs(
         "MC_COMPAT_ACTIVE_PROBE"
     };
     consumers.insert(
-        RUNNER_MAIN_PATH.to_string(),
-        format!("fn main() {{ command.env(\"{env}\", \"1\"); }}"),
+        RUNNER_LIBRARY_PATH.to_string(),
+        format!("fn run_main() {{ command.env(\"{env}\", \"1\"); }}"),
     );
     consumers.insert(
         RUNNER_RECEIPT_VALIDATION_PATH.to_string(),

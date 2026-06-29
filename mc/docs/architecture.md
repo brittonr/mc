@@ -30,11 +30,11 @@ Runner defaults, Valence worktree source detection, and validation tests should 
 
 ## Compatibility runner core boundary
 
-`compat/runner/src/main.rs` is the imperative shell. It owns CLI parsing, environment and filesystem reads/writes, process execution, Docker/Paper lifecycle, sockets, clocks, logging, stdout/stderr, receipt file writes, and exit-code handling.
+`compat/runner/src/main.rs` is only the binary entrypoint: it delegates to `mc_compat_runner::run_main()` and owns no runner policy. `compat/runner/src/lib.rs` is the application shell. It owns CLI parsing, environment and filesystem reads/writes, process execution, Docker/Paper lifecycle, sockets, clocks, logging, stdout/stderr, receipt file writes, and exit-code handling.
 
-Pure deterministic runner logic belongs outside that shell. `compat/runner/src/scenario_catalog.rs` is data-only scenario vocabulary shared by the shell and core; `compat/runner/src/scenario_core.rs` owns scenario definitions, aliases, milestone and forbidden-pattern specs, behavior metadata, and static scenario validation; `compat/runner/src/runtime_config.rs` owns in-memory config normalization and validation. `compat/runner/src/receipt_validation.rs` owns in-memory receipt summary parsing, pair validation, and claim-boundary checks. These core modules must not import constants, helpers, or side-effecting functions from `main.rs`.
+Pure deterministic runner logic belongs outside that shell. `compat/runner/src/scenario_catalog.rs` is data-only scenario vocabulary shared by the shell and core; `compat/runner/src/scenario_core.rs` owns scenario definitions, aliases, milestone and forbidden-pattern specs, behavior metadata, and static scenario validation; `compat/runner/src/runtime_config.rs` owns in-memory config normalization and validation. `compat/runner/src/receipt_validation.rs` owns in-memory receipt summary parsing, pair validation, and claim-boundary checks. These core modules must not import constants, helpers, or side-effecting functions from the binary entrypoint.
 
-The first modularization pass moves scenario catalog constants and receipt validation before deeper orchestration extraction. Compatibility shims may stay only when existing CLI names, flake app names, receipt schemas, scenario semantics, and non-claim boundaries remain unchanged.
+Compatibility shims may stay only when existing CLI names, flake app names, receipt schemas, scenario semantics, and non-claim boundaries remain unchanged.
 
 ## Cairn policy boundary
 

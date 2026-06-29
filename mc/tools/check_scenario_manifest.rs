@@ -8,9 +8,9 @@ use std::process::ExitCode;
 const MANIFEST_PATH: &str = "compat/config/scenario-manifest.ncl";
 const FALLBACK_BUDGET_BASELINE_PATH: &str = "compat/config/scenario-fallback-budget-baseline.ncl";
 const GENERATED_RUST_PATH: &str = "compat/runner/src/scenario_manifest_generated.rs";
-const RUNNER_MAIN_PATH: &str = "compat/runner/src/main.rs";
+const RUNNER_LIBRARY_PATH: &str = "compat/runner/src/lib.rs";
 const RUNNER_SCENARIO_CORE_PATH: &str = "compat/runner/src/scenario_core.rs";
-const RUNNER_SURFACE_PATH: &str = "compat/runner/src/{main.rs,scenario_core.rs}";
+const RUNNER_SURFACE_PATH: &str = "compat/runner/src/{lib.rs,scenario_core.rs}";
 const FLAKE_PATH: &str = "flake.nix";
 const NIX_APPS_PATH: &str = "nix/apps.nix";
 const NIX_PACKAGES_PATH: &str = "nix/packages.nix";
@@ -125,7 +125,7 @@ const REQUIRED_SURFACE_INVENTORY_TOKENS: &[&str] = &[
     GENERATED_WRAPPER_METADATA_PATH,
     GENERATED_SCENARIO_INDEX_PATH,
     GENERATED_SCENARIO_COMMANDS_PATH,
-    RUNNER_MAIN_PATH,
+    RUNNER_LIBRARY_PATH,
     RUNNER_SCENARIO_CORE_PATH,
     FLAKE_PATH,
     NIX_CHECKS_PATH,
@@ -1166,9 +1166,9 @@ fn run_repo_check(root: &Path) -> Result<String, Vec<String>> {
     let fallback_budget = evaluate_repo_fallback_budget(root, &manifest)?;
 
     let generated = read_repo_file(root, GENERATED_RUST_PATH)?;
-    let runner_main = read_repo_file(root, RUNNER_MAIN_PATH)?;
+    let runner_library = read_repo_file(root, RUNNER_LIBRARY_PATH)?;
     let runner_scenario_core = read_repo_file(root, RUNNER_SCENARIO_CORE_PATH)?;
-    let runner_surface = combined_runner_surface(&runner_main, &runner_scenario_core);
+    let runner_surface = combined_runner_surface(&runner_library, &runner_scenario_core);
     let flake_surface = read_repo_files(root, FLAKE_SURFACE_PATHS)?;
     let readme = read_repo_file(root, README_PATH)?;
     let scenario_commands = read_repo_file(root, SCENARIO_COMMANDS_DOC_PATH)?;
@@ -3006,7 +3006,9 @@ fn run_self_tests() -> Result<String, Vec<String>> {
         || ratcheted_report.approved_fallback_rows != vec!["smoke".to_string()]
         || !ratcheted_report.removed_fallback_rows.is_empty()
     {
-        errors.push("self-test case fallback budget ratcheted baseline expected pass=true".to_string());
+        errors.push(
+            "self-test case fallback budget ratcheted baseline expected pass=true".to_string(),
+        );
     }
     let mut reintroduced_rows = ratcheted_rows.clone();
     let reintroduced_row = reintroduced_rows
@@ -3022,7 +3024,8 @@ fn run_self_tests() -> Result<String, Vec<String>> {
             .any(|row| row == RATCHETED_READY_FIXTURE_ROW)
     {
         errors.push(
-            "self-test case fallback budget removed row reintroduced expected pass=false".to_string(),
+            "self-test case fallback budget removed row reintroduced expected pass=false"
+                .to_string(),
         );
     }
     let new_fallback =

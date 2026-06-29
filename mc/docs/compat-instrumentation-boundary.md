@@ -10,7 +10,7 @@ Compatibility instrumentation is opt-in. The harness enables it through one of t
 - Stevenarella scenario probes: `clients/stevenarella/src/server/mod.rs` and `clients/stevenarella/src/world/mod.rs`, enabled by runner-owned `MC_COMPAT_*` environment toggles and consumed by `compat/runner/src/scenario_catalog.rs`/typed-event fixtures.
 - Valence CTF fixture probes: `servers/valence/examples/ctf.rs`, enabled by runner-owned `MC_COMPAT_*` environment toggles and emitted as `MC-COMPAT-MILESTONE` lines.
 - Valence survival fixture probes: `servers/valence/examples/survival_compat.rs`, enabled by runner-owned fixture environment toggles and emitted as `MC-COMPAT-MILESTONE` lines.
-- Runner orchestration and receipt instrumentation: `compat/runner/src/main.rs`, `compat/runner/src/scenario_core.rs`, `compat/runner/src/scenario_catalog.rs`, and `compat/runner/src/scenario_manifest_generated.rs`.
+- Runner orchestration and receipt instrumentation: thin binary entrypoint `compat/runner/src/main.rs`, application shell `compat/runner/src/lib.rs`, `compat/runner/src/scenario_core.rs`, `compat/runner/src/scenario_catalog.rs`, and `compat/runner/src/scenario_manifest_generated.rs`.
 
 Event names and milestone IDs are evidence vocabulary. Moving code must keep names stable unless runner fixtures/checkers migrate in the same change.
 
@@ -44,10 +44,10 @@ Event names and milestone IDs are evidence vocabulary. Moving code must keep nam
 
 | Toggle family | Owner path | Scenario usage | Event vocabulary | Migration status |
 | --- | --- | --- | --- | --- |
-| Scenario selection/config | `compat/runner/src/main.rs` | All rows | `MC_COMPAT_ROOT`, `MC_COMPAT_CONFIG`, `MC_COMPAT_STEEL_CONFIG`, `MC_COMPAT_SCENARIO`, status expectations, packet summary, proxy route, failure bundle | Runner-owned orchestration; no component semantics. |
-| Client probe envs | `compat/runner/src/main.rs` | Smoke, CTF, inventory, survival, combat, projectile, equipment, MCP rows | `MC_COMPAT_ACTIVE_PROBE`, `MC_COMPAT_TEAM_PROBE`, `MC_COMPAT_FLAG_PROBE`, reconnect/negative/inventory/survival/combat/projectile/equipment/armor/MCP envs | Runner remains source of truth for enabling client probes. |
-| Server fixture envs | `compat/runner/src/main.rs` | CTF and survival fixture rows | CTF envs above plus survival fixture/session/dir/phase envs | Runner remains source of truth for enabling fixture probes. |
-| Network/public safety envs | `compat/runner/src/main.rs` | Negative live/public-server authorization and latency/jitter fixtures | `MC_COMPAT_PUBLIC_TARGET`, `MC_COMPAT_EXTERNAL_LOAD_AUTHORIZED`, `MC_COMPAT_LATENCY_MS`, `MC_COMPAT_JITTER_MS`, `MC_COMPAT_LOSS_PERCENT`, `MC_COMPAT_PUBLIC_SERVER_*`, `MC_COMPAT_WAN_*` | Metadata only; not broad public-server safety. |
+| Scenario selection/config | `compat/runner/src/lib.rs` | All rows | `MC_COMPAT_ROOT`, `MC_COMPAT_CONFIG`, `MC_COMPAT_STEEL_CONFIG`, `MC_COMPAT_SCENARIO`, status expectations, packet summary, proxy route, failure bundle | Runner-owned orchestration; no component semantics. |
+| Client probe envs | `compat/runner/src/lib.rs` | Smoke, CTF, inventory, survival, combat, projectile, equipment, MCP rows | `MC_COMPAT_ACTIVE_PROBE`, `MC_COMPAT_TEAM_PROBE`, `MC_COMPAT_FLAG_PROBE`, reconnect/negative/inventory/survival/combat/projectile/equipment/armor/MCP envs | Runner remains source of truth for enabling client probes. |
+| Server fixture envs | `compat/runner/src/lib.rs` | CTF and survival fixture rows | CTF envs above plus survival fixture/session/dir/phase envs | Runner remains source of truth for enabling fixture probes. |
+| Network/public safety envs | `compat/runner/src/lib.rs` | Negative live/public-server authorization and latency/jitter fixtures | `MC_COMPAT_PUBLIC_TARGET`, `MC_COMPAT_EXTERNAL_LOAD_AUTHORIZED`, `MC_COMPAT_LATENCY_MS`, `MC_COMPAT_JITTER_MS`, `MC_COMPAT_LOSS_PERCENT`, `MC_COMPAT_PUBLIC_SERVER_*`, `MC_COMPAT_WAN_*` | Metadata only; not broad public-server safety. |
 | Typed-event fixtures | `compat/runner/src/scenario_core.rs`, `compat/runner/src/scenario_manifest_generated.rs`, `compat/runner/src/scenario_catalog.rs` | Typed-event ready scenarios | Scenario milestone IDs and forbidden IDs, including MCP typed events listed above | Stable; changes require generated-surface/checker refresh. |
 
 ## Validation expectations

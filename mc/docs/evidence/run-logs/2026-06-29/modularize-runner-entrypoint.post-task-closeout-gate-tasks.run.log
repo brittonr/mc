@@ -1,0 +1,23 @@
+$ nix run .#cairn -- gate tasks modularize-runner-entrypoint --root .
+{
+  "change": "modularize-runner-entrypoint",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "0bfc17542b5c73ed97413417e1e1c4b472a37dd3cddcf7c1f540807605f339b6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "24ed1857887a3237b55cd913a3524b1bf68378832f3bd03208a1c1a3c836dbd5",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

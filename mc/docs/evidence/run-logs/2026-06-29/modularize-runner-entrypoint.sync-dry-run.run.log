@@ -1,0 +1,27 @@
+$ nix run .#cairn -- sync modularize-runner-entrypoint --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/modularize-runner-entrypoint/specs/mc-compatibility/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/modularize-runner-entrypoint/specs/mc-compatibility/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "modularize-runner-entrypoint",
+  "delta_specs": [
+    "./cairn/changes/modularize-runner-entrypoint/specs/mc-compatibility/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "bef04234d6599fe2875b54a90f2eeec402e3e4f0f956c3c1975fc3626a44d9d3",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "941f695119c3cd4b9a56614084bb429134807be99c1c798ccca56922f599d56d",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "6a8240029d64fe86476588a8dc3d1c059676653d4f9f7d755a9e103c8ea48c77"
+}
+exit_status=0
+]0;

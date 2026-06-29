@@ -1,0 +1,82 @@
+$ CAIRN_ARCHIVE_DATE=2026-06-29 nix run .#cairn -- archive modularize-runner-entrypoint --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: modularize-runner-entrypoint",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-29-modularize-runner-entrypoint"
+    }
+  ],
+  "blocked": false,
+  "change": "modularize-runner-entrypoint",
+  "dry_run": false,
+  "input_hash": "bef04234d6599fe2875b54a90f2eeec402e3e4f0f956c3c1975fc3626a44d9d3",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "6a2e0e767d1ba7984eb6475c8bff1fc59f1fd9e0ebc3311209fab33b2e596809",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-runner-entrypoint/design.md"
+        },
+        {
+          "content_hash": "18442d4e4ef05ba4c4333593ca6ace040a020ab52f3806d70e13b13fef743330",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-runner-entrypoint/proposal.md"
+        },
+        {
+          "content_hash": "e712ca58cec2ee0d58b78f71deeb3a8534df2f467d2615ba91a48530cdf2b43c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-runner-entrypoint/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "e07717d41d59e63cf96f19d488eeea78f970c08340ffc0320f17d5c3bc5de9be",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-modularize-runner-entrypoint/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/modularize-runner-entrypoint"
+        }
+      ],
+      "manifest_hash": "d1883e79310ef64728e9fd6594e4111b17bd152c2b15a4275b9be9782df5f420"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "6a2e0e767d1ba7984eb6475c8bff1fc59f1fd9e0ebc3311209fab33b2e596809",
+          "exists": true,
+          "path": "./cairn/changes/modularize-runner-entrypoint/design.md"
+        },
+        {
+          "content_hash": "18442d4e4ef05ba4c4333593ca6ace040a020ab52f3806d70e13b13fef743330",
+          "exists": true,
+          "path": "./cairn/changes/modularize-runner-entrypoint/proposal.md"
+        },
+        {
+          "content_hash": "e712ca58cec2ee0d58b78f71deeb3a8534df2f467d2615ba91a48530cdf2b43c",
+          "exists": true,
+          "path": "./cairn/changes/modularize-runner-entrypoint/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "e07717d41d59e63cf96f19d488eeea78f970c08340ffc0320f17d5c3bc5de9be",
+          "exists": true,
+          "path": "./cairn/changes/modularize-runner-entrypoint/tasks.md"
+        }
+      ],
+      "manifest_hash": "025d701002f08072bf2e63516f5d15bf05100da3416b7ca0797663eb57cc4862"
+    },
+    "kind": "archive",
+    "manifest_hash": "c44e23f9abee14277dab4ab5511616a70a4e830ab7c8db80e88e77a45c3033b1"
+  },
+  "plan_hash": "1911268b1bd5c8b8b081c60e69aed57b05eca1ee7b6dc876a4cc626daf78c790",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "d6403b81fdaf37b6c919c1622f91e159123e1ea043c27643c89e765c59362689"
+}
+exit_status=0
+]0;

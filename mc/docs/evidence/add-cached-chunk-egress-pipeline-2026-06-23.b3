@@ -18,5 +18,5 @@ dd7ca13d71e718c1b2da5d4d594d890fd9dc519aa90c64dbf1ee1165d953536d  docs/evidence/
 b63138853dce49268b018c0dfa6b6edbac95d845866e9ab3ce909fa6225bde48  docs/evidence/add-cached-chunk-egress-pipeline.evidence-manifest-scoped-check-2026-06-23.run.log
 771e5a65021cd52887b7c45d93fb22c97bf1839774c3c42d4bd211eb889d3bca  docs/evidence/add-cached-chunk-egress-pipeline.evidence-manifest-scoped-check-final-2026-06-23.run.log
 955f992c66273364197b2b1309fa34eac7891b3371d80eaede4188a68d795a78  docs/evidence/add-cached-chunk-egress-pipeline.final-cairn-validate-2026-06-23.run.log
-6234c3cebc7a0603bbe8231ab65999b4831d3392be563cdc51186d9f18b68697  cairn/specs/valence-hyperion-integration/spec.md
+a853f7257f24e32d4ada82e5690cb708f62e2a60e7dc54edf9c8c40415654048  cairn/specs/valence-hyperion-integration/spec.md
 652aa491ddf9873f9972077e4330f02a8ac70426f99b6090c1f07d8bded423ef  cairn/archive/2026-06-23-add-cached-chunk-egress-pipeline/tasks.md
