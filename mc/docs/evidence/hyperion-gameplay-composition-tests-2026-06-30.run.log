@@ -1,0 +1,299 @@
+command=cd hyperion && nix develop -c cargo test -p hyperion-game-modes && CFLAGS=-O2 nix develop -c cargo test -p bedwars --lib && CFLAGS=-O2 nix develop -c cargo test -p bedwars --test gameplay_public_api
+/home/brittonr/git/mc/hyperion
+   Compiling hyperion-game-modes v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-game-modes)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.11s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/hyperion_game_modes-12a43ae5c6c21954)
+
+running 37 tests
+test build_battle::tests::negative_build_battle_rejects_stale_phase_and_vote_abuse ... ok
+test build_battle::tests::positive_build_battle_flow_scores_and_cleans_owned_state ... ok
+test common::tests::negative_duplicate_players_fail_uniqueness ... ok
+test common::tests::negative_name_normalization_rejects_malformed_names ... ok
+test common::tests::positive_volume_contains_owned_position ... ok
+test composition::tests::negative_preset_plan_rejects_duplicate_custom_plugins ... ok
+test composition::tests::negative_preset_plan_rejects_invalid_feature_toggles ... ok
+test composition::tests::negative_preset_plan_rejects_missing_duplicate_and_conflicting_modes ... ok
+test composition::tests::positive_exclusive_validator_accepts_one_mode ... ok
+test composition::tests::positive_preset_plan_accepts_one_mode_features_and_custom_plugins ... ok
+test duels_kitpvp::tests::negative_duels_rejects_duplicate_queue_invalid_kit_and_stale_death ... ok
+test duels_kitpvp::tests::positive_duels_assigns_match_validates_kit_and_scores_combat ... ok
+test elimination_survival::tests::negative_elimination_survival_rejects_bad_profile_stale_phase_and_illegal_reset ... ok
+test elimination_survival::tests::positive_elimination_survival_starts_profiles_border_and_win ... ok
+test factions_diplomacy::tests::negative_diplomacy_rejects_self_relation_enemy_trade_and_overflow ... ok
+test factions_diplomacy::tests::positive_diplomacy_transfers_and_levels_progression ... ok
+test factions_social::tests::negative_social_core_rejects_invalid_identity_and_privilege_escalation ... ok
+test factions_social::tests::positive_social_core_normalizes_invites_accepts_and_persists ... ok
+test factions_territory::tests::negative_territory_rejects_overlap_unauthorized_action_and_bad_repair ... ok
+test factions_social::tests::positive_social_core_transfers_owner_without_ownerless_clan ... ok
+test factions_territory::tests::positive_territory_accepts_claim_and_authorized_actions ... ok
+test island_mode::tests::negative_island_rejects_unauthorized_edit_bad_generator_and_corrupt_snapshot ... ok
+test island_mode::tests::positive_island_lifecycle_permissions_generator_and_restore ... ok
+test lifesteal::tests::negative_lifesteal_rejects_self_environment_stale_and_overflow ... ok
+test lifesteal::tests::positive_lifesteal_transfers_hearts_and_repairs_admin_state ... ok
+test murder_mystery::tests::negative_murder_mystery_blocks_role_leaks_invalid_kills_and_cleanup_leaks ... ok
+test murder_mystery::tests::positive_murder_mystery_assigns_roles_allows_private_output_and_victory ... ok
+test parkour::tests::negative_parkour_fall_resets_without_leaking_state ... ok
+test parkour::tests::negative_parkour_rejects_skipped_checkpoint_and_malformed_course ... ok
+test shell::tests::negative_shell_plan_rejects_cross_mode_mutation ... ok
+test parkour::tests::positive_parkour_progresses_checkpoints_and_best_time ... ok
+test shell::tests::positive_shell_plan_validates_named_sets ... ok
+test skywars::tests::negative_skywars_rejects_bad_arena_empty_loot_and_stale_elimination ... ok
+test skywars::tests::positive_skywars_validates_arena_loot_elimination_and_reset ... ok
+test summit_climb::tests::negative_summit_climb_blocks_exploit_and_invalid_revive ... ok
+test summit_climb::tests::negative_summit_climb_rejects_no_cost_assist_and_bad_metadata ... ok
+test summit_climb::tests::positive_summit_climb_validates_terrain_and_consumes_stamina ... ok
+
+test result: ok. 37 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests hyperion_game_modes
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling serde_core v1.0.228
+   Compiling serde v1.0.228
+   Compiling crossbeam-utils v0.8.21
+   Compiling shlex v1.3.0
+   Compiling version_check v0.9.5
+   Compiling cfg_aliases v0.2.1
+   Compiling unicode-xid v0.2.6
+   Compiling thiserror v1.0.69
+   Compiling heck v0.5.0
+   Compiling libc v0.2.186
+   Compiling httparse v1.10.1
+   Compiling paste v1.0.15
+   Compiling rustls v0.23.40
+   Compiling semver v1.0.28
+   Compiling rustversion v1.0.22
+   Compiling ident_case v1.0.1
+   Compiling nix v0.30.1
+   Compiling iroh-quinn-udp v0.5.7
+   Compiling n0-future v0.1.3
+   Compiling netwatch v0.5.0
+   Compiling iroh-quinn v0.13.0
+   Compiling cc v1.2.17
+   Compiling derive_more-impl v1.0.0
+   Compiling pkarr v3.10.0
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling valence_protocol_macros v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling generic-array v0.14.7
+   Compiling ahash v0.8.11
+   Compiling rustc_version v0.4.1
+   Compiling snafu-derive v0.8.5
+   Compiling asn1-rs v0.6.2
+   Compiling slotmap v1.0.7
+   Compiling iroh-metrics-derive v0.2.0
+   Compiling enum-as-inner v0.6.1
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling crossbeam-epoch v0.9.18
+   Compiling concurrent-queue v2.5.0
+   Compiling crossbeam-queue v0.3.12
+   Compiling crossbeam-channel v0.5.15
+   Compiling curve25519-dalek v4.1.3
+   Compiling netlink-packet-utils v0.5.2
+   Compiling cmake v0.1.54
+   Compiling async-executor v1.13.1
+   Compiling event-listener v5.4.0
+   Compiling async-channel v1.9.0
+   Compiling strum_macros v0.26.4
+   Compiling darling_core v0.20.10
+   Compiling crossbeam-deque v0.8.6
+   Compiling crypto-common v0.1.6
+   Compiling block-buffer v0.10.4
+   Compiling inout v0.1.4
+   Compiling netlink-packet-core v0.7.0
+   Compiling iroh-relay v0.35.0
+   Compiling event-listener-strategy v0.5.3
+   Compiling rayon-core v1.12.1
+   Compiling bevy_tasks v0.12.1
+   Compiling universal-hash v0.5.1
+   Compiling aead v0.5.2
+   Compiling ring v0.17.14
+   Compiling libz-ng-sys v1.1.22
+   Compiling digest v0.10.7
+   Compiling openssl-sys v0.9.117
+   Compiling async-channel v2.3.1
+   Compiling cipher v0.4.4
+   Compiling parking_lot_core v0.9.10
+   Compiling getrandom v0.3.2
+   Compiling poly1305 v0.8.0
+   Compiling netlink-proto v0.11.5
+   Compiling sha2 v0.10.9
+   Compiling rayon v1.10.0
+   Compiling sha1 v0.10.6
+   Compiling uuid v1.16.0
+   Compiling hmac v0.12.1
+   Compiling chacha20 v0.9.1
+   Compiling parking_lot v0.12.3
+   Compiling openssl v0.10.81
+   Compiling native-tls v0.2.14
+   Compiling snafu v0.8.5
+   Compiling salsa20 v0.10.2
+   Compiling hmac-sha1 v0.2.2
+   Compiling der-parser v9.0.0
+   Compiling oid-registry v0.7.1
+   Compiling libdeflate-sys v1.24.0
+   Compiling bevy_macro_utils v0.16.1
+   Compiling lmdb-master-sys v0.2.5
+   Compiling flate2 v1.1.1
+   Compiling crypto_secretbox v0.1.1
+   Compiling derive_more-impl v2.1.1
+   Compiling stun-rs v0.1.11
+   Compiling iroh v0.35.0
+   Compiling surge-ping v0.8.4
+   Compiling synchronoise v1.0.1
+   Compiling strum v0.26.3
+   Compiling arc-swap v1.9.1
+   Compiling bevy_reflect_derive v0.16.1
+   Compiling bitflags v2.13.0
+   Compiling bevy_ecs_macros v0.16.1
+   Compiling derive_more v1.0.0
+   Compiling bevy_derive v0.16.1
+   Compiling x509-parser v0.16.0
+   Compiling tikv-jemalloc-sys v0.6.0+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7
+   Compiling clap_derive v4.5.32
+   Compiling rustix v1.0.3
+   Compiling simple-dns v0.9.3
+   Compiling netlink-packet-route v0.23.0
+   Compiling darling_macro v0.20.10
+   Compiling hashbrown v0.15.2
+   Compiling glam v0.29.3
+   Compiling url v2.5.4
+   Compiling erased-serde v0.4.6
+   Compiling serde_json v1.0.140
+   Compiling indexmap v2.9.0
+   Compiling bevy_platform v0.16.1
+   Compiling hashbrown v0.14.5
+   Compiling valence_ident v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling bevy_utils v0.16.1
+   Compiling bevy_tasks v0.16.1
+   Compiling ctrlc v3.4.7
+   Compiling valence_nbt v0.8.0 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling ed25519 v2.2.3
+   Compiling serde_urlencoded v0.7.1
+   Compiling petgraph v0.6.5
+   Compiling h2 v0.4.15
+   Compiling moka v0.12.10
+   Compiling attohttpc v0.30.1
+   Compiling hickory-proto v0.25.2
+   Compiling lru v0.12.5
+   Compiling ntimestamp v1.0.0
+   Compiling iroh-metrics v0.34.0
+   Compiling tempfile v3.19.1
+   Compiling serdect v0.2.0
+   Compiling postcard v1.1.3
+   Compiling valence_text v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling derive_more v2.1.1
+   Compiling rusty-fork v0.3.0
+   Compiling xattr v1.5.0
+   Compiling darling v0.20.10
+   Compiling bincode v1.3.3
+   Compiling serde_spanned v0.6.8
+   Compiling toml_datetime v0.6.8
+   Compiling enumset_derive v0.11.0
+   Compiling proptest v1.6.0
+   Compiling tar v0.4.46
+   Compiling clap v4.5.38
+   Compiling ed25519-dalek v2.2.0
+   Compiling crypto_box v0.9.1
+   Compiling heed-types v0.21.0
+   Compiling toml_edit v0.22.24
+   Compiling envy v0.4.2
+   Compiling tokio-native-tls v0.3.1
+   Compiling iroh-base v0.35.0
+   Compiling heed v0.21.0
+   Compiling bevy_utils v0.12.1
+   Compiling enumset v1.1.6
+   Compiling bevy_ecs v0.12.1
+   Compiling bevy_reflect v0.16.1
+   Compiling valence_math v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling geometry v0.1.0 (/home/brittonr/git/mc/hyperion/crates/geometry)
+   Compiling hyperion-proto v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-proto)
+   Compiling bvh v0.1.0 (https://github.com/TestingPlant/bvh-data#9bffb03a)
+   Compiling hickory-resolver v0.25.2
+   Compiling toml v0.8.20
+   Compiling bvh-region v0.1.0 (/home/brittonr/git/mc/hyperion/crates/bvh-region)
+   Compiling rustls-webpki v0.103.13
+   Compiling rustls-webpki v0.102.8
+   Compiling rcgen v0.13.2
+   Compiling libdeflater v1.24.0
+   Compiling hyper v1.10.1
+   Compiling hyper-util v0.1.20
+   Compiling hyper-tls v0.6.0
+   Compiling igd-next v0.16.2
+   Compiling bevy_app v0.12.1
+   Compiling portmapper v0.5.0
+   Compiling tokio-rustls v0.26.2
+   Compiling iroh-quinn-proto v0.13.0
+   Compiling bevy_ecs v0.16.1
+   Compiling bevy_math v0.16.1
+   Compiling hyper-rustls v0.27.5
+   Compiling tokio-websockets v0.11.4
+   Compiling reqwest v0.12.15
+   Compiling bevy_app v0.16.1
+   Compiling bevy_log v0.16.1
+   Compiling bevy_time v0.16.1
+   Compiling bevy_input v0.16.1
+   Compiling valence_protocol v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling bevy_transform v0.16.1
+   Compiling bevy_diagnostic v0.16.1
+   Compiling bevy_internal v0.16.1
+   Compiling bevy v0.16.1
+   Compiling hyperion-utils v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-utils)
+   Compiling valence_server_common v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling hyperion-crafting v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-crafting)
+   Compiling hyperion-text v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-text)
+   Compiling hyperion-palette v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-palette)
+   Compiling packet-channel v0.1.0 (/home/brittonr/git/mc/hyperion/crates/packet-channel)
+   Compiling tikv-jemallocator v0.6.0
+   Compiling valence_registry v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling hyperion-inventory v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-inventory)
+   Compiling hyperion-proxy v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-proxy)
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling valence_anvil v0.1.0 (https://github.com/TestingPlant/valence?branch=feat-bytes#fb792dcb)
+   Compiling hyperion v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion)
+   Compiling hyperion-permission v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-permission)
+   Compiling hyperion-command v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-command)
+   Compiling hyperion-item v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-item)
+   Compiling hyperion-gui v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-gui)
+   Compiling hyperion-genmap v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-genmap)
+   Compiling hyperion-proxy-module v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-proxy-module)
+   Compiling hyperion-clap v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-clap)
+   Compiling bedwars v0.1.0 (/home/brittonr/git/mc/hyperion/events/bedwars)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 38s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/bedwars-08682e8796f16281)
+
+running 16 tests
+test plugin::attack::tests::friendly_fire_allows_different_team_attacks ... ok
+test plugin::attack::tests::friendly_fire_allows_teamless_hardcore_factions_attacks ... ok
+test plugin::attack::tests::friendly_fire_blocks_same_team_attacks ... ok
+test tests::active_game_type_distinguishes_hardcore_factions_from_bedwars ... ok
+test tests::active_game_type_distinguishes_dayz_from_other_modes ... ok
+test tests::active_game_type_match_helpers_accept_only_selected_mode ... ok
+test tests::game_type_names_are_stable ... ok
+test tests::gameplay_inventory_matches_default_feature_order ... ok
+test tests::preset_diagnostics_reject_invalid_composition ... ok
+test tests::duplicate_public_feature_without_disable_fails_clearly ... ok
+test tests::mode_plugins_are_mode_only_and_reject_multiple_exclusive_modes ... ok
+test tests::disabled_and_replaced_gameplay_features_are_addressable ... ok
+test tests::missing_command_dependency_fails_clearly ... ok
+test tests::default_gameplay_group_installs_public_features_without_selecting_mode ... ok
+test tests::bedwars_iroh_smoke_accepts_allowed_proxy_and_rejects_unknown_proxy ... ok
+test tests::preset_builder_preserves_default_behavior_and_mode_only_escape_hatch ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.43s
+
+   Compiling bedwars v0.1.0 (/home/brittonr/git/mc/hyperion/events/bedwars)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.08s
+     Running tests/gameplay_public_api.rs (/home/brittonr/.cargo-target/debug/deps/gameplay_public_api-5cfdc032f44afadb)
+
+running 3 tests
+test negative_public_preset_diagnostics_reject_missing_dependency ... ok
+test positive_public_gameplay_paths_compile_and_install ... ok
+test negative_public_gameplay_disable_path_removes_feature ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0
+]0;

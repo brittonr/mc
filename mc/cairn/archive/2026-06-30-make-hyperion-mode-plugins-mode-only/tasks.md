@@ -1,0 +1,14 @@
+# Tasks
+
+- [x] [serial] Inventory current mode plugin responsibilities, app-builder entrypoints, and default behavior that must remain compatible. r[hyperion_game_modes.mode_plugins_mode_only.inventory]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-inventory-2026-06-30.md`, `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:inventory] Refactor Bedwars, Dayz, and HardcoreFactions plugins to install only mode identity and mode-local setup. r[hyperion_game_modes.mode_plugins_mode_only.contract]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:contract] Update app builders and presets to compose Hyperion core, default gameplay, and exactly one selected mode while preserving existing default entrypoints. r[hyperion_game_modes.mode_plugins_mode_only.builder_compatibility]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:builder_compatibility] Document mode-only versus preset responsibilities and any compatibility aliases or migration path. r[hyperion_game_modes.mode_plugins_mode_only.documentation]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-inventory-2026-06-30.md`, `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:documentation] Add positive tests for mode-only setup and default builder behavior plus negative tests proving mode plugins do not install shared gameplay or duplicate defaults. r[hyperion_game_modes.mode_plugins_mode_only.tests]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:tests] Run focused Hyperion mode app-build checks, mode-only tests, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks with promoted logs. r[hyperion_game_modes.mode_plugins_mode_only.validation]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-cairn-gates-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-cairn-validate-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.

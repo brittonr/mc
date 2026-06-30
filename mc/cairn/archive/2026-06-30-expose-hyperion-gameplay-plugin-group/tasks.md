@@ -1,0 +1,12 @@
+# Tasks
+
+- [x] [serial] Inventory `CommonGameplayPlugin`, current feature plugin list, command registration, dependency assumptions, and mode-neutral versus mode-specific ownership. r[hyperion_game_modes.composable_gameplay_group.inventory]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-inventory-2026-06-30.md`, `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:inventory] Add a public default gameplay `PluginGroup` that preserves the existing shared plugin order and default behavior. r[hyperion_game_modes.composable_gameplay_group.contract]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:contract] Expose stable public paths for individual feature plugins that are safe to compose, and document private/non-claim boundaries for the rest. r[hyperion_game_modes.composable_gameplay_group.feature_visibility]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-inventory-2026-06-30.md`, `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:feature_visibility] Add positive tests for default group installation and public feature handles plus negative tests for disabled/replaced features and missing dependencies. r[hyperion_game_modes.composable_gameplay_group.tests]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:tests] Run focused Hyperion composition checks, public API compile checks, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks with promoted logs. r[hyperion_game_modes.composable_gameplay_group.validation]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-cairn-gates-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-cairn-validate-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.

@@ -1,0 +1,5 @@
+command=cd hyperion && nix develop -c cargo fmt -p bedwars -p hyperion-game-modes --check && nix develop -c cargo clippy -p hyperion-game-modes -- -D warnings
+/home/brittonr/git/mc/hyperion
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.13s
+exit_status=0
+]0;

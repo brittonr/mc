@@ -1,0 +1,14 @@
+# Tasks
+
+- [x] [serial] Inventory existing Hyperion game-mode, plugin, preset, and app-builder tests to avoid duplicate or brittle coverage. r[hyperion_game_modes.composition_tests.inventory]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-inventory-2026-06-30.md`, `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:inventory] Define a composition test matrix for default presets, mode-only plugins, custom feature toggles/replacements, additive custom plugins, disabled plugins, and exclusive-mode failures. r[hyperion_game_modes.composition_tests.matrix]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-inventory-2026-06-30.md`, `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:matrix] Add positive tests for default Bedwars/Dayz/HardcoreFactions presets, mode-only plugins, and supported custom gameplay composition. r[hyperion_game_modes.composition_tests.positive]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:positive] Add negative tests for missing mode, duplicate exclusive modes, disabled required features, unsupported replacements, duplicate plugins, wrong-mode mutation, and partial-app prevention. r[hyperion_game_modes.composition_tests.negative]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:negative] Promote focused run logs and BLAKE3 manifests for the composition matrix. r[hyperion_game_modes.composition_tests.evidence]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:evidence] Run focused Hyperion composition tests, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks with promoted logs. r[hyperion_game_modes.composition_tests.validation]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-cairn-gates-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-cairn-validate-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.

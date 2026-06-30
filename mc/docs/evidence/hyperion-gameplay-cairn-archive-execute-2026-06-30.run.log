@@ -1,0 +1,643 @@
+command=CAIRN_ARCHIVE_DATE=2026-06-30 nix run .#cairn -- archive <change> --root . --execute
+== archive execute expose-hyperion-gameplay-plugin-group ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: expose-hyperion-gameplay-plugin-group",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-30-expose-hyperion-gameplay-plugin-group"
+    }
+  ],
+  "blocked": false,
+  "change": "expose-hyperion-gameplay-plugin-group",
+  "dry_run": false,
+  "input_hash": "892943f79e0f7e88d1120e580674745143fe5fb1f4920ecbfd2a2062bccdf589",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "c7219917762acffedca74ea892327de287e72218095f2d1e7651c543806fce32",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-expose-hyperion-gameplay-plugin-group/design.md"
+        },
+        {
+          "content_hash": "7bfb589ab804572f9b612a5486354ef66ac52e5a00e59d4a071f18edc74531ab",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-expose-hyperion-gameplay-plugin-group/proposal.md"
+        },
+        {
+          "content_hash": "338ebeb6b9dbf1f53c8d01532238349c4244a44a4835a051dc221483df61bb2f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-expose-hyperion-gameplay-plugin-group/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "e2e3ab3857df8dda6c078c39f8606918fd22a8546990171235702cc0cca184c1",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-expose-hyperion-gameplay-plugin-group/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/expose-hyperion-gameplay-plugin-group"
+        }
+      ],
+      "manifest_hash": "3dff8de9d965480220f6feac738a0a5185c0acc588e69dea2774007a35cc4628"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "c7219917762acffedca74ea892327de287e72218095f2d1e7651c543806fce32",
+          "exists": true,
+          "path": "./cairn/changes/expose-hyperion-gameplay-plugin-group/design.md"
+        },
+        {
+          "content_hash": "7bfb589ab804572f9b612a5486354ef66ac52e5a00e59d4a071f18edc74531ab",
+          "exists": true,
+          "path": "./cairn/changes/expose-hyperion-gameplay-plugin-group/proposal.md"
+        },
+        {
+          "content_hash": "338ebeb6b9dbf1f53c8d01532238349c4244a44a4835a051dc221483df61bb2f",
+          "exists": true,
+          "path": "./cairn/changes/expose-hyperion-gameplay-plugin-group/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "e2e3ab3857df8dda6c078c39f8606918fd22a8546990171235702cc0cca184c1",
+          "exists": true,
+          "path": "./cairn/changes/expose-hyperion-gameplay-plugin-group/tasks.md"
+        }
+      ],
+      "manifest_hash": "199f3a6fe909a7c0acdbd33248e89cfac75722ed2d252d4f60398445bc05bf55"
+    },
+    "kind": "archive",
+    "manifest_hash": "102ad0129b58c233318d4be66fb5a55e6f89be25b55694f3e8b4f78c99ec08e1"
+  },
+  "plan_hash": "3a4e6116a8cd9eba997caa33fc6dc08dfb7cbcbc5b032815f253f1e8b2f1f2ac",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "c5559060cb01a13e948f30d8d47b06f334f02f91783aa7bb081bf6e1dae61af6"
+}
+== archive execute make-hyperion-mode-plugins-mode-only ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: make-hyperion-mode-plugins-mode-only",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-30-make-hyperion-mode-plugins-mode-only"
+    }
+  ],
+  "blocked": false,
+  "change": "make-hyperion-mode-plugins-mode-only",
+  "dry_run": false,
+  "input_hash": "3cd52a356288b5c26e4a229cda906e6eb806dea825af862b2b94d28de0cf5096",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "b30d66aef1975c10bdd6167dfeb13bd89ce20ebb12aa119e3be2e93f84d6e43d",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-make-hyperion-mode-plugins-mode-only/design.md"
+        },
+        {
+          "content_hash": "8c4ccdff3e11b229abfd01d3053ad94fcc38736611afd5a09f1feb0dc48aa85c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-make-hyperion-mode-plugins-mode-only/proposal.md"
+        },
+        {
+          "content_hash": "1b0c0bbf84e3409bd92ce2414d6d3e6d9e1737218c687b49683eebe9ee4a126c",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-make-hyperion-mode-plugins-mode-only/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "d6b6741dbafcc8a126ef2fd27960c2739b2e37b563f870c9df9044aac8ed660b",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-make-hyperion-mode-plugins-mode-only/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/make-hyperion-mode-plugins-mode-only"
+        }
+      ],
+      "manifest_hash": "d0e12798cdb8418eaa4ff26d8837f67de5507fdb7e8db76a95365b909b7dd597"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "b30d66aef1975c10bdd6167dfeb13bd89ce20ebb12aa119e3be2e93f84d6e43d",
+          "exists": true,
+          "path": "./cairn/changes/make-hyperion-mode-plugins-mode-only/design.md"
+        },
+        {
+          "content_hash": "8c4ccdff3e11b229abfd01d3053ad94fcc38736611afd5a09f1feb0dc48aa85c",
+          "exists": true,
+          "path": "./cairn/changes/make-hyperion-mode-plugins-mode-only/proposal.md"
+        },
+        {
+          "content_hash": "1b0c0bbf84e3409bd92ce2414d6d3e6d9e1737218c687b49683eebe9ee4a126c",
+          "exists": true,
+          "path": "./cairn/changes/make-hyperion-mode-plugins-mode-only/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "d6b6741dbafcc8a126ef2fd27960c2739b2e37b563f870c9df9044aac8ed660b",
+          "exists": true,
+          "path": "./cairn/changes/make-hyperion-mode-plugins-mode-only/tasks.md"
+        }
+      ],
+      "manifest_hash": "75f63fee7e8676d12d004e26961d6189f02dd68005dbca93d817b76c772ed67b"
+    },
+    "kind": "archive",
+    "manifest_hash": "18d1254f32640659b57b7efaf63fad6d54739b29dedfb45df92098f56160f252"
+  },
+  "plan_hash": "0fe2da93c1ebd19972a159b453182cd4fe67c85c398872ca2cd10b56ff4fbd45",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "6299163daf9b118019ca90801c871be46013e368cbbcfcf0700873ea1b7743f1"
+}
+== archive execute add-hyperion-game-preset-builder ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-hyperion-game-preset-builder",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-30-add-hyperion-game-preset-builder"
+    }
+  ],
+  "blocked": false,
+  "change": "add-hyperion-game-preset-builder",
+  "dry_run": false,
+  "input_hash": "9828e747a5a091a501e5e0a343d0fa3f3ee28a7ef0046cb1cb7ca946edf008a3",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "3f8f547f5c37ba197628e61b6b2922a73c5cd8cf67c607c8e1e72f9a07f57bf4",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-add-hyperion-game-preset-builder/design.md"
+        },
+        {
+          "content_hash": "25eb1bb4c3cd496e8859fb55387cfb5cd6d52974813901b08a5143c8cd6d6cf8",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-add-hyperion-game-preset-builder/proposal.md"
+        },
+        {
+          "content_hash": "abe2bf370fb67796556a033832f7c0ae647ad633dbab3201eb5cc9edde9a7e67",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-add-hyperion-game-preset-builder/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "6c3d473a364852300aa9312062e7f1cce56e636c7b4ee5b9872543899372e4c4",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-add-hyperion-game-preset-builder/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-hyperion-game-preset-builder"
+        }
+      ],
+      "manifest_hash": "3fca4dc6431a97e7080db5be87a3671a8db6b68b57d75c5d8c4657a38a30ceed"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "3f8f547f5c37ba197628e61b6b2922a73c5cd8cf67c607c8e1e72f9a07f57bf4",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-game-preset-builder/design.md"
+        },
+        {
+          "content_hash": "25eb1bb4c3cd496e8859fb55387cfb5cd6d52974813901b08a5143c8cd6d6cf8",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-game-preset-builder/proposal.md"
+        },
+        {
+          "content_hash": "abe2bf370fb67796556a033832f7c0ae647ad633dbab3201eb5cc9edde9a7e67",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-game-preset-builder/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "6c3d473a364852300aa9312062e7f1cce56e636c7b4ee5b9872543899372e4c4",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-game-preset-builder/tasks.md"
+        }
+      ],
+      "manifest_hash": "87069745ff64fe40301de04aff700be38ffda9eb5b533905b6dbfccd68bef7cb"
+    },
+    "kind": "archive",
+    "manifest_hash": "3723bf5bd215b5b4dfbd75e7c241385b0cc4d75eaacdafda4ab521cf065eb070"
+  },
+  "plan_hash": "278d0091650abcf765bc800c2d40faade6c569d6ee287c9c759cfe27945f3d51",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "e6bfe906e6c8c98cf1922d5f53594f0908286cbff6827f22e455dc815941004d"
+}
+== archive execute validate-exclusive-hyperion-modes ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: validate-exclusive-hyperion-modes",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-30-validate-exclusive-hyperion-modes"
+    }
+  ],
+  "blocked": false,
+  "change": "validate-exclusive-hyperion-modes",
+  "dry_run": false,
+  "input_hash": "166b1a434e0e6ae2d7c8689dafe38b929740dde1804f97a2817c008710c6bba7",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "82acb5e45e2b64a3802e033adf005141284061654f552505d37047f6707e7970",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-validate-exclusive-hyperion-modes/design.md"
+        },
+        {
+          "content_hash": "98bcd615850b8f02db3d25beccd561a1241bdfc40aa16d407ccea4a04c0aaea2",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-validate-exclusive-hyperion-modes/proposal.md"
+        },
+        {
+          "content_hash": "fe016ee9f33c89616ef0a21aac1723ca81f03783c6af48872a16c41367356d86",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-validate-exclusive-hyperion-modes/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "f2ae6b8be8dec5ee7287ddf196949fa469c684d0376c7bf47a891496989ed120",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-validate-exclusive-hyperion-modes/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/validate-exclusive-hyperion-modes"
+        }
+      ],
+      "manifest_hash": "837cdcd53202c77292418179c4162c88df533904e10664e2e93da6aa5ce21b57"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "82acb5e45e2b64a3802e033adf005141284061654f552505d37047f6707e7970",
+          "exists": true,
+          "path": "./cairn/changes/validate-exclusive-hyperion-modes/design.md"
+        },
+        {
+          "content_hash": "98bcd615850b8f02db3d25beccd561a1241bdfc40aa16d407ccea4a04c0aaea2",
+          "exists": true,
+          "path": "./cairn/changes/validate-exclusive-hyperion-modes/proposal.md"
+        },
+        {
+          "content_hash": "fe016ee9f33c89616ef0a21aac1723ca81f03783c6af48872a16c41367356d86",
+          "exists": true,
+          "path": "./cairn/changes/validate-exclusive-hyperion-modes/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "f2ae6b8be8dec5ee7287ddf196949fa469c684d0376c7bf47a891496989ed120",
+          "exists": true,
+          "path": "./cairn/changes/validate-exclusive-hyperion-modes/tasks.md"
+        }
+      ],
+      "manifest_hash": "160fbdbe0c50a13b19b9caf888c303f7aaf9b48e60a81323eb938b05b1eca478"
+    },
+    "kind": "archive",
+    "manifest_hash": "66e0e5915212495fb54629164bab137e45f86c34e2006d116c42c3100d7da804"
+  },
+  "plan_hash": "f5e72eb16993dc6e391f82f8c8860f6ce616ad326b55ea573be6f66241dea67b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "93109143ff729c5a20aba554841bc6031e5e8165dd760d6bc72a41441432b1b8"
+}
+== archive execute extract-hyperion-common-gameplay-crate ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: extract-hyperion-common-gameplay-crate",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-30-extract-hyperion-common-gameplay-crate"
+    }
+  ],
+  "blocked": false,
+  "change": "extract-hyperion-common-gameplay-crate",
+  "dry_run": false,
+  "input_hash": "e4c8755d3c006349c8dedbc09f5e96d9b577f0a1113e7ed73dfb4f7fbd366604",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "6c068d212186bcf67c1bc0ecaf4cde5ae149ccedc1f5bbdca004741676ed83f6",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-extract-hyperion-common-gameplay-crate/design.md"
+        },
+        {
+          "content_hash": "f740280123718cd216a5ee55597d1e25ffe1f9647e7de512755429025ce44550",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-extract-hyperion-common-gameplay-crate/proposal.md"
+        },
+        {
+          "content_hash": "21ad83d7175946e15b25c89c2933bb83935e9c56f19729c38d6e2c6d34cee089",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-extract-hyperion-common-gameplay-crate/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "58c329b50bda3e617bd0899f2c7fbdda7ce5a35072d0980d2f60c260fe1fd55f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-extract-hyperion-common-gameplay-crate/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/extract-hyperion-common-gameplay-crate"
+        }
+      ],
+      "manifest_hash": "0045bb51eac900de67c9f88afad4260eff98b3c1ac419eb35ce580dd1bcd5d74"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "6c068d212186bcf67c1bc0ecaf4cde5ae149ccedc1f5bbdca004741676ed83f6",
+          "exists": true,
+          "path": "./cairn/changes/extract-hyperion-common-gameplay-crate/design.md"
+        },
+        {
+          "content_hash": "f740280123718cd216a5ee55597d1e25ffe1f9647e7de512755429025ce44550",
+          "exists": true,
+          "path": "./cairn/changes/extract-hyperion-common-gameplay-crate/proposal.md"
+        },
+        {
+          "content_hash": "21ad83d7175946e15b25c89c2933bb83935e9c56f19729c38d6e2c6d34cee089",
+          "exists": true,
+          "path": "./cairn/changes/extract-hyperion-common-gameplay-crate/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "58c329b50bda3e617bd0899f2c7fbdda7ce5a35072d0980d2f60c260fe1fd55f",
+          "exists": true,
+          "path": "./cairn/changes/extract-hyperion-common-gameplay-crate/tasks.md"
+        }
+      ],
+      "manifest_hash": "3b45ba4582b3ff66bbba99eb52faec794aca71c629322cffcf44d3abd42543e9"
+    },
+    "kind": "archive",
+    "manifest_hash": "141508c759609a82aadaeea52de30108fc58eb2e7d769609f858c8142a543816"
+  },
+  "plan_hash": "f3ff97df44bbfd3984fc77daf34e21e28a5011934bf253ff96ac16fb9ec89f64",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "78a10a1600cb0e347c1fadc09d4f2daed625da2555bd51d993e75671422a7b3f"
+}
+== archive execute add-hyperion-mode-markers-run-conditions ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-hyperion-mode-markers-run-conditions",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-30-add-hyperion-mode-markers-run-conditions"
+    }
+  ],
+  "blocked": false,
+  "change": "add-hyperion-mode-markers-run-conditions",
+  "dry_run": false,
+  "input_hash": "2d0938f4718351c22554482a9ab25671838da6ffacbe1940732f69ea3eb186a8",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "b848c9b05b26771688d88793a2b2abc3a708459d1c60610e95f868aa4c31d9ee",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-add-hyperion-mode-markers-run-conditions/design.md"
+        },
+        {
+          "content_hash": "425f55cc06abb0456b4e71c14d2a5cf71a3dd05599680727b50ab094614aff0a",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-add-hyperion-mode-markers-run-conditions/proposal.md"
+        },
+        {
+          "content_hash": "9868ef3bab8806293513e2b338ae286a7bbda7d292640bfac8bf4a21f4429613",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-add-hyperion-mode-markers-run-conditions/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "85498bb1b5e764b7d538c81e4d6d170b8660106e1dac87ebe6e8e51f6f6f6add",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-add-hyperion-mode-markers-run-conditions/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-hyperion-mode-markers-run-conditions"
+        }
+      ],
+      "manifest_hash": "9d7b2f0364d121543669c0ffc909aff25024819698fef159b38e91a249f91d94"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "b848c9b05b26771688d88793a2b2abc3a708459d1c60610e95f868aa4c31d9ee",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-mode-markers-run-conditions/design.md"
+        },
+        {
+          "content_hash": "425f55cc06abb0456b4e71c14d2a5cf71a3dd05599680727b50ab094614aff0a",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-mode-markers-run-conditions/proposal.md"
+        },
+        {
+          "content_hash": "9868ef3bab8806293513e2b338ae286a7bbda7d292640bfac8bf4a21f4429613",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-mode-markers-run-conditions/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "85498bb1b5e764b7d538c81e4d6d170b8660106e1dac87ebe6e8e51f6f6f6add",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-mode-markers-run-conditions/tasks.md"
+        }
+      ],
+      "manifest_hash": "87bccc994a6590cc9f1a80636d6d01166291fc2124a98ded815a1bc614433506"
+    },
+    "kind": "archive",
+    "manifest_hash": "4663ab6185b508cb48a2ab6e8b2c77d7975c0b4564300d389f48286df5d0008b"
+  },
+  "plan_hash": "6e127875f3c8809b75f2a5dbccfdfc6cfa66aaa4a006dd1947f76b4d8bb1153d",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "56060c81fcc377307ab65040be72410998c8a0946209d6f77d32e488b06d54ae"
+}
+== archive execute add-hyperion-gameplay-composition-tests ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-hyperion-gameplay-composition-tests",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-30-add-hyperion-gameplay-composition-tests"
+    }
+  ],
+  "blocked": false,
+  "change": "add-hyperion-gameplay-composition-tests",
+  "dry_run": false,
+  "input_hash": "d92b1fa5454512d6dedd12fcf4b37ee490cd323481dcc7fe05a0530ba66f2c5b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "048c97753be38f9b1c887eefb6a13658cd58f5bf70bbdf3b97c3521339102e5b",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-add-hyperion-gameplay-composition-tests/design.md"
+        },
+        {
+          "content_hash": "56584b31eef8e0d28183e91ff996a4815d14672d847ab3a5b24eaad62bea0770",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-add-hyperion-gameplay-composition-tests/proposal.md"
+        },
+        {
+          "content_hash": "e49b1cd8802d7430f91894e21b45164a5b25f8486adffc0479bdf1eeb3ae031e",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-add-hyperion-gameplay-composition-tests/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "1e299cd7716589655fff930de96c31fcf88c6c6ad62688f7ff56b85944834909",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-add-hyperion-gameplay-composition-tests/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-hyperion-gameplay-composition-tests"
+        }
+      ],
+      "manifest_hash": "5df0c17b693e748d781de5bad5c9009a0da3a93377a112291d256362e219316b"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "048c97753be38f9b1c887eefb6a13658cd58f5bf70bbdf3b97c3521339102e5b",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-gameplay-composition-tests/design.md"
+        },
+        {
+          "content_hash": "56584b31eef8e0d28183e91ff996a4815d14672d847ab3a5b24eaad62bea0770",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-gameplay-composition-tests/proposal.md"
+        },
+        {
+          "content_hash": "e49b1cd8802d7430f91894e21b45164a5b25f8486adffc0479bdf1eeb3ae031e",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-gameplay-composition-tests/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "1e299cd7716589655fff930de96c31fcf88c6c6ad62688f7ff56b85944834909",
+          "exists": true,
+          "path": "./cairn/changes/add-hyperion-gameplay-composition-tests/tasks.md"
+        }
+      ],
+      "manifest_hash": "0a1a90c9ad44286a94508a63ebae50eaa2f5b186e9176b6d8c211ea8a6d5b310"
+    },
+    "kind": "archive",
+    "manifest_hash": "50d5b7cb0fef65644deadf3e72cd8bd5dd0cd8bc5df4005c7745aa0524fd118c"
+  },
+  "plan_hash": "e939c5aa0fc1271cd6fdda5592802ef22a374b5afeedd86df0f35123a333ec76",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "4ec2dd3fe061088232746d6e7c93d0658985f5f8aa304601795f1b534fddc67d"
+}
+== archive execute remove-hyperion-plugin-component-derives ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: remove-hyperion-plugin-component-derives",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-30-remove-hyperion-plugin-component-derives"
+    }
+  ],
+  "blocked": false,
+  "change": "remove-hyperion-plugin-component-derives",
+  "dry_run": false,
+  "input_hash": "1a777965813e05c92e1b216eebf68b54cfe4c6aea4d45b3358965194153950de",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "fe7c79ce05a5286db1b13535d1e9b06b3b3ee598065f3eb29d8ba603da97d94f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-remove-hyperion-plugin-component-derives/design.md"
+        },
+        {
+          "content_hash": "44d092af45e44577c22fb93f815c4e924aef70b02a58bcbbe5c770508749bada",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-remove-hyperion-plugin-component-derives/proposal.md"
+        },
+        {
+          "content_hash": "c5a990f8aeb66d4c4750f74f8f8429f718d080772f6c58eec9a76b7daa503ded",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-remove-hyperion-plugin-component-derives/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "feaad2edfd87e12b03d49bbc7ad7c49ce9b44b43f37e394a6e081621f7335a54",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-remove-hyperion-plugin-component-derives/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/remove-hyperion-plugin-component-derives"
+        }
+      ],
+      "manifest_hash": "46f038dd911b6a601064e34e2b199afeef70c5a65b953ce90af783cdfb4dc566"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "fe7c79ce05a5286db1b13535d1e9b06b3b3ee598065f3eb29d8ba603da97d94f",
+          "exists": true,
+          "path": "./cairn/changes/remove-hyperion-plugin-component-derives/design.md"
+        },
+        {
+          "content_hash": "44d092af45e44577c22fb93f815c4e924aef70b02a58bcbbe5c770508749bada",
+          "exists": true,
+          "path": "./cairn/changes/remove-hyperion-plugin-component-derives/proposal.md"
+        },
+        {
+          "content_hash": "c5a990f8aeb66d4c4750f74f8f8429f718d080772f6c58eec9a76b7daa503ded",
+          "exists": true,
+          "path": "./cairn/changes/remove-hyperion-plugin-component-derives/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "feaad2edfd87e12b03d49bbc7ad7c49ce9b44b43f37e394a6e081621f7335a54",
+          "exists": true,
+          "path": "./cairn/changes/remove-hyperion-plugin-component-derives/tasks.md"
+        }
+      ],
+      "manifest_hash": "827fd06fa545cc268ec5d18567c25e8a7ef684d32fb1fb916b7619762ddfc566"
+    },
+    "kind": "archive",
+    "manifest_hash": "1f92f74fef25bb468dcf89b89e5b6d0b267b637b143fec50236d846e56d5d660"
+  },
+  "plan_hash": "550c54f5284de92aead24afd49c7075d3a5d8d81f3e007d3fe3a0c8707cddc18",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "b07644d006c58780d4e65d1e6ad83efa87802af6ae3e9ebb32d13a28069aea9c"
+}
+exit_status=0
+]0;

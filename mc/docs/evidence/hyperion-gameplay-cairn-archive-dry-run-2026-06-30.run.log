@@ -1,0 +1,179 @@
+command=nix run .#cairn -- archive <change> --root . (dry-run)
+== archive dry-run expose-hyperion-gameplay-plugin-group ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: expose-hyperion-gameplay-plugin-group",
+      "kind": "archive_change",
+      "path": "./cairn/changes/expose-hyperion-gameplay-plugin-group"
+    }
+  ],
+  "blocked": false,
+  "change": "expose-hyperion-gameplay-plugin-group",
+  "dry_run": true,
+  "input_hash": "892943f79e0f7e88d1120e580674745143fe5fb1f4920ecbfd2a2062bccdf589",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "04ed6b3671028f6f36de92f0edd8035e6790e80b795f3ca84b46a52bede40916",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "4b2dda0f3e879c212a4a7b1fc98ad2a653240b3f5fef206a0051656895b37403"
+}
+== archive dry-run make-hyperion-mode-plugins-mode-only ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: make-hyperion-mode-plugins-mode-only",
+      "kind": "archive_change",
+      "path": "./cairn/changes/make-hyperion-mode-plugins-mode-only"
+    }
+  ],
+  "blocked": false,
+  "change": "make-hyperion-mode-plugins-mode-only",
+  "dry_run": true,
+  "input_hash": "3cd52a356288b5c26e4a229cda906e6eb806dea825af862b2b94d28de0cf5096",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "cea3a73e320e1f738f6f0ba3d287999c1cc5730335095c17970bd8387a558250",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "e5323bd59c79be6313b548077054f5b28e64f212b745b1c8a5ac264256575856"
+}
+== archive dry-run add-hyperion-game-preset-builder ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-hyperion-game-preset-builder",
+      "kind": "archive_change",
+      "path": "./cairn/changes/add-hyperion-game-preset-builder"
+    }
+  ],
+  "blocked": false,
+  "change": "add-hyperion-game-preset-builder",
+  "dry_run": true,
+  "input_hash": "9828e747a5a091a501e5e0a343d0fa3f3ee28a7ef0046cb1cb7ca946edf008a3",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "7223f1ac2393d7893bfae4929cfdf714868663ecfc0f4cca73b40308d73122de",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "700618a16ed093817e8d74caeaa6fe08461e6bf55d1acc5b9fa42b69d9859032"
+}
+== archive dry-run validate-exclusive-hyperion-modes ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: validate-exclusive-hyperion-modes",
+      "kind": "archive_change",
+      "path": "./cairn/changes/validate-exclusive-hyperion-modes"
+    }
+  ],
+  "blocked": false,
+  "change": "validate-exclusive-hyperion-modes",
+  "dry_run": true,
+  "input_hash": "166b1a434e0e6ae2d7c8689dafe38b929740dde1804f97a2817c008710c6bba7",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "a8a4d49490e5a3468f2e548b9d857dde04b6513dca993d1066f8382b63bb1e91",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "1b7ad3ca3968d90952d412df63d2b31682353f2d0ace2db5bc7e645c5b179137"
+}
+== archive dry-run extract-hyperion-common-gameplay-crate ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: extract-hyperion-common-gameplay-crate",
+      "kind": "archive_change",
+      "path": "./cairn/changes/extract-hyperion-common-gameplay-crate"
+    }
+  ],
+  "blocked": false,
+  "change": "extract-hyperion-common-gameplay-crate",
+  "dry_run": true,
+  "input_hash": "e4c8755d3c006349c8dedbc09f5e96d9b577f0a1113e7ed73dfb4f7fbd366604",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "3083b6316b8ff5e623b813019c904d3644b99b32fadac4c9c5521d6cd2f95946",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "46fe09ca01ad663b935260e1fe4ac126265ec007c72e253eb2478a60806c2f1f"
+}
+== archive dry-run add-hyperion-mode-markers-run-conditions ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-hyperion-mode-markers-run-conditions",
+      "kind": "archive_change",
+      "path": "./cairn/changes/add-hyperion-mode-markers-run-conditions"
+    }
+  ],
+  "blocked": false,
+  "change": "add-hyperion-mode-markers-run-conditions",
+  "dry_run": true,
+  "input_hash": "2d0938f4718351c22554482a9ab25671838da6ffacbe1940732f69ea3eb186a8",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "6dea3792defb47d21f87b0a109b0f13b59c659a58c2f3683bad986554575d76b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "57e2a355b5acf4ebe6ee458bbc32e196d117355a26697e13ba64cbe40f29f565"
+}
+== archive dry-run add-hyperion-gameplay-composition-tests ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-hyperion-gameplay-composition-tests",
+      "kind": "archive_change",
+      "path": "./cairn/changes/add-hyperion-gameplay-composition-tests"
+    }
+  ],
+  "blocked": false,
+  "change": "add-hyperion-gameplay-composition-tests",
+  "dry_run": true,
+  "input_hash": "d92b1fa5454512d6dedd12fcf4b37ee490cd323481dcc7fe05a0530ba66f2c5b",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "a4e032738190b54f85d4bf9b628e020d3452d6d0e34232afc0def0bc3c12e12f",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "3eaa7d764b8030ed976030f48faf259f35e12879d64c1b80722ad608e0592711"
+}
+== archive dry-run remove-hyperion-plugin-component-derives ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: remove-hyperion-plugin-component-derives",
+      "kind": "archive_change",
+      "path": "./cairn/changes/remove-hyperion-plugin-component-derives"
+    }
+  ],
+  "blocked": false,
+  "change": "remove-hyperion-plugin-component-derives",
+  "dry_run": true,
+  "input_hash": "1a777965813e05c92e1b216eebf68b54cfe4c6aea4d45b3358965194153950de",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "2ee6208c9c4993070a769e361eb84a56865705938e1fc060f26d3a91bb16dba0",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "5a5a124a944b1d2033e2d2c11b61b36d51346858d86d1f383203ff1f6b780f86"
+}
+exit_status=0
+]0;

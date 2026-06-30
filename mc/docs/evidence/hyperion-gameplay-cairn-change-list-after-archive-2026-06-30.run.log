@@ -1,0 +1,8 @@
+command=nix run .#cairn -- change list --root .
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+exit_status=0
+]0;

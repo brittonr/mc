@@ -1,0 +1,14 @@
+# Tasks
+
+- [x] [serial] Inventory current app construction APIs, game-type selection, proxy/crypto setup, and expected default builder behavior. r[hyperion_game_modes.game_preset_builder.inventory]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-inventory-2026-06-30.md`, `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:inventory] Define a pure preset-plan core for mode selection, default gameplay inclusion, feature toggles, replacements, custom plugin intents, and diagnostics. r[hyperion_game_modes.game_preset_builder.plan_core]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:plan_core] Add thin Bevy app-builder shell APIs that apply validated preset plans and preserve existing entrypoints as default wrappers. r[hyperion_game_modes.game_preset_builder.app_shell]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:app_shell] Expose reviewable diagnostics and documentation for invalid or unsupported compositions. r[hyperion_game_modes.game_preset_builder.diagnostics]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-inventory-2026-06-30.md`, `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:diagnostics] Add positive default/custom preset tests and negative missing-mode, duplicate-mode, incompatible-replacement, and missing-dependency tests. r[hyperion_game_modes.game_preset_builder.tests]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:tests] Run pure preset-plan tests, app-builder shell tests, default compatibility checks, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks with promoted logs. r[hyperion_game_modes.game_preset_builder.validation]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-cairn-gates-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-cairn-validate-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.

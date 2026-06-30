@@ -6,7 +6,6 @@ Defines optional Hyperion-owned game-mode cores, shell boundaries, tests, valida
 
 ## Requirements
 
-
 ### Requirement: Build Battle scope
 
 r[hyperion_game_modes.build_battle.scope] Build Battle work MUST be scoped as a Hyperion-owned optional creative contest plugin with mode-local theme, plot, phase, permission, vote, score, cleanup, configuration, and diagnostic state using original presentation.
@@ -121,7 +120,6 @@ r[hyperion_game_modes.build_battle.validation.log]
 - WHEN reviewers inspect task evidence
 - THEN logs show relevant phase, plot, permission, vote, scoring, cleanup, positive, negative, and plugin-isolation checks plus Cairn gates and validation
 - AND unsupported Hypixel, production moderation, WorldEdit, persistent-plot, Valence, Bedwars, and public-server safety claims remain non-claims.
-
 
 ### Requirement: Summit climb inventory
 
@@ -340,7 +338,6 @@ r[hyperion_game_modes.summit_climb.validation.log]
 - WHEN reviewers inspect task evidence
 - THEN successful logs show the relevant baseline, focused positive and negative climb tests, terrain affordance checks, stamina-consuming vanilla-assist checks, Bevy schedule checks, plugin/mode isolation checks, formatting or linting where scoped, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks.
 
-
 ### Requirement: Duels/KitPvP scope
 
 r[hyperion_game_modes.duels_kitpvp.scope] Duels/KitPvP work MUST be scoped as an optional Hyperion event plugin with mode-local queue, kit, arena, combat-result, score, configuration, and cleanup state.
@@ -455,7 +452,6 @@ r[hyperion_game_modes.duels_kitpvp.validation.log]
 - WHEN reviewers inspect task evidence
 - THEN logs show relevant pure-core tests, shell/plugin tests, positive and negative behavior tests, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks
 - AND unsupported production, anticheat, ranking, vanilla parity, Valence, and Bedwars claims remain non-claims.
-
 
 ### Requirement: Factions/clans social inventory
 
@@ -627,7 +623,6 @@ r[hyperion_game_modes.factions_clans.social.validation.log]
 - WHEN reviewers inspect task evidence
 - THEN successful logs show relevant baseline checks, positive and negative social-core tests, shell/plugin checks, command/permission checks, persistence fixture checks, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks.
 
-
 ### Requirement: Factions territory inventory
 
 r[hyperion_game_modes.factions_clans.territory.inventory] Factions territory work MUST inventory Hyperion world-action surfaces for block place and break, containers, entity interaction, explosions or projectiles, commands, spatial or chunk ownership, block edit APIs, persistence options, and Bevy schedule seams before implementing claims or raids.
@@ -797,7 +792,6 @@ r[hyperion_game_modes.factions_clans.territory.validation.log]
 - GIVEN factions territory work is ready to archive
 - WHEN reviewers inspect task evidence
 - THEN successful logs show relevant baseline checks, positive and negative claim/protection/raid tests, shell/plugin checks, schedule checks, visibility checks, repair fixture checks, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks.
-
 
 ### Requirement: Diplomacy/economy inventory
 
@@ -989,7 +983,6 @@ r[hyperion_game_modes.factions_clans.diplomacy_economy.validation.log]
 - WHEN reviewers inspect task evidence
 - THEN successful logs show relevant baseline checks, positive and negative diplomacy/economy/progression tests, shell/plugin checks, persistence/accounting fixture checks, admin/audit fixture checks, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks.
 
-
 ### Requirement: LifeSteal scope
 
 r[hyperion_game_modes.lifesteal.scope] LifeSteal SMP work MUST be scoped as a Hyperion-owned optional mode with mode-local heart capacity, death attribution, transfer, final-death, recovery, persistence, admin repair, configuration, and diagnostic state.
@@ -1113,7 +1106,6 @@ r[hyperion_game_modes.lifesteal.validation.log]
 - THEN logs show relevant heart-state, transfer, final-death, recovery, persistence, admin, positive, negative, and plugin-isolation checks plus Cairn gates and validation
 - AND unsupported vanilla-health, combat-parity, production-moderation, Valence, Bedwars, and broad survival claims remain non-claims.
 
-
 ### Requirement: Murder Mystery scope
 
 r[hyperion_game_modes.murder_mystery.scope] Murder Mystery work MUST be scoped as a Hyperion-owned optional social-deduction plugin with mode-local role, visibility, item, kill, timer, victory, spectator, cleanup, configuration, and diagnostic state using original presentation.
@@ -1217,7 +1209,6 @@ r[hyperion_game_modes.murder_mystery.validation.log]
 - THEN logs show relevant role, visibility, item, kill, victory, cleanup, positive, negative, and plugin-isolation checks plus Cairn gates and validation
 - AND unsupported Hypixel, protected-presentation, production-moderation, anti-stream-sniping, Valence, Bedwars, and public-server safety claims remain non-claims.
 
-
 ### Requirement: Parkour scope
 
 r[hyperion_game_modes.parkour.scope] Parkour work MUST be scoped as a Hyperion-owned optional event plugin with mode-local course, checkpoint, timer, leaderboard projection, reset, configuration, and diagnostic state; Valence examples MUST remain reference-only unless separately classified.
@@ -1312,7 +1303,6 @@ r[hyperion_game_modes.parkour.validation.log]
 - WHEN reviewers inspect task evidence
 - THEN logs show relevant course, checkpoint, timer, leaderboard, shell, positive, and negative checks plus Cairn gates and validation
 - AND unsupported Valence-port, production leaderboard, movement-parity, public-server safety, and broad compatibility claims remain non-claims.
-
 
 ### Requirement: Island-mode scope
 
@@ -1437,7 +1427,6 @@ r[hyperion_game_modes.island_mode.validation.log]
 - THEN logs show relevant lifecycle, permission, generator, persistence, positive, negative, shell, and plugin checks plus Cairn gates and validation
 - AND unsupported production economy, full network, anti-grief, public-server safety, Valence, and broad survival compatibility claims remain non-claims.
 
-
 ### Requirement: SkyWars scope
 
 r[hyperion_game_modes.skywars.scope] SkyWars work MUST be scoped as an optional Hyperion event plugin with mode-local arena, island, loot, elimination, spectator, win, reset, configuration, and diagnostic state.
@@ -1544,7 +1533,6 @@ r[hyperion_game_modes.skywars.validation.log]
 - WHEN reviewers inspect task evidence
 - THEN logs show relevant positive and negative arena, loot, elimination, reset, and plugin isolation checks plus Cairn gates and validation
 - AND unsupported production map rotation, anticheat, Hypixel parity, Valence behavior, Bedwars behavior, and broad compatibility claims remain non-claims.
-
 
 ### Requirement: Elimination-survival scope
 
@@ -1669,3 +1657,643 @@ r[hyperion_game_modes.elimination_survival.validation.log]
 - THEN logs show relevant profile, loot, phase, regeneration, border, elimination, reset, positive, negative, and plugin-isolation checks plus Cairn gates and validation
 - AND unsupported Hypixel, vanilla-parity, production-balance, anticheat, Valence, Bedwars, and broad compatibility claims remain non-claims.
 
+### Requirement: Shared gameplay inventory
+
+r[hyperion_game_modes.composable_gameplay_group.inventory] Shared gameplay group work MUST inventory the current `CommonGameplayPlugin` feature plugins, command registration, dependencies, schedule/resource/event ownership, and mode-neutral versus mode-specific classifications before exposing a public composition surface.
+
+#### Scenario: Existing shared gameplay is reviewable
+
+r[hyperion_game_modes.composable_gameplay_group.inventory.reviewable]
+- GIVEN the public gameplay group work is selected
+- WHEN reviewers inspect the inventory
+- THEN the current attack, block, bow, chat, damage, regeneration, skin, spawn, stats, vanish, command, map, item, permission, and proxy wiring is recorded with dependency notes
+- AND Bedwars-specific or private mechanics are distinguished from mode-neutral defaults.
+
+### Requirement: Public gameplay group contract
+
+r[hyperion_game_modes.composable_gameplay_group.contract] Hyperion game-mode code SHOULD expose a public Bevy `PluginGroup` for shared default gameplay mechanics while preserving the existing default app behavior unless a separate Cairn changes it.
+
+#### Scenario: Default gameplay remains compatible
+
+r[hyperion_game_modes.composable_gameplay_group.contract.compatible]
+- GIVEN a Hyperion app is built through the existing default Bedwars, Dayz, or HardcoreFactions entrypoints
+- WHEN the public default gameplay group is introduced
+- THEN the same shared default gameplay plugins are installed in compatible order
+- AND mode selection, proxy setup, command registration, and existing gameplay semantics remain unchanged.
+
+### Requirement: Feature plugin visibility
+
+r[hyperion_game_modes.composable_gameplay_group.feature_visibility] Public shared gameplay APIs MUST provide stable paths for individual feature plugins that are safe to compose or explicitly document why a feature remains private or mode-specific.
+
+#### Scenario: User can address one feature plugin
+
+r[hyperion_game_modes.composable_gameplay_group.feature_visibility.public]
+- GIVEN a downstream app wants to disable or replace a shared feature such as bow, damage, or chat behavior
+- WHEN it imports the public gameplay group and feature plugin paths
+- THEN it can address supported feature plugins without reaching into private modules
+- AND private or Bedwars-only features are identified as non-claims rather than accidentally exposed internals.
+
+### Requirement: Gameplay group tests
+
+r[hyperion_game_modes.composable_gameplay_group.tests] Shared gameplay group work MUST include positive tests for default group installation and public feature handles plus negative tests for disabled or replaced features, missing dependencies, private-feature access, and unintended mode installation.
+
+#### Scenario: Public group installs expected defaults
+
+r[hyperion_game_modes.composable_gameplay_group.tests.positive]
+- GIVEN a minimal Hyperion test app adds the public default gameplay group
+- WHEN schedules, resources, events, and public feature handles are inspected
+- THEN expected shared gameplay surfaces are present and mode plugins are not installed by the group itself.
+
+#### Scenario: Bad composition fails clearly
+
+r[hyperion_game_modes.composable_gameplay_group.tests.negative]
+- GIVEN a test app disables a required dependency, attempts an unsupported replacement, imports a private feature, or expects a mode plugin from the gameplay group
+- WHEN composition checks run
+- THEN the failure is clear and deterministic
+- AND no hidden mode selection, duplicate plugin, panic, or silent dependency loss occurs.
+
+### Requirement: Gameplay group validation
+
+r[hyperion_game_modes.composable_gameplay_group.validation] Shared gameplay group work MUST record focused Hyperion composition checks, public API compile checks, positive and negative plugin tests, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks before archive.
+
+#### Scenario: Gameplay group closeout is reviewable
+
+r[hyperion_game_modes.composable_gameplay_group.validation.log]
+- GIVEN shared gameplay group work is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show the inventory, public API compile checks, default group tests, disabled/replacement negative tests, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks.
+
+### Requirement: Mode plugin inventory
+
+r[hyperion_game_modes.mode_plugins_mode_only.inventory] Mode-only plugin work MUST inventory current Bedwars, Dayz, HardcoreFactions, app-builder, and default-entrypoint responsibilities before changing plugin install ownership.
+
+#### Scenario: Current preset behavior is recorded
+
+r[hyperion_game_modes.mode_plugins_mode_only.inventory.reviewable]
+- GIVEN mode plugin refactoring is selected
+- WHEN reviewers inspect the inventory
+- THEN each current mode plugin's active-game resource, player observer, shared gameplay installation, proxy setup dependency, command registration path, and default entrypoint behavior are recorded
+- AND compatibility obligations are separated from desired mode-only responsibilities.
+
+### Requirement: Mode-only plugin contract
+
+r[hyperion_game_modes.mode_plugins_mode_only.contract] Hyperion mode plugins MUST install only mode identity, mode-local resources, marker or initialization observers, and mode-specific setup rather than shared default gameplay mechanics.
+
+#### Scenario: Mode plugin is small and composable
+
+r[hyperion_game_modes.mode_plugins_mode_only.contract.mode_only]
+- GIVEN a minimal Hyperion app adds only a mode plugin such as Bedwars, Dayz, or HardcoreFactions
+- WHEN the app's resources, observers, schedules, and plugin effects are inspected
+- THEN mode identity and mode-local setup are present
+- AND shared attack, block, bow, chat, damage, regeneration, skin, spawn, stats, vanish, command, map, item, permission, and proxy gameplay is not installed by the mode plugin itself.
+
+### Requirement: Default builder compatibility
+
+r[hyperion_game_modes.mode_plugins_mode_only.builder_compatibility] Existing Hyperion game app builders and init entrypoints MUST preserve default behavior by explicitly composing Hyperion core, default shared gameplay, and one selected mode after mode plugins become mode-only.
+
+#### Scenario: Existing entrypoint preserves behavior
+
+r[hyperion_game_modes.mode_plugins_mode_only.builder_compatibility.default]
+- GIVEN a user builds an app through the existing default Bedwars or selected-game-type entrypoint
+- WHEN mode plugins are mode-only
+- THEN the builder still installs Hyperion core, the shared default gameplay group, proxy configuration, command registration, and the selected mode
+- AND observed default behavior remains compatible with the pre-refactor preset bundle.
+
+### Requirement: Mode and preset documentation
+
+r[hyperion_game_modes.mode_plugins_mode_only.documentation] Mode-only plugin work MUST document the distinction between mode plugins and presets/app builders, including compatibility aliases or migration notes when public names change.
+
+#### Scenario: Composition responsibilities are clear
+
+r[hyperion_game_modes.mode_plugins_mode_only.documentation.clear]
+- GIVEN a developer wants a custom game app with one selected mode and custom mechanics
+- WHEN they read the mode/preset documentation
+- THEN they can identify which API installs only mode-local setup and which API installs default shared gameplay
+- AND deprecated compatibility aliases, if any, are documented with a migration path.
+
+### Requirement: Mode-only tests
+
+r[hyperion_game_modes.mode_plugins_mode_only.tests] Mode-only plugin work MUST include positive tests for each mode plugin's local setup and default builder compatibility plus negative tests for unintended shared gameplay installation, duplicate default gameplay, and missing selected mode.
+
+#### Scenario: Mode setup is covered
+
+r[hyperion_game_modes.mode_plugins_mode_only.tests.positive]
+- GIVEN minimal apps add Bedwars, Dayz, or HardcoreFactions mode plugins and default builders create selected game apps
+- WHEN focused tests inspect resources, observers, player initialization, and default builder composition
+- THEN each mode has correct local setup and each default builder remains compatible.
+
+#### Scenario: Preset leakage fails
+
+r[hyperion_game_modes.mode_plugins_mode_only.tests.negative]
+- GIVEN a mode-only app lacks the default gameplay group, a builder double-adds the shared group, or an app has no selected mode
+- WHEN composition tests run
+- THEN the mistake is rejected or diagnosed clearly
+- AND no hidden shared gameplay, duplicate plugin effects, panic, or ambiguous mode state occurs.
+
+### Requirement: Mode-only validation
+
+r[hyperion_game_modes.mode_plugins_mode_only.validation] Mode-only plugin work MUST record focused Hyperion mode app-build checks, mode-only positive and negative tests, default builder compatibility checks, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks before archive.
+
+#### Scenario: Mode-only closeout is reviewable
+
+r[hyperion_game_modes.mode_plugins_mode_only.validation.log]
+- GIVEN mode-only plugin work is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show the inventory, mode-only setup tests, default builder compatibility checks, negative preset-leakage tests, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks.
+
+### Requirement: Preset builder inventory
+
+r[hyperion_game_modes.game_preset_builder.inventory] Game preset builder work MUST inventory current Hyperion app construction APIs, game-type selection, proxy and crypto setup, default plugin installation, and compatibility obligations before adding a new composition API.
+
+#### Scenario: Current construction surface is reviewable
+
+r[hyperion_game_modes.game_preset_builder.inventory.reviewable]
+- GIVEN game preset builder work is selected
+- WHEN reviewers inspect the inventory
+- THEN existing `init_game*`, `build_game_app*`, proxy bind, crypto, game type, and default plugin composition behavior is recorded
+- AND public compatibility obligations are distinguished from new custom-preset behavior.
+
+### Requirement: Preset plan core
+
+r[hyperion_game_modes.game_preset_builder.plan_core] Hyperion game presets MUST validate mode choice, default gameplay inclusion, feature disables, feature replacements, custom plugin intents, and dependency constraints through a deterministic pure planning core over explicit inputs.
+
+#### Scenario: Valid preset plan is deterministic
+
+r[hyperion_game_modes.game_preset_builder.plan_core.valid]
+- GIVEN a preset request selects one mode, includes default gameplay, disables a supported feature, replaces a supported feature, and adds allowed custom plugin intents
+- WHEN the pure preset planner evaluates the request
+- THEN it returns an ordered plugin plan and diagnostics derived only from the explicit request and configuration
+- AND the core performs no Bevy `App` mutation, file IO, packet IO, logging, clock reads, or global-state access.
+
+#### Scenario: Invalid preset plan is rejected
+
+r[hyperion_game_modes.game_preset_builder.plan_core.invalid]
+- GIVEN a preset request has no mode, multiple exclusive modes, an unsupported replacement, a missing dependency, a duplicate feature, or malformed custom plugin intent
+- WHEN the pure preset planner evaluates the request
+- THEN it rejects the plan with deterministic diagnostics
+- AND no partial Bevy app mutation or hidden default fallback occurs.
+
+### Requirement: Preset app shell
+
+r[hyperion_game_modes.game_preset_builder.app_shell] Hyperion preset builder shell APIs MUST apply validated preset plans to Bevy `App` construction while preserving existing default entrypoints as wrappers around the default preset.
+
+#### Scenario: Shell applies validated plan
+
+r[hyperion_game_modes.game_preset_builder.app_shell.applies]
+- GIVEN the pure preset planner returns a valid plan for a selected mode and shared gameplay configuration
+- WHEN the app-builder shell runs
+- THEN it installs Hyperion core, proxy and crypto resources, selected shared gameplay features, custom plugins, and the selected mode according to the plan
+- AND existing default entrypoints produce compatible apps through the same validated path.
+
+### Requirement: Preset diagnostics
+
+r[hyperion_game_modes.game_preset_builder.diagnostics] Preset builder work MUST expose reviewable diagnostics or errors for invalid composition rather than panicking, silently ignoring invalid entries, or mutating a partial app.
+
+#### Scenario: Bad composition reports cause
+
+r[hyperion_game_modes.game_preset_builder.diagnostics.clear]
+- GIVEN a caller requests an invalid or unsupported custom preset
+- WHEN preset validation or app building fails
+- THEN the error identifies the missing mode, duplicate mode, unsupported feature, replacement conflict, or dependency gap
+- AND no hidden global state, partial plugin install, or panic is required to diagnose the issue.
+
+### Requirement: Preset builder tests
+
+r[hyperion_game_modes.game_preset_builder.tests] Game preset builder work MUST include positive tests for default and custom preset plans plus negative tests for missing mode, duplicate exclusive modes, incompatible replacement, duplicate feature, missing dependency, and partial-app prevention.
+
+#### Scenario: Supported presets pass
+
+r[hyperion_game_modes.game_preset_builder.tests.positive]
+- GIVEN default Bedwars, Dayz, HardcoreFactions, and a supported custom preset request
+- WHEN pure planner and app-builder shell tests run
+- THEN each valid preset produces the expected plugin plan or app composition.
+
+#### Scenario: Unsupported presets fail closed
+
+r[hyperion_game_modes.game_preset_builder.tests.negative]
+- GIVEN missing-mode, duplicate-mode, incompatible-replacement, duplicate-feature, missing-dependency, or malformed custom-plugin requests
+- WHEN preset tests run
+- THEN each invalid request is rejected deterministically
+- AND no partial app mutation, hidden fallback, duplicate plugin effect, panic, or cross-mode state occurs.
+
+### Requirement: Preset builder validation
+
+r[hyperion_game_modes.game_preset_builder.validation] Game preset builder work MUST record pure preset-plan tests, app-builder shell tests, default compatibility checks, positive and negative composition tests, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks before archive.
+
+#### Scenario: Preset builder closeout is reviewable
+
+r[hyperion_game_modes.game_preset_builder.validation.log]
+- GIVEN game preset builder work is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show inventory, pure planner tests, app-builder shell tests, default wrapper compatibility, invalid-composition diagnostics, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks.
+
+### Requirement: Exclusive mode inventory
+
+r[hyperion_game_modes.exclusive_modes.inventory] Exclusive mode validation work MUST inventory current single-mode selection paths, direct Bevy plugin-add risks, shared feature plugin surfaces, and future multi-mode non-claims before adding validation.
+
+#### Scenario: Mode selection risks are reviewable
+
+r[hyperion_game_modes.exclusive_modes.inventory.reviewable]
+- GIVEN exclusive mode validation work is selected
+- WHEN reviewers inspect the inventory
+- THEN `GameType` selection, mode plugin additions, `ActiveGameType` writes, player initialization observers, default app builders, and additive feature plugin surfaces are recorded
+- AND single-world-mode assumptions are separated from future multi-world or multi-arena non-claims.
+
+### Requirement: Exclusive mode validator
+
+r[hyperion_game_modes.exclusive_modes.validator] Hyperion game-mode composition SHOULD validate selected exclusive world modes separately from additive gameplay feature plugins through deterministic rules over explicit mode and feature classifications.
+
+#### Scenario: One exclusive mode with features is valid
+
+r[hyperion_game_modes.exclusive_modes.validator.valid]
+- GIVEN a composition request selects one exclusive world mode and any number of allowed additive shared gameplay or utility features
+- WHEN the pure exclusivity validator evaluates the request
+- THEN it accepts the request and returns the selected mode identity plus additive features
+- AND it does not mutate Bevy `App`, read files, access clocks, log, or inspect global state.
+
+#### Scenario: Multiple exclusive modes are rejected
+
+r[hyperion_game_modes.exclusive_modes.validator.invalid]
+- GIVEN a composition request selects Bedwars and Dayz, Dayz and HardcoreFactions, or any other multiple exclusive world-mode combination
+- WHEN the pure exclusivity validator evaluates the request
+- THEN it rejects the request with deterministic diagnostics identifying the conflicting modes
+- AND no last-write-wins active mode, duplicate observer, or partial app mutation occurs.
+
+### Requirement: Exclusive mode integration
+
+r[hyperion_game_modes.exclusive_modes.integration] Preset builders and direct mode-plugin setup MUST reject or diagnose multiple exclusive world modes before ambiguous runtime behavior occurs, while still allowing additive feature plugins with one selected mode.
+
+#### Scenario: Builder rejects duplicate modes early
+
+r[hyperion_game_modes.exclusive_modes.integration.builder]
+- GIVEN a preset or app builder is asked to install more than one exclusive mode
+- WHEN it validates composition
+- THEN it returns a clear error before adding mode plugins or shared gameplay to the app
+- AND additive feature plugins remain allowed when exactly one exclusive mode is selected.
+
+#### Scenario: Direct plugin misuse is diagnosed
+
+r[hyperion_game_modes.exclusive_modes.integration.direct]
+- GIVEN a developer directly adds two exclusive mode plugins to a Bevy app
+- WHEN plugin setup or startup validation runs
+- THEN the conflict is diagnosed deterministically where Bevy allows it
+- AND the app does not silently continue with ambiguous active-mode state.
+
+### Requirement: Exclusive mode documentation
+
+r[hyperion_game_modes.exclusive_modes.documentation] Exclusive mode validation work MUST document that current Hyperion game-mode composition supports one exclusive world mode plus additive feature plugins, and that multi-world or multi-arena concurrent modes are non-claims unless separately scoped.
+
+#### Scenario: Single-mode contract is clear
+
+r[hyperion_game_modes.exclusive_modes.documentation.clear]
+- GIVEN a developer wants to combine Hyperion gameplay features and game modes
+- WHEN they read the composition documentation
+- THEN they understand that one exclusive world mode can be selected with additive features
+- AND multi-exclusive-mode, multi-world, hot-loaded, or per-arena concurrent mode behavior is not promised.
+
+### Requirement: Exclusive mode tests
+
+r[hyperion_game_modes.exclusive_modes.tests] Exclusive mode validation work MUST include positive tests for one exclusive mode plus additive features and negative tests for duplicate exclusive modes, last-write-wins prevention, duplicate observers, and missing mode diagnostics.
+
+#### Scenario: Valid composition passes
+
+r[hyperion_game_modes.exclusive_modes.tests.positive]
+- GIVEN Bedwars, Dayz, or HardcoreFactions is selected with allowed additive shared gameplay features
+- WHEN pure validator and app composition tests run
+- THEN the composition succeeds with exactly one selected exclusive mode.
+
+#### Scenario: Invalid mode combinations fail closed
+
+r[hyperion_game_modes.exclusive_modes.tests.negative]
+- GIVEN multiple exclusive modes, a missing mode where one is required, or direct plugin misuse that would otherwise overwrite `ActiveGameType`
+- WHEN validation and composition tests run
+- THEN the issue is rejected or diagnosed clearly
+- AND no ambiguous active mode, duplicate observer, panic, hidden fallback, or cross-mode mutation occurs.
+
+### Requirement: Exclusive mode validation evidence
+
+r[hyperion_game_modes.exclusive_modes.validation] Exclusive mode validation work MUST record pure exclusivity tests, Bevy app composition tests, duplicate-mode diagnostics, positive and negative mode-composition checks, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks before archive.
+
+#### Scenario: Exclusive mode closeout is reviewable
+
+r[hyperion_game_modes.exclusive_modes.validation.log]
+- GIVEN exclusive mode validation work is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show inventory, pure validator tests, app composition tests, duplicate-mode rejection, direct-plugin diagnostics where practical, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks.
+
+### Requirement: Common gameplay inventory
+
+r[hyperion_game_modes.common_gameplay_crate.inventory] Common gameplay extraction work MUST inventory every candidate shared mechanic under `events/bedwars`, its dependencies, mode assumptions, public API status, and classification as common, Bedwars-specific, or uncertain before moving code.
+
+#### Scenario: Candidate mechanics are classified
+
+r[hyperion_game_modes.common_gameplay_crate.inventory.reviewable]
+- GIVEN common gameplay extraction work is selected
+- WHEN reviewers inspect the inventory
+- THEN attack, block, bow, chat, damage, regeneration, skin, spawn, stats, vanish, command, map, item, permission, proxy, and related helper surfaces are classified with dependency notes
+- AND uncertain or Bedwars-specific assumptions are recorded instead of silently moved into a shared API.
+
+### Requirement: Shared gameplay boundary
+
+r[hyperion_game_modes.common_gameplay_crate.boundary] Hyperion SHOULD provide a shared gameplay crate or module boundary for reusable mode-neutral mechanics with explicit dependency direction, public exports, and compatibility re-export policy.
+
+#### Scenario: Shared boundary has clear ownership
+
+r[hyperion_game_modes.common_gameplay_crate.boundary.clear]
+- GIVEN a mechanic is classified as mode-neutral shared gameplay
+- WHEN it is exposed through the new boundary
+- THEN its public path, dependencies, plugin group membership, and compatibility re-export behavior are documented
+- AND the shared boundary does not depend on Bedwars-only mode state.
+
+### Requirement: Common mechanic migration
+
+r[hyperion_game_modes.common_gameplay_crate.migration] Common gameplay extraction MUST move only classified common mechanics into the shared boundary and leave Bedwars-specific or uncertain mechanics in the mode-local event crate until separately scoped.
+
+#### Scenario: Common mechanic moves safely
+
+r[hyperion_game_modes.common_gameplay_crate.migration.common]
+- GIVEN a feature plugin and its rule cores are classified as common and dependency-safe
+- WHEN the migration moves it into the shared gameplay boundary
+- THEN default app behavior and public feature access remain compatible
+- AND Bedwars-specific state, markers, resources, assets, or assumptions are not required by the moved code.
+
+#### Scenario: Bedwars-specific mechanic stays local
+
+r[hyperion_game_modes.common_gameplay_crate.migration.local]
+- GIVEN a feature module depends on Bedwars-only teams, phases, resources, assets, commands, or assumptions
+- WHEN extraction planning evaluates it
+- THEN the module remains in the Bedwars event crate or is split before moving
+- AND the shared gameplay boundary does not acquire hidden Bedwars coupling.
+
+### Requirement: Shared boundary integration
+
+r[hyperion_game_modes.common_gameplay_crate.integration] Mode crates, public plugin groups, app builders, and documentation MUST use the shared gameplay boundary after migration while preserving existing default mode behavior.
+
+#### Scenario: Default modes still build
+
+r[hyperion_game_modes.common_gameplay_crate.integration.default]
+- GIVEN common mechanics have moved to the shared boundary
+- WHEN Bedwars, Dayz, HardcoreFactions, and default app builders compile and run focused composition checks
+- THEN they import shared mechanics from the new boundary and preserve compatible default composition
+- AND private Bedwars-only modules are not imported by non-Bedwars modes.
+
+### Requirement: Common gameplay crate tests
+
+r[hyperion_game_modes.common_gameplay_crate.tests] Common gameplay extraction MUST include positive tests for default behavior, public API imports, and shared boundary plugin installation plus negative tests for dependency cycles, Bedwars-only leakage, disabled-plugin behavior, and missing compatibility re-exports where promised.
+
+#### Scenario: Shared boundary works
+
+r[hyperion_game_modes.common_gameplay_crate.tests.positive]
+- GIVEN the shared gameplay crate or module boundary is used by default app builders and a minimal custom app
+- WHEN focused build and composition tests run
+- THEN common feature plugins install through public paths and default modes remain compatible.
+
+#### Scenario: Boundary violation fails
+
+r[hyperion_game_modes.common_gameplay_crate.tests.negative]
+- GIVEN a moved common mechanic imports Bedwars-only state, creates a dependency cycle, drops a promised re-export, or ignores disabled-plugin configuration
+- WHEN boundary and build tests run
+- THEN the violation fails clearly
+- AND no hidden Bedwars dependency, duplicate plugin, compile-only API break, or silent behavior drift occurs.
+
+### Requirement: Common gameplay crate validation
+
+r[hyperion_game_modes.common_gameplay_crate.validation] Common gameplay extraction work MUST record focused Hyperion build/tests, public API checks, default compatibility checks, boundary positive and negative tests, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks before archive.
+
+#### Scenario: Common gameplay extraction closeout is reviewable
+
+r[hyperion_game_modes.common_gameplay_crate.validation.log]
+- GIVEN common gameplay extraction work is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show the inventory, boundary decisions, focused Hyperion checks, public API checks, default compatibility checks, boundary violation tests, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks.
+
+### Requirement: Mode marker inventory
+
+r[hyperion_game_modes.mode_markers.inventory] Mode marker work MUST inventory current mode-specific components, observers, systems, active-mode checks, marker-like state, and cleanup responsibilities before adding marker and run-condition contracts.
+
+#### Scenario: Existing mode ownership is reviewable
+
+r[hyperion_game_modes.mode_markers.inventory.reviewable]
+- GIVEN marker and run-condition work is selected
+- WHEN reviewers inspect the inventory
+- THEN Bedwars, Dayz, HardcoreFactions, shared gameplay, player initialization, active-game resource use, and cleanup ownership are recorded
+- AND common gameplay behavior is distinguished from mode-specific mutation.
+
+### Requirement: Mode marker contract
+
+r[hyperion_game_modes.mode_markers.contract] Hyperion mode-specific behavior MUST use explicit marker components, mode-owned resources, marker-filtered queries, or named run conditions to identify entities and systems owned by a mode.
+
+#### Scenario: Mode-owned entity is explicit
+
+r[hyperion_game_modes.mode_markers.contract.entity]
+- GIVEN a player enters Bedwars, Dayz, or HardcoreFactions mode setup
+- WHEN the mode initialization observer or system runs
+- THEN the entity receives explicit mode-owned marker state and any mode-local components required for that mode
+- AND later mode-specific systems can filter by those facts rather than relying only on global `ActiveGameType`.
+
+#### Scenario: Mode-owned system is gated
+
+r[hyperion_game_modes.mode_markers.contract.system]
+- GIVEN a system mutates only one mode's state
+- WHEN it is registered in Bevy schedules
+- THEN it uses a marker-filtered query, mode-owned resource, or named run condition that makes its ownership visible
+- AND disabled-plugin or wrong-mode configurations do not mutate unrelated entities.
+
+### Requirement: Marker integration
+
+r[hyperion_game_modes.mode_markers.integration] Mode marker integration MUST refactor mode-specific systems and observers to use marker filters or run conditions while preserving mode-neutral shared gameplay behavior.
+
+#### Scenario: Shared gameplay remains available
+
+r[hyperion_game_modes.mode_markers.integration.common]
+- GIVEN a default mode preset includes shared gameplay and one selected mode
+- WHEN marker-gated systems are installed
+- THEN mode-specific systems act only on marked mode-owned entities
+- AND mode-neutral shared gameplay continues to run according to its own plugin contracts.
+
+### Requirement: Marker-owned cleanup
+
+r[hyperion_game_modes.mode_markers.cleanup] Marker-owned temporary state SHOULD include cleanup or teardown behavior for disconnect, reset, or mode teardown when the state can otherwise leak across modes or sessions.
+
+#### Scenario: Scoped state is cleaned
+
+r[hyperion_game_modes.mode_markers.cleanup.scoped]
+- GIVEN a marked mode-owned player or entity disconnects, resets, or leaves scoped mode ownership
+- WHEN cleanup systems run
+- THEN marker-owned temporary state, diagnostics, and mode-local references are removed or finalized according to the cleanup plan
+- AND unrelated shared gameplay or other mode state remains unchanged.
+
+### Requirement: Mode marker tests
+
+r[hyperion_game_modes.mode_markers.tests] Mode marker work MUST include positive tests for scoped mode mutation and shared gameplay compatibility plus negative tests for wrong-mode entities, disabled plugins, stale markers, missing markers, and cleanup leaks.
+
+#### Scenario: Scoped mutation passes
+
+r[hyperion_game_modes.mode_markers.tests.positive]
+- GIVEN marked Bedwars, Dayz, or HardcoreFactions entities and valid shared gameplay setup
+- WHEN mode-specific systems run
+- THEN only appropriately marked entities and mode-owned resources are mutated.
+
+#### Scenario: Wrong-mode mutation fails closed
+
+r[hyperion_game_modes.mode_markers.tests.negative]
+- GIVEN an unmarked entity, wrong-mode marker, disabled mode plugin, stale marker, missing marker, or cleanup-leak fixture
+- WHEN mode-specific systems and cleanup checks run
+- THEN the invalid state is ignored, rejected, or cleaned deterministically
+- AND no cross-mode mutation, stale reference, panic, hidden active-mode fallback, or shared gameplay regression occurs.
+
+### Requirement: Mode marker validation
+
+r[hyperion_game_modes.mode_markers.validation] Mode marker work MUST record focused Hyperion ECS/plugin checks, marker cleanup tests, wrong-mode and disabled-plugin tests, positive and negative marker behavior, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks before archive.
+
+#### Scenario: Mode marker closeout is reviewable
+
+r[hyperion_game_modes.mode_markers.validation.log]
+- GIVEN mode marker work is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show inventory, marker contract checks, scoped-mutation tests, wrong-mode and disabled-plugin tests, cleanup-leak tests, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks.
+
+### Requirement: Composition test inventory
+
+r[hyperion_game_modes.composition_tests.inventory] Gameplay composition test work MUST inventory existing Hyperion game-mode, plugin, preset, app-builder, and schedule tests before adding the composition matrix.
+
+#### Scenario: Existing coverage is reviewable
+
+r[hyperion_game_modes.composition_tests.inventory.reviewable]
+- GIVEN composition test work is selected
+- WHEN reviewers inspect the inventory
+- THEN existing game-type, active-mode, app-builder, plugin, schedule, and mode-specific tests are recorded
+- AND gaps for default presets, custom feature composition, and invalid mode composition are identified.
+
+### Requirement: Composition test matrix
+
+r[hyperion_game_modes.composition_tests.matrix] Hyperion gameplay composition tests MUST define a matrix covering default presets, mode-only plugins, custom feature disables or replacements, additive custom plugins, disabled-plugin behavior, exclusive-mode failures, and partial-app prevention.
+
+#### Scenario: Matrix names supported and rejected cases
+
+r[hyperion_game_modes.composition_tests.matrix.reviewable]
+- GIVEN reviewers inspect the composition matrix
+- WHEN they compare it to the public game-mode composition API
+- THEN each supported default and custom composition has a named positive case
+- AND each unsupported or hazardous composition has a named negative case and expected diagnostic.
+
+### Requirement: Positive composition tests
+
+r[hyperion_game_modes.composition_tests.positive] Gameplay composition tests MUST include positive coverage for default Bedwars, Dayz, and HardcoreFactions presets, mode-only plugin setup, supported custom feature disables or replacements, and additive custom plugin installation.
+
+#### Scenario: Supported compositions pass
+
+r[hyperion_game_modes.composition_tests.positive.supported]
+- GIVEN default presets, mode-only plugin fixtures, and supported custom gameplay composition requests
+- WHEN focused pure planner and minimal Bevy app tests run
+- THEN each supported composition produces expected plugin plans, mode state, feature state, and app resources
+- AND no full proxy or live server startup is required unless separately scoped.
+
+### Requirement: Negative composition tests
+
+r[hyperion_game_modes.composition_tests.negative] Gameplay composition tests MUST include negative coverage for missing mode, duplicate exclusive modes, disabled required features, unsupported feature replacements, duplicate plugins, wrong-mode mutation, missing dependencies, and partial-app prevention.
+
+#### Scenario: Unsupported compositions fail closed
+
+r[hyperion_game_modes.composition_tests.negative.rejected]
+- GIVEN missing-mode, duplicate-mode, disabled-required-feature, unsupported-replacement, duplicate-plugin, wrong-mode, missing-dependency, or partial-app fixtures
+- WHEN composition tests run
+- THEN each invalid composition is rejected or diagnosed deterministically
+- AND no hidden fallback, last-write-wins mode state, duplicate observer, panic, partial app mutation, or cross-mode mutation occurs.
+
+### Requirement: Composition evidence
+
+r[hyperion_game_modes.composition_tests.evidence] Gameplay composition test work SHOULD promote focused run logs and BLAKE3 manifests that tie the matrix, tests, and changed source files to reviewable evidence.
+
+#### Scenario: Test evidence is durable
+
+r[hyperion_game_modes.composition_tests.evidence.durable]
+- GIVEN the composition matrix tests have run
+- WHEN evidence is promoted
+- THEN focused run logs, matrix notes, and BLAKE3 manifests are stored under repo-local evidence paths
+- AND task citations do not depend on untracked `target/` output.
+
+### Requirement: Composition test validation
+
+r[hyperion_game_modes.composition_tests.validation] Gameplay composition test work MUST record focused Hyperion composition tests, positive and negative matrix results, promoted evidence, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks before archive.
+
+#### Scenario: Composition test closeout is reviewable
+
+r[hyperion_game_modes.composition_tests.validation.log]
+- GIVEN composition test work is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show inventory, matrix definition, positive composition tests, negative composition tests, promoted evidence manifests, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks.
+
+### Requirement: Plugin Component derive inventory
+
+r[hyperion_game_modes.plugin_component_derives.inventory] Plugin Component derive cleanup MUST inventory plugin structs that derive `Component`, direct ECS insert/query uses of those types, and any marker-state needs before removing derives.
+
+#### Scenario: Plugin derives are reviewable
+
+r[hyperion_game_modes.plugin_component_derives.inventory.reviewable]
+- GIVEN plugin Component derive cleanup is selected
+- WHEN reviewers inspect the inventory
+- THEN each Bevy plugin struct with a `Component` derive, any insert/query usage, and any intended marker behavior is recorded
+- AND plugin-only types are distinguished from real ECS marker components.
+
+### Requirement: Plugin derive cleanup
+
+r[hyperion_game_modes.plugin_component_derives.cleanup] Hyperion Bevy plugin structs MUST NOT derive `Component` unless they are intentionally inserted as ECS components and documented as such.
+
+#### Scenario: Plugin-only type drops Component
+
+r[hyperion_game_modes.plugin_component_derives.cleanup.plugin_only]
+- GIVEN a struct implements Bevy `Plugin` and is not inserted or queried as ECS entity state
+- WHEN derive cleanup runs
+- THEN its `Component` derive is removed
+- AND plugin installation behavior remains compatible.
+
+#### Scenario: Real ECS marker is split
+
+r[hyperion_game_modes.plugin_component_derives.cleanup.marker_split]
+- GIVEN a plugin struct was also being used as an entity marker
+- WHEN cleanup evaluates the type
+- THEN plugin behavior and marker behavior are split into separate clearly named types or the exception is documented
+- AND query/filter code uses the marker type rather than the plugin type.
+
+### Requirement: Separate marker components
+
+r[hyperion_game_modes.plugin_component_derives.markers] Real ECS marker state MUST use separate marker components or resources with names that describe entity or mode ownership rather than plugin installation.
+
+#### Scenario: Marker naming reflects ECS state
+
+r[hyperion_game_modes.plugin_component_derives.markers.clear]
+- GIVEN a mode or system needs ECS marker state
+- WHEN marker types are declared or retained
+- THEN their names describe player, mode, arena, feature, or ownership state
+- AND Bevy plugin structs remain separate installation values.
+
+### Requirement: Plugin derive tests
+
+r[hyperion_game_modes.plugin_component_derives.tests] Plugin Component derive cleanup MUST include positive compile or plugin-install checks plus negative checks that plugin structs are not accidentally used as ECS marker components after cleanup.
+
+#### Scenario: Plugin installation still works
+
+r[hyperion_game_modes.plugin_component_derives.tests.positive]
+- GIVEN plugin structs have dropped unused `Component` derives
+- WHEN focused compile and plugin-install tests run
+- THEN mode and shared plugin installation remains compatible.
+
+#### Scenario: Plugin-as-component assumption fails
+
+r[hyperion_game_modes.plugin_component_derives.tests.negative]
+- GIVEN code attempts to insert, query, or filter on a plugin-only type as an ECS component after cleanup
+- WHEN compile or focused marker tests run
+- THEN the assumption fails clearly or is redirected to the proper marker type
+- AND no hidden marker state, panic, or plugin install regression occurs.
+
+### Requirement: Plugin derive validation
+
+r[hyperion_game_modes.plugin_component_derives.validation] Plugin Component derive cleanup MUST record focused Hyperion compile/tests, marker checks where touched, positive and negative derive-cleanup checks, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks before archive.
+
+#### Scenario: Plugin derive cleanup closeout is reviewable
+
+r[hyperion_game_modes.plugin_component_derives.validation.log]
+- GIVEN plugin Component derive cleanup is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show the inventory, derive cleanup checks, plugin-install checks, marker checks where touched, plugin-as-component negative checks, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks.

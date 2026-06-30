@@ -1,0 +1,14 @@
+# Tasks
+
+- [x] [serial] Inventory `events/bedwars/src/plugin/*`, command registration, map/item/permission/proxy dependencies, and classify each surface as common, Bedwars-specific, or uncertain. r[hyperion_game_modes.common_gameplay_crate.inventory]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-inventory-2026-06-30.md`, `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:inventory] Define the shared gameplay crate or module boundary, dependency direction, public exports, and compatibility re-export policy. r[hyperion_game_modes.common_gameplay_crate.boundary]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-inventory-2026-06-30.md`, `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:boundary] Move classified common mechanics into the shared boundary while leaving Bedwars-specific and uncertain mechanics mode-local. r[hyperion_game_modes.common_gameplay_crate.migration]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-inventory-2026-06-30.md`, `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:migration] Update mode crates, plugin groups, app builders, docs, and imports to use the shared gameplay boundary. r[hyperion_game_modes.common_gameplay_crate.integration]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:integration] Add positive default-behavior and public-API tests plus negative dependency-cycle, Bedwars-leakage, and disabled-plugin boundary tests. r[hyperion_game_modes.common_gameplay_crate.tests]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
+- [x] [depends:tests] Run focused Hyperion build/tests, public API checks, default compatibility checks, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks with promoted logs. r[hyperion_game_modes.common_gameplay_crate.validation]
+  - Evidence: `docs/evidence/hyperion-gameplay-composition-tests-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-format-clippy-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-cairn-gates-2026-06-30.run.log`, `docs/evidence/hyperion-gameplay-cairn-validate-2026-06-30.run.log`, and BLAKE3 manifest `docs/evidence/hyperion-gameplay-composition-2026-06-30.b3`.
