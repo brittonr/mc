@@ -1,0 +1,28 @@
+command=archive closeout validation
+cwd=/home/brittonr/git/mc
+== change list ==
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+== cairn validate ==
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 6,
+  "valid": true
+}
+== task evidence ==
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task evidence gate passed: 0 completed tasks checked across 0 task files
+== evidence manifest ==
+evidence manifest refresh ok: mode=check; passes=0; manifests=565; entries=5975; current=5975; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+exit_status=0

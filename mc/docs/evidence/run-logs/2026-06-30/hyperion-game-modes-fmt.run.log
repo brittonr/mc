@@ -1,0 +1,4 @@
+command=nix develop --no-update-lock-file -c cargo fmt --check -p hyperion-game-modes
+cwd=/home/brittonr/git/mc/hyperion
+/home/brittonr/git/mc/hyperion
+exit_status=0

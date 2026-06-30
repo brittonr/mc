@@ -1,0 +1,6 @@
+command=nix develop --no-update-lock-file -c cargo clippy -p hyperion-game-modes --lib --tests -- -D warnings
+cwd=/home/brittonr/git/mc/hyperion
+/home/brittonr/git/mc/hyperion
+    Checking hyperion-game-modes v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-game-modes)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.64s
+exit_status=0

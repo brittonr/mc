@@ -1,0 +1,795 @@
+command=bash -lc for change in build-battle-creative-contest-mode coop-summit-climb-game-mode duels-kitpvp-arena-mode factions-clans-social-core factions-claims-raid-loop factions-diplomacy-economy-progression lifesteal-smp-mode murder-mystery-social-deduction-mode parkour-time-trial-mode skyblock-oneblock-island-mode skywars-elimination-mode survival-games-uhc-elimination-mode; do echo "== $change proposal =="; nix run .#cairn -- gate proposal "$change" --root .; echo "== $change design =="; nix run .#cairn -- gate design "$change" --root .; echo "== $change tasks =="; nix run .#cairn -- gate tasks "$change" --root .; done
+cwd=/home/brittonr/git/mc
+== build-battle-creative-contest-mode proposal ==
+{
+  "change": "build-battle-creative-contest-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6e6cb673f94941607e688f8975a05085e7721c56c652285621eeb8e237223595",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e998667f5f40d952e3da5630b79b070fc2105ec6ed600f39500a4c3c4bb67a9c",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== build-battle-creative-contest-mode design ==
+{
+  "change": "build-battle-creative-contest-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c51e91eb0791212b6f51f08226cfa14fa08004701aa247ce5ebf63c1424d993c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "f5bfaf69ef48f0e9ac558703737201046757a7c58147512df2cb123a55e5cb90",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== build-battle-creative-contest-mode tasks ==
+{
+  "change": "build-battle-creative-contest-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "da1ea7168d12074da1be4c96638de570fe3aab1363348d8971b6dcdfc1ce9ff5",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "2f8f676f1a2b2b099ad5e5ae42f9721887e738b725644c59505f4eec7a522b94",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== coop-summit-climb-game-mode proposal ==
+{
+  "change": "coop-summit-climb-game-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6f8ae36ecef0e718de3ecc71b15ba6ea36d4644691567e770d814f85eda7c9e3",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "088a9a415f8d143e2bd841db6c85deb4cfb3c8c038fe82aa68ef32b2c1cc5ba0",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== coop-summit-climb-game-mode design ==
+{
+  "change": "coop-summit-climb-game-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "d2ce151929f90b5a433f9259db27a923a193b46bba9dac3a6e197bd67c9e224e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "15ba98aed9b5728c37ac07996a140a19015932912efb2fcdaec9f31f495c5ae4",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== coop-summit-climb-game-mode tasks ==
+{
+  "change": "coop-summit-climb-game-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ff4efdca7dc7c7d7afd9ba2adffb41b81adce03ee082ad348747d0ee1bec5727",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e50da624aa6456de9bc4e8dd4566157a7014878a576d791728fc4c85099448a3",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== duels-kitpvp-arena-mode proposal ==
+{
+  "change": "duels-kitpvp-arena-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "889db54b1fbde42eb79edaffdbb0c9236e255792d6e340781b27abbfedb1376f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "23d2bbf51b5462d99f42e4afdfc1a56e86015190a69bcff7b4340b8402a7146e",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== duels-kitpvp-arena-mode design ==
+{
+  "change": "duels-kitpvp-arena-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "98dc63c8e6f41eb503adcd2719eacaec00d832db85a22f114503b504d4516287",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "3c2554bc991b97b0de17172347d48bb32245a28afb7975fdb7e92e81e74213a3",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== duels-kitpvp-arena-mode tasks ==
+{
+  "change": "duels-kitpvp-arena-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f2dbe8c10614247b98587b91c8eb0fa9b428c359e95fc7a324a64457c586868f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "80ecbebe4dff06e1a66b41680f7297cf0e9e8166734c5bcd2bfff61ddf6b9dd2",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== factions-clans-social-core proposal ==
+{
+  "change": "factions-clans-social-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "faaf7eed8faa7bc2a214d458ec1be7e5e28f355585e9cb5940a024d1d0396e65",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "d030e417c5648e58a63a626b691c71db3ca7714a1ce497f08e88e07aba019cf9",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== factions-clans-social-core design ==
+{
+  "change": "factions-clans-social-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "27b1a48ead17c5b747c74a8a11442e741765df09dbc26f46c8d5b7dcec088df3",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "dd315088cb014426bb8f06597f3cc915c0f11f64132bd0f43ac8584a5205644c",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== factions-clans-social-core tasks ==
+{
+  "change": "factions-clans-social-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e189fc85af06a040217b4062b4351ade6df45c2f5e291062ac0c7efaa3c92985",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "371ead16b69ab01cf91c7c015f90350568886c67b6ca27f3eacd412add47007a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== factions-claims-raid-loop proposal ==
+{
+  "change": "factions-claims-raid-loop",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "fb6cab79e30de2a88e3b314b71cfd46f530d6833f93efe20617fabec8bc73e36",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "c09bec261fa2ef433e8c067f05a271d6c51e0ba13b742c830ccec2a5f9897a2e",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== factions-claims-raid-loop design ==
+{
+  "change": "factions-claims-raid-loop",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ed6e861f4f752c9b2c9317ec720fe8eec0eb9f01686cef583af267723c7a1ed1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "bc0bf70c0433ab742c8ba9950dc04d0d923e523d255a67a2d75eb7d1a0a5b4c3",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== factions-claims-raid-loop tasks ==
+{
+  "change": "factions-claims-raid-loop",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4940917dae26a0b5171fb15f107d441746ce1261d866f5e3f78ed059973923d3",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "3c4fabbb0d991825365214c2722fea49c4bd292b07ad9a25d4cdee4d8e8c56df",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== factions-diplomacy-economy-progression proposal ==
+{
+  "change": "factions-diplomacy-economy-progression",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "dd0da93e4d087a0d1378b47f88f6db966502d9a7a9f051ee8b1748cbeb257505",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "187a9876eaf83dff4477bdba1092ffa69fa5cc63d0aa499cb233183ff6d2f015",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== factions-diplomacy-economy-progression design ==
+{
+  "change": "factions-diplomacy-economy-progression",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e6f0924cdfdf291a66a65b0f99ae532bc80d5f0b71ad506574dca9748ca84eae",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "91d4afe72b53126361e15d29beab201471312a5486935eb5cc65285d64075c25",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== factions-diplomacy-economy-progression tasks ==
+{
+  "change": "factions-diplomacy-economy-progression",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "063046b403ab98fc305f4c8d2f77806e60edade6bd80c68fc2ba36118907c0ca",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "85125d570c6300068fe86358719bc60510503dfdf47e892964bbfa966e742eb0",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== lifesteal-smp-mode proposal ==
+{
+  "change": "lifesteal-smp-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "db94db414cb4a734be515d28d52b6b29e02802015065aeef7432e409fb2bb82e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "a469d82e8e3e3935f109473b53d2f73cb0a425c2dc4899bf19d39ca613acdd72",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== lifesteal-smp-mode design ==
+{
+  "change": "lifesteal-smp-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ff8fbc8c8c2ee49752f4b59b6787db8e6bef9b96cf02983bd02190e737979a63",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "7ebf0271e55e09b4b3d9216dd04584224e1741bda0dab62aeb83dfa36ab130b4",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== lifesteal-smp-mode tasks ==
+{
+  "change": "lifesteal-smp-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e8f1a28902b7fce0e78f60e64c565e78098b69e5a0d917016c24f4f3def4de61",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "dbddd8c48a636d7a74e58c05b9a363c9221c38b3b053e504f05a764f9b892bcc",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== murder-mystery-social-deduction-mode proposal ==
+{
+  "change": "murder-mystery-social-deduction-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a2cc1f4d9f5e7e5cc281305345ac19a51d1ea0a8227e45b24fd8413793fd0a46",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "0ab44f0accb6cefa98d44a6784c3d08877c8c1b8cdc841ab53cfee572c47806e",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== murder-mystery-social-deduction-mode design ==
+{
+  "change": "murder-mystery-social-deduction-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3ec801da1afa71b7d282e08f35a2914094b8b9198889e629a826f4aeed7e3668",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "217e7012c3d5dfed1fb9d0a40f4a1223af717a625b68be59b4ac7259a45bd744",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== murder-mystery-social-deduction-mode tasks ==
+{
+  "change": "murder-mystery-social-deduction-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2b59690f0232c04fd4f7f0b257bba5f31fc7528e0a664de9202ab776b3c07e5a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "2fc315ddb02ec708767cdde22afeb06ff02b5a49c5c3e8e0f1c68d62d5a0f917",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== parkour-time-trial-mode proposal ==
+{
+  "change": "parkour-time-trial-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "73b093f1dec870f686d8506fc506b9369a50cefd9c767e079a7ab445f3873d1e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "8aeb15b2c89bbcd55b4633f48762672a1b1ee39c7e5bbe6c9b5493df3ccb241e",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== parkour-time-trial-mode design ==
+{
+  "change": "parkour-time-trial-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4827a6a487299acc67bcd5e398a72617830d81b35725c1aad0f0d1eb59337ff6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "971721261eda4c94dbb6a1315392a092bb388419e1c04eca205765738f9959e0",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== parkour-time-trial-mode tasks ==
+{
+  "change": "parkour-time-trial-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "39c24602ead889b0c18a58edc3784349b6e9ceaeb109de3331dd3d9e8132c96d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "8d2948d54109d0f3b9de237e0d8e346bc34e7c3edd8dd1ce8a918c7080fd38c5",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== skyblock-oneblock-island-mode proposal ==
+{
+  "change": "skyblock-oneblock-island-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c9e8d84430404537aa39047d2e600c571bb56be1dbdcd04d462340f092c7db9b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e6b07f4df33f24b70d160b3c4a346f892cfec11be0cb3182c71b5717705190e5",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== skyblock-oneblock-island-mode design ==
+{
+  "change": "skyblock-oneblock-island-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "75bd28a7485f07045061b31fe3de9bfee1d3aa84e0ced6329845d01e1693ec57",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e4c272d462cabb1db3c43da9644d8a85609155db97039d5c674c2890b19ab2ec",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== skyblock-oneblock-island-mode tasks ==
+{
+  "change": "skyblock-oneblock-island-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "ff332aa18b924bc663856af15bd3c6d7a6ed243f98ed0b13f712286366d8e246",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "0c9ff1fbb5061492740853461aa8668c62bd6a269edfa4313e238fe61cff5efc",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== skywars-elimination-mode proposal ==
+{
+  "change": "skywars-elimination-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9c860733140c3e1967f549113d65d6e36e8ccb1c6b47eb5c4b7446598a07b2e2",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "78e18530a4761aaf11f96e5d6a3655b4a75d29348f6075d8f3b5d4f303e7c647",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== skywars-elimination-mode design ==
+{
+  "change": "skywars-elimination-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1c1969a1bca2b3a350ec565918f259600a8f325a8d207bca29912c0ea4706766",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "d6256c4fb61b700f68777d487d109029f0f29de11f28f9cffabf53cd445f1bec",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== skywars-elimination-mode tasks ==
+{
+  "change": "skywars-elimination-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c2f1080122cc0da43bea8fc7be867ec32b4ce88890baaf7593aea568ca243bd5",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "ecc860facae9552c44710f592923cb0469c67cf5dc123955ce47f7e9476c1903",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-games-uhc-elimination-mode proposal ==
+{
+  "change": "survival-games-uhc-elimination-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9a37a4f3aa67d793e61b6ded691b0116d6d312153b167502d9eb9a36b4c2bcd6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "5a924bbe1a49a9317d9d62686786a19a28fb4d618b33879c563dd483247e0998",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-games-uhc-elimination-mode design ==
+{
+  "change": "survival-games-uhc-elimination-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "200cef5bed5205e6aefa72e030485d76270f22ba1ed94ce94659adc405704217",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "61ef0f39c2235b6ea5065f76aca468a8ec6bcc2ca08c94531c300bd1fc25028f",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+== survival-games-uhc-elimination-mode tasks ==
+{
+  "change": "survival-games-uhc-elimination-mode",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a3ffa89adb424666a73cf03ba3c2489bc3e4f622cdb66b83aba253cff9f7b755",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "0a4a230a5623dcd13281c8c9801ef62cbdbae4723f25fc03ad727ccdc5390026",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

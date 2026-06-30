@@ -1,0 +1,44 @@
+command=nix develop --no-update-lock-file -c cargo test -p hyperion-game-modes --lib -- --nocapture
+cwd=/home/brittonr/git/mc/hyperion
+/home/brittonr/git/mc/hyperion
+   Compiling hyperion-game-modes v0.1.0 (/home/brittonr/git/mc/hyperion/crates/hyperion-game-modes)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.75s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/hyperion_game_modes-12a43ae5c6c21954)
+
+running 32 tests
+test build_battle::tests::negative_build_battle_rejects_stale_phase_and_vote_abuse ... ok
+test build_battle::tests::positive_build_battle_flow_scores_and_cleans_owned_state ... ok
+test common::tests::negative_duplicate_players_fail_uniqueness ... ok
+test common::tests::negative_name_normalization_rejects_malformed_names ... ok
+test common::tests::positive_volume_contains_owned_position ... ok
+test duels_kitpvp::tests::positive_duels_assigns_match_validates_kit_and_scores_combat ... ok
+test duels_kitpvp::tests::negative_duels_rejects_duplicate_queue_invalid_kit_and_stale_death ... ok
+test elimination_survival::tests::negative_elimination_survival_rejects_bad_profile_stale_phase_and_illegal_reset ... ok
+test elimination_survival::tests::positive_elimination_survival_starts_profiles_border_and_win ... ok
+test factions_diplomacy::tests::negative_diplomacy_rejects_self_relation_enemy_trade_and_overflow ... ok
+test factions_diplomacy::tests::positive_diplomacy_transfers_and_levels_progression ... ok
+test factions_social::tests::negative_social_core_rejects_invalid_identity_and_privilege_escalation ... ok
+test factions_social::tests::positive_social_core_normalizes_invites_accepts_and_persists ... ok
+test factions_social::tests::positive_social_core_transfers_owner_without_ownerless_clan ... ok
+test factions_territory::tests::negative_territory_rejects_overlap_unauthorized_action_and_bad_repair ... ok
+test factions_territory::tests::positive_territory_accepts_claim_and_authorized_actions ... ok
+test island_mode::tests::negative_island_rejects_unauthorized_edit_bad_generator_and_corrupt_snapshot ... ok
+test island_mode::tests::positive_island_lifecycle_permissions_generator_and_restore ... ok
+test lifesteal::tests::negative_lifesteal_rejects_self_environment_stale_and_overflow ... ok
+test lifesteal::tests::positive_lifesteal_transfers_hearts_and_repairs_admin_state ... ok
+test murder_mystery::tests::negative_murder_mystery_blocks_role_leaks_invalid_kills_and_cleanup_leaks ... ok
+test murder_mystery::tests::positive_murder_mystery_assigns_roles_allows_private_output_and_victory ... ok
+test parkour::tests::negative_parkour_rejects_skipped_checkpoint_and_malformed_course ... ok
+test parkour::tests::negative_parkour_fall_resets_without_leaking_state ... ok
+test parkour::tests::positive_parkour_progresses_checkpoints_and_best_time ... ok
+test shell::tests::negative_shell_plan_rejects_cross_mode_mutation ... ok
+test shell::tests::positive_shell_plan_validates_named_sets ... ok
+test skywars::tests::negative_skywars_rejects_bad_arena_empty_loot_and_stale_elimination ... ok
+test skywars::tests::positive_skywars_validates_arena_loot_elimination_and_reset ... ok
+test summit_climb::tests::negative_summit_climb_blocks_exploit_and_invalid_revive ... ok
+test summit_climb::tests::negative_summit_climb_rejects_no_cost_assist_and_bad_metadata ... ok
+test summit_climb::tests::positive_summit_climb_validates_terrain_and_consumes_stamina ... ok
+
+test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0
