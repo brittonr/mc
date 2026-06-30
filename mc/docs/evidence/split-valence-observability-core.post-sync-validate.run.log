@@ -1,0 +1,14 @@
+## post-sync validate after accepted-spec merge
+$ nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+
+exit_status=0

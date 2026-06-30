@@ -1,0 +1,5 @@
+## global evidence manifest check
+$ nix run .#evidence-manifest-refresh -- --check --root .
+evidence manifest refresh ok: mode=check; passes=0; manifests=560; entries=5909; current=5909; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+
+exit_status=0

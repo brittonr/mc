@@ -1,0 +1,72 @@
+## baseline valence_server observability tests
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_server --all-features --lib observability
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.19s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_server-71bc1cc27c5c81f4)
+
+running 12 tests
+test observability::tests::exporter_failure_reports_outcome_without_panicking ... ok
+test observability::tests::config_predicates_expose_enabled_and_disabled_contracts ... ok
+test observability::tests::packet_classification_omits_payload_and_bounds_packet_label ... ok
+test observability::tests::sensitive_labels_are_redacted ... ok
+test observability::tests::tick_phase_classification_has_bounded_labels ... ok
+test observability::tests::unknown_metric_names_are_rejected ... ok
+test observability::tests::unknown_packet_id_is_bounded_to_unknown_class ... ok
+test observability::tests::disabled_plugin_has_no_observability_effect ... ok
+test observability::tests::plugin_emits_enabled_tick_and_packet_observations ... ok
+test observability::tests::config_disabled_plugin_emits_no_observability_events ... ok
+test observability::tests::tick_phase_run_conditions_follow_runtime_toggle ... ok
+test observability::tests::network_reader_drains_disabled_period_packets_before_reenable ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 98 filtered out; finished in 0.00s
+
+
+exit_status=0

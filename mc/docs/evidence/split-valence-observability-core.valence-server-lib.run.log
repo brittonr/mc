@@ -1,0 +1,175 @@
+## valence_server lib tests
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_server --all-features --lib
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: method `packet_data_range` is never used
+   --> crates/valence_protocol/src/decode.rs:192:8
+    |
+187 | impl PacketFrameLayout {
+    | ---------------------- method in this implementation
+...
+192 |     fn packet_data_range(self) -> Range<usize> {
+    |        ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_protocol` (lib) generated 1 warning
+   Compiling valence_server v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_server)
+    Finished `test` profile [optimized + debuginfo] target(s) in 5.64s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_server-71bc1cc27c5c81f4)
+
+running 114 tests
+test action::tests::duplicate_player_action_events_are_detected ... ok
+test anticheat::tests::empty_window_returns_documented_empty_snapshot ... ok
+test anticheat::tests::burst_samples_trim_to_sample_capacity ... ok
+test anticheat::tests::invalid_window_and_non_finite_sample_fail_closed ... ok
+test anticheat::tests::normal_samples_compute_rolling_statistics ... ok
+test anticheat::tests::overflow_boundary_fails_closed ... ok
+test anticheat::tests::reset_behavior_clears_window ... ok
+test client::tests::flush_packets_closed_client_discards_taken_buffer_before_reuse ... ok
+test client::tests::flush_packets_sends_buffer_and_leaves_empty_reusable_state ... ok
+test client::tests::received_packet_preserves_byte_backed_body_compatibility ... ok
+test event_loop::tests::duplicate_phase_fails_clearly ... ok
+test event_loop::tests::event_loop_phase_orders_are_valid ... ok
+test event_loop::tests::ambiguous_phase_order_fails_clearly ... ok
+test event_loop::tests::missing_phase_fails_clearly ... ok
+test layer::bvh::tests::partition_middle ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_0 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_6 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_1 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_2 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_4 - should panic ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_5 - should panic ... ok
+test chunk_view::tests::chunk_view_contains ... ok
+test layer::chunk::chunk::tests::chunk_get_set ... ok
+test layer::chunk::egress_cache::tests::compression_change_misses_cache ... ok
+test layer::chunk::egress_cache::tests::render_setting_changes_miss_cache ... ok
+test layer::chunk::entry::tests::chunk_state_messages_select_load_unload_and_noop_plans ... ok
+test layer::chunk::egress_cache::tests::same_snapshot_renders_same_packet_and_key ... ok
+test layer::chunk::entry::tests::invalid_state_messages_fail_closed ... ok
+test layer::chunk::egress_cache::tests::cache_hit_returns_stored_bytes ... ok
+test layer::chunk::entry::tests::entry_transitions_cover_occupied_and_vacant_writes ... ok
+test layer::chunk::egress_cache::tests::dimension_change_misses_cache ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_9 - should panic ... ok
+test layer::chunk::entry::tests::missing_or_stale_entries_do_not_emit_state_changes ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_3 - should panic ... ok
+test layer::chunk::loaded::tests::loaded_chunk_unviewed_no_changes ... ok
+test layer::chunk::loaded::tests::section_non_air_count_tracks_storage_transitions ... ok
+test layer::chunk::egress_cache::tests::missing_light_inputs_fail_closed ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_7 - should panic ... ok
+test layer::chunk::messages::tests::global_messages_respect_exception_filters ... ok
+test layer::chunk::chunk::tests::chunk_debug_oob_8 - should panic ... ok
+test layer::chunk::messages::tests::local_messages_fail_closed_for_excluded_or_out_of_radius_clients ... ok
+test layer::chunk::messages::tests::local_messages_report_their_owner_chunk ... ok
+test layer::chunk::messages::tests::local_packet_and_radius_messages_select_target_clients ... ok
+test layer::chunk::paletted_container::tests::count_matching_tracks_mutations_without_cached_unique_data ... ok
+test layer::chunk::egress_cache::tests::content_version_change_misses_stale_bytes ... ok
+test layer::chunk::paletted_container::tests::fill_and_shrink_drop_stale_representation_data ... ok
+test layer::chunk::paletted_container::tests::indirect_direct_encode_parity_when_indirect_uses_direct_path ... ok
+test layer::chunk::paletted_container::tests::invalid_index_panics_without_corrupting_in_range_values ... ok
+test layer::chunk::paletted_container::tests::transitions_preserve_values ... ok
+test layer::chunk::targeting::tests::exception_filter_allows_non_excluded_clients_only ... ok
+test layer::chunk::targeting::tests::radius_targeting_accepts_clients_inside_the_radius ... ok
+test layer::chunk::targeting::tests::radius_targeting_rejects_out_of_range_and_invalid_radii ... ok
+test layer::chunk::targeting::tests::update_plans_preserve_pre_and_post_client_order ... ok
+test layer::chunk::targeting::tests::update_plans_reject_invalid_order_assumptions ... ok
+test layer::chunk::targeting::tests::view_membership_accepts_chunks_inside_the_view ... ok
+test layer::chunk::targeting::tests::view_membership_rejects_chunks_outside_or_empty_views ... ok
+test layer::chunk::unloaded::tests::unloaded_chunk_resize_removes_block_entities ... ok
+test layer::message::tests::send_global_message ... ok
+test observability::tests::config_predicates_expose_enabled_and_disabled_contracts ... ok
+test layer::chunk::loaded::tests::loaded_chunk_cache_hit_reuses_identical_packet_bytes ... ok
+test observability::tests::disabled_plugin_has_no_observability_effect ... ok
+test action::tests::adapter_emits_player_action_event_for_live_valid_packet ... ok
+test anticheat::tests::plugin_disabled_has_no_anticheat_effect ... ok
+test action::tests::adapter_rejects_partial_decode ... ok
+test action::tests::gameplay_consumes_typed_action_event_without_duplicate_digging ... ok
+test action::tests::adapter_rejects_wrong_packet_id ... ok
+test action::tests::adapter_rejects_malformed_payload ... ok
+test action::tests::raw_packet_observer_reads_before_typed_adapter ... ok
+test action::tests::adapter_rejects_stale_client ... ok
+test layer::chunk::loaded::tests::loaded_chunk_default_uncached_writer_keeps_packet_cache_empty ... ok
+test observability::tests::config_disabled_plugin_emits_no_observability_events ... ok
+test observability::tests::public_static_label_values_accept_bounded_values ... ok
+test observability::tests::sensitive_labels_are_redacted ... ok
+test observability::tests::tick_phase_classification_has_bounded_labels ... ok
+test observability::tests::missing_config_without_plugin_has_no_observability_effect ... ok
+test observability::tests::unknown_metric_names_are_rejected ... ok
+test anticheat::tests::plugin_samples_packet_cadence ... ok
+test observability::tests::unknown_packet_id_is_bounded_to_unknown_class ... ok
+test packet_compose::tests::direct_flush_reports_closed_clients_and_backend_failures ... ok
+test packet_compose::tests::duplicate_clients_are_reported_as_input_failures ... ok
+test packet_compose::tests::encode_failure_returns_structured_error_and_keeps_bundle_empty ... ok
+test packet_compose::tests::exclusions_can_remove_every_group_recipient_without_error ... ok
+test packet_compose::tests::global_route_applies_exclusions_and_preserves_bundle_order ... ok
+test packet_compose::tests::helper_imports_keep_btree_set_visible_for_public_examples ... ok
+test observability::tests::exporter_failure_reports_outcome_without_panicking ... ok
+test observability::tests::tick_phase_run_conditions_follow_runtime_toggle ... ok
+test anticheat::tests::plugin_samples_movement_without_default_enforcement ... ok
+test anticheat::tests::missing_statistics_component_sample_is_ignored ... ok
+test anticheat::tests::stale_despawned_client_sample_is_ignored ... ok
+test observability::tests::packet_classification_omits_payload_and_bounds_packet_label ... ok
+test anticheat::tests::preexisting_statistics_component_is_not_overwritten_on_client_initialization ... ok
+test packet_compose::tests::invalid_local_route_inputs_fail_closed ... ok
+test packet_compose::tests::missing_bundle_reports_flush_failure ... ok
+test packet_compose::tests::non_finite_client_position_reports_local_route_failure ... ok
+test anticheat::tests::disconnected_client_loses_statistics_and_samples_are_ignored ... ok
+test packet_compose::tests::invalid_route_targets_are_reported_without_deliveries ... ok
+test packet_compose::tests::route_resolution_supports_unicast_local_and_group_recipients ... ok
+test tick_scheduler::tests::cancel_removes_one_pending_item ... ok
+test tick_scheduler::tests::cancel_unknown_or_drained_handle_is_noop ... ok
+test tick_scheduler::tests::clear_removes_pending_work ... ok
+test anticheat::tests::reconnect_like_new_entity_starts_with_fresh_statistics ... ok
+test observability::tests::export_planning_records_metric_names_without_shell_side_effects ... ok
+test tick_scheduler::tests::due_drain_leaves_not_due_work_queued ... ok
+test tick_scheduler::tests::empty_queue_drains_cleanly ... ok
+test tick_scheduler::tests::equal_tick_work_drains_in_insertion_order ... ok
+test tick_scheduler::tests::sequence_overflow_fails_without_mutating_queue ... ok
+test observability::tests::invalid_label_values_are_rejected ... ok
+test tick_scheduler::tests::tick_scheduler_plugin_emits_due_events ... ok
+test tick_scheduler::tests::server_plugin_does_not_install_tick_scheduler_by_default ... ok
+test observability::tests::network_reader_drains_disabled_period_packets_before_reenable ... ok
+test observability::tests::plugin_emits_enabled_tick_and_packet_observations ... ok
+test layer::chunk::loaded::tests::loaded_chunk_changes_invalidate_optional_packet_cache ... ok
+test layer::chunk::paletted_container::tests::random_assignments ... ok
+test layer::bvh::tests::query_visits_correct_nodes ... ok
+
+test result: ok. 114 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+exit_status=0

@@ -1,0 +1,25 @@
+## archive dry-run
+$ nix run .#cairn -- archive split-valence-observability-core --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: split-valence-observability-core",
+      "kind": "archive_change",
+      "path": "./cairn/changes/split-valence-observability-core"
+    }
+  ],
+  "blocked": false,
+  "change": "split-valence-observability-core",
+  "dry_run": true,
+  "input_hash": "90d2085f3f0e8522363442777b0c69079f3d3f3e5e30b040ecf13ba665713d0d",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "27add3ccc71b93b5bc8d613b6170c21e85d054ae49f74be283567704990e16da",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "5e89ee8c99e671faaed5d2b44bdf883c7190b75433ae3a3876d0ec793345b479"
+}
+
+exit_status=0

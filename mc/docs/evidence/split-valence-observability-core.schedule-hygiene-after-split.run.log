@@ -1,0 +1,5 @@
+## schedule hygiene after observability split
+$ tools/check_valence_schedule_hygiene.rs --root .
+valence schedule hygiene check passed
+
+exit_status=0

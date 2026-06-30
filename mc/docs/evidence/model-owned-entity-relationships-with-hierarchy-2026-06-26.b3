@@ -18,6 +18,6 @@ b7668fdae3549c9c33f1b0bb2531be66c02dbf4c52f89a3c2c2d132291c3d096  cairn/archive/
 3af56b9aee091ca4437c516815542fafd98487981de19b75fa70dfa5bb03f550  cairn/archive/2026-06-26-model-owned-entity-relationships-with-hierarchy/design.md
 5a057cf592504d0b8efeb47d79385ece42dedbc0443ce0d5f6e1c9197c7efac7  cairn/archive/2026-06-26-model-owned-entity-relationships-with-hierarchy/tasks.md
 047e45aa286d7185efac6eda21a8ae263ae05b70a6e426943d64ce69d040c11b  cairn/archive/2026-06-26-model-owned-entity-relationships-with-hierarchy/specs/valence-bevy-ecs/spec.md
-38bb89e52c9563d8172e5da6ed261a32dc369a2a85a38290feb18b2fbde0aa75  cairn/specs/valence-bevy-ecs/spec.md
+9f211aff2075a3057fc3057976a2389ead38bea37c201d3faeede0186b64be0d  cairn/specs/valence-bevy-ecs/spec.md
 eff72cf0aa123e5e5b2958466b926fc2cf3c95abdb5cb81782bb2a547bada308  servers/valence/crates/valence_inventory/README.md
 4cc71f54aa1378c050abadfe109a3f7a681419ecef1315bcbd90c78b1cdb63a5  servers/valence/crates/valence_inventory/src/gui.rs

@@ -1,0 +1,51 @@
+## sync execute
+$ nix run .#cairn -- sync split-valence-observability-core --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/split-valence-observability-core/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/split-valence-observability-core/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "split-valence-observability-core",
+  "delta_specs": [
+    "./cairn/changes/split-valence-observability-core/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "90d2085f3f0e8522363442777b0c69079f3d3f3e5e30b040ecf13ba665713d0d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "38bb89e52c9563d8172e5da6ed261a32dc369a2a85a38290feb18b2fbde0aa75",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "09ba2e77193964452151ab9d18cbba214f9d0cd1464331288effe5c2a5cb15e2"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "38bb89e52c9563d8172e5da6ed261a32dc369a2a85a38290feb18b2fbde0aa75",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "09ba2e77193964452151ab9d18cbba214f9d0cd1464331288effe5c2a5cb15e2"
+    },
+    "kind": "sync",
+    "manifest_hash": "50ce939804fb816241e7e0de9779b9e68bad83184df388a7e6346803be16bc91"
+  },
+  "plan_hash": "16bb29eb02d022728a3712725f43e0d0cbe419733bdcc1493d75bce86739c153",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "c02bb328d6934b21faf886d2fe8713d1fa13b8cb195323f0f8b5ba68238d7434"
+}
+
+exit_status=0
