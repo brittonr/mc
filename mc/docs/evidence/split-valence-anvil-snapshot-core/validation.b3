@@ -9,7 +9,7 @@ bef36ce85574352f75f70b0c3a5e871666404abd4d7b86db1ae8e772ad8770e3  servers/valenc
 69e7dec41611f9cf3afe15290de40a7d045075eaf29e182f2253c4b87dab4477  servers/valence/crates/valence_anvil/src/directory.rs
 80e092e4a4e2a1d9a328ad4166d859e6f05a18350434966ab8c0db548590374a  servers/valence/crates/valence_anvil/src/region.rs
 4a1515e14869ea9ffe873c0037987e93b21476652e546a33fb34ac9fbfd1eb45  servers/valence/crates/valence_anvil/src/region/write.rs
-0e487dab62ee5674cbd4e8bb47c41c270ee14de80c714e575af2a150bdc15844  cairn/specs/mc-compatibility/spec.md
+9f5e3bab83ce6ec5ab07eaefd5f1958a8fe7ff2c9f63a9515ad9a1460eda9f47  cairn/specs/mc-compatibility/spec.md
 8b5e6ffbb580d4f1ee212160cf92f63bb1eb22fbc57c279ad4b2f158f9a8a9bb  cairn/archive/2026-06-29-split-valence-anvil-snapshot-core/proposal.md
 dd915f679b7ded2b74cb57a1fb433209c250bd315b07fa8fff1b47e1d8f09db8  cairn/archive/2026-06-29-split-valence-anvil-snapshot-core/design.md
 eb72077325bb0d90b7f00b2ba4c53b2711b5c572e00a075389bf8d1a1e7d45b2  cairn/archive/2026-06-29-split-valence-anvil-snapshot-core/tasks.md

@@ -8,11 +8,14 @@ mod evidence_bundle;
 mod evidence_core;
 mod evidence_receipts;
 mod evidence_types;
+#[cfg(test)]
+mod import_boundary;
 mod json_support;
 mod layout;
 mod planning;
 mod receipt_validation;
 mod receipts;
+mod runner_config;
 mod runtime_config;
 mod scenario_catalog;
 mod scenario_contracts_generated;
@@ -54,18 +57,23 @@ use evidence_core::{
     typed_event_oracle_receipt_json, typed_event_ordered_edges_for_scenario,
     typed_event_required_events_for_graph, typed_event_timeline_blake3,
     typed_events_from_receipt_evidence, validate_typed_event_oracle_for_migrated_scenario,
+    MatcherKind,
 };
 use evidence_receipts::*;
 use evidence_types::*;
 use json_support::*;
 use planning::{
     format_plan_diagnostics, harness_plan_from_config, log_harness_plan, scenario_route_non_claims,
+    MatrixPlan,
 };
 #[cfg(test)]
 use receipts::{build_enriched_triage, smoke_receipt_json, EnrichedTriageInput};
 use receipts::{
     build_scenario_receipt_model, render_scenario_receipt_model_json,
     validate_rendered_scenario_receipt_json, validate_scenario_receipt_model, ScenarioReceiptInput,
+};
+use runner_config::{
+    ClientRunEvidence, Config, ManagedServer, Mode, ScenarioRouteRequest, ServerBackend,
 };
 use wire::{McRead, McWrite};
 
@@ -97,7 +105,7 @@ use std::fs::{self, File};
 use std::io::{self, BufRead, BufReader, Read, Write};
 use std::net::TcpStream;
 use std::path::{Path, PathBuf};
-use std::process::{Child, Command, ExitCode, Stdio};
+use std::process::{Command, ExitCode, Stdio};
 use std::thread;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
@@ -436,25 +444,6 @@ const EQUIPMENT_MATRIX_NON_CLAIMS: &[&str] = &[
     "full_equipment_semantics",
 ];
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-enum Mode {
-    DryRun,
-    Run,
-    RunMatrix,
-    BuildClient,
-    StatusOnly,
-    HarnessStatus,
-    Cleanup,
-    Stop,
-    CompareReceipts,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-enum ServerBackend {
-    Valence,
-    Paper,
-}
-
 const SCENARIO_ROUTER_COMMAND: &str = "scenario";
 const SCENARIO_ROUTER_RUN_SUBCOMMAND: &str = "run";
 const SCENARIO_ROUTER_BACKEND_FLAG: &str = "--backend";
@@ -503,20 +492,6 @@ const SCENARIO_ROUTER_BLOCKED_OVERCLAIM_FLAGS: &[&str] = &[
     "--claim-production-readiness",
     "--claim-semantic-equivalence",
 ];
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct ScenarioRouteRequest {
-    scenario: Scenario,
-    backend: ServerBackend,
-    mode: Mode,
-    receipt_path: Option<PathBuf>,
-    timeout_secs: Option<u64>,
-    packet_capture_summary: bool,
-    proxy_route: Option<String>,
-    proxy_forwarding_mode: Option<String>,
-    failure_bundle_path: Option<PathBuf>,
-    passthrough_args: Vec<String>,
-}
 
 const VALENCE_DEFAULT_SERVER_PORT: u16 = 25565;
 const PAPER_DEFAULT_SERVER_PORT: u16 = 25566;
@@ -609,99 +584,6 @@ impl ServerRuntime for PaperRuntime {
 
     fn read_log(&self, cfg: &Config) -> Result<String, String> {
         read_paper_log(cfg)
-    }
-}
-
-#[derive(Debug, Clone)]
-struct Config {
-    root: PathBuf,
-    client_dir: PathBuf,
-    valence_repo: PathBuf,
-    valence_rev: String,
-    valence_worktree: PathBuf,
-    valence_example: String,
-    valence_log: PathBuf,
-    valence_target_dir: PathBuf,
-    valence_pid_file: PathBuf,
-    server_backend: ServerBackend,
-    target_dir: PathBuf,
-    server_name: String,
-    server_version: String,
-    server_protocol: u32,
-    server_port: u16,
-    client_username: String,
-    docker_image: String,
-    paper_plugin_jar: Option<PathBuf>,
-    mode: Mode,
-    keep_server: bool,
-    client_timeout: Duration,
-    client_success_needles: Vec<String>,
-    scenario: Scenario,
-    expected_status_description: Option<String>,
-    expected_status_version_name: Option<String>,
-    expected_status_sample: Vec<String>,
-    packet_capture_summary: bool,
-    proxy_route: Option<String>,
-    proxy_forwarding_mode: Option<String>,
-    receipt_path: Option<PathBuf>,
-    receipt_dir: Option<PathBuf>,
-    failure_bundle_path: Option<PathBuf>,
-    compare_receipts: Option<(PathBuf, PathBuf)>,
-    config_path: Option<PathBuf>,
-    steel_config_path: Option<PathBuf>,
-    matrix_dry_run: bool,
-    cleanup_apply: bool,
-    negative_public_target: bool,
-    negative_external_authorized: bool,
-    arrow_damage_policy: runtime_config::ArrowDamagePolicy,
-    scenario_route: Option<ScenarioRouteRequest>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct ClientRunEvidence {
-    log_path: Option<PathBuf>,
-    log_paths: Vec<PathBuf>,
-    usernames: Vec<String>,
-    exit_code: Option<i32>,
-    classification: &'static str,
-    matched_success_pattern: Option<String>,
-    scenario: Option<ScenarioEvidence>,
-    server_scenario: Option<ServerScenarioEvidence>,
-    projectile_damage_causality: Option<ProjectileDamageCausalityEvidence>,
-    projectile_travel_collision: Option<ProjectileTravelCollisionEvidence>,
-    mcp_control: Option<McpControlRunEvidence>,
-    frame_artifacts: Option<FrameArtifactsReceiptEvidence>,
-}
-
-struct ManagedServer {
-    child: Option<Child>,
-    pid_file: PathBuf,
-    paper_container: Option<String>,
-    keep: bool,
-}
-
-impl Drop for ManagedServer {
-    fn drop(&mut self) {
-        if self.keep {
-            return;
-        }
-        if let Some(mut child) = self.child.take() {
-            eprintln!(
-                "[mc-compat] stopping managed Valence server process {}",
-                child.id()
-            );
-            let _ = child.kill();
-            let _ = child.wait();
-            let _ = fs::remove_file(&self.pid_file);
-        }
-        if let Some(container) = self.paper_container.take() {
-            eprintln!("[mc-compat] stopping managed Paper container {container}");
-            let _ = Command::new("docker")
-                .arg("rm")
-                .arg("-f")
-                .arg(container)
-                .status();
-        }
     }
 }
 
@@ -2938,65 +2820,6 @@ const CLIENT_A_SUFFIX: &str = "a";
 const CLIENT_B_SUFFIX: &str = "b";
 const FLAG_OR_SCORE_NEEDLES: &[&str] = &["flag", "score"];
 
-struct EvidenceCorpus<'a> {
-    text: &'a str,
-    normalized: String,
-}
-
-impl<'a> EvidenceCorpus<'a> {
-    fn new(text: &'a str) -> Self {
-        Self {
-            text,
-            normalized: text.to_lowercase(),
-        }
-    }
-}
-
-struct EvidenceContext<'a> {
-    username: &'a str,
-}
-
-#[derive(Clone, Copy)]
-struct MilestoneRule<'a> {
-    id: &'static str,
-    matcher: MatcherKind<'a>,
-}
-
-#[derive(Clone, Copy)]
-enum MatcherKind<'a> {
-    Literal(&'a str),
-    CaseInsensitive(&'a str),
-    DynamicUsername,
-    DynamicClientSuffix(&'static str),
-    AnyOfCaseInsensitive(&'static [&'static str]),
-}
-
-trait EvidenceMatcher {
-    fn is_match(&self, corpus: &EvidenceCorpus<'_>, context: &EvidenceContext<'_>) -> bool;
-}
-
-impl EvidenceMatcher for MatcherKind<'_> {
-    fn is_match(&self, corpus: &EvidenceCorpus<'_>, context: &EvidenceContext<'_>) -> bool {
-        match self {
-            MatcherKind::Literal(needle) => corpus.text.contains(needle),
-            MatcherKind::CaseInsensitive(needle) => {
-                corpus.normalized.contains(&needle.to_lowercase())
-            }
-            MatcherKind::DynamicUsername => {
-                corpus.normalized.contains(&context.username.to_lowercase())
-            }
-            MatcherKind::DynamicClientSuffix(suffix) => corpus.normalized.contains(&format!(
-                "{}{}",
-                context.username.to_lowercase(),
-                suffix
-            )),
-            MatcherKind::AnyOfCaseInsensitive(needles) => needles
-                .iter()
-                .any(|needle| corpus.normalized.contains(&needle.to_lowercase())),
-        }
-    }
-}
-
 fn default_port(backend: ServerBackend) -> u16 {
     backend.runtime().default_port()
 }
@@ -3136,117 +2959,6 @@ fn ensure_client_dir_ready(cfg: &Config) -> Result<(), String> {
     }
 
     Ok(())
-}
-
-const SCENARIO_RECEIPT_SCHEMA: &str = "mc.compat.scenario.receipt.v2";
-const DEFAULT_MATRIX_RECEIPT_DIR: &str = "target/mc-compat-matrix";
-const PLAN_CLIENT_LOG_ENV_OR_TEMP: &str = "CLIENT_LOG-or-temp-mc-compat-client-log";
-const PLAN_CLIENT_LOG_TEMP: &str = "temp-mc-compat-client-log";
-const PLAN_CLIENT_LOG_RECONNECT_TEMP: &str = "temp-mc-compat-reconnect-session-log";
-const PLAN_CLEANUP_CLIENT_LOG_DISCOVERY: &str = "discover-/tmp-mc-compat-client-logs";
-const PLAN_NON_CLAIM_ARCHITECTURE_ONLY: &str = "architecture_only_no_new_compatibility_claim";
-const HARNESS_TEMP_ROOT: &str = "/tmp";
-const CLEANUP_ROOT_PATH: &str = "/";
-const CLEANUP_MIN_SAFE_COMPONENTS: usize = 2;
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct PlanningDiagnostic {
-    field: String,
-    message: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct HarnessPlan {
-    server: ServerStartupPlan,
-    client_sessions: Vec<ClientSessionPlan>,
-    receipt: ReceiptOutputPlan,
-    artifacts: ArtifactCollectionPlan,
-    cleanup: CleanupPlan,
-    matrix: Option<MatrixPlan>,
-    scenario_route: Option<ScenarioRoutePlan>,
-    non_claims: Vec<String>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct ServerStartupPlan {
-    backend: String,
-    protocol: u32,
-    port: u16,
-    server_name: String,
-    keep_server: bool,
-    eula_acceptance_required: bool,
-    valence_worktree: Option<String>,
-    valence_log: Option<String>,
-    docker_image: Option<String>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct ClientSessionPlan {
-    index: usize,
-    username: String,
-    timeout_secs: u64,
-    scenario: String,
-    session_count: usize,
-    log_path_strategy: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct ReceiptOutputPlan {
-    receipt_path: Option<String>,
-    receipt_dir: Option<String>,
-    failure_bundle_path: Option<String>,
-    schema: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct ArtifactCollectionPlan {
-    typed_event_log_path: Option<String>,
-    failure_bundle_path: Option<String>,
-    failure_artifact_candidates: Vec<ArtifactCandidatePlan>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct ArtifactCandidatePlan {
-    kind: String,
-    path: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct CleanupPlan {
-    apply: bool,
-    paper_container: String,
-    valence_pid_file: String,
-    path_actions: Vec<CleanupPathPlan>,
-    client_log_discovery: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct CleanupPathPlan {
-    label: String,
-    path: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct MatrixPlan {
-    dry_run: bool,
-    matrix_mode: String,
-    receipt_dir: String,
-    paper_receipt: String,
-    valence_receipt: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct ScenarioRoutePlan {
-    scenario: String,
-    backend: String,
-    mode: String,
-    receipt_path: Option<String>,
-    timeout_secs: u64,
-    packet_capture_summary: bool,
-    proxy_route: Option<String>,
-    proxy_forwarding_mode: Option<String>,
-    failure_bundle_path: Option<String>,
-    non_claims: Vec<String>,
 }
 
 fn write_failure_evidence_bundle(

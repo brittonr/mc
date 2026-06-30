@@ -1,4 +1,48 @@
-use super::*;
+use crate::backend_shell::child_revision_evidence_for_receipt;
+use crate::client_driver::{
+    planned_client_usernames, requires_server_correlation, server_log_label,
+};
+use crate::evidence_core::{
+    evaluate_biome_dimension_join_state, evaluate_projectile_damage_causality,
+    evaluate_projectile_travel_collision, evaluate_scenario_for_config, evaluate_server_scenario,
+    typed_event_oracle_receipt_json,
+};
+use crate::evidence_receipts::{
+    evaluate_armor_loadout_enchantment_status_matrix,
+    evaluate_equipment_slot_item_matrix_expansion, evaluate_frame_artifacts_receipt,
+    evaluate_load_network_safety, evaluate_mcp_control_receipt,
+    evaluate_negative_live_rail_safety_from_inputs,
+    render_armor_loadout_enchantment_status_matrix_json,
+    render_equipment_slot_item_matrix_expansion_json, render_frame_artifacts_receipt_json,
+    render_load_network_safety_json, render_mcp_control_receipt_json,
+    render_negative_live_rail_json,
+};
+use crate::evidence_types::{
+    BiomeDimensionJoinStateClientState, BiomeDimensionJoinStateEvidence,
+    BiomeDimensionJoinStateServerState, ChildRevisionEvidence, EnrichedTriage,
+    FrameArtifactsReceiptEvidence, McpControlReceiptEvidence, ProjectileDamageCausalityEvidence,
+    ProjectileTravelCollisionEvidence, ScenarioEvidence, ServerScenarioEvidence,
+    TypedEventOracleArtifact,
+};
+use crate::json_support::{
+    ensure_unique_json_field, json_object_slice, json_optional_string, json_string,
+    json_string_array, json_string_vec,
+};
+use crate::runner_config::{ClientRunEvidence, Config, Mode, ServerBackend};
+use crate::scenario_core::{
+    scenario_forbidden_patterns, scenario_name, scenario_required_milestones,
+    server_required_milestones, Scenario,
+};
+use crate::{
+    backend_name, is_negative_live_rail, latency_jitter_receipt_json, load_network_safety_inputs,
+    mode_name, negative_live_rail_inputs_from_config, public_server_authorized_safety_receipt_json,
+    scenario_behavior, GIT_REV_DRY_RUN_PLACEHOLDER, TRIAGE_CONFIDENCE_HIGH,
+    TRIAGE_CONFIDENCE_MEDIUM, TRIAGE_CONFIDENCE_NONE, TRIAGE_MAX_EXCERPT_CHARS,
+    TRIAGE_MAX_TIMELINE_EVENTS, TRIAGE_REDACTED,
+};
+use std::path::Path;
+
+pub(crate) const SCENARIO_RECEIPT_SCHEMA: &str = "mc.compat.scenario.receipt.v2";
 
 const PAIRED_REFERENCE_BACKEND_LABEL: &str = "paper-reference";
 const PAIRED_REFERENCE_COMPARISON_STATUS_PLACEHOLDER: &str = "dry-run-shape-not-compared";

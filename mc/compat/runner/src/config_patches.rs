@@ -9,7 +9,9 @@ use super::json_support::{
     json_optional_u32_field,
 };
 use super::runtime_config;
-use super::{default_port, parse_backend, parse_scenario, Config, Mode, Scenario, ServerBackend};
+use super::{default_port, parse_backend, parse_scenario};
+use crate::runner_config::{Config, Mode, ServerBackend};
+use crate::scenario_core::Scenario;
 
 const FIELD_CLIENT_DIR: &str = "client_dir";
 const FIELD_VALENCE_REPO: &str = "valence_repo";

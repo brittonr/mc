@@ -1,4 +1,126 @@
-use super::*;
+use crate::client_driver::{
+    client_timeout_secs, planned_client_usernames, PLAN_CLIENT_LOG_ENV_OR_TEMP,
+    PLAN_CLIENT_LOG_RECONNECT_TEMP, PLAN_CLIENT_LOG_TEMP,
+};
+use crate::evidence_bundle::{
+    validate_failure_bundle_artifact_path, FAILURE_BUNDLE_ARTIFACT_SERVER_LOG,
+};
+use crate::receipts::SCENARIO_RECEIPT_SCHEMA;
+use crate::runner_config::{Config, Mode, ServerBackend};
+use crate::scenario_core::{scenario_name, ScenarioRunStrategy};
+use crate::{
+    backend_name, failure_bundle_artifact_candidates, log, mode_name, path_to_forward_slashes,
+    scenario_behavior, typed_event_log_path_for_receipt, RECONNECT_SEQUENCE_SESSION_COUNT,
+    SCENARIO_ROUTER_NON_CLAIMS,
+};
+use std::path::Path;
+
+const DEFAULT_MATRIX_RECEIPT_DIR: &str = "target/mc-compat-matrix";
+const PLAN_CLEANUP_CLIENT_LOG_DISCOVERY: &str = "discover-/tmp-mc-compat-client-logs";
+const PLAN_NON_CLAIM_ARCHITECTURE_ONLY: &str = "architecture_only_no_new_compatibility_claim";
+const HARNESS_TEMP_ROOT: &str = "/tmp";
+const CLEANUP_ROOT_PATH: &str = "/";
+const CLEANUP_MIN_SAFE_COMPONENTS: usize = 2;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct PlanningDiagnostic {
+    pub(crate) field: String,
+    pub(crate) message: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct HarnessPlan {
+    pub(crate) server: ServerStartupPlan,
+    pub(crate) client_sessions: Vec<ClientSessionPlan>,
+    pub(crate) receipt: ReceiptOutputPlan,
+    pub(crate) artifacts: ArtifactCollectionPlan,
+    pub(crate) cleanup: CleanupPlan,
+    pub(crate) matrix: Option<MatrixPlan>,
+    pub(crate) scenario_route: Option<ScenarioRoutePlan>,
+    pub(crate) non_claims: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ServerStartupPlan {
+    pub(crate) backend: String,
+    pub(crate) protocol: u32,
+    pub(crate) port: u16,
+    pub(crate) server_name: String,
+    pub(crate) keep_server: bool,
+    pub(crate) eula_acceptance_required: bool,
+    pub(crate) valence_worktree: Option<String>,
+    pub(crate) valence_log: Option<String>,
+    pub(crate) docker_image: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ClientSessionPlan {
+    pub(crate) index: usize,
+    pub(crate) username: String,
+    pub(crate) timeout_secs: u64,
+    pub(crate) scenario: String,
+    pub(crate) session_count: usize,
+    pub(crate) log_path_strategy: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ReceiptOutputPlan {
+    pub(crate) receipt_path: Option<String>,
+    pub(crate) receipt_dir: Option<String>,
+    pub(crate) failure_bundle_path: Option<String>,
+    pub(crate) schema: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ArtifactCollectionPlan {
+    pub(crate) typed_event_log_path: Option<String>,
+    pub(crate) failure_bundle_path: Option<String>,
+    pub(crate) failure_artifact_candidates: Vec<ArtifactCandidatePlan>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ArtifactCandidatePlan {
+    pub(crate) kind: String,
+    pub(crate) path: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct CleanupPlan {
+    pub(crate) apply: bool,
+    pub(crate) paper_container: String,
+    pub(crate) valence_pid_file: String,
+    pub(crate) path_actions: Vec<CleanupPathPlan>,
+    pub(crate) client_log_discovery: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct CleanupPathPlan {
+    pub(crate) label: String,
+    pub(crate) path: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct MatrixPlan {
+    pub(crate) dry_run: bool,
+    pub(crate) matrix_mode: String,
+    pub(crate) receipt_dir: String,
+    pub(crate) paper_receipt: String,
+    pub(crate) valence_receipt: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ScenarioRoutePlan {
+    pub(crate) scenario: String,
+    pub(crate) backend: String,
+    pub(crate) mode: String,
+    pub(crate) receipt_path: Option<String>,
+    pub(crate) timeout_secs: u64,
+    pub(crate) packet_capture_summary: bool,
+    pub(crate) proxy_route: Option<String>,
+    pub(crate) proxy_forwarding_mode: Option<String>,
+    pub(crate) failure_bundle_path: Option<String>,
+    pub(crate) non_claims: Vec<String>,
+}
 
 pub(crate) fn harness_plan_from_config(
     cfg: &Config,

@@ -4,7 +4,11 @@
 //! creation, and writes. This module owns the in-memory compatibility contract
 //! for failure evidence bundles.
 
-use super::*;
+use crate::json_support::{json_string, json_string_vec};
+use crate::runner_config::Config;
+use crate::scenario_core::scenario_name;
+use crate::{backend_name, mode_name};
+use std::path::Path;
 
 pub(crate) const FAILURE_BUNDLE_SCHEMA: &str = "mc.compat.failure.bundle.v1";
 pub(crate) const FAILURE_BUNDLE_OUTCOME_FAILED: &str = "failed";

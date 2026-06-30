@@ -3,7 +3,8 @@
 //! These types describe compatibility evidence schemas. They are plain data
 //! carriers: no file IO, process management, environment access, or logging.
 
-use super::*;
+use crate::{GIT_REV_DRY_RUN_PLACEHOLDER, GIT_STATUS_DRY_RUN};
+use std::path::PathBuf;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(crate) struct ScenarioEvidence {

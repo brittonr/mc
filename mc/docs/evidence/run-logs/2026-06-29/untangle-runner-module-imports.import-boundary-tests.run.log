@@ -1,0 +1,363 @@
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unused import: `crate::backend_shell::child_revision_evidence_for_receipt`
+ --> src/receipts.rs:1:5
+  |
+1 | use crate::backend_shell::child_revision_evidence_for_receipt;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `build_git_revision_evidence`, `cleanup_path`, `force_stop_server`, `git_rev_parse`, `git_revision_evidence`, `is_mc_compat_client_log`, and `valence_source_dir`
+  --> src/lib.rs:28:5
+   |
+28 |     build_git_revision_evidence, child_revision_evidence_for_receipt, cleanup_harness_state,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+29 |     cleanup_path, ensure_valence_repo_ready, force_stop_paper_server, force_stop_server,
+   |     ^^^^^^^^^^^^                                                      ^^^^^^^^^^^^^^^^^
+30 |     force_stop_valence_server, git_rev_parse, git_revision_evidence, is_mc_compat_client_log,
+   |                                ^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^
+31 |     print_harness_status, probe_status, start_paper_server, start_server, start_valence_server,
+32 |     stop_paper_server, stop_server, stop_valence_server, valence_source_dir,
+   |                                                          ^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `client_timeout_secs`, `derive_survival_crash_recovery_client_milestones`, `derive_survival_crash_recovery_server_milestones`, `mcp_control_dry_run_control_evidence`, `mcp_controlled_dry_run_evidence`, `mcp_controlled_success_output`, `projectile_damage_dry_run_evidence`, `projectile_travel_collision_dry_run_evidence`, `requires_server_correlation`, and `server_log_label`
+  --> src/lib.rs:35:5
+   |
+35 |     client_timeout_secs, derive_survival_crash_recovery_client_milestones,
+   |     ^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+36 |     derive_survival_crash_recovery_server_milestones, mcp_control_dry_run_control_evidence,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+37 |     mcp_controlled_dry_run_evidence, mcp_controlled_success_output, planned_client_usernames,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+38 |     projectile_damage_dry_run_evidence, projectile_travel_collision_dry_run_evidence,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+39 |     read_paper_log, read_valence_log, requires_server_correlation, run_client, server_log_label,
+   |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^              ^^^^^^^^^^^^^^^^
+
+warning: unused imports: `evaluate_biome_dimension_join_state`, `evaluate_projectile_damage_causality_for_damage`, `evaluate_projectile_damage_causality`, `evaluate_projectile_travel_collision`, `evaluate_scenario_for_config`, `evaluate_server_scenario`, `evaluate_typed_event_graph`, `typed_event_oracle_receipt_json`, `typed_event_ordered_edges_for_scenario`, `typed_event_required_events_for_graph`, and `validate_typed_event_oracle_for_migrated_scenario`
+  --> src/lib.rs:53:5
+   |
+53 |     evaluate_biome_dimension_join_state, evaluate_projectile_damage_causality,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+54 |     evaluate_projectile_damage_causality_for_damage, evaluate_projectile_travel_collision,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+55 |     evaluate_scenario_for_config, evaluate_server_scenario, evaluate_typed_event_graph,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+56 |     normalize_typed_event_timeline, typed_event_oracle_contributes_to_pass_fail,
+57 |     typed_event_oracle_receipt_json, typed_event_ordered_edges_for_scenario,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+58 |     typed_event_required_events_for_graph, typed_event_timeline_blake3,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+59 |     typed_events_from_receipt_evidence, validate_typed_event_oracle_for_migrated_scenario,
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `json_support::*`
+  --> src/lib.rs:64:5
+   |
+64 | use json_support::*;
+   |     ^^^^^^^^^^^^^^^
+
+warning: unused import: `scenario_route_non_claims`
+  --> src/lib.rs:66:74
+   |
+66 |     format_plan_diagnostics, harness_plan_from_config, log_harness_plan, scenario_route_non_claims,
+   |                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `McRead` and `McWrite`
+  --> src/lib.rs:78:12
+   |
+78 | use wire::{McRead, McWrite};
+   |            ^^^^^^  ^^^^^^^
+
+warning: unused import: `resolve_valence_source_dir`
+  --> src/lib.rs:80:41
+   |
+80 | use layout::{resolve_repository_layout, resolve_valence_source_dir, LayoutResolutionMode};
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `scenario_behavior_metadata`, `scenario_forbidden_patterns`, `scenario_required_milestones`, and `server_required_milestones`
+  --> src/lib.rs:86:45
+   |
+86 |     parse_scenario, scenario_behavior_kind, scenario_behavior_metadata,
+   |                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+87 |     scenario_forbidden_patterns, scenario_name, scenario_required_milestones,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+88 |     server_required_milestones, validate_static_scenario_specs,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `RECONNECT_SESSION_COUNT_NEEDLE`
+  --> src/lib.rs:96:5
+   |
+96 |     RECONNECT_SESSION_COUNT_NEEDLE, SECOND_CLIENT_INDEX, SESSION_INDEX_ENV_OFFSET, TEAM_BLUE_VALUE,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `BufReader`, `Write`, and `self`
+   --> src/lib.rs:105:15
+    |
+105 | use std::io::{self, BufRead, BufReader, Read, Write};
+    |               ^^^^           ^^^^^^^^^        ^^^^^
+
+warning: unused import: `std::net::TcpStream`
+   --> src/lib.rs:106:5
+    |
+106 | use std::net::TcpStream;
+    |     ^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Stdio`
+   --> src/lib.rs:108:39
+    |
+108 | use std::process::{Command, ExitCode, Stdio};
+    |                                       ^^^^^
+
+warning: unused import: `std::thread`
+   --> src/lib.rs:109:5
+    |
+109 | use std::thread;
+    |     ^^^^^^^^^^^
+
+warning: unused import: `BufRead`
+   --> src/lib.rs:105:21
+    |
+105 | use std::io::{self, BufRead, BufReader, Read, Write};
+    |                     ^^^^^^^
+
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/lib.rs:361:7
+    |
+361 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `apply_config_json` is never used
+    --> src/lib.rs:1791:4
+     |
+1791 | fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
+     |    ^^^^^^^^^^^^^^^^^
+
+warning: fields `applied_sources` and `field_sources` are never read
+   --> src/config_patches.rs:259:16
+    |
+257 | pub(crate) struct ConfigResolution {
+    |                   ---------------- fields in this struct
+258 |     pub(crate) config: Config,
+259 |     pub(crate) applied_sources: Vec<ConfigSource>,
+    |                ^^^^^^^^^^^^^^^
+260 |     pub(crate) field_sources: BTreeMap<&'static str, ConfigSource>,
+    |                ^^^^^^^^^^^^^
+    |
+    = note: `ConfigResolution` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `config_source_order` is never used
+   --> src/config_patches.rs:263:15
+    |
+263 | pub(crate) fn config_source_order() -> &'static [ConfigSourceKind] {
+    |               ^^^^^^^^^^^^^^^^^^^
+
+warning: function `apply_patch_for_legacy_mutation` is never used
+   --> src/config_patches.rs:426:15
+    |
+426 | pub(crate) fn apply_patch_for_legacy_mutation(config: &mut Config, patch: &ConfigPatch) {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: methods `set`, `remove`, and `is_empty` are never used
+   --> src/env_patch.rs:49:19
+    |
+ 41 | impl EnvPatch {
+    | ------------- methods in this implementation
+...
+ 49 |     pub(crate) fn set(
+    |                   ^^^
+...
+ 59 |     pub(crate) fn remove(
+    |                   ^^^^^^
+...
+159 |     pub(crate) fn is_empty(&self) -> bool {
+    |                   ^^^^^^^^
+
+warning: function `biome_dimension_join_state_required_non_claims` is never used
+   --> src/evidence_core.rs:271:15
+    |
+271 | pub(crate) fn biome_dimension_join_state_required_non_claims() -> &'static [&'static str] {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_string_field` is never used
+  --> src/json_support.rs:12:15
+   |
+12 | pub(crate) fn json_object_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_optional_string_field` is never used
+  --> src/json_support.rs:20:15
+   |
+20 | pub(crate) fn json_object_optional_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_u32_field` is never used
+  --> src/json_support.rs:28:15
+   |
+28 | pub(crate) fn json_object_u32_field(text: &str, object: &str, key: &str) -> Result<u32, String> {
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_bool_field` is never used
+  --> src/json_support.rs:32:15
+   |
+32 | pub(crate) fn json_object_bool_field(text: &str, object: &str, key: &str) -> Result<bool, String> {
+   |               ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `MONOREPO_MC_ROOT_REL` is never used
+ --> src/layout.rs:5:7
+  |
+5 | const MONOREPO_MC_ROOT_REL: &str = "mc";
+  |       ^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `RequireExisting` is never constructed
+  --> src/layout.rs:38:5
+   |
+36 | pub enum LayoutResolutionMode {
+   |          -------------------- variant in this enum
+37 |     AllowMissing,
+38 |     RequireExisting,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `LayoutResolutionMode` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: variant `Transition` is never constructed
+  --> src/layout.rs:44:5
+   |
+42 | pub enum LayoutKind {
+   |          ---------- variant in this enum
+43 |     RoleBased,
+44 |     Transition,
+   |     ^^^^^^^^^^
+   |
+   = note: `LayoutKind` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: unused imports: `build_git_revision_evidence`, `cleanup_path`, `force_stop_server`, `git_rev_parse`, `git_revision_evidence`, `is_mc_compat_client_log`, and `valence_source_dir`
+  --> src/lib.rs:28:5
+   |
+28 |     build_git_revision_evidence, child_revision_evidence_for_receipt, cleanup_harness_state,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+29 |     cleanup_path, ensure_valence_repo_ready, force_stop_paper_server, force_stop_server,
+   |     ^^^^^^^^^^^^                                                      ^^^^^^^^^^^^^^^^^
+30 |     force_stop_valence_server, git_rev_parse, git_revision_evidence, is_mc_compat_client_log,
+   |                                ^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^
+31 |     print_harness_status, probe_status, start_paper_server, start_server, start_valence_server,
+32 |     stop_paper_server, stop_server, stop_valence_server, valence_source_dir,
+   |                                                          ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `client_timeout_secs`, `mcp_control_dry_run_control_evidence`, `mcp_controlled_success_output`, `projectile_travel_collision_dry_run_evidence`, and `requires_server_correlation`
+  --> src/lib.rs:35:5
+   |
+35 |     client_timeout_secs, derive_survival_crash_recovery_client_milestones,
+   |     ^^^^^^^^^^^^^^^^^^^
+36 |     derive_survival_crash_recovery_server_milestones, mcp_control_dry_run_control_evidence,
+   |                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+37 |     mcp_controlled_dry_run_evidence, mcp_controlled_success_output, planned_client_usernames,
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+38 |     projectile_damage_dry_run_evidence, projectile_travel_collision_dry_run_evidence,
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+39 |     read_paper_log, read_valence_log, requires_server_correlation, run_client, server_log_label,
+   |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `biome_dimension_join_state_required_non_claims`, `evaluate_scenario_with_projectile_health`, and `validate_biome_dimension_join_state_record`
+  --> src/lib.rs:48:5
+   |
+48 |     biome_dimension_join_state_required_non_claims, evaluate_scenario,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+49 |     evaluate_scenario_with_projectile_health, parse_typed_event_line,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+50 |     validate_biome_dimension_join_state_record,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `evaluate_biome_dimension_join_state`, `evaluate_projectile_damage_causality_for_damage`, `evaluate_projectile_travel_collision`, `evaluate_scenario_for_config`, `evaluate_server_scenario`, `evaluate_typed_event_graph`, `typed_event_oracle_receipt_json`, `typed_event_ordered_edges_for_scenario`, `typed_event_required_events_for_graph`, and `validate_typed_event_oracle_for_migrated_scenario`
+  --> src/lib.rs:53:5
+   |
+53 |     evaluate_biome_dimension_join_state, evaluate_projectile_damage_causality,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+54 |     evaluate_projectile_damage_causality_for_damage, evaluate_projectile_travel_collision,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+55 |     evaluate_scenario_for_config, evaluate_server_scenario, evaluate_typed_event_graph,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+56 |     normalize_typed_event_timeline, typed_event_oracle_contributes_to_pass_fail,
+57 |     typed_event_oracle_receipt_json, typed_event_ordered_edges_for_scenario,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+58 |     typed_event_required_events_for_graph, typed_event_timeline_blake3,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+59 |     typed_events_from_receipt_evidence, validate_typed_event_oracle_for_migrated_scenario,
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `receipt_validation::validate_receipt_summary`
+  --> src/lib.rs:82:5
+   |
+82 | use receipt_validation::validate_receipt_summary;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `ScenarioMilestone`
+   --> src/lib.rs:101:21
+    |
+101 | use scenario_core::{ScenarioMilestone, ALL_SCENARIOS};
+    |                     ^^^^^^^^^^^^^^^^^
+
+warning: field `applied_sources` is never read
+   --> src/config_patches.rs:259:16
+    |
+257 | pub(crate) struct ConfigResolution {
+    |                   ---------------- field in this struct
+258 |     pub(crate) config: Config,
+259 |     pub(crate) applied_sources: Vec<ConfigSource>,
+    |                ^^^^^^^^^^^^^^^
+    |
+    = note: `ConfigResolution` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `default_patch_for_tests` is never used
+   --> src/config_patches.rs:714:15
+    |
+714 | pub(crate) fn default_patch_for_tests() -> ConfigPatch {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `is_empty` is never used
+   --> src/env_patch.rs:159:19
+    |
+ 41 | impl EnvPatch {
+    | ------------- method in this implementation
+...
+159 |     pub(crate) fn is_empty(&self) -> bool {
+    |                   ^^^^^^^^
+
+warning: constant `TEST_SESSION_ID` is never used
+  --> src/test_support.rs:11:18
+   |
+11 | pub(crate) const TEST_SESSION_ID: &str = "s1";
+   |                  ^^^^^^^^^^^^^^^
+
+warning: constant `TEST_CLIENT_DIR` is never used
+  --> src/test_support.rs:13:18
+   |
+13 | pub(crate) const TEST_CLIENT_DIR: &str = "/tmp/stevenarella";
+   |                  ^^^^^^^^^^^^^^^
+
+warning: `mc-compat-runner` (lib) generated 29 warnings (run `cargo fix --lib -p mc-compat-runner` to apply 14 suggestions)
+warning: `mc-compat-runner` (lib test) generated 27 warnings (16 duplicates) (run `cargo fix --lib -p mc-compat-runner --tests` to apply 6 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-b744bd4f8239b289)
+
+running 3 tests
+test import_boundary::import_boundary_accepts_explicit_production_and_scoped_test_imports ... ok
+test import_boundary::import_boundary_rejects_production_root_wildcard_imports ... ok
+test import_boundary::current_production_runner_modules_use_explicit_imports ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 213 filtered out; finished in 0.02s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-7a3848342990d454)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0

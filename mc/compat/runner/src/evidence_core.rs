@@ -1,4 +1,98 @@
-use super::*;
+use crate::evidence_types::{
+    BiomeDimensionJoinStateClientState, BiomeDimensionJoinStateEvidence,
+    BiomeDimensionJoinStateRecord, BiomeDimensionJoinStateServerState,
+    BiomeDimensionJoinStateValidation, ClientLogSlice, FrameArtifactsReceiptEvidence,
+    ProjectileDamageCausalityEvidence, ProjectileTravelCollisionEvidence, ScenarioEvidence,
+    ServerScenarioEvidence, TypedEvent, TypedEventGraphEvaluation, TypedEventOracleArtifact,
+};
+use crate::json_support::json_string;
+use crate::runner_config::{ClientRunEvidence, Config};
+use crate::scenario_catalog::{
+    SURVIVAL_BIOME_DIMENSION_CLIENT_STATE_NEEDLE, SURVIVAL_BIOME_DIMENSION_SERVER_STATE_NEEDLE,
+};
+use crate::scenario_core::{
+    scenario_behavior_metadata, scenario_forbidden_patterns, scenario_name,
+    scenario_required_milestones, server_required_milestones, Scenario,
+};
+#[cfg(test)]
+use crate::PROJECTILE_DAMAGE_CLIENT_HEALTH_NEEDLE;
+use crate::{
+    projectile_damage_client_health_needle, scenario_behavior, CLIENT_A_SUFFIX, CLIENT_B_SUFFIX,
+    FLAG_OR_SCORE_NEEDLES, PROJECTILE_DAMAGE_AMOUNT_NEEDLE, PROJECTILE_DAMAGE_ATTACKER_SUFFIX,
+    PROJECTILE_DAMAGE_CLIENT_SWING_NEEDLE, PROJECTILE_DAMAGE_CLIENT_USE_NEEDLE,
+    PROJECTILE_DAMAGE_SEQUENCE_NEEDLE, PROJECTILE_DAMAGE_SERVER_HIT_NEEDLE,
+    PROJECTILE_DAMAGE_SERVER_USE_NEEDLE, PROJECTILE_DAMAGE_VICTIM_SUFFIX,
+    PROJECTILE_TRAVEL_COLLISION_CLIENT_SPAWN_NEEDLE,
+    PROJECTILE_TRAVEL_COLLISION_CLIENT_TRAVEL_NEEDLE,
+    PROJECTILE_TRAVEL_COLLISION_FORBIDDEN_PARITY_CLAIMS, PROJECTILE_TRAVEL_COLLISION_NON_CLAIMS,
+    PROJECTILE_TRAVEL_COLLISION_PROJECTILE_ID,
+    PROJECTILE_TRAVEL_COLLISION_PROJECTILE_REPRESENTATIVE, PROJECTILE_TRAVEL_COLLISION_ROW_ID,
+    PROJECTILE_TRAVEL_COLLISION_SERVER_COLLISION_NEEDLE,
+    PROJECTILE_TRAVEL_COLLISION_SERVER_TRAVEL_NEEDLE, PROJECTILE_TRAVEL_COLLISION_WEAPON,
+    PROJECTILE_TRAVEL_COLLISION_WEAPON_REPRESENTATIVE, TYPED_EVENT_DEFAULT_SESSION_ID,
+    TYPED_EVENT_MAX_FIELD_CHARS, TYPED_EVENT_MIGRATION_DERIVED_FROM_MILESTONES,
+    TYPED_EVENT_MIGRATION_FALLBACK, TYPED_EVENT_PREFIX, TYPED_EVENT_SCHEMA_VERSION,
+    TYPED_EVENT_SEQUENCE_INDEX_OFFSET, TYPED_EVENT_SINGLE_USERNAME_COUNT,
+};
+
+struct EvidenceCorpus<'a> {
+    text: &'a str,
+    normalized: String,
+}
+
+impl<'a> EvidenceCorpus<'a> {
+    fn new(text: &'a str) -> Self {
+        Self {
+            text,
+            normalized: text.to_lowercase(),
+        }
+    }
+}
+
+struct EvidenceContext<'a> {
+    username: &'a str,
+}
+
+#[derive(Clone, Copy)]
+struct MilestoneRule<'a> {
+    id: &'static str,
+    matcher: MatcherKind<'a>,
+}
+
+#[derive(Clone, Copy)]
+pub(crate) enum MatcherKind<'a> {
+    Literal(&'a str),
+    CaseInsensitive(&'a str),
+    DynamicUsername,
+    DynamicClientSuffix(&'static str),
+    AnyOfCaseInsensitive(&'static [&'static str]),
+}
+
+trait EvidenceMatcher {
+    fn is_match(&self, corpus: &EvidenceCorpus<'_>, context: &EvidenceContext<'_>) -> bool;
+}
+
+impl EvidenceMatcher for MatcherKind<'_> {
+    fn is_match(&self, corpus: &EvidenceCorpus<'_>, context: &EvidenceContext<'_>) -> bool {
+        match self {
+            MatcherKind::Literal(needle) => corpus.text.contains(needle),
+            MatcherKind::CaseInsensitive(needle) => {
+                corpus.normalized.contains(&needle.to_lowercase())
+            }
+            MatcherKind::DynamicUsername => {
+                corpus.normalized.contains(&context.username.to_lowercase())
+            }
+            MatcherKind::DynamicClientSuffix(suffix) => corpus.normalized.contains(&format!(
+                "{}{}",
+                context.username.to_lowercase(),
+                suffix
+            )),
+            MatcherKind::AnyOfCaseInsensitive(needles) => needles
+                .iter()
+                .any(|needle| corpus.normalized.contains(&needle.to_lowercase())),
+        }
+    }
+}
 
 fn client_required_milestone_rules<'a>(
     scenario: Scenario,

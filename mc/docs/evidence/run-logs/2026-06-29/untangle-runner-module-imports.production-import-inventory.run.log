@@ -1,0 +1,28 @@
+# Remaining root wildcard import inventory
+# Command: rg -n "use super::\\*" compat/runner/src
+compat/runner/src/evidence_core_colocated_tests.rs:3:use super::*;
+compat/runner/src/config_colocated_tests.rs:3:use super::*;
+compat/runner/src/env_patch_baseline_colocated_tests.rs:1:use super::*;
+compat/runner/src/receipts_colocated_tests.rs:3:use super::*;
+compat/runner/src/receipt_validation.rs:356:    use super::*;
+compat/runner/src/evidence_bundle_colocated_tests.rs:3:use super::*;
+compat/runner/src/json_support.rs:342:    use super::*;
+compat/runner/src/layout.rs:359:    use super::*;
+compat/runner/src/evidence_receipts_colocated_tests.rs:3:use super::*;
+compat/runner/src/scenario_core.rs:3895:    use super::*;
+compat/runner/src/wire_colocated_tests.rs:3:use super::*;
+compat/runner/src/planning_colocated_tests.rs:3:use super::*;
+compat/runner/src/evidence_bundle.rs:261:    use super::*;
+compat/runner/src/evidence_receipts.rs:798:    use super::*;
+compat/runner/src/import_boundary.rs:15:const ROOT_WILDCARD_IMPORT: &str = "use super::*;";
+compat/runner/src/import_boundary.rs:23:    "production runner modules must import dependencies explicitly instead of using `use super::*`";
+compat/runner/src/import_boundary.rs:202:    use super::*;
+compat/runner/src/import_boundary.rs:222:use super::*;
+compat/runner/src/runtime_config.rs:1015:    use super::*;
+compat/runner/src/backend_shell_colocated_tests.rs:3:use super::*;
+compat/runner/src/entrypoint_boundary.rs:141:    use super::*;
+compat/runner/src/env_patch.rs:263:    use super::*;
+compat/runner/src/client_driver_colocated_tests.rs:3:use super::*;
+compat/runner/src/scenario_core_colocated_tests.rs:3:use super::*;
+compat/runner/src/receipt_validation_colocated_tests.rs:3:use super::*;
+exit_status=0

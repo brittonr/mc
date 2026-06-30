@@ -1,0 +1,80 @@
+{
+  "actions": [
+    {
+      "description": "move active change to archive: untangle-runner-module-imports",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-06-29-untangle-runner-module-imports"
+    }
+  ],
+  "blocked": false,
+  "change": "untangle-runner-module-imports",
+  "dry_run": false,
+  "input_hash": "06fa76c3bc101d93a4e0400b90b39cf6d70f01f743d5d4d3b34cdfd6b2d965b8",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "316f3c915c1e6cfd0ae11192c9b9939530ce42dcd24d3a10bf4dd42592094f24",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-untangle-runner-module-imports/design.md"
+        },
+        {
+          "content_hash": "29ed69d0a7b28abdfb2e412b44c0d83a96f0e983925a1a982b4f6589ce8bbd56",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-untangle-runner-module-imports/proposal.md"
+        },
+        {
+          "content_hash": "3486c9ec49c7795bccc362fd2677293ee2d355694573b39593daeef1a0a7403f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-untangle-runner-module-imports/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "0fec6dc9c35a6d854429472bbe7f03b93f425203412be19b903ccd2f7a409770",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-29-untangle-runner-module-imports/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/untangle-runner-module-imports"
+        }
+      ],
+      "manifest_hash": "cc75518d1cfa168c84142d8f7426ecc4e7d902b169339aac5978292ced9e7078"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "316f3c915c1e6cfd0ae11192c9b9939530ce42dcd24d3a10bf4dd42592094f24",
+          "exists": true,
+          "path": "./cairn/changes/untangle-runner-module-imports/design.md"
+        },
+        {
+          "content_hash": "29ed69d0a7b28abdfb2e412b44c0d83a96f0e983925a1a982b4f6589ce8bbd56",
+          "exists": true,
+          "path": "./cairn/changes/untangle-runner-module-imports/proposal.md"
+        },
+        {
+          "content_hash": "3486c9ec49c7795bccc362fd2677293ee2d355694573b39593daeef1a0a7403f",
+          "exists": true,
+          "path": "./cairn/changes/untangle-runner-module-imports/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "0fec6dc9c35a6d854429472bbe7f03b93f425203412be19b903ccd2f7a409770",
+          "exists": true,
+          "path": "./cairn/changes/untangle-runner-module-imports/tasks.md"
+        }
+      ],
+      "manifest_hash": "f0ec7bd4cd57f44460ea2f8994b679a61059dd376e90e71b387ae30f5c022f3a"
+    },
+    "kind": "archive",
+    "manifest_hash": "0d0aaeacd8cc5249c8a4cf5a3e3f42c29d3cdd21a854b138c6bc25604c441310"
+  },
+  "plan_hash": "bb1417c56b069eee37c4f6456839a108ac2b9943ff188a8e48ecf3e75c47490a",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "c602b37f295be6fb472b6d41a795edfbd6888a2f13ea823c3c2b786795627af2"
+}
+exit_status=0

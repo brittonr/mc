@@ -4,7 +4,42 @@
 //! diagnostics stay in `main.rs`. This module accepts typed in-memory inputs and
 //! returns typed evidence or rendered JSON snippets.
 
-use super::*;
+use crate::client_driver::mcp_control_dry_run_control_evidence;
+use crate::evidence_types::{
+    ArmorLoadoutEnchantmentStatusMatrixEvidence, EquipmentSlotItemMatrixExpansionEvidence,
+    FrameArtifactReceiptItem, FrameArtifactsReceiptEvidence, GitRevisionEvidence,
+    LatencyJitterTelemetryReceipt, LoadNetworkSafetyEvidence, LoadNetworkSafetyInputs,
+    McpControlReceiptEvidence, NegativeLiveRailEvidence, NegativeLiveRailInputs,
+    PublicServerAuthorizedSafetyReceipt, ScenarioEvidence, ServerScenarioEvidence,
+};
+use crate::json_support::{json_optional_string, json_string, json_string_array};
+use crate::runner_config::{ClientRunEvidence, Config, Mode};
+use crate::scenario_core::{scenario_required_milestones, server_required_milestones, Scenario};
+use crate::{
+    scenario_behavior, ARMOR_MATRIX_ATTACK_TYPE_MELEE, ARMOR_MATRIX_ENCHANTMENT_NONE,
+    ARMOR_MATRIX_EQUIPMENT_SLOT, ARMOR_MATRIX_LOADOUT_ID, ARMOR_MATRIX_NON_CLAIMS,
+    ARMOR_MATRIX_REFERENCE_RECEIPT_NONE, ARMOR_MATRIX_ROW_ID, ARMOR_MATRIX_STATUS_EFFECT_NONE,
+    EQUIPMENT_MATRIX_ACTOR, EQUIPMENT_MATRIX_ITEM_COUNT, EQUIPMENT_MATRIX_ITEM_ID,
+    EQUIPMENT_MATRIX_NON_CLAIMS, EQUIPMENT_MATRIX_OBSERVER,
+    EQUIPMENT_MATRIX_REFERENCE_RECEIPT_NONE, EQUIPMENT_MATRIX_REMOTE_ENTITY_ID,
+    EQUIPMENT_MATRIX_ROW_ID, EQUIPMENT_MATRIX_SEMANTIC_SLOT, EQUIPMENT_MATRIX_TRANSITION,
+    EQUIPMENT_MATRIX_UPDATE_ORDER, EQUIPMENT_MATRIX_WIRE_SLOT, FRAME_ARTIFACT_NON_CLAIMS,
+    GIT_STATUS_CLEAN, GIT_STATUS_DIRTY, MCP_CONTROL_ENDPOINT_STDIO,
+    MCP_CONTROL_FAILURE_LIVE_EVIDENCE_MISSING, MCP_CONTROL_FAILURE_REVISION_DIRTY,
+    MCP_CONTROL_FAILURE_REVISION_UNAVAILABLE, MCP_CONTROL_LIVE_CALLS, MCP_CONTROL_NON_CLAIMS,
+    MCP_CONTROL_PREREQUISITES, MCP_CONTROL_REQUIRED_CALLS, MCP_CONTROL_REQUIRED_OUTCOME_IDS,
+    MCP_CONTROL_TOOL_LIST_DIGEST_SEPARATOR, MCP_CONTROL_TOOL_NAMES,
+    NEGATIVE_LIVE_RAIL_EVIDENCE_FIELDS, NEGATIVE_LIVE_RAIL_MIN_TIMEOUT_SECS,
+    NEGATIVE_LIVE_RAIL_NON_CLAIMS, PUBLIC_SERVER_ABORT_CRITERIA, PUBLIC_SERVER_REDACTION_POLICY,
+    PUBLIC_SERVER_TELEMETRY_FIELDS, PUBLIC_SERVER_TRAFFIC_LIMITS, WAN_ABORT_REASON_NONE,
+    WAN_PASS_FAIL_CRITERIA, WAN_TELEMETRY_SAMPLES,
+};
+#[cfg(test)]
+use crate::{
+    NEGATIVE_LIVE_RAIL_EXPECTED_OUTCOME, NEGATIVE_LIVE_RAIL_MAX_CLIENTS, SAFETY_MAX_DURATION_SECS,
+    SAFETY_MAX_LOCAL_CLIENTS, SAFETY_OWNED_LOCAL_SCOPE, SAFETY_SINGLE_SESSION_COUNT,
+    SAFETY_ZERO_VALUE,
+};
 
 pub(crate) fn evaluate_load_network_safety(
     input: LoadNetworkSafetyInputs,

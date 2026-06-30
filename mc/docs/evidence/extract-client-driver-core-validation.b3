@@ -1,6 +1,6 @@
-0ce3efbb3418efa98715fbca113fb4640fa5fd3658fc1dcddda7caee0c79650e  compat/runner/src/client_driver.rs
+03bea75f6cfd1ff222d0710b2fc7ed339723109a11b739a95e3cad064913b1d4  compat/runner/src/client_driver.rs
 4fbb347f1cca78021c38e08516725abe88eb091c4add70812342a3183486ea2a  compat/runner/src/client_driver_colocated_tests.rs
-0e487dab62ee5674cbd4e8bb47c41c270ee14de80c714e575af2a150bdc15844  cairn/specs/mc-compatibility/spec.md
+9f5e3bab83ce6ec5ab07eaefd5f1958a8fe7ff2c9f63a9515ad9a1460eda9f47  cairn/specs/mc-compatibility/spec.md
 759b6d85052d06c8ef686aac25e7b3f606163dacad37919e088056ef155c6f28  cairn/archive/2026-06-28-extract-client-driver-core/tasks.md
 db333a2bb9a25661afca18cd3b86917e955ed04bf66c2749acc7951e00b452f3  cairn/archive/2026-06-28-extract-client-driver-core/proposal.md
 73d133b3d50d158980bbee854d9eaabde5f21ce85bac2d52accea8e1e12f1fe2  cairn/archive/2026-06-28-extract-client-driver-core/design.md

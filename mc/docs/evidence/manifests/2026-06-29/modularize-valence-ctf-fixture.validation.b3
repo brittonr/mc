@@ -47,7 +47,7 @@ d81189d097d45d944d2f3eeeba3ed64fa587b8be868b6f1607a01caea859562a  docs/evidence/
 ac664cb02da019fbb0b5e8c0b151031d4523ff12a6d5c03c80dd7d54282ea51d  docs/evidence/run-logs/2026-06-29/modularize-valence-ctf-fixture.task-evidence-check-after-closeout.run.log
 ce334a0c44cfea3e2e78e66b2002abb022733a92861dc749a02dd7ff030135e3  docs/evidence/run-logs/2026-06-29/modularize-valence-ctf-fixture.task-evidence-check.run.log
 c4359ac302d061a127b2da1371d8d9afc1cb658c7637fcce07acb882071dbaec  docs/evidence/scenario-contract-inventory.generated.md
-54e47e80b949cf215b35a565155238b838c0a2605840e76d1f6a6551bbc4e07e  cairn/specs/mc-compatibility/spec.md
+9f5e3bab83ce6ec5ab07eaefd5f1958a8fe7ff2c9f63a9515ad9a1460eda9f47  cairn/specs/mc-compatibility/spec.md
 527366d56c40272acb3cfc43c7b55276afd356132fcc0868beb779507daacd5e  cairn/archive/2026-06-29-modularize-valence-ctf-fixture/proposal.md
 8dc6baa35b91aed6520df95a0a03c3f082c96afe5542ad5d92a4a165a069db97  cairn/archive/2026-06-29-modularize-valence-ctf-fixture/design.md
 e3cbe132646f1052a00629e473f9f0364c9cc4104653725fa238f1ac0ef24f35  cairn/archive/2026-06-29-modularize-valence-ctf-fixture/tasks.md
