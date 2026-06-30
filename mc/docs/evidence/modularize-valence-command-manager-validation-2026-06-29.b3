@@ -29,7 +29,7 @@ c074d6f249a934566e71b2c1e918226defa64f3efb14dca10a237938672203c0  servers/valenc
 966f2c7f55f0246e6c8292e9ad78e39d1364ec4a6814f627a9b1327e8fdc51ab  servers/valence/crates/valence_command/src/manager/systems.rs
 c196a217dfbeb796ee5c4d59076bb218c296b166c2b6aa953e28d0589dc8bfb1  servers/valence/crates/valence_command/src/manager/tests.rs
 6896b629fd1d10499f77a0d5baabf51efc8d87972492ac62f43d7095eedcc4ad  servers/valence/crates/valence_command/src/manager/tree_sync.rs
-9f211aff2075a3057fc3057976a2389ead38bea37c201d3faeede0186b64be0d  cairn/specs/valence-bevy-ecs/spec.md
+76202225a9b92ce10f062bfe83b9c1fa07928b36e2c5e095e94b48a2ad29b2fc  cairn/specs/valence-bevy-ecs/spec.md
 b3fd8f0c2d13eec44bbefb3a23413e6401294c5d67f8694b2726de359e360907  cairn/archive/2026-06-29-modularize-valence-command-manager/design.md
 08b6a83d09d490ab328aa45335dbb2c5a3ee76ef9d334a453e54cb94785e44ac  cairn/archive/2026-06-29-modularize-valence-command-manager/proposal.md
 efc9ba7fdbe49aeab9e00b031125098ab30415f3901816c318f243de8e38f383  cairn/archive/2026-06-29-modularize-valence-command-manager/specs/valence-bevy-ecs/spec.md

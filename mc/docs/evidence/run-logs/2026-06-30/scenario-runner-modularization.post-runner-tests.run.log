@@ -1,0 +1,621 @@
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo fmt --manifest-path compat/runner/Cargo.toml
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1015 ms: Could not connect to server; retrying in 77 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1011 ms: Could not connect to server; retrying in 17 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3120 ms: Could not connect to server; retrying in 213 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3114 ms: Could not connect to server; retrying in 594 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 1068 ms: Could not connect to server
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/9inxgfh3qarlr24wp3lyrm77h69rbxxg-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/32ji1ydzs13ajw9ms0b3f3wk9p9f2b94-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+cargo_fmt_exit_status=0
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test --manifest-path compat/runner/Cargo.toml
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3114 ms: Could not connect to server; retrying in 35 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3100 ms: Could not connect to server; retrying in 94 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 356 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3061 ms: Could not connect to server; retrying in 213 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3114 ms: Could not connect to server
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/20wbi8nmzhsjqnyiwz5czilr588mkb4x-mc-compat-runner-0.1.0.drv'...
+building '/nix/store/mvyrdqf7kzrkq0wk8rrxv43p4ffvb627-nix-shell-env.drv'...
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+   Compiling mc-compat-runner v0.1.0 (/home/brittonr/git/mc/compat/runner)
+warning: unused import: `crate::backend_shell::child_revision_evidence_for_receipt`
+ --> src/receipts.rs:1:5
+  |
+1 | use crate::backend_shell::child_revision_evidence_for_receipt;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `ScenarioFamily`, `scenario_family_name`, and `scenario_family`
+  --> src/scenario_core.rs:72:36
+   |
+72 | pub(crate) use scenario_families::{scenario_family, scenario_family_name, ScenarioFamily};
+   |                                    ^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^
+
+warning: unused imports: `build_git_revision_evidence`, `cleanup_path`, `force_stop_server`, `git_rev_parse`, `git_revision_evidence`, `is_mc_compat_client_log`, and `valence_source_dir`
+  --> src/lib.rs:29:5
+   |
+29 |     build_git_revision_evidence, child_revision_evidence_for_receipt, cleanup_harness_state,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+30 |     cleanup_path, ensure_valence_repo_ready, force_stop_paper_server, force_stop_server,
+   |     ^^^^^^^^^^^^                                                      ^^^^^^^^^^^^^^^^^
+31 |     force_stop_valence_server, git_rev_parse, git_revision_evidence, is_mc_compat_client_log,
+   |                                ^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^
+32 |     print_harness_status, probe_status, start_paper_server, start_server, start_valence_server,
+33 |     stop_paper_server, stop_server, stop_valence_server, valence_source_dir,
+   |                                                          ^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `client_timeout_secs`, `derive_survival_crash_recovery_client_milestones`, `derive_survival_crash_recovery_server_milestones`, `mcp_control_dry_run_control_evidence`, `mcp_controlled_dry_run_evidence`, `mcp_controlled_success_output`, `projectile_damage_dry_run_evidence`, `projectile_travel_collision_dry_run_evidence`, `requires_server_correlation`, and `server_log_label`
+  --> src/lib.rs:36:5
+   |
+36 |     client_timeout_secs, derive_survival_crash_recovery_client_milestones,
+   |     ^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+37 |     derive_survival_crash_recovery_server_milestones, mcp_control_dry_run_control_evidence,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+38 |     mcp_controlled_dry_run_evidence, mcp_controlled_success_output, planned_client_usernames,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+39 |     projectile_damage_dry_run_evidence, projectile_travel_collision_dry_run_evidence,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+40 |     read_paper_log, read_valence_log, requires_server_correlation, run_client, server_log_label,
+   |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^              ^^^^^^^^^^^^^^^^
+
+warning: unused imports: `evaluate_biome_dimension_join_state`, `evaluate_projectile_damage_causality_for_damage`, `evaluate_projectile_damage_causality`, `evaluate_projectile_travel_collision`, `evaluate_scenario_for_config`, `evaluate_server_scenario`, `evaluate_typed_event_graph`, `typed_event_oracle_receipt_json`, `typed_event_ordered_edges_for_scenario`, `typed_event_required_events_for_graph`, and `validate_typed_event_oracle_for_migrated_scenario`
+  --> src/lib.rs:54:5
+   |
+54 |     evaluate_biome_dimension_join_state, evaluate_projectile_damage_causality,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+55 |     evaluate_projectile_damage_causality_for_damage, evaluate_projectile_travel_collision,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+56 |     evaluate_scenario_for_config, evaluate_server_scenario, evaluate_typed_event_graph,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+57 |     normalize_typed_event_timeline, typed_event_oracle_contributes_to_pass_fail,
+58 |     typed_event_oracle_receipt_json, typed_event_ordered_edges_for_scenario,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+59 |     typed_event_required_events_for_graph, typed_event_timeline_blake3,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+60 |     typed_events_from_receipt_evidence, validate_typed_event_oracle_for_migrated_scenario,
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `json_support::*`
+  --> src/lib.rs:65:5
+   |
+65 | use json_support::*;
+   |     ^^^^^^^^^^^^^^^
+
+warning: unused import: `scenario_route_non_claims`
+  --> src/lib.rs:67:74
+   |
+67 |     format_plan_diagnostics, harness_plan_from_config, log_harness_plan, scenario_route_non_claims,
+   |                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `McRead` and `McWrite`
+  --> src/lib.rs:77:12
+   |
+77 | use wire::{McRead, McWrite};
+   |            ^^^^^^  ^^^^^^^
+
+warning: unused import: `resolve_valence_source_dir`
+  --> src/lib.rs:79:41
+   |
+79 | use layout::{resolve_repository_layout, resolve_valence_source_dir, LayoutResolutionMode};
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `scenario_behavior_metadata`, `scenario_forbidden_patterns`, `scenario_required_milestones`, and `server_required_milestones`
+  --> src/lib.rs:85:45
+   |
+85 |     parse_scenario, scenario_behavior_kind, scenario_behavior_metadata,
+   |                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+86 |     scenario_forbidden_patterns, scenario_name, scenario_required_milestones,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+87 |     server_required_milestones, validate_static_scenario_specs,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `RECONNECT_SESSION_COUNT_NEEDLE`
+  --> src/lib.rs:95:5
+   |
+95 |     RECONNECT_SESSION_COUNT_NEEDLE, SECOND_CLIENT_INDEX, SESSION_INDEX_ENV_OFFSET, TEAM_BLUE_VALUE,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `BufReader`, `Write`, and `self`
+   --> src/lib.rs:105:15
+    |
+105 | use std::io::{self, BufRead, BufReader, Read, Write};
+    |               ^^^^           ^^^^^^^^^        ^^^^^
+
+warning: unused import: `std::net::TcpStream`
+   --> src/lib.rs:106:5
+    |
+106 | use std::net::TcpStream;
+    |     ^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Stdio`
+   --> src/lib.rs:108:39
+    |
+108 | use std::process::{Command, ExitCode, Stdio};
+    |                                       ^^^^^
+
+warning: unused import: `std::thread`
+   --> src/lib.rs:109:5
+    |
+109 | use std::thread;
+    |     ^^^^^^^^^^^
+
+warning: unused imports: `build_git_revision_evidence`, `cleanup_path`, `force_stop_server`, `git_rev_parse`, `git_revision_evidence`, `is_mc_compat_client_log`, and `valence_source_dir`
+  --> src/lib.rs:29:5
+   |
+29 |     build_git_revision_evidence, child_revision_evidence_for_receipt, cleanup_harness_state,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+30 |     cleanup_path, ensure_valence_repo_ready, force_stop_paper_server, force_stop_server,
+   |     ^^^^^^^^^^^^                                                      ^^^^^^^^^^^^^^^^^
+31 |     force_stop_valence_server, git_rev_parse, git_revision_evidence, is_mc_compat_client_log,
+   |                                ^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^
+32 |     print_harness_status, probe_status, start_paper_server, start_server, start_valence_server,
+33 |     stop_paper_server, stop_server, stop_valence_server, valence_source_dir,
+   |                                                          ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `client_timeout_secs`, `mcp_control_dry_run_control_evidence`, `mcp_controlled_success_output`, `projectile_travel_collision_dry_run_evidence`, and `requires_server_correlation`
+  --> src/lib.rs:36:5
+   |
+36 |     client_timeout_secs, derive_survival_crash_recovery_client_milestones,
+   |     ^^^^^^^^^^^^^^^^^^^
+37 |     derive_survival_crash_recovery_server_milestones, mcp_control_dry_run_control_evidence,
+   |                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+38 |     mcp_controlled_dry_run_evidence, mcp_controlled_success_output, planned_client_usernames,
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+39 |     projectile_damage_dry_run_evidence, projectile_travel_collision_dry_run_evidence,
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+40 |     read_paper_log, read_valence_log, requires_server_correlation, run_client, server_log_label,
+   |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `biome_dimension_join_state_required_non_claims`, `evaluate_scenario_with_projectile_health`, and `validate_biome_dimension_join_state_record`
+  --> src/lib.rs:49:5
+   |
+49 |     biome_dimension_join_state_required_non_claims, evaluate_scenario,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+50 |     evaluate_scenario_with_projectile_health, parse_typed_event_line,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+51 |     validate_biome_dimension_join_state_record,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `evaluate_biome_dimension_join_state`, `evaluate_projectile_damage_causality_for_damage`, `evaluate_projectile_travel_collision`, `evaluate_scenario_for_config`, `evaluate_server_scenario`, `evaluate_typed_event_graph`, `typed_event_oracle_receipt_json`, `typed_event_ordered_edges_for_scenario`, `typed_event_required_events_for_graph`, and `validate_typed_event_oracle_for_migrated_scenario`
+  --> src/lib.rs:54:5
+   |
+54 |     evaluate_biome_dimension_join_state, evaluate_projectile_damage_causality,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+55 |     evaluate_projectile_damage_causality_for_damage, evaluate_projectile_travel_collision,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+56 |     evaluate_scenario_for_config, evaluate_server_scenario, evaluate_typed_event_graph,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+57 |     normalize_typed_event_timeline, typed_event_oracle_contributes_to_pass_fail,
+58 |     typed_event_oracle_receipt_json, typed_event_ordered_edges_for_scenario,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+59 |     typed_event_required_events_for_graph, typed_event_timeline_blake3,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+60 |     typed_events_from_receipt_evidence, validate_typed_event_oracle_for_migrated_scenario,
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `receipt_validation::validate_receipt_summary`
+  --> src/lib.rs:81:5
+   |
+81 | use receipt_validation::validate_receipt_summary;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `ScenarioMilestone`
+   --> src/lib.rs:100:21
+    |
+100 | use scenario_core::{ScenarioMilestone, ALL_SCENARIOS};
+    |                     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `BufRead`
+   --> src/lib.rs:105:21
+    |
+105 | use std::io::{self, BufRead, BufReader, Read, Write};
+    |                     ^^^^^^^
+
+warning: constant `CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE` is never used
+   --> src/lib.rs:361:7
+    |
+361 | const CTF_OPPONENT_RETURN_DROP_SERVER_REJECTION_NEEDLE: &str =
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `apply_config_json` is never used
+    --> src/lib.rs:1516:4
+     |
+1516 | fn apply_config_json(cfg: &mut Config, text: &str) -> Result<bool, String> {
+     |    ^^^^^^^^^^^^^^^^^
+
+warning: fields `applied_sources` and `field_sources` are never read
+   --> src/config_patches.rs:259:16
+    |
+257 | pub(crate) struct ConfigResolution {
+    |                   ---------------- fields in this struct
+258 |     pub(crate) config: Config,
+259 |     pub(crate) applied_sources: Vec<ConfigSource>,
+    |                ^^^^^^^^^^^^^^^
+260 |     pub(crate) field_sources: BTreeMap<&'static str, ConfigSource>,
+    |                ^^^^^^^^^^^^^
+    |
+    = note: `ConfigResolution` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `config_source_order` is never used
+   --> src/config_patches.rs:263:15
+    |
+263 | pub(crate) fn config_source_order() -> &'static [ConfigSourceKind] {
+    |               ^^^^^^^^^^^^^^^^^^^
+
+warning: function `apply_patch_for_legacy_mutation` is never used
+   --> src/config_patches.rs:426:15
+    |
+426 | pub(crate) fn apply_patch_for_legacy_mutation(config: &mut Config, patch: &ConfigPatch) {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: methods `set`, `remove`, and `is_empty` are never used
+   --> src/env_patch.rs:49:19
+    |
+ 41 | impl EnvPatch {
+    | ------------- methods in this implementation
+...
+ 49 |     pub(crate) fn set(
+    |                   ^^^
+...
+ 59 |     pub(crate) fn remove(
+    |                   ^^^^^^
+...
+159 |     pub(crate) fn is_empty(&self) -> bool {
+    |                   ^^^^^^^^
+
+warning: function `biome_dimension_join_state_required_non_claims` is never used
+   --> src/evidence_core.rs:271:15
+    |
+271 | pub(crate) fn biome_dimension_join_state_required_non_claims() -> &'static [&'static str] {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_string_field` is never used
+  --> src/json_support.rs:12:15
+   |
+12 | pub(crate) fn json_object_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_optional_string_field` is never used
+  --> src/json_support.rs:20:15
+   |
+20 | pub(crate) fn json_object_optional_string_field(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_u32_field` is never used
+  --> src/json_support.rs:28:15
+   |
+28 | pub(crate) fn json_object_u32_field(text: &str, object: &str, key: &str) -> Result<u32, String> {
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `json_object_bool_field` is never used
+  --> src/json_support.rs:32:15
+   |
+32 | pub(crate) fn json_object_bool_field(text: &str, object: &str, key: &str) -> Result<bool, String> {
+   |               ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `MONOREPO_MC_ROOT_REL` is never used
+ --> src/layout.rs:5:7
+  |
+5 | const MONOREPO_MC_ROOT_REL: &str = "mc";
+  |       ^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `RequireExisting` is never constructed
+  --> src/layout.rs:38:5
+   |
+36 | pub enum LayoutResolutionMode {
+   |          -------------------- variant in this enum
+37 |     AllowMissing,
+38 |     RequireExisting,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `LayoutResolutionMode` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: variant `Transition` is never constructed
+  --> src/layout.rs:44:5
+   |
+42 | pub enum LayoutKind {
+   |          ---------- variant in this enum
+43 |     RoleBased,
+44 |     Transition,
+   |     ^^^^^^^^^^
+   |
+   = note: `LayoutKind` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: field `applied_sources` is never read
+   --> src/config_patches.rs:259:16
+    |
+257 | pub(crate) struct ConfigResolution {
+    |                   ---------------- field in this struct
+258 |     pub(crate) config: Config,
+259 |     pub(crate) applied_sources: Vec<ConfigSource>,
+    |                ^^^^^^^^^^^^^^^
+    |
+    = note: `ConfigResolution` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `default_patch_for_tests` is never used
+   --> src/config_patches.rs:714:15
+    |
+714 | pub(crate) fn default_patch_for_tests() -> ConfigPatch {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `is_empty` is never used
+   --> src/env_patch.rs:159:19
+    |
+ 41 | impl EnvPatch {
+    | ------------- method in this implementation
+...
+159 |     pub(crate) fn is_empty(&self) -> bool {
+    |                   ^^^^^^^^
+
+warning: constant `TEST_SESSION_ID` is never used
+  --> src/test_support.rs:11:18
+   |
+11 | pub(crate) const TEST_SESSION_ID: &str = "s1";
+   |                  ^^^^^^^^^^^^^^^
+
+warning: constant `TEST_CLIENT_DIR` is never used
+  --> src/test_support.rs:13:18
+   |
+13 | pub(crate) const TEST_CLIENT_DIR: &str = "/tmp/stevenarella";
+   |                  ^^^^^^^^^^^^^^^
+
+warning: `mc-compat-runner` (lib) generated 30 warnings (run `cargo fix --lib -p mc-compat-runner` to apply 15 suggestions)
+warning: `mc-compat-runner` (lib test) generated 27 warnings (16 duplicates) (run `cargo fix --lib -p mc-compat-runner --tests` to apply 6 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.89s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-b744bd4f8239b289)
+
+running 221 tests
+test backend_shell::root_colocated_tests::git_revision_evidence_core_reports_clean_dirty_and_unavailable ... ok
+test backend_shell::root_colocated_tests::cleanup_client_log_match_is_narrow ... ok
+test backend_shell::root_colocated_tests::backend_runtime_dispatch_preserves_pure_facts_and_log_labels ... ok
+test backend_shell::root_colocated_tests::cleanup_path_dry_run_preserves_existing_files ... ok
+test backend_shell::root_colocated_tests::missing_valence_checkout_has_actionable_diagnostic ... ok
+test client_driver::root_colocated_tests::client_run_plan_core_is_deterministic_and_selects_dry_run_evidence ... ok
+test client_driver::root_colocated_tests::client_classification_core_rejects_missing_milestones_forbidden_markers_and_bad_exits ... ok
+test client_driver::root_colocated_tests::mcp_controlled_live_preflight_allows_bounded_local_rail ... ok
+test client_driver::root_colocated_tests::client_classification_core_rejects_server_projectile_and_restart_state_failures ... ok
+test client_driver::root_colocated_tests::mcp_controlled_live_receipt_fails_dirty_child_revision ... ok
+test client_driver::root_colocated_tests::mcp_controlled_live_preflight_rejects_unbounded_timeout ... ok
+test backend_shell::root_colocated_tests::backend_runtime_dry_run_lifecycle_uses_expected_managed_server_shape ... ok
+test client_driver::root_colocated_tests::client_classification_core_accepts_single_reconnect_multi_projectile_and_timeout_success ... ok
+test client_driver::root_colocated_tests::multi_client_scenario_tracks_client_and_server_evidence ... ok
+test client_driver::root_colocated_tests::projectile_damage_attribution_requires_pinned_valence_revision ... ok
+test client_driver::root_colocated_tests::mcp_controlled_live_receipt_uses_observed_control_and_frame_evidence ... ok
+test client_driver::root_colocated_tests::projectile_damage_attribution_scenario_tracks_client_and_server_evidence ... ok
+test client_driver::root_colocated_tests::projectile_damage_dry_run_uses_steel_arrow_policy ... ok
+test config_colocated_tests::cli_overrides_backend_client_dir_valence_repo_and_revision ... ok
+git version 2.54.0
+test config_colocated_tests::config_patch_source_order_and_field_sources_are_reviewable ... ok
+test config_colocated_tests::client_checkout_must_point_at_manifest_root ... ok
+test config_colocated_tests::defaults_to_valence_protocol_and_port ... ok
+test client_driver::root_colocated_tests::projectile_travel_collision_fails_closed_for_bad_evidence ... ok
+test client_driver::root_colocated_tests::projectile_travel_collision_synthetic_row_tracks_client_and_server_evidence ... ok
+test config_colocated_tests::invalid_backend_is_rejected ... ok
+test config_colocated_tests::failure_bundle_path_parses_from_env_and_cli_override ... ok
+test config_colocated_tests::env_overrides_are_parsed_without_global_environment_mutation ... ok
+test backend_shell::root_colocated_tests::valence_source_dir_uses_canonical_worktrees_and_rejects_transition_shapes ... ok
+test config_colocated_tests::invalid_config_inputs_fail_closed_before_execution ... ok
+test config_colocated_tests::nickel_exported_json_config_sets_defaults_and_allows_env_cli_precedence ... ok
+test config_colocated_tests::missing_client_checkout_has_actionable_diagnostic ... ok
+test config_colocated_tests::run_matrix_config_sets_receipt_dir_and_backend_defaults ... ok
+test config_colocated_tests::ordered_file_env_cli_precedence_preserves_runner_behavior ... ok
+test config_colocated_tests::run_matrix_rejects_single_receipt_path ... ok
+test config_colocated_tests::status_and_cleanup_modes_parse_without_server_probe_mode ... ok
+test config_colocated_tests::restricted_steel_config_rejects_forbidden_capabilities ... ok
+test evidence_bundle::tests::failure_bundle_validator_accepts_valid_reviewable_artifacts ... ok
+test evidence_bundle::root_colocated_tests::failure_bundle_validator_rejects_negative_fixtures ... ok
+test config_colocated_tests::valid_client_checkout_preflight_passes ... ok
+test client_driver::root_colocated_tests::projectile_travel_collision_receipt_preserves_non_claims ... ok
+test evidence_core::root_colocated_tests::blue_flag_score_scenario_tracks_mirrored_team_evidence ... ok
+test evidence_core::root_colocated_tests::biome_dimension_join_state_validator_rejects_weak_evidence ... ok
+test evidence_core::root_colocated_tests::ctf_rule_typed_event_fixtures_fail_closed_on_wrong_actor ... ok
+test evidence_core::root_colocated_tests::combat_damage_scenario_tracks_client_and_server_evidence ... ok
+test config_colocated_tests::restricted_steel_config_sets_runtime_defaults_and_allows_env_cli_precedence ... ok
+test evidence_core::root_colocated_tests::ctf_invalid_return_drop_tracks_client_server_and_envelope ... ok
+test evidence_core::root_colocated_tests::ctf_invalid_pickup_ownership_tracks_client_server_and_envelope ... ok
+test env_patch_baseline_colocated_tests::env_patch_outputs_match_captured_representative_scenario_families ... ok
+test env_patch::tests::env_patch_rejects_set_remove_conflicts ... ok
+test env_patch::tests::env_patch_rejects_malformed_keys ... ok
+test entrypoint_boundary::tests::current_entrypoint_is_thin_and_delegates_to_runner_library ... ok
+test evidence_bundle::tests::failure_bundle_validator_rejects_unreviewable_artifacts_and_overclaim_gaps ... ok
+test env_patch_baseline_colocated_tests::env_patch_negative_paths_fail_closed_for_sessions_and_backends ... ok
+test env_patch::tests::env_patch_composes_deterministically_and_keeps_sources ... ok
+test env_patch::tests::env_patch_rejects_conflicting_keys ... ok
+test evidence_core::root_colocated_tests::biome_dimension_join_state_validator_accepts_matching_fixture ... ok
+test evidence_core::root_colocated_tests::armor_loadout_enchantment_status_matrix_tracks_isolated_row_evidence ... ok
+test evidence_core::root_colocated_tests::ctf_invalid_opponent_base_return_drop_tracks_client_server_and_envelope ... ok
+test evidence_core::root_colocated_tests::ctf_score_limit_win_condition_tracks_client_server_and_forbidden_guards ... ok
+test evidence_core::root_colocated_tests::equipment_update_scenario_tracks_current_client_equipment_marker ... ok
+test evidence_core::root_colocated_tests::enriched_triage_core_bounds_and_redacts_context ... ok
+test evidence_core::root_colocated_tests::ctf_simultaneous_race_tracks_one_accept_one_reject ... ok
+test evidence_core::root_colocated_tests::evidence_matchers_cover_supported_positive_cases ... ok
+test evidence_core::root_colocated_tests::evidence_matchers_fail_closed_for_missing_case_and_dynamic_context ... ok
+test evidence_core::root_colocated_tests::flag_score_repeat_scenario_tracks_missing_and_forbidden_evidence ... ok
+test evidence_core::root_colocated_tests::equipment_slot_item_matrix_expansion_tracks_isolated_row_evidence ... ok
+test evidence_core::root_colocated_tests::ctf_spawn_team_balance_reset_tracks_client_server_and_guards ... ok
+test evidence_core::root_colocated_tests::inventory_drag_transactions_tracks_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::inventory_interaction_scenario_tracks_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::inventory_stack_split_merge_tracks_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::survival_block_entity_persistence_scenario_tracks_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::survival_break_place_pickup_scenario_tracks_client_and_server_evidence ... ok
+test config_colocated_tests::scenario_cli_and_env_parse ... ok
+test evidence_core::root_colocated_tests::restart_persistence_typed_event_oracle_accepts_selected_rows ... ok
+test evidence_core::root_colocated_tests::restart_persistence_typed_event_oracle_fails_closed ... ok
+test evidence_core::root_colocated_tests::survival_chest_persistence_scenario_tracks_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::survival_crafting_table_scenario_tracks_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::survival_crash_recovery_scenario_tracks_derived_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::survival_breadth_typed_event_fixtures_fail_closed ... ok
+test evidence_core::root_colocated_tests::survival_furnace_persistence_scenario_tracks_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::survival_hunger_food_scenario_tracks_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::survival_hunger_health_cycle_scenario_tracks_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::survival_furnace_smelting_breadth_scenario_tracks_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::survival_mob_drop_scenario_tracks_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::survival_redstone_toggle_scenario_tracks_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::survival_world_persistence_scenario_tracks_client_and_server_evidence ... ok
+test evidence_core::root_colocated_tests::typed_event_graph_checks_required_forbidden_and_ordered_events ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_biome_dimension_join_state_graph ... ok
+test entrypoint_boundary::tests::entrypoint_boundary_rejects_policy_logic_and_side_effects ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_migrated_inventory_drag_graph ... ok
+test evidence_bundle::root_colocated_tests::failure_bundle_validator_accepts_complete_fail_only_bundle ... ok
+test env_patch_baseline_colocated_tests::env_patch_shell_applies_command_and_paper_envs ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_migrated_inventory_graph ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_migrated_survival_break_place_graph ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_migrated_survival_crafting_recipe_breadth_graph ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_migrated_mcp_controlled_smoke_graph ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_migrated_survival_crafting_table_graph ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_migrated_survival_chest_persistence_graph ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_migrated_survival_hunger_food_graph ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_migrated_survival_furnace_persistence_graph ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_migrated_survival_hunger_health_cycle_graph ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_migrated_survival_redstone_toggle_graph ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_migrated_survival_furnace_smelting_breadth_graph ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_migrated_survival_mob_drop_graph ... ok
+test evidence_core::root_colocated_tests::typed_event_parser_accepts_versioned_event_lines ... ok
+test evidence_core::root_colocated_tests::typed_event_pass_fail_gate_includes_only_migrated_rows ... ok
+test evidence_receipts::root_colocated_tests::latency_jitter_reconnect_count_is_explicit ... ok
+test evidence_receipts::root_colocated_tests::latency_jitter_receipt_disabled_path_stays_non_claim ... ok
+test evidence_core::root_colocated_tests::typed_events_from_receipt_evidence_include_client_and_server_sources ... ok
+test evidence_receipts::root_colocated_tests::latency_jitter_receipt_renders_bounded_wan_telemetry_fields ... ok
+test evidence_receipts::root_colocated_tests::load_network_safety_envelope_fails_closed_for_unsafe_inputs ... ok
+test evidence_receipts::root_colocated_tests::negative_live_rail_checker_rejects_missing_expected_outcome ... ok
+test evidence_receipts::root_colocated_tests::negative_live_rail_checker_rejects_missing_telemetry ... ok
+test evidence_receipts::root_colocated_tests::negative_live_rail_checker_rejects_unbounded_public_unauthenticated_inputs ... ok
+test evidence_receipts::root_colocated_tests::public_server_authorized_safety_live_mode_fails_closed ... ok
+test evidence_receipts::root_colocated_tests::public_server_authorized_safety_disabled_path_stays_non_claim ... ok
+test evidence_receipts::root_colocated_tests::negative_live_rail_preflight_rejects_public_unowned_targets ... ok
+test evidence_receipts::tests::load_network_safety_core_accepts_bounded_local_inputs ... ok
+test evidence_receipts::tests::negative_live_rail_core_rejects_public_unauthorized_inputs ... ok
+test evidence_receipts::root_colocated_tests::public_server_authorized_safety_receipt_renders_fixture_envelope ... ok
+test import_boundary::import_boundary_accepts_explicit_production_and_scoped_test_imports ... ok
+test import_boundary::import_boundary_rejects_production_root_wildcard_imports ... ok
+test json_support::tests::json_field_uniqueness_rejects_duplicate_keys ... ok
+test json_support::tests::json_parser_rejects_malformed_escaping ... ok
+test json_support::tests::json_string_array_rejects_missing_delimiters ... ok
+test json_support::tests::json_string_round_trips_escaping_and_control_characters ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_remaining_survival_breadth_graphs ... ok
+test layout::tests::component_selection_rejects_each_transition_root ... ok
+test planning::root_colocated_tests::scenario_router_negative_fixtures_fail_closed ... ok
+test planning::root_colocated_tests::scenario_router_parses_typed_request_before_planning ... ok
+test planning::root_colocated_tests::scenario_router_alias_plan_matches_legacy_shape ... ok
+test planning::root_colocated_tests::planning_core_negative_fixtures_fail_before_side_effects ... ok
+test receipt_validation::root_colocated_tests::compares_protocol_763_matrix_receipts_when_configured ... ok
+test receipt_validation::root_colocated_tests::compares_reconnect_sequence_receipts_with_multi_client_classification ... ok
+test receipt_validation::root_colocated_tests::compares_paper_and_valence_receipts ... ok
+test evidence_core::root_colocated_tests::typed_event_graph_accepts_representative_scenario_fixtures ... ok
+test receipt_validation::tests::receipt_summary_rejects_broad_overclaims ... ok
+test receipt_validation::root_colocated_tests::rejects_receipt_protocol_mismatch ... ok
+test receipt_validation::tests::receipt_summary_rejects_missing_required_fields ... ok
+test receipt_validation::root_colocated_tests::rejects_receipts_that_do_not_match_configured_protocol ... ok
+test receipt_validation::tests::receipt_pair_validation_rejects_wrong_backend_port ... ok
+test receipt_validation::tests::receipt_summary_rejects_wrong_typed_fields ... ok
+test receipt_validation::tests::receipt_pair_validation_accepts_matching_paper_and_valence_receipts ... ok
+test planning::root_colocated_tests::planning_core_positive_fixtures_cover_representative_modes ... ok
+test evidence_core::root_colocated_tests::typed_event_oracle_validates_ctf_rule_family_graphs ... ok
+test layout::tests::repository_layout_allows_missing_defaults_to_role_paths ... ok
+test receipt_validation::root_colocated_tests::receipt_summary_mutations_fail_closed ... ok
+test receipt_validation::tests::receipt_summary_rejects_malformed_evidence ... ok
+test receipt_validation::tests::receipt_summary_validation_accepts_protocol_763_pair ... ok
+test receipts::root_colocated_tests::armor_loadout_enchantment_status_matrix_receipt_keeps_nonclaims ... ok
+test receipts::root_colocated_tests::equipment_slot_item_matrix_expansion_receipt_keeps_nonclaims ... ok
+test receipts::root_colocated_tests::failure_bundle_model_rendering_path_remains_diagnostic_only ... ok
+test layout::tests::repository_layout_rejects_transition_paths_with_migration_diagnostic ... ok
+test receipts::root_colocated_tests::typed_event_receipt_artifact_records_reviewable_timeline_hash ... ok
+test receipts::root_colocated_tests::compat_bot_probe_scenario_is_bounded_and_receipted ... ok
+test layout::tests::valence_source_dir_rejects_transition_worktree_shapes ... ok
+test layout::tests::valence_source_dir_detects_direct_and_role_worktree_shapes ... ok
+test receipts::root_colocated_tests::biome_dimension_join_state_receipt_records_typed_correlation ... ok
+test runner_integration_tests::runner_result_preserves_original_failure_when_follow_up_fails ... ok
+test receipts::root_colocated_tests::failed_preflight_receipt_triages_before_client_evidence ... ok
+test layout::tests::repository_layout_prefers_role_paths_when_present ... ok
+test runtime_config::tests::decodes_supported_steel_export_types ... ok
+test runtime_config::tests::arrow_damage_policy_is_bounded_and_reports_clamping ... ok
+test receipts::root_colocated_tests::typed_event_oracle_receipt_records_migration_fallback ... ok
+test receipts::root_colocated_tests::smoke_receipt_records_failures_without_success_claims ... ok
+test receipts::root_colocated_tests::scenario_receipt_records_actionable_failure_triage ... ok
+test runtime_config::tests::diff_and_apply_plan_separate_hot_next_run_and_restart_only ... ok
+test layout::tests::valence_source_dir_fails_for_ambiguous_or_nested_component_roots ... ok
+test runtime_config::tests::redaction_hides_secret_like_values ... ok
+test runtime_config::tests::normalizes_valid_steel_exports ... ok
+test runtime_config::tests::fixed_protocol_fact_changes_are_rejected ... ok
+test runtime_config::tests::rejects_missing_or_wrong_type_exports ... ok
+test runtime_config::tests::rejects_malformed_literal_before_typed_decoding ... ok
+test receipts::root_colocated_tests::enriched_triage_receipt_preserves_existing_fields_and_adds_context ... ok
+test receipts::root_colocated_tests::negative_live_rail_envelope_records_expected_outcome_and_non_claims ... ok
+test receipts::root_colocated_tests::status_packet_proxy_and_gameplay_receipt_blocks_are_recorded ... ok
+test runtime_config::tests::rejects_range_and_sandbox_violations ... ok
+test receipts::root_colocated_tests::scenario_receipt_model_negative_inputs_fail_closed ... ok
+test runtime_config::tests::evaluates_restricted_steel_module ... ok
+test runtime_config::tests::validated_value_helper_returns_values_and_diagnostics ... ok
+test runtime_config::tests::reload_request_applies_hot_changes_atomically ... ok
+test runner_integration_tests::failure_bundle_shell_writes_reviewable_bundle_for_failed_result ... ok
+test runtime_config::tests::required_export_reports_missing_and_wrong_type_diagnostics ... ok
+test runtime_config::tests::reload_request_rolls_back_on_apply_failure_or_restart_only_change ... ok
+test scenario_core::root_colocated_tests::scenario_behavior_metadata_fails_closed_for_malformed_rows ... ok
+test scenario_core::root_colocated_tests::scenario_family_classification_names_focused_owners ... ok
+test scenario_core::root_colocated_tests::scenario_behavior_metadata_validates_representative_fixtures ... ok
+test scenario_core::scenario_families::tests::targeted_packet_family_rejects_empty_capability_rows ... ok
+test receipts::root_colocated_tests::dry_run_receipt_records_deterministic_child_revision_placeholders ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_creative_inventory_live_contracts ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_resource_pack_status_local_contracts ... ok
+test layout::tests::repository_layout_fails_closed_for_missing_ambiguous_and_nested_git_roots ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_live_capabilities ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_sign_editor_live_contracts ... ok
+test scenario_core::root_colocated_tests::generated_scenario_manifest_matches_runner_parser ... ok
+test scenario_core::root_colocated_tests::supported_scenario_usage_lists_all_supported_scenarios ... ok
+test scenario_route::tests::scenario_route_output_path_accepts_reviewable_relative_paths ... ok
+test receipts::root_colocated_tests::smoke_receipt_records_cairn_contract_and_octet_surface ... ok
+test scenario_route::tests::scenario_route_output_path_rejects_parent_traversal ... ok
+test wire::root_colocated_tests::protocol_invalid_inputs_fail_closed ... ok
+test runtime_config::tests::rejects_steel_module_unknown_export_and_forbidden_token ... ok
+test wire::root_colocated_tests::protocol_status_handshake_fixture_bytes_are_stable ... ok
+test receipts::root_colocated_tests::mcp_controlled_dry_run_receipt_records_control_contract ... ok
+test wire::root_colocated_tests::protocol_string_and_packet_framing_match_expected_bytes ... ok
+test wire::root_colocated_tests::protocol_varint_round_trips_in_memory ... ok
+test scenario_core::root_colocated_tests::static_scenario_specs_fail_closed_for_invalid_definitions ... ok
+test scenario_core::scenario_families::tests::targeted_packet_family_accepts_nonempty_capability_rows ... ok
+test scenario_core::root_colocated_tests::static_scenario_specs_validate_all_supported_behavior ... ok
+test receipts::root_colocated_tests::scenario_receipt_model_captures_structural_inputs_before_rendering ... ok
+test scenario_core::tests::scenario_core_rejects_invalid_static_specs ... ok
+test scenario_core::tests::scenario_core_validates_static_specs_and_lookup_parity ... ok
+test evidence_core::root_colocated_tests::scenario_oracle_property_forbidden_markers_fail ... ok
+test evidence_core::root_colocated_tests::scenario_oracle_property_all_required_server_milestones_matter ... ok
+test receipts::root_colocated_tests::structured_receipt_schema_parses_representative_shapes ... ok
+test receipts::root_colocated_tests::structured_receipt_schema_negative_fixtures_fail_closed ... ok
+test receipts::root_colocated_tests::scenario_receipt_model_positive_paths_cover_required_shapes ... ok
+test evidence_core::root_colocated_tests::scenario_oracle_property_all_required_client_milestones_matter ... ok
+test receipts::root_colocated_tests::paired_reference_dry_run_receipts_record_shape_nonclaims ... ok
+test receipts::root_colocated_tests::negative_live_rail_receipt_records_observed_containment_outcome ... ok
+test backend_shell::root_colocated_tests::git_revision_evidence_scopes_to_core_source_directory ... ok
+test import_boundary::current_production_runner_modules_use_explicit_imports ... ok
+
+test result: ok. 221 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_runner-7a3848342990d454)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests mc_compat_runner
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+cargo_test_exit_status=0
+exit_status=0

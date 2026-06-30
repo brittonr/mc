@@ -13,6 +13,6 @@ b2ddc46825c789ed900c1d285ecdba2f8d8a2986a1c45ca59f5125a7ff0a3433  docs/evidence/
 182d8e234597e59cac19279d2510f432845f013379643f0813fd8fa0ce794f38  docs/evidence/run-logs/2026-06-29/split-valence-command-example.archive-dry-run.run.log
 91d81dbd91087e3dd049eaadf944490f4041d7d1bd2c51b9e58c924e15217c7d  docs/evidence/run-logs/2026-06-29/split-valence-command-example.archive-execute.run.log
 3cf07a69d4a848955e8e17652e57123f49a157e375d97604d500d1b4e48a99e3  docs/evidence/run-logs/2026-06-29/split-valence-command-example.post-archive-validate.run.log
-9f211aff2075a3057fc3057976a2389ead38bea37c201d3faeede0186b64be0d  cairn/specs/valence-bevy-ecs/spec.md
+76202225a9b92ce10f062bfe83b9c1fa07928b36e2c5e095e94b48a2ad29b2fc  cairn/specs/valence-bevy-ecs/spec.md
 d77c5376ac89b81bf8eb406907686076bf5bc31593f0cfdc2f07915b7eef0e1b  cairn/archive/2026-06-29-split-valence-command-example/tasks.md
 8aa6b56ca96177672ef40ec5c0bdb3f891fb6d167881931724df8d7cd097255e  docs/evidence/run-logs/2026-06-29/split-valence-command-example.evidence-manifest-check-final.run.log

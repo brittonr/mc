@@ -10121,3 +10121,311 @@ r[mc_compatibility.checker_crate_migration.validation.logs]
 - GIVEN a checker migration wave is complete
 - WHEN the change is closed
 - THEN reviewable logs show baseline and post-change checker validation, positive and negative regression coverage, wrapper parity, affected flake checks, Cairn gates, and Cairn validation passing.
+
+### Requirement: Runner shell modularization inventory
+
+r[mc_compatibility.runner_shell_modularization.inventory] Runner shell modularization work MUST inventory current `compat/runner/src/lib.rs` responsibilities, public CLI and dry-run surfaces, receipt schemas, failure-bundle behavior, and baseline validation before extraction.
+
+#### Scenario: Runner shell ownership is reviewable
+
+r[mc_compatibility.runner_shell_modularization.inventory.reviewable]
+- GIVEN runner shell modularization is selected
+- WHEN reviewers inspect the inventory
+- THEN CLI parsing, scenario routing, configuration, orchestration, env patching, receipt writing, failure-bundle writing, backend lifecycle, and public wrapper dependencies are named
+- AND baseline validation commands are recorded before core changes.
+
+### Requirement: Runner shell module boundaries
+
+r[mc_compatibility.runner_shell_modularization.module_boundaries] The runner SHOULD keep `lib.rs` as a thin public façade and expose focused modules for CLI parsing, scenario route compatibility, orchestration, environment patch planning, receipt artifact writing, and failure-bundle artifact writing.
+
+#### Scenario: Runner responsibilities have focused owners
+
+r[mc_compatibility.runner_shell_modularization.module_boundaries.focused]
+- GIVEN a runner responsibility is reviewed
+- WHEN maintainers inspect the runner module tree
+- THEN the responsibility is owned by the focused module for its domain
+- AND unrelated CLI, environment, receipt, orchestration, and artifact-writing concerns are not reintroduced into one catch-all shell file.
+
+### Requirement: Runner core and shell boundary
+
+r[mc_compatibility.runner_shell_modularization.core_shell] Deterministic runner decisions SHOULD be pure over explicit inputs, while filesystem reads/writes, process execution, Docker lifecycle, sockets, clocks, environment reads, stdout/stderr, and exit-code handling remain in thin shells.
+
+#### Scenario: Runner decisions are testable without side effects
+
+r[mc_compatibility.runner_shell_modularization.core_shell.testable]
+- GIVEN explicit CLI arguments, config patches, scenario metadata, and receipt inputs
+- WHEN the extracted runner core computes parser, plan, env, receipt, or failure-bundle decisions
+- THEN tests can verify the result without touching files, processes, sockets, Docker, clocks, or ambient environment
+- AND shells own the side effects.
+
+### Requirement: Runner shell parity
+
+r[mc_compatibility.runner_shell_modularization.parity] Runner shell modularization MUST preserve CLI flags and aliases, flake app behavior, exit-code behavior, receipt schemas, dry-run text, failure-bundle shape, and non-claim boundaries.
+
+#### Scenario: Existing runner command shape remains stable
+
+r[mc_compatibility.runner_shell_modularization.parity.stable]
+- GIVEN a supported pre-refactor runner command or wrapper dry-run
+- WHEN the modularized runner processes the same input
+- THEN the public command shape, dry-run output, receipt schema, failure-bundle fields, and non-claim text remain equivalent
+- AND no new live compatibility or semantic parity claim is introduced.
+
+### Requirement: Runner shell modularization tests
+
+r[mc_compatibility.runner_shell_modularization.tests] The change MUST include positive tests for supported parser, planner, environment, receipt, and artifact paths plus negative tests for unknown flags, missing values, unsafe paths, invalid config, stale outputs, and failed preflights.
+
+#### Scenario: Supported runner paths pass
+
+r[mc_compatibility.runner_shell_modularization.tests.positive]
+- GIVEN representative supported runner inputs
+- WHEN extracted modules process them
+- THEN tests prove expected config, plan, env patch, receipt, and artifact decisions are produced.
+
+#### Scenario: Invalid runner paths fail clearly
+
+r[mc_compatibility.runner_shell_modularization.tests.negative]
+- GIVEN invalid flags, missing values, unsafe output paths, malformed config, stale generated output, or failed preflight inputs
+- WHEN extracted modules process them
+- THEN tests prove diagnostics are specific and the runner fails closed without writing misleading evidence.
+
+### Requirement: Runner shell modularization validation
+
+r[mc_compatibility.runner_shell_modularization.validation] The change MUST record runner tests, generated-surface checks when touched, affected mc-compat dry-runs, Cairn proposal/design/tasks gates, Cairn validation, and task-evidence checks before archive.
+
+#### Scenario: Runner shell closeout is reviewable
+
+r[mc_compatibility.runner_shell_modularization.validation.logs]
+- GIVEN runner shell modularization is complete
+- WHEN the change is closed
+- THEN reviewable logs show baseline and post-change runner tests, affected dry-runs, positive and negative regression coverage, Cairn gates, and Cairn validation passing.
+
+### Requirement: Stevenarella server modularization inventory
+
+r[mc_compatibility.stevenarella_server_modularization.inventory] Stevenarella server modularization work MUST inventory the current `server/mod.rs` responsibilities, packet handler domains, compat probe state groups, and baseline tests before extraction.
+
+#### Scenario: Server runtime ownership is reviewable
+
+r[mc_compatibility.stevenarella_server_modularization.inventory.reviewable]
+- GIVEN Stevenarella server runtime modularization is selected
+- WHEN reviewers inspect the inventory
+- THEN login/session, world/chunk, entity, inventory/window, block-entity/sign, chat/plugin-message, dispatch, and compat-probe responsibilities are named
+- AND baseline validation commands are recorded before core changes.
+
+### Requirement: Stevenarella server module boundaries
+
+r[mc_compatibility.stevenarella_server_modularization.module_boundaries] Stevenarella server packet handling SHOULD expose cohesive modules for login/session, chunks/world, entities, inventory/windows, block entities/signs, chat/plugin messages, and dispatch helpers.
+
+#### Scenario: Packet handler domains have focused owners
+
+r[mc_compatibility.stevenarella_server_modularization.module_boundaries.focused]
+- GIVEN a packet handler is reviewed
+- WHEN maintainers inspect the server module tree
+- THEN the handler belongs to the focused module for its packet/state domain
+- AND unrelated packet domains are not reintroduced into one catch-all runtime file.
+
+### Requirement: Stevenarella compat probe state modules
+
+r[mc_compatibility.stevenarella_server_modularization.probe_state] Stevenarella mc-compat probe state SHOULD be grouped into cohesive state modules with pure transition helpers for CTF, inventory, survival, combat/projectile, and sign/dimension behavior.
+
+#### Scenario: Probe decisions are testable without client I/O
+
+r[mc_compatibility.stevenarella_server_modularization.probe_state.testable]
+- GIVEN explicit probe input state and an observed packet or tick
+- WHEN a probe transition helper evaluates the next action
+- THEN tests can verify the decision without network sockets, renderer state, ECS mutation, packet writes, or filesystem access
+- AND the `Server` shell remains responsible for side effects.
+
+### Requirement: Stevenarella server parity
+
+r[mc_compatibility.stevenarella_server_modularization.parity] Stevenarella server modularization MUST preserve packet dispatch behavior, compat milestone/event vocabulary, environment variable contracts, receipt non-claims, and default non-instrumented client behavior.
+
+#### Scenario: Existing compatibility rails observe stable output
+
+r[mc_compatibility.stevenarella_server_modularization.parity.stable]
+- GIVEN a supported pre-refactor packet, scenario probe, or default client path
+- WHEN the modularized server runtime processes the same input
+- THEN packet state updates, probe milestones, typed event IDs, and default instrumentation absence remain equivalent
+- AND no new gameplay, protocol, or public-server claim is introduced.
+
+### Requirement: Stevenarella server modularization tests
+
+r[mc_compatibility.stevenarella_server_modularization.tests] The change MUST include positive tests for representative extracted handlers/probe transitions and negative tests for malformed packet/probe inputs, invalid state transitions, missing windows/entities, and disabled probes.
+
+#### Scenario: Valid extracted paths pass
+
+r[mc_compatibility.stevenarella_server_modularization.tests.positive]
+- GIVEN valid representative server packet or probe inputs
+- WHEN extracted modules process them
+- THEN tests prove the expected state transition, packet action, or milestone decision is produced.
+
+#### Scenario: Invalid extracted paths fail closed
+
+r[mc_compatibility.stevenarella_server_modularization.tests.negative]
+- GIVEN malformed packet data, missing entity/window state, disabled probes, or invalid probe transition inputs
+- WHEN extracted modules process them
+- THEN tests prove the inputs are ignored, rejected, or diagnosed without panic or stale state promotion.
+
+### Requirement: Stevenarella server modularization validation
+
+r[mc_compatibility.stevenarella_server_modularization.validation] The change MUST record focused Stevenarella tests, affected mc-compat dry-runs, Cairn proposal/design/tasks gates, Cairn validation, and task-evidence checks before archive.
+
+#### Scenario: Server modularization closeout is reviewable
+
+r[mc_compatibility.stevenarella_server_modularization.validation.logs]
+- GIVEN Stevenarella server modularization is complete
+- WHEN the change is closed
+- THEN reviewable logs show baseline and post-change tests, affected dry-runs, positive and negative regression coverage, Cairn gates, and Cairn validation passing.
+
+### Requirement: Stevenarella hotspot module inventory
+
+r[mc_compatibility.stevenarella_hotspot_modules.inventory] Stevenarella hotspot module reduction work MUST inventory selected `world`, `model`, `ui`, `ecs`, and `control` responsibilities, public APIs, internal consumers, and baseline tests before extraction.
+
+#### Scenario: Hotspot ownership is reviewable
+
+r[mc_compatibility.stevenarella_hotspot_modules.inventory.reviewable]
+- GIVEN a Stevenarella hotspot migration wave is selected
+- WHEN reviewers inspect the inventory
+- THEN the selected modules, public items, responsibility groups, internal consumers, and baseline tests are named
+- AND the first migration wave is scoped before core changes.
+
+### Requirement: Stevenarella façade modules
+
+r[mc_compatibility.stevenarella_hotspot_modules.facades] Large Stevenarella `mod.rs` or root modules SHOULD become thin façades over focused child modules while preserving public names where practical or documenting intentional local call-site updates.
+
+#### Scenario: Hotspot modules expose focused children
+
+r[mc_compatibility.stevenarella_hotspot_modules.facades.focused]
+- GIVEN a selected hotspot module is reviewed
+- WHEN maintainers inspect the module tree
+- THEN the root module primarily declares or re-exports focused child modules
+- AND unrelated data, rendering, ECS, parser, UI, and shell concerns are not reintroduced into one catch-all module.
+
+### Requirement: Stevenarella hotspot core and shell boundary
+
+r[mc_compatibility.stevenarella_hotspot_modules.core_shell] Deterministic parsing, normalization, layout, ECS planning, and state-transition logic SHOULD be pure over explicit inputs, while renderer, GL, filesystem, network, input, and global state effects remain in shells.
+
+#### Scenario: Extracted hotspot logic is testable without the client runtime
+
+r[mc_compatibility.stevenarella_hotspot_modules.core_shell.testable]
+- GIVEN explicit hotspot module inputs such as model data, UI state, world state, ECS query facts, or control actions
+- WHEN an extracted pure helper computes a decision
+- THEN tests can verify the result without renderer state, GL context, filesystem access, network access, global console state, or event-loop startup
+- AND shells own those side effects.
+
+### Requirement: Stevenarella hotspot parity
+
+r[mc_compatibility.stevenarella_hotspot_modules.parity] Hotspot module reduction MUST preserve default client behavior, compat instrumentation boundaries, module API compatibility where practical, protocol behavior, rendering behavior for touched paths, and non-claim boundaries.
+
+#### Scenario: Existing client paths remain stable
+
+r[mc_compatibility.stevenarella_hotspot_modules.parity.stable]
+- GIVEN a supported pre-refactor client code path in a touched hotspot module
+- WHEN the modularized code processes the same input
+- THEN public API behavior, client-visible state, rendering-visible output for touched paths, and instrumentation boundaries remain compatible
+- AND no new protocol, rendering correctness, compatibility, or production-readiness claim is introduced.
+
+### Requirement: Stevenarella hotspot module tests
+
+r[mc_compatibility.stevenarella_hotspot_modules.tests] The change MUST include positive tests for extracted pure logic and negative tests for invalid inputs, missing resources, empty collections, malformed state, unsupported layouts, and API drift where applicable.
+
+#### Scenario: Valid hotspot inputs pass
+
+r[mc_compatibility.stevenarella_hotspot_modules.tests.positive]
+- GIVEN valid representative inputs for extracted hotspot helpers
+- WHEN the helpers process them
+- THEN tests prove expected parsing, layout, ECS planning, state transition, or control decisions are produced.
+
+#### Scenario: Invalid hotspot inputs fail safely
+
+r[mc_compatibility.stevenarella_hotspot_modules.tests.negative]
+- GIVEN invalid inputs, missing resources, empty collections, malformed state, unsupported layouts, or API drift fixtures
+- WHEN extracted hotspot helpers or façade tests process them
+- THEN tests prove the code rejects, defaults, or diagnoses the input without panic or hidden state corruption.
+
+### Requirement: Stevenarella hotspot module validation
+
+r[mc_compatibility.stevenarella_hotspot_modules.validation] The change MUST record focused Stevenarella tests, affected mc-compat dry-runs if instrumentation behavior changes, Cairn proposal/design/tasks gates, Cairn validation, and task-evidence checks before archive.
+
+#### Scenario: Hotspot modularization closeout is reviewable
+
+r[mc_compatibility.stevenarella_hotspot_modules.validation.logs]
+- GIVEN a Stevenarella hotspot migration wave is complete
+- WHEN the change is closed
+- THEN reviewable logs show baseline and post-change focused tests, affected dry-runs when applicable, positive and negative regression coverage, Cairn gates, and Cairn validation passing.
+
+### Requirement: Scenario core family inventory
+
+r[mc_compatibility.scenario_core_family_modules.inventory] Scenario core modularization work MUST inventory scenario families, manifest/generated ownership, live capability contracts, duplicated surfaces, and baseline validation before extraction.
+
+#### Scenario: Scenario family ownership is reviewable
+
+r[mc_compatibility.scenario_core_family_modules.inventory.reviewable]
+- GIVEN scenario core modularization is selected
+- WHEN reviewers inspect the inventory
+- THEN CTF, inventory, survival, combat/projectile/equipment, negative, MCP, and targeted-packet live capability responsibilities are named
+- AND generated and hand-authored scenario surfaces are identified with baseline checks.
+
+### Requirement: Scenario family module boundaries
+
+r[mc_compatibility.scenario_core_family_modules.family_boundaries] Scenario behavior SHOULD be split into focused family modules for CTF, inventory, survival, combat/projectile/equipment, negative rails, MCP, and targeted-packet live capability contracts behind a stable central façade.
+
+#### Scenario: Scenario behavior has a focused owner
+
+r[mc_compatibility.scenario_core_family_modules.family_boundaries.focused]
+- GIVEN a scenario behavior or contract is reviewed
+- WHEN maintainers inspect the scenario module tree
+- THEN the behavior belongs to its focused family module
+- AND unrelated scenario families are not reintroduced into one catch-all scenario core file.
+
+### Requirement: Scenario manifest parity
+
+r[mc_compatibility.scenario_core_family_modules.manifest_parity] Scenario family extraction MUST preserve parity with `compat/config/scenario-manifest.ncl` and generated surfaces for scenario names, aliases, milestones, forbidden patterns, run strategies, receipt expectations, wrapper metadata, and live capability rows.
+
+#### Scenario: Generated and hand-authored scenario data agree
+
+r[mc_compatibility.scenario_core_family_modules.manifest_parity.fresh]
+- GIVEN scenario metadata is split across family modules and generated surfaces
+- WHEN generated-surface and scenario validation checks run
+- THEN every maintained scenario has matching names, aliases, milestones, forbidden patterns, receipt expectations, and wrapper metadata
+- AND stale or missing generated rows fail clearly.
+
+### Requirement: Scenario live capability contracts
+
+r[mc_compatibility.scenario_core_family_modules.live_capabilities] Targeted packet and live capability contracts MUST remain fail-closed with explicit required signals, required non-claims, blocker reasons when blocked, backend/client paths, and validation helpers.
+
+#### Scenario: Live capability rows do not overclaim
+
+r[mc_compatibility.scenario_core_family_modules.live_capabilities.non_overclaiming]
+- GIVEN a targeted packet or live capability row is reviewed
+- WHEN static validation evaluates the row
+- THEN required signals, non-claims, backend/client paths, and blocker reasons are present where required
+- AND broad compatibility, semantic equivalence, public-server safety, and production-readiness claims remain absent.
+
+### Requirement: Scenario family module tests
+
+r[mc_compatibility.scenario_core_family_modules.tests] The change MUST include positive tests for representative family lookup and behavior plus negative tests for duplicate aliases, missing manifest rows, invalid live capability rows, unsupported env intents, and stale generated surfaces.
+
+#### Scenario: Valid family metadata passes
+
+r[mc_compatibility.scenario_core_family_modules.tests.positive]
+- GIVEN valid representative scenario family metadata
+- WHEN lookup, behavior, manifest parity, and live capability checks run
+- THEN tests prove the expected scenario API and validation output are produced.
+
+#### Scenario: Invalid family metadata fails clearly
+
+r[mc_compatibility.scenario_core_family_modules.tests.negative]
+- GIVEN duplicate aliases, missing rows, unsupported env intents, invalid live capability contracts, or stale generated surfaces
+- WHEN scenario validation runs
+- THEN tests prove diagnostics name the invalid scenario surface and prevent stale metadata promotion.
+
+### Requirement: Scenario family module validation
+
+r[mc_compatibility.scenario_core_family_modules.validation] The change MUST record scenario tests, generated-surface checks, representative maintained dry-runs, Cairn proposal/design/tasks gates, Cairn validation, and task-evidence checks before archive.
+
+#### Scenario: Scenario family closeout is reviewable
+
+r[mc_compatibility.scenario_core_family_modules.validation.logs]
+- GIVEN scenario family modularization is complete
+- WHEN the change is closed
+- THEN reviewable logs show baseline and post-change scenario tests, generated-surface checks, representative dry-runs, positive and negative regression coverage, Cairn gates, and Cairn validation passing.

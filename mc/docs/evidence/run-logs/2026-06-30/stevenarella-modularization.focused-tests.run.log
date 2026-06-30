@@ -1,0 +1,665 @@
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test server:: -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unreachable pattern
+   --> src/server/login.rs:190:9
+    |
+190 |         (phase, event) => LoginDecision::Fail(LoginFailure {
+    |         ^^^^^^^^^^^^^^ no value can reach this
+    |
+note: multiple earlier patterns match some of the same values
+   --> src/server/login.rs:190:9
+    |
+162 |           (_, LoginEvent::SetCompression(compression)) => {
+    |           -------------------------------------------- matches some of the same values
+...
+165 |           (LoginPhase::Initial, LoginEvent::EncryptionRequest(request)) => {
+    |           ------------------------------------------------------------- matches some of the same values
+...
+168 |           (LoginPhase::Encrypted, LoginEvent::EncryptionRequest(request)) => {
+    |           --------------------------------------------------------------- matches some of the same values
+...
+174 | /         (LoginPhase::Initial, LoginEvent::Success(outcome))
+175 | |         | (LoginPhase::Encrypted, LoginEvent::Success(outcome)) => LoginDecision::Complete(outcome),
+    | |_______________________________________________________________- matches some of the same values
+...
+190 |           (phase, event) => LoginDecision::Fail(LoginFailure {
+    |           ^^^^^^^^^^^^^^ ...and 4 other patterns collectively make this unreachable
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `CameraViewFacts` is never constructed
+  --> src/render/camera.rs:34:19
+   |
+34 | pub(crate) struct CameraViewFacts {
+   |                   ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `camera_view_facts` is never used
+  --> src/render/camera.rs:65:15
+   |
+65 | pub(crate) fn camera_view_facts(camera: &Camera) -> CameraViewFacts {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `unavailable_capture_state` is never used
+  --> src/render/capture_readback.rs:30:15
+   |
+30 | pub(crate) fn unavailable_capture_state(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `ChunkRenderSummary` is never constructed
+  --> src/render/chunk_buffers.rs:49:19
+   |
+49 | pub(crate) struct ChunkRenderSummary {
+   |                   ^^^^^^^^^^^^^^^^^^
+
+warning: enum `ChunkRenderLayer` is never used
+  --> src/render/chunk_buffers.rs:55:17
+   |
+55 | pub(crate) enum ChunkRenderLayer {
+   |                 ^^^^^^^^^^^^^^^^
+
+warning: struct `ChunkDrawPlan` is never constructed
+  --> src/render/chunk_buffers.rs:61:19
+   |
+61 | pub(crate) struct ChunkDrawPlan {
+   |                   ^^^^^^^^^^^^^
+
+warning: function `plan_chunk_render_order` is never used
+  --> src/render/chunk_buffers.rs:66:15
+   |
+66 | pub(crate) fn plan_chunk_render_order(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `push_if_visible` is never used
+  --> src/render/chunk_buffers.rs:90:4
+   |
+90 | fn push_if_visible(ordered: &mut Vec<ChunkDrawPlan>, summary: ChunkRenderSummary, count: usize) {
+   |    ^^^^^^^^^^^^^^^
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: enum `TraversalPlanError` is never used
+  --> src/ui/container.rs:18:17
+   |
+18 | pub(crate) enum TraversalPlanError {
+   |                 ^^^^^^^^^^^^^^^^^^
+
+warning: function `draw_order` is never used
+  --> src/ui/container.rs:22:15
+   |
+22 | pub(crate) fn draw_order(draw_indices: &[isize]) -> Vec<usize> {
+   |               ^^^^^^^^^^
+
+warning: function `clicked_index` is never used
+  --> src/ui/container.rs:35:15
+   |
+35 | pub(crate) fn clicked_index(regions: &[Region], x: f64, y: f64) -> Option<usize> {
+   |               ^^^^^^^^^^^^^
+
+warning: function `checked_draw_order` is never used
+  --> src/ui/container.rs:39:15
+   |
+39 | pub(crate) fn checked_draw_order(
+   |               ^^^^^^^^^^^^^^^^^^
+
+warning: enum `LayoutBoundsError` is never used
+  --> src/ui/layout.rs:48:17
+   |
+48 | pub(crate) enum LayoutBoundsError {
+   |                 ^^^^^^^^^^^^^^^^^
+
+warning: associated function `checked` is never used
+  --> src/ui/layout.rs:71:19
+   |
+70 | impl Region {
+   | ----------- associated function in this implementation
+71 |     pub(crate) fn checked(x: f64, y: f64, w: f64, h: f64) -> Result<Self, LayoutBoundsError> {
+   |                   ^^^^^^^
+
+warning: function `validate_region_numbers` is never used
+  --> src/ui/layout.rs:88:15
+   |
+88 | pub(crate) fn validate_region_numbers(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Unsupported` is never constructed
+  --> src/ui/textbox.rs:34:5
+   |
+32 | pub(crate) enum ClipboardPath {
+   |                 ------------- variant in this enum
+33 |     Supported,
+34 |     Unsupported,
+   |     ^^^^^^^^^^^
+   |
+   = note: `ClipboardPath` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `clamp_cursor_position` is never used
+  --> src/ui/textbox.rs:59:15
+   |
+59 | pub(crate) fn clamp_cursor_position(input: &str, requested_position: usize) -> usize {
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:76:21
+    |
+ 76 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+226 | / define_elements! {
+227 | |     Image,
+228 | |     Batch,
+229 | |     Text,
+...   |
+232 | |     TextBox,
+233 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+ 76 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 22 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (lib test) generated 3 warnings (3 duplicates)
+warning: `stevenarella` (bin "stevenarella" test) generated 3 warnings (3 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.33s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 89 tests
+
+thread 'server::login::tests::unsupported_fml_network_version_preserves_panic' (589234) panicked at src/server/login.rs:90:14:
+unsupported FML network version: Some(3)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'server::login::tests::malformed_string_uuid_panics_when_shell_reads_protocol_uuid' (589233) panicked at src/server/login.rs:204:81:
+called `Result::unwrap()` on an `Err` value: UUIDParseError
+test server::chunks::tests::first_chunk_log_is_emitted_only_before_first_chunk ... ok
+test server::compat_probes::tests::movement_probe_excludes_stationary_combat ... ok
+test server::compat_probes::tests::detects_enabled_probe_family ... ok
+test server::inventory::tests::slot_validation_rejects_negative_or_out_of_range_slots ... ok
+test server::inventory::tests::ready_window_state_requires_positive_state_id ... ok
+test server::entities::tests::converts_protocol_velocity_to_blocks_per_tick ... ok
+test server::entities::tests::zero_velocity_is_not_observable_for_combat_probe_logs ... ok
+test server::dispatch::tests::rejects_packets_not_owned_by_play_session_dispatch ... ok
+test server::login::tests::login_disconnect_preserves_disconnect_reason ... ok
+test server::plugin_messages::tests::unknown_plugin_channel_fails_closed ... ok
+test server::plugin_messages::tests::classifies_supported_plugin_channels ... ok
+test server::probes::tests::combat_probe_decision_preserves_regular_schedule ... ok
+test server::probes::tests::combat_probe_decision_rejects_disabled_non_attacker_or_limit ... ok
+test server::probes::tests::flag_probe_repeat_target_accepts_positive_counts ... ok
+test server::probes::tests::ctf_score_limit_chat_requires_both_score_terms ... ok
+test server::login::tests::encrypted_login_accepts_plugin_request_for_shell_handling ... ok
+test server::login::tests::login_success_uuid_normalizes_offline_outcome ... ok
+test server::login::tests::compression_before_success_returns_apply_then_complete ... ok
+test server::probes::tests::flag_probe_repeat_target_defaults_when_unset_or_invalid ... ok
+test server::login::tests::login_success_string_normalizes_offline_outcome ... ok
+test server::login::tests::login_plugin_request_before_encryption_fails_closed ... ok
+test server::probes::tests::flag_probe_repeat_target_is_capped ... ok
+test server::login::tests::login_success_with_properties_preserves_property_facts ... ok
+test server::login::tests::encryption_requests_normalize_to_begin_encryption_decisions ... ok
+test server::login::tests::wrong_packets_keep_stage_specific_diagnostics ... ok
+test server::probes::tests::inventory_drag_transactions_actions_advance_after_observed_state ... ok
+test server::probes::tests::inventory_drag_transactions_waits_for_probe_guards ... ok
+test server::dispatch::tests::classifies_supported_packet_families ... ok
+test server::probes::tests::inventory_stack_split_merge_actions_advance_after_observed_state ... ok
+test server::probes::tests::inventory_stack_split_merge_waits_for_probe_guards ... ok
+test server::probes::tests::survival_biome_dimension_environment_prefers_world_identifier ... ok
+test server::probes::tests::survival_biome_dimension_environment_rejects_unknown_identifiers ... ok
+test server::login::tests::unsupported_fml_network_version_preserves_panic ... ok
+test server::login::tests::malformed_string_uuid_panics_when_shell_reads_protocol_uuid ... ok
+test server::probes::tests::survival_block_entity_position_match_rejects_wrong_target ... ok
+test server::probes::tests::survival_block_entity_sign_lines_match_contract_payload ... ok
+test server::probes::tests::survival_crafting_fixture_positions_are_named ... ok
+test server::probes::tests::survival_crafting_inventory_indices_accept_player_and_open_mirror ... ok
+test server::probes::tests::survival_crafting_inventory_updates_use_player_inventory_window ... ok
+test server::probes::tests::survival_crafting_result_match_rejects_wrong_item_or_count ... ok
+test server::probes::tests::survival_crafting_stacks_use_contract_items ... ok
+test server::probes::tests::survival_furnace_fixture_positions_are_named ... ok
+test server::probes::tests::survival_furnace_inventory_indices_accept_player_and_open_mirror ... ok
+test server::probes::tests::survival_furnace_inventory_updates_accept_player_and_open_mirror_slots ... ok
+test server::probes::tests::survival_furnace_output_match_rejects_wrong_item_or_count ... ok
+test server::probes::tests::survival_hunger_food_health_updates_match_exact_contract ... ok
+test server::probes::tests::survival_furnace_stacks_use_contract_items ... ok
+test server::probes::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test server::probes::tests::survival_hunger_food_stack_match_accepts_only_contract_bread ... ok
+test server::probes::tests::survival_hunger_health_updates_match_bounded_health_cycle_contract ... ok
+test server::probes::tests::survival_mob_drop_actions_progress_and_fail_closed ... ok
+test server::probes::tests::survival_mob_drop_item_match_accepts_only_contract_drop ... ok
+test server::probes::tests::survival_mob_drop_position_match_rejects_wrong_target ... ok
+test server::probes::tests::survival_redstone_toggle_output_position_match_rejects_wrong_target ... ok
+test server::probes::tests::survival_world_persistence_position_match_rejects_wrong_target ... ok
+test server::session::tests::env_flag_enabled_rejects_absent_or_zero_values ... ok
+test server::session::tests::handshake_target_appends_forge_marker_for_supported_forge_versions ... ok
+test server::session::tests::handshake_target_preserves_plain_host_without_forge ... ok
+test server::tests::flag_probe_repeat_target_accepts_positive_counts ... ok
+test server::tests::flag_probe_repeat_target_defaults_when_unset_or_invalid ... ok
+test server::tests::flag_probe_repeat_target_is_capped ... ok
+test server::tests::inventory_drag_transactions_actions_advance_after_observed_state ... ok
+test server::tests::inventory_stack_split_merge_actions_advance_after_observed_state ... ok
+test server::tests::inventory_drag_transactions_waits_for_probe_guards ... ok
+test server::tests::inventory_stack_split_merge_waits_for_probe_guards ... ok
+test server::tests::survival_biome_dimension_environment_prefers_world_identifier ... ok
+test server::tests::survival_biome_dimension_environment_rejects_unknown_identifiers ... ok
+test server::tests::survival_block_entity_position_match_rejects_wrong_target ... ok
+test server::tests::survival_block_entity_sign_lines_match_contract_payload ... ok
+test server::tests::survival_crafting_fixture_positions_are_named ... ok
+test server::tests::survival_crafting_inventory_indices_accept_player_and_open_mirror ... ok
+test server::tests::survival_crafting_inventory_updates_use_player_inventory_window ... ok
+test server::tests::survival_crafting_result_match_rejects_wrong_item_or_count ... ok
+test server::tests::survival_crafting_stacks_use_contract_items ... ok
+test server::tests::survival_furnace_fixture_positions_are_named ... ok
+test server::tests::survival_furnace_inventory_indices_accept_player_and_open_mirror ... ok
+test server::tests::survival_furnace_inventory_updates_accept_player_and_open_mirror_slots ... ok
+test server::tests::survival_furnace_output_match_rejects_wrong_item_or_count ... ok
+test server::tests::survival_furnace_stacks_use_contract_items ... ok
+test server::tests::survival_hunger_food_health_updates_match_exact_contract ... ok
+test server::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test server::tests::survival_hunger_food_stack_match_accepts_only_contract_bread ... ok
+test server::tests::survival_hunger_health_updates_match_bounded_health_cycle_contract ... ok
+test server::tests::survival_mob_drop_item_match_accepts_only_contract_drop ... ok
+test server::tests::survival_mob_drop_position_match_rejects_wrong_target ... ok
+test server::tests::survival_redstone_toggle_output_position_match_rejects_wrong_target ... ok
+test server::tests::survival_world_persistence_position_match_rejects_wrong_target ... ok
+test server::world_state::tests::dimension_state_prefers_world_identifier_for_spawn_environment ... ok
+test server::world_state::tests::dimension_state_rejects_missing_or_unknown_dimension_inputs ... ok
+
+test result: ok. 89 passed; 0 failed; 0 ignored; 0 measured; 297 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 89 tests
+
+thread 'server::login::tests::unsupported_fml_network_version_preserves_panic' (589326) panicked at src/server/login.rs:90:14:
+unsupported FML network version: Some(3)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'server::login::tests::malformed_string_uuid_panics_when_shell_reads_protocol_uuid' (589325) panicked at src/server/login.rs:204:81:
+called `Result::unwrap()` on an `Err` value: UUIDParseError
+test server::compat_probes::tests::movement_probe_excludes_stationary_combat ... ok
+test server::compat_probes::tests::detects_enabled_probe_family ... ok
+test server::entities::tests::converts_protocol_velocity_to_blocks_per_tick ... ok
+test server::chunks::tests::first_chunk_log_is_emitted_only_before_first_chunk ... ok
+test server::entities::tests::zero_velocity_is_not_observable_for_combat_probe_logs ... ok
+test server::inventory::tests::ready_window_state_requires_positive_state_id ... ok
+test server::inventory::tests::slot_validation_rejects_negative_or_out_of_range_slots ... ok
+test server::dispatch::tests::rejects_packets_not_owned_by_play_session_dispatch ... ok
+test server::plugin_messages::tests::unknown_plugin_channel_fails_closed ... ok
+test server::plugin_messages::tests::classifies_supported_plugin_channels ... ok
+test server::probes::tests::combat_probe_decision_preserves_regular_schedule ... ok
+test server::login::tests::login_disconnect_preserves_disconnect_reason ... ok
+test server::probes::tests::combat_probe_decision_rejects_disabled_non_attacker_or_limit ... ok
+test server::probes::tests::ctf_score_limit_chat_requires_both_score_terms ... ok
+test server::probes::tests::inventory_drag_transactions_actions_advance_after_observed_state ... ok
+test server::probes::tests::inventory_stack_split_merge_actions_advance_after_observed_state ... ok
+test server::probes::tests::inventory_drag_transactions_waits_for_probe_guards ... ok
+test server::probes::tests::inventory_stack_split_merge_waits_for_probe_guards ... ok
+test server::probes::tests::flag_probe_repeat_target_accepts_positive_counts ... ok
+test server::probes::tests::flag_probe_repeat_target_is_capped ... ok
+test server::probes::tests::flag_probe_repeat_target_defaults_when_unset_or_invalid ... ok
+test server::login::tests::unsupported_fml_network_version_preserves_panic ... ok
+test server::login::tests::login_plugin_request_before_encryption_fails_closed ... ok
+test server::login::tests::encrypted_login_accepts_plugin_request_for_shell_handling ... ok
+test server::login::tests::malformed_string_uuid_panics_when_shell_reads_protocol_uuid ... ok
+test server::login::tests::login_success_uuid_normalizes_offline_outcome ... ok
+test server::login::tests::compression_before_success_returns_apply_then_complete ... ok
+test server::login::tests::login_success_string_normalizes_offline_outcome ... ok
+test server::login::tests::wrong_packets_keep_stage_specific_diagnostics ... ok
+test server::login::tests::encryption_requests_normalize_to_begin_encryption_decisions ... ok
+test server::login::tests::login_success_with_properties_preserves_property_facts ... ok
+test server::probes::tests::survival_biome_dimension_environment_prefers_world_identifier ... ok
+test server::dispatch::tests::classifies_supported_packet_families ... ok
+test server::probes::tests::survival_biome_dimension_environment_rejects_unknown_identifiers ... ok
+test server::probes::tests::survival_block_entity_position_match_rejects_wrong_target ... ok
+test server::probes::tests::survival_block_entity_sign_lines_match_contract_payload ... ok
+test server::probes::tests::survival_crafting_fixture_positions_are_named ... ok
+test server::probes::tests::survival_crafting_inventory_updates_use_player_inventory_window ... ok
+test server::probes::tests::survival_crafting_stacks_use_contract_items ... ok
+test server::probes::tests::survival_furnace_fixture_positions_are_named ... ok
+test server::probes::tests::survival_furnace_inventory_indices_accept_player_and_open_mirror ... ok
+test server::probes::tests::survival_furnace_inventory_updates_accept_player_and_open_mirror_slots ... ok
+test server::probes::tests::survival_furnace_output_match_rejects_wrong_item_or_count ... ok
+test server::probes::tests::survival_furnace_stacks_use_contract_items ... ok
+test server::probes::tests::survival_hunger_food_health_updates_match_exact_contract ... ok
+test server::probes::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test server::probes::tests::survival_hunger_food_stack_match_accepts_only_contract_bread ... ok
+test server::probes::tests::survival_mob_drop_actions_progress_and_fail_closed ... ok
+test server::probes::tests::survival_crafting_inventory_indices_accept_player_and_open_mirror ... ok
+test server::probes::tests::survival_redstone_toggle_output_position_match_rejects_wrong_target ... ok
+test server::probes::tests::survival_world_persistence_position_match_rejects_wrong_target ... ok
+test server::probes::tests::survival_crafting_result_match_rejects_wrong_item_or_count ... ok
+test server::tests::inventory_stack_split_merge_waits_for_probe_guards ... ok
+test server::session::tests::handshake_target_preserves_plain_host_without_forge ... ok
+test server::session::tests::handshake_target_appends_forge_marker_for_supported_forge_versions ... ok
+test server::tests::flag_probe_repeat_target_is_capped ... ok
+test server::tests::inventory_stack_split_merge_actions_advance_after_observed_state ... ok
+test server::tests::inventory_drag_transactions_waits_for_probe_guards ... ok
+test server::probes::tests::survival_mob_drop_position_match_rejects_wrong_target ... ok
+test server::session::tests::env_flag_enabled_rejects_absent_or_zero_values ... ok
+test server::tests::survival_biome_dimension_environment_prefers_world_identifier ... ok
+test server::tests::survival_biome_dimension_environment_rejects_unknown_identifiers ... ok
+test server::tests::survival_block_entity_sign_lines_match_contract_payload ... ok
+test server::tests::flag_probe_repeat_target_defaults_when_unset_or_invalid ... ok
+test server::tests::survival_crafting_fixture_positions_are_named ... ok
+test server::tests::survival_crafting_inventory_updates_use_player_inventory_window ... ok
+test server::probes::tests::survival_hunger_health_updates_match_bounded_health_cycle_contract ... ok
+test server::tests::survival_crafting_result_match_rejects_wrong_item_or_count ... ok
+test server::tests::survival_crafting_stacks_use_contract_items ... ok
+test server::tests::flag_probe_repeat_target_accepts_positive_counts ... ok
+test server::tests::survival_furnace_fixture_positions_are_named ... ok
+test server::tests::survival_furnace_inventory_indices_accept_player_and_open_mirror ... ok
+test server::tests::survival_furnace_inventory_updates_accept_player_and_open_mirror_slots ... ok
+test server::tests::survival_furnace_output_match_rejects_wrong_item_or_count ... ok
+test server::tests::survival_furnace_stacks_use_contract_items ... ok
+test server::probes::tests::survival_mob_drop_item_match_accepts_only_contract_drop ... ok
+test server::tests::survival_hunger_food_health_updates_match_exact_contract ... ok
+test server::tests::survival_hunger_food_slot_empty_requires_explicit_empty_slot ... ok
+test server::tests::inventory_drag_transactions_actions_advance_after_observed_state ... ok
+test server::tests::survival_block_entity_position_match_rejects_wrong_target ... ok
+test server::tests::survival_hunger_food_stack_match_accepts_only_contract_bread ... ok
+test server::tests::survival_hunger_health_updates_match_bounded_health_cycle_contract ... ok
+test server::tests::survival_mob_drop_item_match_accepts_only_contract_drop ... ok
+test server::tests::survival_mob_drop_position_match_rejects_wrong_target ... ok
+test server::tests::survival_redstone_toggle_output_position_match_rejects_wrong_target ... ok
+test server::tests::survival_world_persistence_position_match_rejects_wrong_target ... ok
+test server::world_state::tests::dimension_state_prefers_world_identifier_for_spawn_environment ... ok
+test server::world_state::tests::dimension_state_rejects_missing_or_unknown_dimension_inputs ... ok
+test server::tests::survival_crafting_inventory_indices_accept_player_and_open_mirror ... ok
+
+test result: ok. 89 passed; 0 failed; 0 ignored; 0 measured; 297 filtered out; finished in 0.00s
+
+server_tests_exit_status=0
+$ nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test world::tests -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: `/home/brittonr/git/mc/clients/stevenarella/.cargo/config` is deprecated in favor of `config.toml`
+  |
+  = help: if you need to support cargo 1.38 or earlier, you can symlink `config` to `config.toml`
+warning: /home/brittonr/git/mc/clients/stevenarella/Cargo.toml: file `/home/brittonr/git/mc/clients/stevenarella/src/main.rs` found to be present in multiple build targets:
+  * `lib` target `stevenarella`
+  * `bin` target `stevenarella`
+warning: unreachable pattern
+   --> src/server/login.rs:190:9
+    |
+190 |         (phase, event) => LoginDecision::Fail(LoginFailure {
+    |         ^^^^^^^^^^^^^^ no value can reach this
+    |
+note: multiple earlier patterns match some of the same values
+   --> src/server/login.rs:190:9
+    |
+162 |           (_, LoginEvent::SetCompression(compression)) => {
+    |           -------------------------------------------- matches some of the same values
+...
+165 |           (LoginPhase::Initial, LoginEvent::EncryptionRequest(request)) => {
+    |           ------------------------------------------------------------- matches some of the same values
+...
+168 |           (LoginPhase::Encrypted, LoginEvent::EncryptionRequest(request)) => {
+    |           --------------------------------------------------------------- matches some of the same values
+...
+174 | /         (LoginPhase::Initial, LoginEvent::Success(outcome))
+175 | |         | (LoginPhase::Encrypted, LoginEvent::Success(outcome)) => LoginDecision::Complete(outcome),
+    | |_______________________________________________________________- matches some of the same values
+...
+190 |           (phase, event) => LoginDecision::Fail(LoginFailure {
+    |           ^^^^^^^^^^^^^^ ...and 4 other patterns collectively make this unreachable
+    = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `CameraViewFacts` is never constructed
+  --> src/render/camera.rs:34:19
+   |
+34 | pub(crate) struct CameraViewFacts {
+   |                   ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `camera_view_facts` is never used
+  --> src/render/camera.rs:65:15
+   |
+65 | pub(crate) fn camera_view_facts(camera: &Camera) -> CameraViewFacts {
+   |               ^^^^^^^^^^^^^^^^^
+
+warning: function `unavailable_capture_state` is never used
+  --> src/render/capture_readback.rs:30:15
+   |
+30 | pub(crate) fn unavailable_capture_state(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `ChunkRenderSummary` is never constructed
+  --> src/render/chunk_buffers.rs:49:19
+   |
+49 | pub(crate) struct ChunkRenderSummary {
+   |                   ^^^^^^^^^^^^^^^^^^
+
+warning: enum `ChunkRenderLayer` is never used
+  --> src/render/chunk_buffers.rs:55:17
+   |
+55 | pub(crate) enum ChunkRenderLayer {
+   |                 ^^^^^^^^^^^^^^^^
+
+warning: struct `ChunkDrawPlan` is never constructed
+  --> src/render/chunk_buffers.rs:61:19
+   |
+61 | pub(crate) struct ChunkDrawPlan {
+   |                   ^^^^^^^^^^^^^
+
+warning: function `plan_chunk_render_order` is never used
+  --> src/render/chunk_buffers.rs:66:15
+   |
+66 | pub(crate) fn plan_chunk_render_order(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `push_if_visible` is never used
+  --> src/render/chunk_buffers.rs:90:4
+   |
+90 | fn push_if_visible(ordered: &mut Vec<ChunkDrawPlan>, summary: ChunkRenderSummary, count: usize) {
+   |    ^^^^^^^^^^^^^^^
+
+warning: constant `SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD` is never used
+   --> src/server/probes.rs:390:18
+    |
+390 | pub(crate) const SURVIVAL_BLOCK_ENTITY_TEXT_PAYLOAD: &str = "MC|Compat|Sign|Persist";
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `survival_block_entity_expected_lines` is never used
+   --> src/server/probes.rs:789:15
+    |
+789 | pub(crate) fn survival_block_entity_expected_lines() -> [String; SIGN_LINE_COUNT] {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: enum `TraversalPlanError` is never used
+  --> src/ui/container.rs:18:17
+   |
+18 | pub(crate) enum TraversalPlanError {
+   |                 ^^^^^^^^^^^^^^^^^^
+
+warning: function `draw_order` is never used
+  --> src/ui/container.rs:22:15
+   |
+22 | pub(crate) fn draw_order(draw_indices: &[isize]) -> Vec<usize> {
+   |               ^^^^^^^^^^
+
+warning: function `clicked_index` is never used
+  --> src/ui/container.rs:35:15
+   |
+35 | pub(crate) fn clicked_index(regions: &[Region], x: f64, y: f64) -> Option<usize> {
+   |               ^^^^^^^^^^^^^
+
+warning: function `checked_draw_order` is never used
+  --> src/ui/container.rs:39:15
+   |
+39 | pub(crate) fn checked_draw_order(
+   |               ^^^^^^^^^^^^^^^^^^
+
+warning: enum `LayoutBoundsError` is never used
+  --> src/ui/layout.rs:48:17
+   |
+48 | pub(crate) enum LayoutBoundsError {
+   |                 ^^^^^^^^^^^^^^^^^
+
+warning: associated function `checked` is never used
+  --> src/ui/layout.rs:71:19
+   |
+70 | impl Region {
+   | ----------- associated function in this implementation
+71 |     pub(crate) fn checked(x: f64, y: f64, w: f64, h: f64) -> Result<Self, LayoutBoundsError> {
+   |                   ^^^^^^^
+
+warning: function `validate_region_numbers` is never used
+  --> src/ui/layout.rs:88:15
+   |
+88 | pub(crate) fn validate_region_numbers(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `Unsupported` is never constructed
+  --> src/ui/textbox.rs:34:5
+   |
+32 | pub(crate) enum ClipboardPath {
+   |                 ------------- variant in this enum
+33 |     Supported,
+34 |     Unsupported,
+   |     ^^^^^^^^^^^
+   |
+   = note: `ClipboardPath` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `clamp_cursor_position` is never used
+  --> src/ui/textbox.rs:59:15
+   |
+59 | pub(crate) fn clamp_cursor_position(input: &str, requested_position: usize) -> usize {
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/console/mod.rs:181:32
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<T>
+    |                                ^^^^^                   ^^^^^^ the same lifetime is hidden here
+    |                                |
+    |                                the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+181 |     pub fn get<T: Sized + Any>(&self, var: CVar<T>) -> Ref<'_, T>
+    |                                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/ui/mod.rs:76:21
+    |
+ 76 |               fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<[u8]> {
+    |                       ^^^^^ the lifetime is elided here                                                                             ^^^^^^^^^^^^ the same lifetime is hidden here
+...
+226 | / define_elements! {
+227 | |     Image,
+228 | |     Batch,
+229 | |     Text,
+...   |
+232 | |     TextBox,
+233 | | }
+    | |_- in this macro invocation
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: this warning originates in the macro `define_elements` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `'_` for type paths
+    |
+ 76 |             fn draw(&self, renderer: &mut render::Renderer, r: &Region, sw: f64, sh: f64, width: f64, height: f64, delta: f64) -> RefMut<'_, [u8]> {
+    |                                                                                                                                          +++
+
+warning: `stevenarella` (lib) generated 22 warnings (run `cargo fix --lib -p stevenarella` to apply 2 suggestions)
+warning: `stevenarella` (lib test) generated 3 warnings (3 duplicates)
+warning: `stevenarella` (bin "stevenarella" test) generated 3 warnings (3 duplicates)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.13s
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-74a8925fb38c5fbd)
+
+running 22 tests
+test world::tests::dimension_codec_rejects_unaligned_height ... ok
+test world::tests::dimension_codec_applies_named_dimension_bounds ... ok
+test world::tests::dimension_codec_ignores_missing_dimension_name ... ok
+test world::tests::parse_chunk_1_16_4 ... ok
+test world::tests::parse_chunk_1_14_2 ... ok
+test world::tests::parse_chunk_1_15_2 ... ok
+test world::tests::parse_chunk_1_14_4 ... ok
+test world::tests::parse_chunk_1_15_1 ... ok
+test world::tests::parse_chunk_1_17_1 ... ok
+test world::tests::parse_chunk_1_14_1 ... ok
+test world::tests::parse_chunk_1_14_3 ... ok
+test world::tests::parse_chunk_1_16_1 ... ok
+test world::tests::parse_chunk_18w50a ... ok
+test world::tests::parse_chunk_1_16_2 ... ok
+test world::tests::parse_chunk_1_16_3 ... ok
+test world::tests::parse_chunk_1_13_2 ... ok
+test world::tests::parse_chunk_1_12_2 ... ok
+test world::tests::parse_chunk_19w02a ... ok
+test world::tests::parse_chunk_1_14 ... ok
+test world::tests::parse_chunk_1_16 ... ok
+test world::tests::parse_chunk_1_18_1 ... ok
+test world::tests::parse_chunk_1_18_2 ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 364 filtered out; finished in 0.02s
+
+     Running unittests src/main.rs (/home/brittonr/.cargo-target/debug/deps/stevenarella-4dc39b26672098bf)
+
+running 22 tests
+test world::tests::dimension_codec_rejects_unaligned_height ... ok
+test world::tests::dimension_codec_applies_named_dimension_bounds ... ok
+test world::tests::dimension_codec_ignores_missing_dimension_name ... ok
+test world::tests::parse_chunk_1_16_4 ... ok
+test world::tests::parse_chunk_1_14_2 ... ok
+test world::tests::parse_chunk_1_14 ... ok
+test world::tests::parse_chunk_1_17_1 ... ok
+test world::tests::parse_chunk_1_14_3 ... ok
+test world::tests::parse_chunk_1_16_2 ... ok
+test world::tests::parse_chunk_18w50a ... ok
+test world::tests::parse_chunk_1_16_1 ... ok
+test world::tests::parse_chunk_19w02a ... ok
+test world::tests::parse_chunk_1_12_2 ... ok
+test world::tests::parse_chunk_1_15_1 ... ok
+test world::tests::parse_chunk_1_16_3 ... ok
+test world::tests::parse_chunk_1_15_2 ... ok
+test world::tests::parse_chunk_1_14_4 ... ok
+test world::tests::parse_chunk_1_14_1 ... ok
+test world::tests::parse_chunk_1_13_2 ... ok
+test world::tests::parse_chunk_1_16 ... ok
+test world::tests::parse_chunk_1_18_2 ... ok
+test world::tests::parse_chunk_1_18_1 ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 364 filtered out; finished in 0.02s
+
+world_tests_exit_status=0
+exit_status=0

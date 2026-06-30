@@ -1,0 +1,499 @@
+$ CAIRN_ARCHIVE_DATE=2026-06-30 nix run path:/home/brittonr/git/mc#cairn -- archive 2026-06-30-extract-compat-runner-shell-modules --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: 2026-06-30-extract-compat-runner-shell-modules",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-30-2026-06-30-extract-compat-runner-shell-modules"
+    }
+  ],
+  "blocked": false,
+  "change": "2026-06-30-extract-compat-runner-shell-modules",
+  "dry_run": false,
+  "input_hash": "72e9b9519dd8aaf2e46571ed9333bb34ab055de070b77d61f25b261619b106d5",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "8b94e8b769a2da504507e09e8215ea88c0500af558bcd6628c25556999d4ff4e",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-extract-compat-runner-shell-modules/design.md"
+        },
+        {
+          "content_hash": "86fc5d3918f2f95a185aa1d34b40e5303b5e3dca846719a82b4ee5e0dd501850",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-extract-compat-runner-shell-modules/proposal.md"
+        },
+        {
+          "content_hash": "a63a52c6d58671a2a19ae2d6e6140078f58cee808f7acfce764dc7e5221d2350",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-extract-compat-runner-shell-modules/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "dd85c0fa3388bd4a1634a7a4c019037a21469f514b60db5b5cec61e11b1cd009",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-extract-compat-runner-shell-modules/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/2026-06-30-extract-compat-runner-shell-modules"
+        }
+      ],
+      "manifest_hash": "0c34bacc8c8a16641b5105a40e036fbd9ea38a844e5e76bf29c59c598adcb730"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "8b94e8b769a2da504507e09e8215ea88c0500af558bcd6628c25556999d4ff4e",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-extract-compat-runner-shell-modules/design.md"
+        },
+        {
+          "content_hash": "86fc5d3918f2f95a185aa1d34b40e5303b5e3dca846719a82b4ee5e0dd501850",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-extract-compat-runner-shell-modules/proposal.md"
+        },
+        {
+          "content_hash": "a63a52c6d58671a2a19ae2d6e6140078f58cee808f7acfce764dc7e5221d2350",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-extract-compat-runner-shell-modules/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "dd85c0fa3388bd4a1634a7a4c019037a21469f514b60db5b5cec61e11b1cd009",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-extract-compat-runner-shell-modules/tasks.md"
+        }
+      ],
+      "manifest_hash": "f248e582fc08ac62cb25181f076a643351d1116c3ee729eed11065cfbc3272ac"
+    },
+    "kind": "archive",
+    "manifest_hash": "419608289f6f74bd5ebc22ad1d6f8e201f84177916197171d49f135cbdeba59e"
+  },
+  "plan_hash": "37eff3b08494a47581f40527651975f4dcf2b6c5647e0cd40dc6dc39cd685ecf",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "3adf120aa1ab8f80a4a5c18725f70a438f6a980982d85d6b4f198ef1bdb616da"
+}
+2026-06-30-extract-compat-runner-shell-modules_archive_execute_exit_status=0
+$ CAIRN_ARCHIVE_DATE=2026-06-30 nix run path:/home/brittonr/git/mc#cairn -- archive 2026-06-30-factor-nix-flake-surfaces --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: 2026-06-30-factor-nix-flake-surfaces",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-30-2026-06-30-factor-nix-flake-surfaces"
+    }
+  ],
+  "blocked": false,
+  "change": "2026-06-30-factor-nix-flake-surfaces",
+  "dry_run": false,
+  "input_hash": "bdea52fb311f7f47cfa795af65165267cf087eb57917320603a1fd40f6d5c417",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "e0ab0a4f4acba4f274ac510869c8c7fc8b69e55e703041c8a24bf25da8503590",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-factor-nix-flake-surfaces/design.md"
+        },
+        {
+          "content_hash": "7e553adb833d6ca3ee5c7e2a12509bab40121cf33903e4b5f4cc3fdaf68235f4",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-factor-nix-flake-surfaces/proposal.md"
+        },
+        {
+          "content_hash": "64f5227db8bbcb8201d7dc5ffdb69ae6e80011eeae7354001fa59f806241fa0f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-factor-nix-flake-surfaces/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "761e9e9b870abc9a3312011b15e659efb01b96c65d599989248b71c078fc9f87",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-factor-nix-flake-surfaces/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/2026-06-30-factor-nix-flake-surfaces"
+        }
+      ],
+      "manifest_hash": "510b53be62e256471d1f8fe150c1297959fa5c2e7272f84282780478198814b8"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "e0ab0a4f4acba4f274ac510869c8c7fc8b69e55e703041c8a24bf25da8503590",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-factor-nix-flake-surfaces/design.md"
+        },
+        {
+          "content_hash": "7e553adb833d6ca3ee5c7e2a12509bab40121cf33903e4b5f4cc3fdaf68235f4",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-factor-nix-flake-surfaces/proposal.md"
+        },
+        {
+          "content_hash": "64f5227db8bbcb8201d7dc5ffdb69ae6e80011eeae7354001fa59f806241fa0f",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-factor-nix-flake-surfaces/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "761e9e9b870abc9a3312011b15e659efb01b96c65d599989248b71c078fc9f87",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-factor-nix-flake-surfaces/tasks.md"
+        }
+      ],
+      "manifest_hash": "9f23306046d762617728b26c98906dd508197deb74b1e843113a9a01af2e640f"
+    },
+    "kind": "archive",
+    "manifest_hash": "532380d01fb3ddd641353dd4c95e414b3798b3e498e2c2480863952062e27594"
+  },
+  "plan_hash": "90bb2d51c0b85dd94e9ecff4430200af9801030baa0e6bc0f45151a241186126",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "f7705ddf0323944ff3cbcbca6807c7d56b453d746f25075d905c0c11f013ca59"
+}
+2026-06-30-factor-nix-flake-surfaces_archive_execute_exit_status=0
+$ CAIRN_ARCHIVE_DATE=2026-06-30 nix run path:/home/brittonr/git/mc#cairn -- archive 2026-06-30-modularize-stevenarella-server-runtime --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: 2026-06-30-modularize-stevenarella-server-runtime",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-30-2026-06-30-modularize-stevenarella-server-runtime"
+    }
+  ],
+  "blocked": false,
+  "change": "2026-06-30-modularize-stevenarella-server-runtime",
+  "dry_run": false,
+  "input_hash": "0e4db9adedff55690e7d0899a03ee487412538a6c0689126db3c47a5334d7d3f",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "a828f24446aa558e106d4766956443a5b0e737576ed54f91292ed74534f9968f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-modularize-stevenarella-server-runtime/design.md"
+        },
+        {
+          "content_hash": "7f23779f00018afda7ae73ee3cde5307e2dfb5a7eba48c47d48f7c12a2dc65a5",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-modularize-stevenarella-server-runtime/proposal.md"
+        },
+        {
+          "content_hash": "998ca03d376400e336d76ed9535e4b3960137d7a2d9d61144af60bea709d7179",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-modularize-stevenarella-server-runtime/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "077774aea7a45e600ff9b3523b75149dd8813327801850cc7148602fa3670689",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-modularize-stevenarella-server-runtime/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/2026-06-30-modularize-stevenarella-server-runtime"
+        }
+      ],
+      "manifest_hash": "8532f0e8b873904b4dca9a4096c8d88a537acc0412f04cc1773e4ff624fac905"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "a828f24446aa558e106d4766956443a5b0e737576ed54f91292ed74534f9968f",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-modularize-stevenarella-server-runtime/design.md"
+        },
+        {
+          "content_hash": "7f23779f00018afda7ae73ee3cde5307e2dfb5a7eba48c47d48f7c12a2dc65a5",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-modularize-stevenarella-server-runtime/proposal.md"
+        },
+        {
+          "content_hash": "998ca03d376400e336d76ed9535e4b3960137d7a2d9d61144af60bea709d7179",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-modularize-stevenarella-server-runtime/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "077774aea7a45e600ff9b3523b75149dd8813327801850cc7148602fa3670689",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-modularize-stevenarella-server-runtime/tasks.md"
+        }
+      ],
+      "manifest_hash": "4e322e08a92cb942b0585bd956fa1c8964ad9af1c69eacb6a39bfce0ecac5950"
+    },
+    "kind": "archive",
+    "manifest_hash": "195e548c43d65d707cf9909a4baeeed88f0a54471400e1791d1d8bb16b24a398"
+  },
+  "plan_hash": "92846bb5d4cc5b7336dec094441e244b0532428ecdd7f888f675cd2f77b4e1be",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "def32520240fa301acd88e720f5b15340ad4fe161c7a6299b14712b1182fed45"
+}
+2026-06-30-modularize-stevenarella-server-runtime_archive_execute_exit_status=0
+$ CAIRN_ARCHIVE_DATE=2026-06-30 nix run path:/home/brittonr/git/mc#cairn -- archive 2026-06-30-modularize-valence-compat-fixtures --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: 2026-06-30-modularize-valence-compat-fixtures",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-30-2026-06-30-modularize-valence-compat-fixtures"
+    }
+  ],
+  "blocked": false,
+  "change": "2026-06-30-modularize-valence-compat-fixtures",
+  "dry_run": false,
+  "input_hash": "746a3b7d64c228cfdeec22ded9bef1a124742c3e5ebb278335515082dfdaba73",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "f8ee8b8882d7407e2bfac297687fe08e1a1a3b573fee15c764e2277b64d8410e",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-modularize-valence-compat-fixtures/design.md"
+        },
+        {
+          "content_hash": "141999cbd4c683e9418b752b2ec92e10c9dc90ff6e288222597a4c52afd2ad61",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-modularize-valence-compat-fixtures/proposal.md"
+        },
+        {
+          "content_hash": "6766682dcec6fa1e73e98fa95c2790aab623f1d44738f4ae2e2676a205b1ecb7",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-modularize-valence-compat-fixtures/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "2aba4bd8751b85745f87fc04272fd8fa780e984ac8e24fb7e8141cb4a3be0dca",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-modularize-valence-compat-fixtures/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/2026-06-30-modularize-valence-compat-fixtures"
+        }
+      ],
+      "manifest_hash": "e09c3893260fe7b88e87173c13722162242da2c314e157b74b2fb45410d9bb85"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "f8ee8b8882d7407e2bfac297687fe08e1a1a3b573fee15c764e2277b64d8410e",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-modularize-valence-compat-fixtures/design.md"
+        },
+        {
+          "content_hash": "141999cbd4c683e9418b752b2ec92e10c9dc90ff6e288222597a4c52afd2ad61",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-modularize-valence-compat-fixtures/proposal.md"
+        },
+        {
+          "content_hash": "6766682dcec6fa1e73e98fa95c2790aab623f1d44738f4ae2e2676a205b1ecb7",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-modularize-valence-compat-fixtures/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "2aba4bd8751b85745f87fc04272fd8fa780e984ac8e24fb7e8141cb4a3be0dca",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-modularize-valence-compat-fixtures/tasks.md"
+        }
+      ],
+      "manifest_hash": "ec2ec6603db5751e373eede4b6529f7c33426f29d0bd60168bbf91468b939016"
+    },
+    "kind": "archive",
+    "manifest_hash": "afb0966af6244e21998a60f026065fc7c6b43d8595b4d2f7bfb1c77a64297b3f"
+  },
+  "plan_hash": "cfdf7efc319fff82e6a0f61bbfc08c3eaad85f1fb41b92cb6cb8e3e12f2c9af1",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "cb7261259c0d18fb1753804bed4f35c860710ee3c10af382cdd33c9d22f0a339"
+}
+2026-06-30-modularize-valence-compat-fixtures_archive_execute_exit_status=0
+$ CAIRN_ARCHIVE_DATE=2026-06-30 nix run path:/home/brittonr/git/mc#cairn -- archive 2026-06-30-reduce-stevenarella-hotspot-modules --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: 2026-06-30-reduce-stevenarella-hotspot-modules",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-30-2026-06-30-reduce-stevenarella-hotspot-modules"
+    }
+  ],
+  "blocked": false,
+  "change": "2026-06-30-reduce-stevenarella-hotspot-modules",
+  "dry_run": false,
+  "input_hash": "d2b29366bd3a8091a9d8badde736ff490a687e490393c447fdf232355d44d8b7",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "84bbb273c8746607f3d1ab7d6a5159da01627afb0367d82856f7044344c44e57",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-reduce-stevenarella-hotspot-modules/design.md"
+        },
+        {
+          "content_hash": "288b21d7912bdd85b179c0978a0a45261fa10348232d1fdea00d3e4027b8e821",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-reduce-stevenarella-hotspot-modules/proposal.md"
+        },
+        {
+          "content_hash": "eb11ba65a9e72985ca72b81853d8418c1456dfe635f84cc53b4685432e169b5f",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-reduce-stevenarella-hotspot-modules/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "d8429af6b4d0e81bb4af6eff3bae1fa46ab9cb2f592784d34587316728299921",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-reduce-stevenarella-hotspot-modules/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/2026-06-30-reduce-stevenarella-hotspot-modules"
+        }
+      ],
+      "manifest_hash": "22e84e3c6c3c62ba3db8d7364e5478bef75e42162367957c114b4001966b40f9"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "84bbb273c8746607f3d1ab7d6a5159da01627afb0367d82856f7044344c44e57",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-reduce-stevenarella-hotspot-modules/design.md"
+        },
+        {
+          "content_hash": "288b21d7912bdd85b179c0978a0a45261fa10348232d1fdea00d3e4027b8e821",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-reduce-stevenarella-hotspot-modules/proposal.md"
+        },
+        {
+          "content_hash": "eb11ba65a9e72985ca72b81853d8418c1456dfe635f84cc53b4685432e169b5f",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-reduce-stevenarella-hotspot-modules/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "d8429af6b4d0e81bb4af6eff3bae1fa46ab9cb2f592784d34587316728299921",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-reduce-stevenarella-hotspot-modules/tasks.md"
+        }
+      ],
+      "manifest_hash": "b151dba63a5ae8732e36a509a9a4d334159727b878a13494e09ccbbc4b1e1566"
+    },
+    "kind": "archive",
+    "manifest_hash": "871478a09d535f2d397adf9fc114007ae0b7af9240f84896085a831b2c4c19f3"
+  },
+  "plan_hash": "97e284493f98b6d3e7c50afa92605359f38cf2426cb86f8974c98c1a636ee7bd",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "35f5acb51492b8e61cbeab5deb664e9f45916c44bf69c43cea902d997fe6afe0"
+}
+2026-06-30-reduce-stevenarella-hotspot-modules_archive_execute_exit_status=0
+$ CAIRN_ARCHIVE_DATE=2026-06-30 nix run path:/home/brittonr/git/mc#cairn -- archive 2026-06-30-split-scenario-core-family-modules --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: 2026-06-30-split-scenario-core-family-modules",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-30-2026-06-30-split-scenario-core-family-modules"
+    }
+  ],
+  "blocked": false,
+  "change": "2026-06-30-split-scenario-core-family-modules",
+  "dry_run": false,
+  "input_hash": "e8b574a48ea8923f0ace8c42d9256fc9c28f62fa71a10d848c2764dcea1952cb",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "b1cad3ec0df85ae4feb40fc834da3dbd0d24d24432178c289361d43c370a0924",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-split-scenario-core-family-modules/design.md"
+        },
+        {
+          "content_hash": "2c7efa88dc4bd4d4263527aa195776e14393908bedc3b12e41224f711f3afa55",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-split-scenario-core-family-modules/proposal.md"
+        },
+        {
+          "content_hash": "e15cbb11428daf76a4739226a698b6a6e325fb0254650f1b8a96eb1bd97a7119",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-split-scenario-core-family-modules/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "2469897d32377fc646fe63b977ccf91c6a73d82b7896615581d7601dce2ad836",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-2026-06-30-split-scenario-core-family-modules/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/2026-06-30-split-scenario-core-family-modules"
+        }
+      ],
+      "manifest_hash": "f305abbfa9389c849447f78890cfbe0a42cc0e4436e94fd0bc1b4fa257732dca"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "b1cad3ec0df85ae4feb40fc834da3dbd0d24d24432178c289361d43c370a0924",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-split-scenario-core-family-modules/design.md"
+        },
+        {
+          "content_hash": "2c7efa88dc4bd4d4263527aa195776e14393908bedc3b12e41224f711f3afa55",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-split-scenario-core-family-modules/proposal.md"
+        },
+        {
+          "content_hash": "e15cbb11428daf76a4739226a698b6a6e325fb0254650f1b8a96eb1bd97a7119",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-split-scenario-core-family-modules/specs/mc-compatibility/spec.md"
+        },
+        {
+          "content_hash": "2469897d32377fc646fe63b977ccf91c6a73d82b7896615581d7601dce2ad836",
+          "exists": true,
+          "path": "./cairn/changes/2026-06-30-split-scenario-core-family-modules/tasks.md"
+        }
+      ],
+      "manifest_hash": "81feac03c659d189947dfe4185823d420cdecb76db289193852288f1d67e36aa"
+    },
+    "kind": "archive",
+    "manifest_hash": "0ee4824d06837673a9c04689014cdc42149b07be5872d0ad9dfd6804e51adf66"
+  },
+  "plan_hash": "c3b6d87a406d535e6efa7679f23df6fca3cb1d6ffaa59420dd11dc24b434638a",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "5e4404a750b3f6d4192b3ff425870aced3fa18555dbef3fe4d600734011e3cdb"
+}
+2026-06-30-split-scenario-core-family-modules_archive_execute_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 6,
+  "valid": true
+}
+post_archive_validate_exit_status=0
+exit_status=0

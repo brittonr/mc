@@ -1,0 +1,4 @@
+$ nix run path:/home/brittonr/git/mc#evidence-manifest-refresh -- --check --root /home/brittonr/git/mc
+evidence manifest refresh ok: mode=check; passes=0; manifests=568; entries=6022; current=6022; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+post_archive_evidence_manifest_final_exit_status=0
+exit_status=0

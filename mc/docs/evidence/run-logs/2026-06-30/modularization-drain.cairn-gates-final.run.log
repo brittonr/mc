@@ -1,0 +1,427 @@
+$ nix run path:/home/brittonr/git/mc#cairn -- gate proposal 2026-06-30-extract-compat-runner-shell-modules --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-extract-compat-runner-shell-modules",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "abbb9f4d1ecde6f39a24bcec64091dca3cd25da93224802f86fc7b53a5c07f86",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "6fb230e17cb444752db13c0e5e100818b59467f16b1f33e3d2139de39b3efb46",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-extract-compat-runner-shell-modules_proposal_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate design 2026-06-30-extract-compat-runner-shell-modules --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-extract-compat-runner-shell-modules",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "61ce76d7d8cc462e92bbb2a90ffbeaa588ecd7386fd79ee00226eecb1fc13ecc",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "734458e48288330afd1ac215e5b94af7fa88a20332d49fb4a723fc1f66bb2833",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-extract-compat-runner-shell-modules_design_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate tasks 2026-06-30-extract-compat-runner-shell-modules --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-extract-compat-runner-shell-modules",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "0ddba3f9973009767ce844471650e8cba0f5e90532912f05571f1cd6e18c5ee1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "2a0e594ec9838368858062b4e62042a942f2c9d8e5386312f44669dede523d8e",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-extract-compat-runner-shell-modules_tasks_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate proposal 2026-06-30-factor-nix-flake-surfaces --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-factor-nix-flake-surfaces",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "578a6d29f188a6671aded3981c17bc1ff6e5bae20317a00e898fabe397ab3893",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e2a488d497096b40bb742ef4576bf9083cac72e3a048bd4a58ef40a7243df065",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-factor-nix-flake-surfaces_proposal_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate design 2026-06-30-factor-nix-flake-surfaces --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-factor-nix-flake-surfaces",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9e1fab1190cf031fc8a68d9e703421ae69154e23c682129c7fd73367140c4f97",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e529bf0433f715272e5143ad1313470c062f76b83d80226aaae35326317b3367",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-factor-nix-flake-surfaces_design_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate tasks 2026-06-30-factor-nix-flake-surfaces --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-factor-nix-flake-surfaces",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e559d35dbc317ad62bde9f00f2bac9ed9826468d86a24fbb78c57846b020a287",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "46b656a0a61fe16c5ff814562a88691fba6d5cac0aff221ceaf0255b203d3e48",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-factor-nix-flake-surfaces_tasks_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate proposal 2026-06-30-modularize-stevenarella-server-runtime --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-modularize-stevenarella-server-runtime",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f57fc6bf0f8647f9651a15b5dfe98cbd8b7cee852e3fa1ac723aa7ac9b8d784b",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "da0c5aeac2c6d33f00669e724df04a54453ffe910a04c0376ba06b3900079c64",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-modularize-stevenarella-server-runtime_proposal_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate design 2026-06-30-modularize-stevenarella-server-runtime --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-modularize-stevenarella-server-runtime",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "5d159c5f4ab3cb52edd4c9952778415805c40662816836bcaf8cd2ac2bc7f3cd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "204e81d3ee30734082d3ddfb4bc341c8b46c014e8eb501453e20a3c448c1351b",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-modularize-stevenarella-server-runtime_design_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate tasks 2026-06-30-modularize-stevenarella-server-runtime --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-modularize-stevenarella-server-runtime",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "55e48ffe8c831a087282c3087f77156067dd089241afbf68b6ba939215ddad5d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "74c8342797f2e5f567b06153f70c7e3b3e8f1a7a4b292fbd694c2240643dfa05",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-modularize-stevenarella-server-runtime_tasks_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate proposal 2026-06-30-modularize-valence-compat-fixtures --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-modularize-valence-compat-fixtures",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "693b5fc5232d85f2614ca2e64bb21f4408eef485fd3eae539fbfa5eb6bc171e7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "81c0880e8db00f6a3e5bb900247d4e0f16d5a450f782a5d3a809b4689b9c690d",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-modularize-valence-compat-fixtures_proposal_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate design 2026-06-30-modularize-valence-compat-fixtures --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-modularize-valence-compat-fixtures",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "cefaf67141c494d0b4193b6fde7c24b9d86607093f4ffd90599abe64740d610d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "b6a253656f75028dafb94356f1a69ae0296ffb9c4c9206eb99ffcfaefe0a1506",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-modularize-valence-compat-fixtures_design_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate tasks 2026-06-30-modularize-valence-compat-fixtures --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-modularize-valence-compat-fixtures",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "cf0022c9d3e57f3b2e2eef083c35ca7fa79fc418c3e9ac3f16aa07fd7330b099",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "82621620b6c55c22e92e6a49f95cfb301d139d136c5cbfe0d687dd5853f8893d",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-modularize-valence-compat-fixtures_tasks_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate proposal 2026-06-30-reduce-stevenarella-hotspot-modules --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-reduce-stevenarella-hotspot-modules",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "864eb66294b0db9cc5054123ce0a5c638e4013804cf772176fc290e613aeb59c",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "4d762b713ba0c8d183efb127f770cb6b6eb54629df138f7d91dfa9e062e8278b",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-reduce-stevenarella-hotspot-modules_proposal_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate design 2026-06-30-reduce-stevenarella-hotspot-modules --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-reduce-stevenarella-hotspot-modules",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "452db1c265c12ea128a0e66b0c7c074188592795fcf5e3a2ef342aed1e90b7a3",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "a5f0b5b53688f4fb6a20c076c9e1fa4b18311f243d2c39fbd528a8e3d1d43239",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-reduce-stevenarella-hotspot-modules_design_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate tasks 2026-06-30-reduce-stevenarella-hotspot-modules --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-reduce-stevenarella-hotspot-modules",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4c11636a628acbb827715625fa94d16d594b3ef280f48982437b1542eff7b533",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "86b08b7e572ad279c500508d45b5705dca08996676517b6ec022ec5742aa3645",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-reduce-stevenarella-hotspot-modules_tasks_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate proposal 2026-06-30-split-scenario-core-family-modules --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-split-scenario-core-family-modules",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b4f078d38ed7141955a84f624751431562748f161f9791e34663d3ece7bd7c91",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "2a5b42b66b765ea0ba9511a3db222cd595c8cbd9a7eed3441903a1298202e20c",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-split-scenario-core-family-modules_proposal_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate design 2026-06-30-split-scenario-core-family-modules --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-split-scenario-core-family-modules",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "512e1b1e8e0d7d8c4b46e1db45afdf3f9442f66828184dabdaca077b0e280d92",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "b38e873f3d2d77a21033321da43ceec336bf2ab868e53e767fae7bdc74a11d62",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-split-scenario-core-family-modules_design_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate tasks 2026-06-30-split-scenario-core-family-modules --root /home/brittonr/git/mc
+{
+  "change": "2026-06-30-split-scenario-core-family-modules",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7e194f8439a9c23a84799a87f67da8ea429dc2f2cbc3956d2e5a0e3fc91ccdb8",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "63cd96fd3777e83eafb16dc18f00553df9ebbcd039f2d354c3dc84e99d08bc8c",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+2026-06-30-split-scenario-core-family-modules_tasks_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 6,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 12,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

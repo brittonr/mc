@@ -15,6 +15,46 @@ const INVALID_GRAPH_EDGE: ScenarioBehaviorEdge = ("protocol_detected", "missing_
 const REQUIRED_METADATA_NON_CLAIM: &str = "broad_minecraft_compatibility";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct RepresentativeFamilyCase {
+    scenario: Scenario,
+    family: ScenarioFamily,
+    family_name: &'static str,
+}
+
+const REPRESENTATIVE_FAMILY_CASES: &[RepresentativeFamilyCase] = &[
+    RepresentativeFamilyCase {
+        scenario: Scenario::FlagScoreRepeat,
+        family: ScenarioFamily::Ctf,
+        family_name: "ctf",
+    },
+    RepresentativeFamilyCase {
+        scenario: Scenario::InventoryInteraction,
+        family: ScenarioFamily::Inventory,
+        family_name: "inventory",
+    },
+    RepresentativeFamilyCase {
+        scenario: Scenario::SurvivalBreakPlacePickup,
+        family: ScenarioFamily::Survival,
+        family_name: "survival",
+    },
+    RepresentativeFamilyCase {
+        scenario: Scenario::ProjectileDamageAttribution,
+        family: ScenarioFamily::CombatProjectileEquipment,
+        family_name: "combat-projectile-equipment",
+    },
+    RepresentativeFamilyCase {
+        scenario: Scenario::NegativeInventoryInvalidClick,
+        family: ScenarioFamily::Negative,
+        family_name: "negative",
+    },
+    RepresentativeFamilyCase {
+        scenario: Scenario::McpControlledSmoke,
+        family: ScenarioFamily::Mcp,
+        family_name: "mcp",
+    },
+];
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct RepresentativeMetadataCase {
     scenario: Scenario,
     run_strategy: ScenarioRunStrategy,
@@ -173,6 +213,14 @@ fn static_scenario_specs_validate_all_supported_behavior() {
         for alias in spec.aliases {
             assert_eq!(parse_scenario(alias), Ok(spec.scenario));
         }
+    }
+}
+
+#[test]
+fn scenario_family_classification_names_focused_owners() {
+    for case in REPRESENTATIVE_FAMILY_CASES {
+        assert_eq!(scenario_family(case.scenario), case.family);
+        assert_eq!(scenario_family_name(case.family), case.family_name);
     }
 }
 

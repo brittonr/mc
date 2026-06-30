@@ -1,7 +1,7 @@
-67961e0fcb73f3bf9e36173135af7fee0bae451d8b8ce7e2f1d01e7dece0c5a1  compat/runner/src/lib.rs
+6c787fac303f2b69a356945b41074939a55c91db9720d542d496581b48451581  compat/runner/src/lib.rs
 2ea1742a23a3e3e4e45ecb6f31feb8be94c5c0130379be25a1225f5f145f26d7  compat/runner/src/receipts.rs
 0603fb1d15ed5e5f085c016831363671364a0ceb89be4ffbc0514b49f7f09b81  compat/runner/src/receipts_colocated_tests.rs
-9dcc970bb965bf2535b0e1277a16cd656a141eb5c7506925791025e72c149f94  cairn/specs/mc-compatibility/spec.md
+29aff128ba946156edb6424c22c154cfb6c29125f84178f95726e7c6e76a69a6  cairn/specs/mc-compatibility/spec.md
 9c3ff1b3c6f1a030b88da6cd8b9b5b3928681912a16506e6d96856c7487141ec  cairn/archive/1970-01-01-separate-receipt-model-rendering/proposal.md
 aca3afc3fabb2b55ceca17287f5f66b893bba0182cd642cf41a651817be76725  cairn/archive/1970-01-01-separate-receipt-model-rendering/design.md
 1b0cb512be44cd8aea04d47f4f85abf44937eeaa7b1d633e6ccb231e087ae07e  cairn/archive/1970-01-01-separate-receipt-model-rendering/tasks.md

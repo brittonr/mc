@@ -67,6 +67,13 @@ pub(crate) enum Scenario {
     CtfSpawnTeamBalanceReset,
 }
 
+#[path = "scenario_families.rs"]
+mod scenario_families;
+pub(crate) use scenario_families::{scenario_family, scenario_family_name, ScenarioFamily};
+use scenario_families::{
+    validate_scenario_family_coverage, validate_targeted_packet_capability_family_coverage,
+};
+
 pub(crate) type ScenarioMilestone = (&'static str, &'static str);
 
 pub(crate) const COMBAT_CLIENT_COUNT_NEEDLE: &str = "mc_compat_combat_client_count=2";
@@ -3374,10 +3381,12 @@ pub(crate) fn server_required_milestones(scenario: Scenario) -> &'static [Scenar
 
 pub(crate) fn validate_static_scenario_specs(specs: &[ScenarioSpec]) -> Result<(), String> {
     validate_static_scenario_coverage(specs)?;
+    validate_scenario_family_coverage(specs)?;
     validate_static_scenario_rows(specs)?;
     validate_creative_inventory_live_contract(&CREATIVE_INVENTORY_LIVE_CONTRACT)?;
     validate_resource_pack_status_local_contract(&RESOURCE_PACK_STATUS_LOCAL_CONTRACT)?;
     validate_sign_editor_live_contract(&SIGN_EDITOR_LIVE_CONTRACT)?;
+    validate_targeted_packet_capability_family_coverage(SCENARIO_LIVE_CAPABILITIES)?;
     validate_static_live_capabilities(SCENARIO_LIVE_CAPABILITIES, specs)
 }
 

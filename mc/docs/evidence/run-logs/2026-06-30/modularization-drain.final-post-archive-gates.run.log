@@ -1,0 +1,44 @@
+$ nix run path:/home/brittonr/git/mc#cairn -- change list --root /home/brittonr/git/mc
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "/home/brittonr/git/mc"
+}
+change_list_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 6,
+  "valid": true
+}
+cairn_validate_exit_status=0
+$ nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 3082 ms: Could not connect to server; retrying in 44 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 110 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5001 milliseconds; retrying in 81 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 6 ms: Could not connect to server; retrying in 139 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4143 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/ipbdlc9ss3npqf3sd9xdxpyr5rpcqwik-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/ipbdlc9ss3npqf3sd9xdxpyr5rpcqwik-mc-compat-cairn-task-evidence.drv'...
+task_evidence_check_exit_status=0
+$ nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 2084 ms: Could not connect to server; retrying in 97 ms (attempt 1/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 14 ms (attempt 2/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 122 ms (attempt 3/5)
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Timeout was reached (28) Connection timed out after 5000 milliseconds; retrying in 93 ms (attempt 4/5)
+disabling binary cache 'http://100.100.103.95:5000' for 60 seconds
+warning: unable to download 'http://100.100.103.95:5000/nix-cache-info': Could not connect to server (7) Failed to connect to 100.100.103.95 port 5000 after 4125 ms: Could not connect to server
+this derivation will be built:
+  /nix/store/91c6dagv0hvbirg8mhc9qilj0i9r4iv5-mc-compat-evidence-manifest-refresh.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/91c6dagv0hvbirg8mhc9qilj0i9r4iv5-mc-compat-evidence-manifest-refresh.drv'...
+evidence_manifest_check_exit_status=0
+exit_status=0

@@ -22,6 +22,7 @@ mod scenario_contracts_generated;
 mod scenario_core;
 #[allow(dead_code)]
 mod scenario_manifest_generated;
+mod scenario_route;
 mod wire;
 
 use backend_shell::{
@@ -72,9 +73,7 @@ use receipts::{
     build_scenario_receipt_model, render_scenario_receipt_model_json,
     validate_rendered_scenario_receipt_json, validate_scenario_receipt_model, ScenarioReceiptInput,
 };
-use runner_config::{
-    ClientRunEvidence, Config, ManagedServer, Mode, ScenarioRouteRequest, ServerBackend,
-};
+use runner_config::{ClientRunEvidence, Config, ManagedServer, Mode, ServerBackend};
 use wire::{McRead, McWrite};
 
 use layout::{resolve_repository_layout, resolve_valence_source_dir, LayoutResolutionMode};
@@ -99,6 +98,7 @@ use scenario_core::{
 use scenario_core::{Scenario, ScenarioBehaviorKind, ScenarioRunStrategy, SCENARIO_SPECS};
 #[cfg(test)]
 use scenario_core::{ScenarioMilestone, ALL_SCENARIOS};
+pub(crate) use scenario_route::*;
 
 use std::env;
 use std::fs::{self, File};
@@ -442,55 +442,6 @@ const EQUIPMENT_MATRIX_NON_CLAIMS: &[&str] = &[
     "enchantment_status_effects",
     "production_readiness",
     "full_equipment_semantics",
-];
-
-const SCENARIO_ROUTER_COMMAND: &str = "scenario";
-const SCENARIO_ROUTER_RUN_SUBCOMMAND: &str = "run";
-const SCENARIO_ROUTER_BACKEND_FLAG: &str = "--backend";
-const SCENARIO_ROUTER_SERVER_BACKEND_FLAG: &str = "--server-backend";
-const SCENARIO_ROUTER_RECEIPT_FLAG: &str = "--receipt";
-const SCENARIO_ROUTER_FAILURE_BUNDLE_FLAG: &str = "--failure-bundle";
-const SCENARIO_ROUTER_TIMEOUT_FLAG: &str = "--timeout";
-const SCENARIO_ROUTER_PACKET_CAPTURE_FLAG: &str = "--packet-capture-summary";
-const SCENARIO_ROUTER_PROXY_ROUTE_FLAG: &str = "--proxy-route";
-const SCENARIO_ROUTER_PROXY_FORWARDING_MODE_FLAG: &str = "--proxy-forwarding-mode";
-const SCENARIO_ROUTER_DRY_RUN_FLAG: &str = "--dry-run";
-const SCENARIO_ROUTER_RUN_FLAG: &str = "--run";
-const SCENARIO_ROUTER_LIVE_FLAG: &str = "--live";
-const SCENARIO_ROUTER_RECEIPT_EQUALS_PREFIX: &str = "--receipt=";
-const SCENARIO_ROUTER_FAILURE_BUNDLE_EQUALS_PREFIX: &str = "--failure-bundle=";
-const SCENARIO_ROUTER_TIMEOUT_EQUALS_PREFIX: &str = "--timeout=";
-const SCENARIO_ROUTER_BACKEND_EQUALS_PREFIX: &str = "--backend=";
-const SCENARIO_ROUTER_SERVER_BACKEND_EQUALS_PREFIX: &str = "--server-backend=";
-const SCENARIO_ROUTER_PROXY_ROUTE_EQUALS_PREFIX: &str = "--proxy-route=";
-const SCENARIO_ROUTER_PROXY_FORWARDING_MODE_EQUALS_PREFIX: &str = "--proxy-forwarding-mode=";
-const SCENARIO_ROUTER_LEGACY_SCENARIO_FLAG: &str = "--scenario";
-const SCENARIO_ROUTER_LEGACY_SCENARIO_EQUALS_PREFIX: &str = "--scenario=";
-const SCENARIO_ROUTER_SUBCOMMAND_INDEX: usize = 1;
-const SCENARIO_ROUTER_SCENARIO_INDEX: usize = 2;
-const SCENARIO_ROUTER_OPTION_START_INDEX: usize = 3;
-const SCENARIO_ROUTER_MISSING_VALUE: &str = "missing value";
-const SCENARIO_ROUTER_NON_CLAIM_BROAD_COMPATIBILITY: &str = "broad_minecraft_compatibility_false";
-const SCENARIO_ROUTER_NON_CLAIM_PRODUCTION_READINESS: &str = "production_readiness_false";
-const SCENARIO_ROUTER_NON_CLAIM_SEMANTIC_EQUIVALENCE: &str = "semantic_equivalence_false";
-const SCENARIO_ROUTER_NON_CLAIMS: &[&str] = &[
-    SCENARIO_ROUTER_NON_CLAIM_BROAD_COMPATIBILITY,
-    SCENARIO_ROUTER_NON_CLAIM_PRODUCTION_READINESS,
-    SCENARIO_ROUTER_NON_CLAIM_SEMANTIC_EQUIVALENCE,
-];
-const SCENARIO_ROUTER_BLOCKED_COMMAND_FLAGS: &[&str] = &[
-    "--run-matrix",
-    "--build-client",
-    "--status-only",
-    "--status",
-    "--cleanup",
-    "--stop",
-    "--compare-receipts",
-];
-const SCENARIO_ROUTER_BLOCKED_OVERCLAIM_FLAGS: &[&str] = &[
-    "--claim-full-compatibility",
-    "--claim-production-readiness",
-    "--claim-semantic-equivalence",
 ];
 
 const VALENCE_DEFAULT_SERVER_PORT: u16 = 25565;
@@ -879,232 +830,6 @@ fn validate_negative_live_rail_preflight(cfg: &Config) -> Result<(), String> {
         "negative live rail preflight failed: missing={:?} bound_violations={:?}",
         evidence.missing_fields, evidence.bound_violations
     ))
-}
-
-fn parse_scenario_route_request(args: &[String]) -> Result<Option<ScenarioRouteRequest>, String> {
-    let Some(command) = args.first() else {
-        return Ok(None);
-    };
-    if command != SCENARIO_ROUTER_COMMAND {
-        return Ok(None);
-    }
-    let subcommand = args
-        .get(SCENARIO_ROUTER_SUBCOMMAND_INDEX)
-        .ok_or_else(|| scenario_router_usage_error("missing subcommand"))?;
-    if subcommand != SCENARIO_ROUTER_RUN_SUBCOMMAND {
-        return Err(scenario_router_usage_error(&format!(
-            "unknown subcommand: {subcommand}"
-        )));
-    }
-    let scenario_value = args
-        .get(SCENARIO_ROUTER_SCENARIO_INDEX)
-        .ok_or_else(|| scenario_router_usage_error("missing scenario"))?;
-    let scenario = parse_scenario(scenario_value)?;
-    parse_scenario_route_options(scenario, &args[SCENARIO_ROUTER_OPTION_START_INDEX..])
-}
-
-fn parse_scenario_route_options(
-    scenario: Scenario,
-    args: &[String],
-) -> Result<Option<ScenarioRouteRequest>, String> {
-    let mut request = ScenarioRouteRequest {
-        scenario,
-        backend: ServerBackend::Valence,
-        mode: Mode::DryRun,
-        receipt_path: None,
-        timeout_secs: None,
-        packet_capture_summary: false,
-        proxy_route: None,
-        proxy_forwarding_mode: None,
-        failure_bundle_path: None,
-        passthrough_args: Vec::new(),
-    };
-    let mut iter = args.iter();
-    while let Some(arg) = iter.next() {
-        if let Some(overclaim) = blocked_scenario_route_overclaim_flag(arg) {
-            return Err(format!(
-                "scenario router rejects overclaiming option {overclaim}; broad compatibility, production readiness, and semantic equivalence claims remain false"
-            ));
-        }
-        if SCENARIO_ROUTER_BLOCKED_COMMAND_FLAGS.contains(&arg.as_str()) {
-            return Err(format!(
-                "scenario router blocks non-scenario command option {arg}; use mc-compat-runner {SCENARIO_ROUTER_COMMAND} {SCENARIO_ROUTER_RUN_SUBCOMMAND} <scenario>"
-            ));
-        }
-        match arg.as_str() {
-            SCENARIO_ROUTER_DRY_RUN_FLAG => request.mode = Mode::DryRun,
-            SCENARIO_ROUTER_RUN_FLAG | SCENARIO_ROUTER_LIVE_FLAG => request.mode = Mode::Run,
-            SCENARIO_ROUTER_BACKEND_FLAG | SCENARIO_ROUTER_SERVER_BACKEND_FLAG => {
-                let value = scenario_route_option_value(arg, iter.next())?;
-                request.backend = parse_backend(value)?;
-            }
-            SCENARIO_ROUTER_RECEIPT_FLAG => {
-                let value = scenario_route_option_value(arg, iter.next())?;
-                request.receipt_path = Some(parse_scenario_route_receipt_path(value)?);
-            }
-            SCENARIO_ROUTER_FAILURE_BUNDLE_FLAG => {
-                let value = scenario_route_option_value(arg, iter.next())?;
-                request.failure_bundle_path =
-                    Some(parse_scenario_route_failure_bundle_path(value)?);
-            }
-            SCENARIO_ROUTER_TIMEOUT_FLAG => {
-                let value = scenario_route_option_value(arg, iter.next())?;
-                request.timeout_secs = Some(parse_client_timeout_secs(
-                    value,
-                    SCENARIO_ROUTER_TIMEOUT_FLAG,
-                )?);
-            }
-            SCENARIO_ROUTER_PACKET_CAPTURE_FLAG => request.packet_capture_summary = true,
-            SCENARIO_ROUTER_PROXY_ROUTE_FLAG => {
-                let value = scenario_route_option_value(arg, iter.next())?;
-                request.proxy_route = Some(value.to_string());
-            }
-            SCENARIO_ROUTER_PROXY_FORWARDING_MODE_FLAG => {
-                let value = scenario_route_option_value(arg, iter.next())?;
-                request.proxy_forwarding_mode = Some(value.to_string());
-            }
-            SCENARIO_ROUTER_LEGACY_SCENARIO_FLAG => {
-                return Err("scenario router takes the scenario as a positional argument; do not also pass --scenario".to_string());
-            }
-            _ if arg.starts_with(SCENARIO_ROUTER_LEGACY_SCENARIO_EQUALS_PREFIX) => {
-                return Err("scenario router takes the scenario as a positional argument; do not also pass --scenario".to_string());
-            }
-            _ if arg.starts_with(SCENARIO_ROUTER_BACKEND_EQUALS_PREFIX) => {
-                let value = &arg[SCENARIO_ROUTER_BACKEND_EQUALS_PREFIX.len()..];
-                request.backend = parse_backend(value)?;
-            }
-            _ if arg.starts_with(SCENARIO_ROUTER_SERVER_BACKEND_EQUALS_PREFIX) => {
-                let value = &arg[SCENARIO_ROUTER_SERVER_BACKEND_EQUALS_PREFIX.len()..];
-                request.backend = parse_backend(value)?;
-            }
-            _ if arg.starts_with(SCENARIO_ROUTER_RECEIPT_EQUALS_PREFIX) => {
-                let value = &arg[SCENARIO_ROUTER_RECEIPT_EQUALS_PREFIX.len()..];
-                request.receipt_path = Some(parse_scenario_route_receipt_path(value)?);
-            }
-            _ if arg.starts_with(SCENARIO_ROUTER_FAILURE_BUNDLE_EQUALS_PREFIX) => {
-                let value = &arg[SCENARIO_ROUTER_FAILURE_BUNDLE_EQUALS_PREFIX.len()..];
-                request.failure_bundle_path =
-                    Some(parse_scenario_route_failure_bundle_path(value)?);
-            }
-            _ if arg.starts_with(SCENARIO_ROUTER_TIMEOUT_EQUALS_PREFIX) => {
-                let value = &arg[SCENARIO_ROUTER_TIMEOUT_EQUALS_PREFIX.len()..];
-                request.timeout_secs = Some(parse_client_timeout_secs(
-                    value,
-                    SCENARIO_ROUTER_TIMEOUT_FLAG,
-                )?);
-            }
-            _ if arg.starts_with(SCENARIO_ROUTER_PROXY_ROUTE_EQUALS_PREFIX) => {
-                request.proxy_route =
-                    Some(arg[SCENARIO_ROUTER_PROXY_ROUTE_EQUALS_PREFIX.len()..].to_string());
-            }
-            _ if arg.starts_with(SCENARIO_ROUTER_PROXY_FORWARDING_MODE_EQUALS_PREFIX) => {
-                request.proxy_forwarding_mode = Some(
-                    arg[SCENARIO_ROUTER_PROXY_FORWARDING_MODE_EQUALS_PREFIX.len()..].to_string(),
-                );
-            }
-            _ => request.passthrough_args.push(arg.clone()),
-        }
-    }
-    Ok(Some(request))
-}
-
-fn scenario_route_option_value<'a>(
-    flag: &str,
-    value: Option<&'a String>,
-) -> Result<&'a str, String> {
-    value
-        .map(String::as_str)
-        .ok_or_else(|| format!("{flag} requires a value; got {SCENARIO_ROUTER_MISSING_VALUE}"))
-}
-
-fn parse_scenario_route_receipt_path(value: &str) -> Result<PathBuf, String> {
-    let path = PathBuf::from(value);
-    validate_scenario_route_output_path(&path, "receipt path")?;
-    Ok(path)
-}
-
-fn parse_scenario_route_failure_bundle_path(value: &str) -> Result<PathBuf, String> {
-    let path = PathBuf::from(value);
-    validate_scenario_route_output_path(&path, "failure bundle path")?;
-    Ok(path)
-}
-
-fn validate_scenario_route_output_path(path: &Path, label: &str) -> Result<(), String> {
-    if path.as_os_str().is_empty() {
-        return Err(format!("scenario router {label} is empty"));
-    }
-    if path
-        .components()
-        .any(|component| matches!(component, std::path::Component::ParentDir))
-    {
-        return Err(format!(
-            "scenario router {label} contains parent traversal: {}",
-            path.display()
-        ));
-    }
-    Ok(())
-}
-
-fn blocked_scenario_route_overclaim_flag(arg: &str) -> Option<&'static str> {
-    SCENARIO_ROUTER_BLOCKED_OVERCLAIM_FLAGS
-        .iter()
-        .copied()
-        .find(|flag| {
-            arg == *flag
-                || arg
-                    .strip_prefix(*flag)
-                    .is_some_and(|rest| rest.starts_with('='))
-        })
-}
-
-fn scenario_router_usage_error(reason: &str) -> String {
-    format!(
-        "scenario router usage error: {reason}; expected mc-compat-runner {SCENARIO_ROUTER_COMMAND} {SCENARIO_ROUTER_RUN_SUBCOMMAND} <scenario> [{SCENARIO_ROUTER_DRY_RUN_FLAG}|{SCENARIO_ROUTER_RUN_FLAG}|{SCENARIO_ROUTER_LIVE_FLAG}] [{SCENARIO_ROUTER_BACKEND_FLAG} valence|paper] [{SCENARIO_ROUTER_RECEIPT_FLAG} PATH] [{SCENARIO_ROUTER_TIMEOUT_FLAG} SECS]"
-    )
-}
-
-fn scenario_route_legacy_args(route: &ScenarioRouteRequest) -> Vec<String> {
-    let mut args = Vec::new();
-    args.push(format!("--{}", mode_name(route.mode)));
-    args.push(SCENARIO_ROUTER_SERVER_BACKEND_FLAG.to_string());
-    args.push(backend_name(route.backend).to_string());
-    args.push(SCENARIO_ROUTER_LEGACY_SCENARIO_FLAG.to_string());
-    args.push(scenario_name(route.scenario).to_string());
-    if let Some(path) = &route.receipt_path {
-        args.push(SCENARIO_ROUTER_RECEIPT_FLAG.to_string());
-        args.push(path.display().to_string());
-    }
-    if let Some(path) = &route.failure_bundle_path {
-        args.push(SCENARIO_ROUTER_FAILURE_BUNDLE_FLAG.to_string());
-        args.push(path.display().to_string());
-    }
-    if let Some(timeout_secs) = route.timeout_secs {
-        args.push(SCENARIO_ROUTER_TIMEOUT_FLAG.to_string());
-        args.push(timeout_secs.to_string());
-    }
-    if route.packet_capture_summary {
-        args.push(SCENARIO_ROUTER_PACKET_CAPTURE_FLAG.to_string());
-    }
-    if let Some(proxy_route) = &route.proxy_route {
-        args.push(SCENARIO_ROUTER_PROXY_ROUTE_FLAG.to_string());
-        args.push(proxy_route.clone());
-    }
-    if let Some(proxy_forwarding_mode) = &route.proxy_forwarding_mode {
-        args.push(SCENARIO_ROUTER_PROXY_FORWARDING_MODE_FLAG.to_string());
-        args.push(proxy_forwarding_mode.clone());
-    }
-    args.extend(route.passthrough_args.clone());
-    args
-}
-
-fn parse_client_timeout_secs(value: &str, flag: &str) -> Result<u64, String> {
-    let timeout_secs = value
-        .parse::<u64>()
-        .map_err(|err| format!("parse {flag}: {err}"))?;
-    if timeout_secs == 0 {
-        return Err(format!("{flag} must be greater than zero"));
-    }
-    Ok(timeout_secs)
 }
 
 impl Config {
@@ -3520,14 +3245,6 @@ fn run_cmd(cfg: &Config, cmd: &mut Command) -> Result<(), String> {
         Ok(())
     } else {
         Err(format!("command {cmd:?} failed with {status}"))
-    }
-}
-
-fn parse_backend(value: &str) -> Result<ServerBackend, String> {
-    match value {
-        "valence" => Ok(ServerBackend::Valence),
-        "paper" => Ok(ServerBackend::Paper),
-        other => Err(format!("unknown server backend: {other}")),
     }
 }
 
