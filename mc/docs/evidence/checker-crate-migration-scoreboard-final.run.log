@@ -1,0 +1,70 @@
+command=final scoreboard checker crate migration validation
+cwd=/home/brittonr/git/mc
+/home/brittonr/git/mc/tools/checkers
+/home/brittonr/git/mc/tools/checkers
+    Blocking waiting for file lock on artifact directory
+   Compiling mc-compat-checkers v0.1.0 (/home/brittonr/git/mc/tools/checkers)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.05s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/mc_compat_checkers-c5a6de166b645173)
+
+running 18 tests
+test checkers::block_entity_sign_packet_family::tests::negative_fixture_rejects_overclaim ... ok
+test checkers::block_entity_sign_packet_family::tests::valid_fixture_passes ... ok
+test checkers::inventory_drag_transactions::tests::negative_fixture_rejects_overclaim ... ok
+test checkers::inventory_stack_split_merge::tests::negative_fixture_rejects_overclaim ... ok
+test checkers::inventory_stack_split_merge::tests::valid_fixture_passes ... ok
+test checkers::inventory_drag_transactions::tests::valid_fixture_passes ... ok
+test cli::tests::missing_args_return_usage ... ok
+test checkers::scoreboard_team_packet_family::tests::negative_fixture_rejects_overclaim ... ok
+test cli::tests::self_test_flag_runs_checker_self_test ... ok
+test key_value::tests::key_value_record_parses_valid_rows_and_ignores_comments ... ok
+test key_value::tests::helpers_accept_valid_records_and_reject_weak_evidence ... ok
+test checkers::scoreboard_team_packet_family::tests::valid_fixture_passes ... ok
+test key_value::tests::sequence_helpers_parse_and_reject_invalid_state_ids ... ok
+test key_value::tests::key_value_record_rejects_malformed_empty_and_duplicate_keys ... ok
+test checkers::inventory_stack_split_merge::tests::self_test_runs_positive_and_negative_fixtures ... ok
+test checkers::block_entity_sign_packet_family::tests::self_test_runs_positive_and_negative_fixtures ... ok
+test checkers::scoreboard_team_packet_family::tests::self_test_runs_positive_and_negative_fixtures ... ok
+test checkers::inventory_drag_transactions::tests::self_test_runs_positive_and_negative_fixtures ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/check_block_entity_sign_packet_family.rs (/home/brittonr/.cargo-target/debug/deps/check_block_entity_sign_packet_family-3f0f54887c0758bd)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/check_inventory_drag_transactions_evidence.rs (/home/brittonr/.cargo-target/debug/deps/check_inventory_drag_transactions_evidence-fd7e061350573844)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/check_inventory_stack_split_merge_evidence.rs (/home/brittonr/.cargo-target/debug/deps/check_inventory_stack_split_merge_evidence-b775a927b3ae8af3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/check_scoreboard_team_packet_family.rs (/home/brittonr/.cargo-target/debug/deps/check_scoreboard_team_packet_family-f2882f62692892f7)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests mc_compat_checkers
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+/home/brittonr/git/mc/tools/checkers
+self-test ok
+/home/brittonr/git/mc/tools/checkers
+../../docs/evidence/scoreboard-team-packet-family-2026-06-06.kv: ok
+self-test ok
+docs/evidence/scoreboard-team-packet-family-2026-06-06.kv: ok
+checker framework usage self-test passed
+checker framework usage passed: 1 framework-backed checkers; 10 legacy Python checkers inventoried
+exit_status=0

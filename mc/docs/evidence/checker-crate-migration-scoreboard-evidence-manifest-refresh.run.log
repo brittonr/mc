@@ -1,0 +1,7 @@
+command=refresh stale evidence manifests after checker crate accepted spec merge
+cwd=/home/brittonr/git/mc
+evidence manifest refresh self-test ok: positive and negative fixtures exercised
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=567; entries=5992; current=5992; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=79
+evidence manifest self-test ok: positive and negative fixtures exercised
+evidence manifests ok: 567 manifests, 5992 entries, 143 receipts scanned
+exit_status=0

@@ -12,10 +12,7 @@ const CHECKER_PREFIX: &str = "check_";
 const PYTHON_SUFFIX: &str = ".py";
 const SUCCESS: ExitCode = ExitCode::SUCCESS;
 const FAILURE: ExitCode = ExitCode::FAILURE;
-const FRAMEWORK_BACKED_CHECKERS: &[&str] = &[
-    "tools/check_scoreboard_team_packet_family.rs",
-    "tools/check_movement_packet_family.rs",
-];
+const FRAMEWORK_BACKED_CHECKERS: &[&str] = &["tools/check_movement_packet_family.rs"];
 const LEGACY_PYTHON_CHECKERS: &[&str] = &[
     "tools/check_armor_modifier_matrix.py",
     "tools/check_ctf_rule_ledger.py",

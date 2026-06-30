@@ -19,3 +19,7 @@ path = "src/bin/check_inventory_stack_split_merge_evidence.rs"
 [[bin]]
 name = "check-inventory-drag-transactions-evidence"
 path = "src/bin/check_inventory_drag_transactions_evidence.rs"
+
+[[bin]]
+name = "check-scoreboard-team-packet-family"
+path = "src/bin/check_scoreboard_team_packet_family.rs"

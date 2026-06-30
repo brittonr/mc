@@ -1,0 +1,5 @@
+command=final task evidence check for checker crate migration
+cwd=/home/brittonr/git/mc
+task evidence self-test passed: positive fixtures and fail-closed mutations passed
+task evidence gate passed: 6 completed tasks checked across 1 task files
+exit_status=0

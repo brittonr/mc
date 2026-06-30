@@ -34,5 +34,5 @@ f1600c9059d5d98fb217a14fd9801c7d508d5f2bbc89f5d7e96c6659d037c0e9  compat/config/
 336dff4dcc992f65580fb1f40f75f9ab49f8eec66275695f29bbc82431718299  flake.nix
 7a319f0f8e552660683840c3ffe7262c771554124e8ab70ab8d170d78c97608c  clients/stevenarella/src/server/mod.rs
 469e741d8fedd0a842284ba90790216e85ea66d579416907fbda31c518140851  servers/valence/examples/ctf.rs
-9f5e3bab83ce6ec5ab07eaefd5f1958a8fe7ff2c9f63a9515ad9a1460eda9f47  cairn/specs/mc-compatibility/spec.md
+9dcc970bb965bf2535b0e1277a16cd656a141eb5c7506925791025e72c149f94  cairn/specs/mc-compatibility/spec.md
 ee91277444815ac51474d4d8f6c22df83f1c871b8ccf4ee4500f4b567e8db095  cairn/archive/1970-01-01-ctf-invalid-action-live-breadth-proof/tasks.md

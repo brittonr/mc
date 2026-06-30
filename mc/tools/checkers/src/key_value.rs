@@ -5,7 +5,20 @@ pub const TRUE_VALUE: &str = "true";
 pub const CLEAN_STATUS: &str = "clean";
 pub const DRY_RUN_REV: &str = "dry-run";
 pub const UNKNOWN_REV: &str = "unknown";
+pub const PENDING_REVIEW_REV: &str = "pending-review";
 const FIRST_LINE_NUMBER: usize = 1;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct ExpectedField {
+    pub key: &'static str,
+    pub value: &'static str,
+}
+
+impl ExpectedField {
+    pub const fn new(key: &'static str, value: &'static str) -> Self {
+        Self { key, value }
+    }
+}
 
 pub trait KeyValueEvidence {
     fn value(&self, key: &str) -> Option<&str>;
@@ -71,12 +84,42 @@ pub fn require_exact<E: KeyValueEvidence + ?Sized>(
     }
 }
 
+pub fn require_exact_fields<E: KeyValueEvidence + ?Sized>(
+    evidence: &E,
+    diagnostics: &mut Vec<String>,
+    fields: &[ExpectedField],
+) {
+    for field in fields {
+        require_exact(evidence, diagnostics, field.key, field.value);
+    }
+}
+
 pub fn require_ok<E: KeyValueEvidence + ?Sized>(
     evidence: &E,
     diagnostics: &mut Vec<String>,
     key: &str,
 ) {
     require_exact(evidence, diagnostics, key, OK_VALUE);
+}
+
+pub fn require_ok_fields<E: KeyValueEvidence + ?Sized>(
+    evidence: &E,
+    diagnostics: &mut Vec<String>,
+    keys: &[&str],
+) {
+    for key in keys {
+        require_ok(evidence, diagnostics, key);
+    }
+}
+
+pub fn require_true_fields<E: KeyValueEvidence + ?Sized>(
+    evidence: &E,
+    diagnostics: &mut Vec<String>,
+    keys: &[&str],
+) {
+    for key in keys {
+        require_exact(evidence, diagnostics, key, TRUE_VALUE);
+    }
 }
 
 pub fn require_clean_child_revision<E: KeyValueEvidence + ?Sized>(
@@ -86,7 +129,11 @@ pub fn require_clean_child_revision<E: KeyValueEvidence + ?Sized>(
     status_key: &str,
 ) {
     match evidence.value(rev_key) {
-        Some(rev) if !rev.is_empty() && rev != DRY_RUN_REV && rev != UNKNOWN_REV => {}
+        Some(rev)
+            if !rev.is_empty()
+                && rev != DRY_RUN_REV
+                && rev != UNKNOWN_REV
+                && rev != PENDING_REVIEW_REV => {}
         Some(rev) => diagnostics.push(format!("{rev_key} must be concrete, got {rev}")),
         None => diagnostics.push(format!("missing {rev_key}")),
     }
@@ -212,6 +259,12 @@ mod tests {
             (
                 "dry run revision",
                 SAMPLE_VALID_RECORD.replace("child.sample.rev=abcdef", "child.sample.rev=dry-run"),
+                "child.sample.rev must be concrete",
+            ),
+            (
+                "pending review revision",
+                SAMPLE_VALID_RECORD
+                    .replace("child.sample.rev=abcdef", "child.sample.rev=pending-review"),
                 "child.sample.rev must be concrete",
             ),
             (

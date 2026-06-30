@@ -1,0 +1,153 @@
+command=final closeout validation for checker crate migration archive
+cwd=/home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 6,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 12,
+  "valid": true
+}
+evidence manifest self-test ok: positive and negative fixtures exercised
+evidence manifests ok: 567 manifests, 5992 entries, 143 receipts scanned
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/2026-06-30-extract-compat-runner-shell-modules/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "2026-06-30-extract-compat-runner-shell-modules",
+      "path": "./cairn/changes/2026-06-30-extract-compat-runner-shell-modules",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/2026-06-30-factor-nix-flake-surfaces/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "2026-06-30-factor-nix-flake-surfaces",
+      "path": "./cairn/changes/2026-06-30-factor-nix-flake-surfaces",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/2026-06-30-modularize-stevenarella-server-runtime/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "2026-06-30-modularize-stevenarella-server-runtime",
+      "path": "./cairn/changes/2026-06-30-modularize-stevenarella-server-runtime",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/2026-06-30-modularize-valence-compat-fixtures/specs/valence-bevy-ecs/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "2026-06-30-modularize-valence-compat-fixtures",
+      "path": "./cairn/changes/2026-06-30-modularize-valence-compat-fixtures",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/2026-06-30-reduce-stevenarella-hotspot-modules/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "2026-06-30-reduce-stevenarella-hotspot-modules",
+      "path": "./cairn/changes/2026-06-30-reduce-stevenarella-hotspot-modules",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "./cairn/changes/2026-06-30-split-scenario-core-family-modules/specs/mc-compatibility/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "2026-06-30-split-scenario-core-family-modules",
+      "path": "./cairn/changes/2026-06-30-split-scenario-core-family-modules",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 6,
+        "total": 6,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+exit_status=0

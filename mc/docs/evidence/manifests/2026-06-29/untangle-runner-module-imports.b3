@@ -1,6 +1,6 @@
 9f9f74ef4777b1e50971e2569a292fc084bd928db58e75ff56b3f59fa21e613a  cairn/archive/2026-06-29-untangle-runner-module-imports/tasks.md
 3486c9ec49c7795bccc362fd2677293ee2d355694573b39593daeef1a0a7403f  cairn/archive/2026-06-29-untangle-runner-module-imports/specs/mc-compatibility/spec.md
-9f5e3bab83ce6ec5ab07eaefd5f1958a8fe7ff2c9f63a9515ad9a1460eda9f47  cairn/specs/mc-compatibility/spec.md
+9dcc970bb965bf2535b0e1277a16cd656a141eb5c7506925791025e72c149f94  cairn/specs/mc-compatibility/spec.md
 9aa3822e95db8df487214026cde4c4544526ba5379fb1e2533f9c137a9a371a7  compat/runner/src/backend_shell.rs
 03bea75f6cfd1ff222d0710b2fc7ed339723109a11b739a95e3cad064913b1d4  compat/runner/src/client_driver.rs
 953e1c46595ceceaf701f4d208553cdf4e55f26f4068e7d055bf174615e1acf4  compat/runner/src/config_patches.rs
