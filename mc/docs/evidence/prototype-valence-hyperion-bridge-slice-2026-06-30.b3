@@ -1,0 +1,10 @@
+bb665145f75781c50c18bec72f7c0759593e115abb267d3aa46665ab30abaed2  docs/evidence/prototype-valence-hyperion-bridge-slice-2026-06-30.md
+001788e8c2e38a8233bfa07eeafc33d371e7f9bfe1d0999cfb2be9b92175e828  servers/valence/crates/valence_network/src/bridge_slice.rs
+8a8f25c42f566c87e9ee58c96e6946dfc55567137b7dd9259fbb8e10e3041614  servers/valence/crates/valence_network/src/lib.rs
+6aad920555fca6364d44d90d615f76cb8717e76835e73e495f65ce841e00c97f  servers/valence/crates/valence_network/README.md
+efab0c97bf1357213be993fd9b864a5b248f978576a8c9b842578165a41bae11  docs/evidence/prototype-valence-hyperion-bridge-slice-baseline-valence-network-2026-06-30.run.log
+4f20b93ad31670f3e88b3f7c861b10704e363a5502af1827bc5e652ba2d410aa  docs/evidence/prototype-valence-hyperion-bridge-slice-fmt-check-2026-06-30.run.log
+5afc8a75c0e5cdfa373517b9bb0728725a58739b555be996050c49b056022897  docs/evidence/prototype-valence-hyperion-bridge-slice-tests-final-2026-06-30.run.log
+80908c9ae4e2ab02bea3dc0081c4d3dbda0ec0de1c3445573ce786cdc954ae15  docs/evidence/prototype-valence-hyperion-bridge-slice-valence-network-tests-2026-06-30.run.log
+038c219e463bca2617d15623f59181456973bbf4129cfe1ce7cc5c7b77884697  docs/evidence/prototype-valence-hyperion-bridge-slice-valence-network-clippy-nodeps-2026-06-30.run.log
+42cccd09165f543416fc7ac3b8b5ccf7d22ebf8ad383925cb6ee0154835836c7  docs/evidence/prototype-valence-hyperion-bridge-slice-cairn-gates-2026-06-30.run.log

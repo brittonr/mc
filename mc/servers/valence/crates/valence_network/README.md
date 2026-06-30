@@ -6,6 +6,12 @@ This covers everything in the "handshaking", "status" and "login" stages of the 
 
 Valence users can choose not to include `valence_network` in their project. This could be useful for testing or using Valence as an integrated server in a client.
 
+## Optional Valence/Hyperion bridge-slice fixture harness
+
+`valence_network::bridge_slice` provides a default-disabled prototype boundary for Valence/Hyperion bridge experiments. The pure core plans join/chunk delivery, movement mapping, and chat/broadcast routing from explicit owner-provided summaries, then returns shell intents or deterministic diagnostics. It does not touch sockets, ECS state, packet writers, clocks, logging, or runtime scheduling.
+
+The fixture harness is adapter-owned and opt-in. Default Valence direct networking remains unchanged when the harness is disabled or unused. Hyperion runtime, proxy transport, Bedwars/game-mode logic, and rkyv wire compatibility remain non-claims unless a later accepted change adds evidence.
+
 ## Optional profile and skin cache helpers
 
 `valence_network::profile_cache` provides optional helpers for applications that want to cache profile properties such as signed `textures` data outside the authentication path. The default `NetworkPlugin` login behavior is unchanged: online mode still authenticates with the configured session server, and Velocity/BungeeCord profile forwarding still follows the existing connection-mode rules.

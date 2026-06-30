@@ -1649,3 +1649,262 @@ r[valence_hyperion_integration.packet_buffer_reuse.validation.log]
 - GIVEN packet buffer reuse work is ready to archive
 - WHEN reviewers inspect evidence logs
 - THEN logs show baseline and final benchmarks, positive encode fixtures, negative error-reset fixtures, compression edge tests, direct-mode regressions, selected dry runs if behavior changed, and Cairn validation.
+
+### Requirement: Integration roadmap inventory
+
+r[valence_hyperion_integration.roadmap.inventory] Valence/Hyperion roadmap work MUST inventory accepted specs, archived integration Cairns, active Cairns, Hyperion architecture docs, Valence architecture docs, and the Hyperion integration boundary before publishing a convergence sequence.
+
+#### Scenario: Roadmap sources are reviewable
+
+r[valence_hyperion_integration.roadmap.inventory.reviewable]
+- GIVEN roadmap work is selected
+- WHEN reviewers inspect the inventory
+- THEN the relevant accepted specs, archived Cairns, active Cairns, Hyperion docs, Valence docs, boundary rules, known stale evidence, and existing non-claims are recorded.
+
+### Requirement: Integration ownership map
+
+r[valence_hyperion_integration.roadmap.ownership] The roadmap MUST identify Valence-owned, Hyperion-owned, adapter-owned, and reference-only responsibilities before proposing implementation slices.
+
+#### Scenario: Ownership prevents core collapse
+
+r[valence_hyperion_integration.roadmap.ownership.boundaries]
+- GIVEN a future merge slice is proposed
+- WHEN reviewers compare it with the ownership map
+- THEN Valence public API ownership, Hyperion runtime ownership, adapter ownership, and reference-only sources are distinguishable
+- AND forbidden core-merge categories remain rejected or reference-only.
+
+### Requirement: Integration dependency sequence
+
+r[valence_hyperion_integration.roadmap.sequence] The roadmap SHOULD define dependency ordering, prerequisites, stop conditions, and evidence gates for ownership audit, adapter contracts, bridge slices, optional backends, optional gameplay plugins, and later consolidation decisions.
+
+#### Scenario: Bridge work waits for ownership decisions
+
+r[valence_hyperion_integration.roadmap.sequence.ownership_first]
+- GIVEN a bridge implementation slice depends on shared type or packet semantics
+- WHEN its Cairn is reviewed
+- THEN ownership and adapter-contract decisions are already recorded or the slice is blocked with an explicit dependency.
+
+### Requirement: Integration decision records
+
+r[valence_hyperion_integration.roadmap.decision_records] Future roadmap-linked implementation Cairns MUST include decision records for inspected Hyperion sources using adopt, port, reference, or reject classifications.
+
+#### Scenario: Source decision includes non-claims
+
+r[valence_hyperion_integration.roadmap.decision_records.non_claims]
+- GIVEN a Hyperion source influences a Valence or adapter implementation
+- WHEN the implementation Cairn records the source decision
+- THEN the record identifies ownership, target, classification, safety notes, required evidence, and unsupported compatibility, production-scale, default-behavior, and vanilla-parity claims.
+
+### Requirement: Integration roadmap reconciliation
+
+r[valence_hyperion_integration.roadmap.reconciliation] The roadmap MUST reconcile new proposed work against existing archived and active Cairns so duplicate packet compose, proxy broadcast, chunk cache, and gameplay-plugin scopes are avoided or explicitly superseded.
+
+#### Scenario: Duplicate scope is caught
+
+r[valence_hyperion_integration.roadmap.reconciliation.duplicate]
+- GIVEN a new Cairn proposes work already covered by an archived or active integration Cairn
+- WHEN roadmap reconciliation runs
+- THEN the new Cairn either cites and narrows the prior scope, declares a supersession path, or removes the duplicate task before implementation.
+
+### Requirement: Integration roadmap validation
+
+r[valence_hyperion_integration.roadmap.validation] Roadmap work MUST record Cairn proposal, design, tasks, repository validation, and evidence-manifest checks for promoted roadmap evidence before archive.
+
+#### Scenario: Roadmap closeout is reviewable
+
+r[valence_hyperion_integration.roadmap.validation.log]
+- GIVEN roadmap work is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show Cairn proposal/design/tasks gates, Cairn validation, promoted roadmap evidence, evidence manifests when cited, and explicit non-claims for implementation, runtime replacement, default behavior, Hyperion compatibility, production scale, and vanilla parity.
+
+### Requirement: Valence type inventory
+
+r[valence_hyperion_integration.type_ownership.valence_inventory] Type ownership work MUST inventory Valence protocol, networking, packet composition, layer/chunk, entity/player, command/chat, and optional proxy surfaces relevant to bridge boundaries before implementation depends on shared types.
+
+#### Scenario: Valence ownership candidates are recorded
+
+r[valence_hyperion_integration.type_ownership.valence_inventory.recorded]
+- GIVEN type ownership work is selected
+- WHEN reviewers inspect the Valence inventory
+- THEN affected Valence crates, public APIs, internal-only APIs, compatibility-sensitive packet paths, and default-behavior assumptions are recorded.
+
+### Requirement: Hyperion type inventory
+
+r[valence_hyperion_integration.type_ownership.hyperion_inventory] Type ownership work MUST inventory Hyperion game-server, proxy, packet, join, movement, broadcast, chunk egress, command/chat, and game-mode surfaces relevant to bridge boundaries before implementation depends on Hyperion concepts.
+
+#### Scenario: Hyperion ownership candidates are classified for review
+
+r[valence_hyperion_integration.type_ownership.hyperion_inventory.recorded]
+- GIVEN Hyperion sources are inspected for bridge work
+- WHEN reviewers inspect the Hyperion inventory
+- THEN runtime-local types, proxy-local types, game-mode-local types, reusable concepts, unsafe or nightly-sensitive sources, and forbidden core-merge candidates are identified.
+
+### Requirement: Hyperion source classification
+
+r[valence_hyperion_integration.type_ownership.classification] Type ownership work MUST classify inspected Hyperion sources as adopt, port, reference, or reject with owner, target, safety notes, required evidence, and non-claims.
+
+#### Scenario: Unsafe or game-specific source is contained
+
+r[valence_hyperion_integration.type_ownership.classification.rejects_unsafe]
+- GIVEN an inspected source is Bedwars-specific, runtime-replacement scope, unaudited unsafe-heavy, nightly-only, or broad custom combat behavior
+- WHEN the classification table is reviewed
+- THEN the source is marked reject or reference-only
+- AND no Valence public API depends on copying it directly.
+
+### Requirement: Type ownership matrix
+
+r[valence_hyperion_integration.type_ownership.matrix] Type ownership work MUST publish a matrix naming canonical Valence types, Hyperion-only types, adapter-owned DTOs, rejected shared abstractions, and source revision evidence for each mapped family.
+
+#### Scenario: Shared abstraction requires justification
+
+r[valence_hyperion_integration.type_ownership.matrix.shared_justified]
+- GIVEN a type family is proposed as shared between Valence and Hyperion
+- WHEN reviewers inspect the matrix
+- THEN the matrix identifies why neither existing owner is sufficient, how compatibility is preserved, and which tests prove the shared abstraction does not leak runtime internals.
+
+### Requirement: Conversion contract
+
+r[valence_hyperion_integration.type_ownership.conversion_contract] Adapter conversions MUST define deterministic inputs, outputs, ownership, lossy-field policy, error diagnostics, and fail-closed behavior for each mapped type family.
+
+#### Scenario: Ambiguous conversion fails closed
+
+r[valence_hyperion_integration.type_ownership.conversion_contract.ambiguous]
+- GIVEN a conversion lacks a required dimension, registry, session, entity, route, protocol, or packet field
+- WHEN the adapter conversion runs
+- THEN it returns a deterministic diagnostic
+- AND no bridge shell mutation, packet delivery, or public compatibility claim is emitted for that input.
+
+### Requirement: Ownership fixture coverage
+
+r[valence_hyperion_integration.type_ownership.fixtures] Type ownership work MUST include positive and negative fixtures or fixture plans for valid mappings, stale sessions, missing dimensions, invalid routes, malformed packet bytes, unsupported protocol assumptions, and lossy mappings.
+
+#### Scenario: Valid and invalid mappings are both covered
+
+r[valence_hyperion_integration.type_ownership.fixtures.coverage]
+- GIVEN representative bridge type mappings are documented
+- WHEN fixture coverage is reviewed
+- THEN supported mappings have positive examples and malformed, stale, unsupported, or lossy mappings have negative examples that fail closed.
+
+### Requirement: Type ownership validation
+
+r[valence_hyperion_integration.type_ownership.validation] Type ownership work MUST record Cairn proposal, design, tasks, repository validation, fixture checks if code is added, and evidence-manifest checks for promoted ownership evidence before archive.
+
+#### Scenario: Ownership closeout is reviewable
+
+r[valence_hyperion_integration.type_ownership.validation.log]
+- GIVEN type ownership work is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show Valence inventory, Hyperion inventory, source classifications, ownership matrix evidence, conversion fixture evidence or fixture plans, Cairn gates, Cairn validation, and explicit non-claims for bridge implementation, runtime replacement, default behavior, Hyperion compatibility, production scale, and vanilla parity.
+
+### Requirement: Bridge slice scope
+
+r[valence_hyperion_integration.bridge_slice.scope] Bridge slice work MUST confirm roadmap and type-ownership prerequisites, record current Valence and Hyperion source revisions, and inventory reusable archived evidence before implementation changes owner code.
+
+#### Scenario: Prototype scope is bounded
+
+r[valence_hyperion_integration.bridge_slice.scope.bounded]
+- GIVEN bridge slice work is selected
+- WHEN reviewers inspect the scope notes
+- THEN roadmap prerequisites, type-ownership decisions, current source revisions, reusable archived evidence, stale evidence, affected crates, optional scope, and non-claims are recorded.
+
+### Requirement: Optional bridge shell
+
+r[valence_hyperion_integration.bridge_slice.optional_shell] Bridge slice work MUST be implemented as an optional plugin, example, or fixture harness with default-disabled behavior, named configuration values, and adapter DTO visibility boundaries.
+
+#### Scenario: Disabled bridge preserves direct behavior
+
+r[valence_hyperion_integration.bridge_slice.optional_shell.disabled]
+- GIVEN the bridge plugin, example, or harness is not enabled
+- WHEN existing Valence direct-mode networking, packet, chunk, movement, and chat checks run
+- THEN their behavior remains compatible with the pre-bridge direct path.
+
+### Requirement: Join and initial chunk plan
+
+r[valence_hyperion_integration.bridge_slice.join_chunk_plan] Bridge slice work MUST model player join and initial chunk delivery as pure deterministic planning over explicit player, session, registry, dimension, layer, chunk/view, packet-order, and diagnostic summaries.
+
+#### Scenario: Valid join plan is deterministic
+
+r[valence_hyperion_integration.bridge_slice.join_chunk_plan.valid]
+- GIVEN valid player, session, registry, dimension, layer, chunk/view, and packet-order summaries
+- WHEN the join/chunk planning core runs
+- THEN it returns a deterministic packet or intent plan with documented ordering and diagnostics.
+
+#### Scenario: Invalid join plan fails closed
+
+r[valence_hyperion_integration.bridge_slice.join_chunk_plan.rejects]
+- GIVEN missing player state, stale session mapping, invalid registry, incompatible dimension bounds, missing chunk data, or unsupported packet ordering
+- WHEN the join/chunk planning core runs
+- THEN it returns a deterministic rejection
+- AND no packet send, layer mutation, proxy delivery, or compatibility claim is emitted for that input.
+
+### Requirement: Movement state mapping
+
+r[valence_hyperion_integration.bridge_slice.movement_mapping] Bridge slice work MUST model movement-state mapping as pure deterministic conversion over explicit player/session/entity identifiers, position, rotation, velocity, on-ground, dimension, and stale-state summaries.
+
+#### Scenario: Movement update maps one entity
+
+r[valence_hyperion_integration.bridge_slice.movement_mapping.valid]
+- GIVEN a valid movement update for a known player/session/entity in a known dimension
+- WHEN the movement mapper runs
+- THEN it returns exactly the approved movement intent or state update for that entity.
+
+#### Scenario: Stale movement is rejected
+
+r[valence_hyperion_integration.bridge_slice.movement_mapping.rejects]
+- GIVEN a movement update references an unknown session, stale entity, invalid coordinate, unsupported dimension, malformed rotation, or lossy conversion
+- WHEN the movement mapper runs
+- THEN it rejects the update deterministically
+- AND no entity movement, packet echo, or bridge state mutation is applied.
+
+### Requirement: Chat and broadcast route planning
+
+r[valence_hyperion_integration.bridge_slice.chat_broadcast] Bridge slice work MUST model chat and broadcast routing as pure deterministic planning over explicit sender, recipient, channel, local-visibility, exclusion, permission, and malformed-route summaries.
+
+#### Scenario: Authorized chat route is contained
+
+r[valence_hyperion_integration.bridge_slice.chat_broadcast.valid]
+- GIVEN an authorized sender, valid route, known recipients, configured local visibility, and explicit exclusions
+- WHEN chat or broadcast planning runs
+- THEN only eligible recipients are returned in deterministic order with documented route diagnostics.
+
+#### Scenario: Unauthorized route fails closed
+
+r[valence_hyperion_integration.bridge_slice.chat_broadcast.rejects]
+- GIVEN an unauthorized sender, malformed route, unknown channel, stale recipient, invalid exclusion, or closed client
+- WHEN chat or broadcast planning runs
+- THEN no unauthorized recipient is included
+- AND the diagnostic does not leak hidden membership, permission, or routing state beyond documented feedback.
+
+### Requirement: Bridge shell integration
+
+r[valence_hyperion_integration.bridge_slice.shell] Bridge slice shell code MUST gather owner-specific Valence or adapter state, call pure bridge cores, apply only approved mutations or sends, and keep runtime side effects outside pure cores.
+
+#### Scenario: Shell applies only approved bridge intents
+
+r[valence_hyperion_integration.bridge_slice.shell.applies]
+- GIVEN a bridge core returns approved join, chunk, movement, chat, or broadcast intents
+- WHEN shell systems or harness code run
+- THEN only the returned owner-specific mutations, packet sends, diagnostics, or evidence records are applied
+- AND sockets, ECS mutation, packet writes, logging, clocks, and scheduling remain shell responsibilities.
+
+### Requirement: Bridge fixture coverage
+
+r[valence_hyperion_integration.bridge_slice.tests] Bridge slice work MUST include positive tests for valid join, chunk, movement, chat, broadcast, and plugin-disabled behavior plus negative tests for missing facts, invalid dimensions, stale sessions, malformed movement, unauthorized routes, invalid targets, closed clients, lossy conversions, and disabled behavior.
+
+#### Scenario: Bridge tests cover success and failure
+
+r[valence_hyperion_integration.bridge_slice.tests.coverage]
+- GIVEN representative valid and invalid bridge inputs
+- WHEN bridge core and shell tests run
+- THEN supported bridge plans pass and malformed, stale, unauthorized, lossy, closed, or disabled cases fail closed without default behavior changes.
+
+### Requirement: Bridge slice validation
+
+r[valence_hyperion_integration.bridge_slice.validation] Bridge slice work MUST record baseline direct-mode Valence checks before implementation, focused bridge-core tests, shell/plugin or harness tests, selected packet/chunk/chat dry runs, optional smoke evidence, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest checks before archive.
+
+#### Scenario: Bridge closeout is reviewable
+
+r[valence_hyperion_integration.bridge_slice.validation.log]
+- GIVEN bridge slice work is ready to archive
+- WHEN reviewers inspect task evidence
+- THEN successful logs show baseline direct-mode checks, positive bridge tests, negative fail-closed tests, shell or harness checks, selected dry runs, optional smoke evidence if claimed, Cairn gates, Cairn validation, task-evidence validation, evidence manifests, and explicit non-claims for repository merge, runtime replacement, default behavior, Hyperion compatibility, production scale, Bedwars behavior, and vanilla parity.

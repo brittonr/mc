@@ -1,0 +1,81 @@
+command=nix run path:/home/brittonr/git/mc#cairn -- gate proposal valence-hyperion-type-ownership-audit --root /home/brittonr/git/mc
+{
+  "change": "valence-hyperion-type-ownership-audit",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2b6a1aea7d0c429d42969a8214d0ead117e81ed20a86bbfd1620f158abfc3ef0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "46b41e18b0d0db8744d91bd3e3601bd375bb70a932d9caf02c078be699fb9d6c",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+command=nix run path:/home/brittonr/git/mc#cairn -- gate design valence-hyperion-type-ownership-audit --root /home/brittonr/git/mc
+{
+  "change": "valence-hyperion-type-ownership-audit",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "7928779dae0e8aa14118de3e4d579060598b4a8a37898ca99b01258a6842d4ef",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "57c3839cd583f95684203cbeca48566bf84a7c2298c2986b23a2859ba8acb1e5",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+command=nix run path:/home/brittonr/git/mc#cairn -- gate tasks valence-hyperion-type-ownership-audit --root /home/brittonr/git/mc
+{
+  "change": "valence-hyperion-type-ownership-audit",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3f64ad135684e02204770ca88a58a824fb2b38ee72d7806ccad0bf6860b1fee0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "d6a1246b2740bc6f66722fa8c3815687b67989772fb4e0354330222b0ee57139",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 15,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 20,
+  "valid": true
+}
+exit_status=0

@@ -1,0 +1,122 @@
+command=TMPDIR=/home/brittonr/git/mc/target/tmp nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_network --lib -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: function `view_contains_chunk` is never used
+  --> crates/valence_server/src/layer/chunk/targeting.rs:60:15
+   |
+60 | pub(crate) fn view_contains_chunk(view: ChunkView, pos: ChunkPos) -> bool {
+   |               ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_server` (lib) generated 1 warning
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.16s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_network-74765dc8689cf660)
+
+running 67 tests
+test bridge_slice::tests::enabled_harness_rejects_unknown_movement_session ... ok
+test bridge_slice::tests::chat_route_honors_exclusions_and_visibility ... ok
+test bridge_slice::tests::chat_route_rejects_unauthorized_or_closed_recipients ... ok
+test bridge_slice::tests::chat_route_returns_deterministic_authorized_recipients ... ok
+test bridge_slice::tests::join_chunk_plan_accepts_valid_facts ... ok
+test bridge_slice::tests::enabled_harness_applies_only_approved_intents ... ok
+test bridge_slice::tests::disabled_harness_preserves_direct_state ... ok
+test bridge_slice::tests::join_chunk_plan_rejects_invalid_chunk_facts ... ok
+test bridge_slice::tests::join_chunk_plan_rejects_missing_registry ... ok
+test bridge_slice::tests::join_chunk_plan_rejects_oversized_radius ... ok
+test bridge_slice::tests::join_chunk_plan_rejects_unsupported_packet_order ... ok
+test bridge_slice::tests::movement_maps_one_known_entity ... ok
+test bridge_slice::tests::movement_rejects_entity_mismatch ... ok
+test bridge_slice::tests::movement_rejects_malformed_position_and_rotation ... ok
+test bridge_slice::tests::movement_rejects_stale_session ... ok
+test byte_channel::tests::byte_channel_try ... ok
+test legacy_ping::tests::legacy_ping_formatting_removes_section_codes ... ok
+test legacy_ping::tests::legacy_ping_header_classifies_supported_formats ... ok
+test legacy_ping::tests::legacy_ping_header_rejects_normal_and_malformed_prefixes ... ok
+test byte_channel::tests::byte_channel_async ... ok
+test legacy_ping::tests::legacy_ping_probe_waits_only_for_ambiguous_short_prefixes ... ok
+test login::tests::auth_digest_usernames ... ok
+test packet_io::tests::packet_frame_budget_accepts_frame_at_limit ... ok
+test packet_io::tests::packet_frame_budget_rejects_oversized_frame ... ok
+test profile_cache::tests::admit_profile_request_rejects_exhausted_window ... ok
+test profile_cache::tests::cache_entry_status_classifies_fresh_stale_and_expired_entries ... ok
+test profile_cache::tests::parse_profile_response_accepts_valid_profile ... ok
+test profile_cache::tests::parse_profile_response_rejects_missing_id ... ok
+test profile_cache::tests::parse_profile_response_rejects_provider_errors ... ok
+test profile_cache::tests::resolve_profile_blocks_request_when_rate_limit_exhausted ... ok
+test profile_cache::tests::resolve_profile_does_not_store_malformed_provider_response ... ok
+test profile_cache::tests::resolve_profile_fails_closed_on_corrupted_cache_by_default ... ok
+test profile_cache::tests::resolve_profile_fetches_and_stores_cache_miss ... ok
+test profile_cache::tests::resolve_profile_returns_disabled_without_provider_request ... ok
+test profile_cache::tests::resolve_profile_serves_stale_cache_when_provider_fails_and_policy_allows ... ok
+test profile_cache::tests::validate_profile_cache_config_requires_provider_when_enabled ... ok
+test profile_cache::tests::resolve_profile_uses_provider_after_corruption_when_policy_allows ... ok
+test proxy_broadcast::tests::global_local_channel_and_unicast_routes_are_deterministic ... ok
+test proxy_broadcast::tests::invalid_visibility_state_fails_closed_before_delivery ... ok
+test profile_cache::tests::resolve_profile_uses_fresh_cache_without_provider_request ... ok
+test proxy_broadcast::tests::malformed_unknown_and_backpressure_messages_are_rejected ... ok
+test proxy_broadcast::tests::proxy_flush_shell_reports_disconnected_streams_and_backpressure ... ok
+test proxy_broadcast::tests::state_reducers_handle_lifecycle_subscription_position_and_shutdown ... ok
+test proxy_broadcast::tests::state_reducers_reject_invalid_positions_unknown_channels_and_duplicate_streams ... ok
+test session_core::tests::bungeecord_profile_missing_forwarded_data_uses_offline_fallback ... ok
+test session_core::tests::bungeecord_profile_rejects_malformed_properties ... ok
+test session_core::tests::bungeecord_profile_uses_forwarded_profile_data ... ok
+test session_core::tests::compression_decision_enables_positive_threshold ... ok
+test session_core::tests::compression_decision_disables_zero_and_negative_thresholds ... ok
+test proxy_broadcast::tests::optional_backend_plugin_is_disabled_until_enabled_by_application ... ok
+test session_core::tests::connection_io_classification_ignores_eof_and_warns_for_other_errors ... ok
+test session_core::tests::default_session_server_url_includes_ip_only_when_proxy_prevention_is_enabled ... ok
+test session_core::tests::handshake_address_accepts_normal_and_bungeecord_forwarding_addresses ... ok
+test session_core::tests::handshake_address_rejects_too_long_non_bungeecord_addresses ... ok
+test session_core::tests::initial_connection_timeout_classification_warns_only_on_timeout ... ok
+test session_core::tests::offline_profile_uses_remote_ip_and_deterministic_uuid ... ok
+test session_core::tests::session_transitions_reject_invalid_state_changes ... ok
+test status::tests::status_response_json_includes_status_facts_sample_and_favicon ... ok
+test status::tests::status_response_json_omits_empty_favicon ... ok
+test status::tests::pre_1_16_status_response_falls_back_from_rgb_to_named_color ... ok
+test status_response_resource_tests::default_status_response_resource_matches_existing_defaults ... ok
+test session_core::tests::session_transitions_allow_handshake_targets_and_login_play ... ok
+test session_core::tests::velocity_connection_mode_remains_supported_by_address_decision ... ok
+test status::tests::ignored_status_response_has_no_json ... ok
+test status_response_resource_tests::configured_status_response_resource_is_stable ... ok
+test session_core::tests::login_protocol_accepts_matching_protocol ... ok
+test session_core::tests::login_protocol_disconnects_mismatched_protocol ... ok
+
+test result: ok. 67 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit_status=0

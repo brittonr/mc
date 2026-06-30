@@ -1,0 +1,208 @@
+command=nix run path:/home/brittonr/git/mc#cairn -- archive valence-hyperion-integration-roadmap --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: valence-hyperion-integration-roadmap",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/changes/valence-hyperion-integration-roadmap"
+    }
+  ],
+  "blocked": false,
+  "change": "valence-hyperion-integration-roadmap",
+  "dry_run": true,
+  "input_hash": "26199ee637a8ae64b50642ec08783975d9b58db202cb5653cad7098d842a46a8",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "004e9709e138e7979e3191d0dc469a39b227ec0dfcf7919b6f1986b386fb5d83",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "7b238bbe2456decf4f3465a942e01f292d6635fd11545bb73c24b8e9e1c473a3"
+}
+exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-30 nix run path:/home/brittonr/git/mc#cairn -- archive valence-hyperion-integration-roadmap --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: valence-hyperion-integration-roadmap",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-30-valence-hyperion-integration-roadmap"
+    }
+  ],
+  "blocked": false,
+  "change": "valence-hyperion-integration-roadmap",
+  "dry_run": false,
+  "input_hash": "26199ee637a8ae64b50642ec08783975d9b58db202cb5653cad7098d842a46a8",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "cd6ad2e24e00961e5fa1559bffadf4add1755c46d29f6ed49b1312ad26c36e89",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-valence-hyperion-integration-roadmap/design.md"
+        },
+        {
+          "content_hash": "20f6e123e2558122d4b5b2e751996783c28f30dba5edd1787e0d3021a771d0b3",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-valence-hyperion-integration-roadmap/proposal.md"
+        },
+        {
+          "content_hash": "4133aed6375b3843ef291207918e3c0f9e2e1b77427734330c270ba83fedb8cb",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-valence-hyperion-integration-roadmap/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "0c40215069f5ef0cd630d39c39cdcdbd816dfa83846c32f6e0d4e9be5e3ed06a",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-valence-hyperion-integration-roadmap/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/valence-hyperion-integration-roadmap"
+        }
+      ],
+      "manifest_hash": "20ef443f22037531e682e1248f90dd86776fc42e2a199dbe9d523ebc1de45c6a"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "cd6ad2e24e00961e5fa1559bffadf4add1755c46d29f6ed49b1312ad26c36e89",
+          "exists": true,
+          "path": "./cairn/changes/valence-hyperion-integration-roadmap/design.md"
+        },
+        {
+          "content_hash": "20f6e123e2558122d4b5b2e751996783c28f30dba5edd1787e0d3021a771d0b3",
+          "exists": true,
+          "path": "./cairn/changes/valence-hyperion-integration-roadmap/proposal.md"
+        },
+        {
+          "content_hash": "4133aed6375b3843ef291207918e3c0f9e2e1b77427734330c270ba83fedb8cb",
+          "exists": true,
+          "path": "./cairn/changes/valence-hyperion-integration-roadmap/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "0c40215069f5ef0cd630d39c39cdcdbd816dfa83846c32f6e0d4e9be5e3ed06a",
+          "exists": true,
+          "path": "./cairn/changes/valence-hyperion-integration-roadmap/tasks.md"
+        }
+      ],
+      "manifest_hash": "088cbec2ecb6a7ded81333e47ee80190baca7f28f9a78383a75b23c38903326b"
+    },
+    "kind": "archive",
+    "manifest_hash": "9c2be6adb141af853d6ce51ce2bec61e45cf189b891a95dc81ddabdc2465a5f5"
+  },
+  "plan_hash": "1d19e720e16a085e15061c7bcf9a8c2548aa2346329541961b09249117fece31",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "9740c113d16734b1988060708a6bfba6033946d67d6fe1631e526e8753be85dd"
+}
+exit_status=0
+command=nix run path:/home/brittonr/git/mc#cairn -- archive valence-hyperion-type-ownership-audit --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "move active change to archive: valence-hyperion-type-ownership-audit",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/changes/valence-hyperion-type-ownership-audit"
+    }
+  ],
+  "blocked": false,
+  "change": "valence-hyperion-type-ownership-audit",
+  "dry_run": true,
+  "input_hash": "143afb666927a3474062f08d5ba0b4beb8c74f3095df83148bde57038372de62",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "aece66395ba8477536842b1663692ce1d323257f0b9a6894effeaaf80794e4eb",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "734a6e892e3cf8d0ffbc603c7d396770c9f310103584b84645dc7eb63a00b33e"
+}
+exit_status=0
+command=CAIRN_ARCHIVE_DATE=2026-06-30 nix run path:/home/brittonr/git/mc#cairn -- archive valence-hyperion-type-ownership-audit --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: valence-hyperion-type-ownership-audit",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-06-30-valence-hyperion-type-ownership-audit"
+    }
+  ],
+  "blocked": false,
+  "change": "valence-hyperion-type-ownership-audit",
+  "dry_run": false,
+  "input_hash": "143afb666927a3474062f08d5ba0b4beb8c74f3095df83148bde57038372de62",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "ff0a3550cb0e2beb9403ccd39fa033fd39da990fc873ff4868963c126fbffbc0",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-valence-hyperion-type-ownership-audit/design.md"
+        },
+        {
+          "content_hash": "4605091c96ba43683ed4f5b0ac897ca63db1154ffb542bd94d18fd52041b3257",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-valence-hyperion-type-ownership-audit/proposal.md"
+        },
+        {
+          "content_hash": "591cc701ae193c2efb51b5fa80d1c5e1fc5145eadc3767aadcf12a6cd1c939d3",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-valence-hyperion-type-ownership-audit/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "d3af7d55ee6b5ae159508cc82e15b9f67aa3d28d244cc6991ec55c531a088973",
+          "exists": true,
+          "path": "./cairn/archive/2026-06-30-valence-hyperion-type-ownership-audit/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/valence-hyperion-type-ownership-audit"
+        }
+      ],
+      "manifest_hash": "2e2daf87f0647e078fadc8faa4ebb26e01258e18f2d74742c625d54790406834"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "ff0a3550cb0e2beb9403ccd39fa033fd39da990fc873ff4868963c126fbffbc0",
+          "exists": true,
+          "path": "./cairn/changes/valence-hyperion-type-ownership-audit/design.md"
+        },
+        {
+          "content_hash": "4605091c96ba43683ed4f5b0ac897ca63db1154ffb542bd94d18fd52041b3257",
+          "exists": true,
+          "path": "./cairn/changes/valence-hyperion-type-ownership-audit/proposal.md"
+        },
+        {
+          "content_hash": "591cc701ae193c2efb51b5fa80d1c5e1fc5145eadc3767aadcf12a6cd1c939d3",
+          "exists": true,
+          "path": "./cairn/changes/valence-hyperion-type-ownership-audit/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "d3af7d55ee6b5ae159508cc82e15b9f67aa3d28d244cc6991ec55c531a088973",
+          "exists": true,
+          "path": "./cairn/changes/valence-hyperion-type-ownership-audit/tasks.md"
+        }
+      ],
+      "manifest_hash": "fe0e95715bb32c3384bb8cc9e4774e43b12a6b40753861dcc0bf26d0e8ed2f67"
+    },
+    "kind": "archive",
+    "manifest_hash": "55c41baf7cdf5aafac410a0e7dc50d250bb76e250818666771e345a83f917687"
+  },
+  "plan_hash": "61e13cf0faacad91d5283f1ad0eaadbe60dd4bc85762cba092deacee4a96bdfb",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "6c6ff7fd63035771babfb5de0988fc560857ab1548a016ef43c5a24bf61fa951"
+}
+exit_status=0

@@ -1,0 +1,284 @@
+command=nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 12,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 17,
+  "valid": true
+}
+exit_status=0
+command=nix run path:/home/brittonr/git/mc#cairn -- change list --root /home/brittonr/git/mc
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/build-battle-creative-contest-mode/specs/hyperion-game-modes/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "build-battle-creative-contest-mode",
+      "path": "/home/brittonr/git/mc/cairn/changes/build-battle-creative-contest-mode",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 8,
+        "total": 8,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/coop-summit-climb-game-mode/specs/hyperion-game-modes/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "coop-summit-climb-game-mode",
+      "path": "/home/brittonr/git/mc/cairn/changes/coop-summit-climb-game-mode",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 14,
+        "total": 14,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/duels-kitpvp-arena-mode/specs/hyperion-game-modes/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "duels-kitpvp-arena-mode",
+      "path": "/home/brittonr/git/mc/cairn/changes/duels-kitpvp-arena-mode",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 8,
+        "total": 8,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/factions-claims-raid-loop/specs/hyperion-game-modes/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "factions-claims-raid-loop",
+      "path": "/home/brittonr/git/mc/cairn/changes/factions-claims-raid-loop",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 11,
+        "total": 11,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/factions-clans-social-core/specs/hyperion-game-modes/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "factions-clans-social-core",
+      "path": "/home/brittonr/git/mc/cairn/changes/factions-clans-social-core",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 11,
+        "total": 11,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/factions-diplomacy-economy-progression/specs/hyperion-game-modes/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "factions-diplomacy-economy-progression",
+      "path": "/home/brittonr/git/mc/cairn/changes/factions-diplomacy-economy-progression",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 12,
+        "total": 12,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/lifesteal-smp-mode/specs/hyperion-game-modes/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "lifesteal-smp-mode",
+      "path": "/home/brittonr/git/mc/cairn/changes/lifesteal-smp-mode",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 8,
+        "total": 8,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/murder-mystery-social-deduction-mode/specs/hyperion-game-modes/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "murder-mystery-social-deduction-mode",
+      "path": "/home/brittonr/git/mc/cairn/changes/murder-mystery-social-deduction-mode",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/parkour-time-trial-mode/specs/hyperion-game-modes/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "parkour-time-trial-mode",
+      "path": "/home/brittonr/git/mc/cairn/changes/parkour-time-trial-mode",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 7,
+        "total": 7,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/skyblock-oneblock-island-mode/specs/hyperion-game-modes/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "skyblock-oneblock-island-mode",
+      "path": "/home/brittonr/git/mc/cairn/changes/skyblock-oneblock-island-mode",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 8,
+        "total": 8,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/skywars-elimination-mode/specs/hyperion-game-modes/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "skywars-elimination-mode",
+      "path": "/home/brittonr/git/mc/cairn/changes/skywars-elimination-mode",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 8,
+        "total": 8,
+        "unmarked": 0
+      }
+    },
+    {
+      "delta_specs": [
+        "/home/brittonr/git/mc/cairn/changes/survival-games-uhc-elimination-mode/specs/hyperion-game-modes/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "survival-games-uhc-elimination-mode",
+      "path": "/home/brittonr/git/mc/cairn/changes/survival-games-uhc-elimination-mode",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 8,
+        "total": 8,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "/home/brittonr/git/mc"
+}
+exit_status=0

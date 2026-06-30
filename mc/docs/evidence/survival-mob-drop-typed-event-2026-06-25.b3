@@ -7,7 +7,7 @@ c53a2241b42d59b11a50e619c4e63bfd2b55ebbad74a768eccb5a0043e36b9eb  docs/evidence/
 f9683fe396f5aba704255884657b28cae2ad2f1a947c6ba5cbc5d788f974a296  docs/scenario-commands.generated.md
 263fc039ae63b748be738606abb829a7e74ba9cdf9b845204ae507777102cb34  tools/check_scenario_manifest.rs
 9f5e3bab83ce6ec5ab07eaefd5f1958a8fe7ff2c9f63a9515ad9a1460eda9f47  cairn/specs/mc-compatibility/spec.md
-88826d676f2671289b3cc0865944e107d1bed2ec4bb897c742b380d176a0056e  cairn/changes/.drain-state.md
+39a780532be3c1a128770ffdb9481d1d4df34e9dde446a66ca70b1959da80ecd  cairn/changes/.drain-state.md
 c19a711474e2cd5c811c83d6dd5e7b75b33768581ad16c6a974a48f82ea3fb04  cairn/archive/2026-06-25-survival-mob-drop-typed-event-migration/proposal.md
 dd328afb9f66c4c18bcf0055d2273d74238933a860977867e40066e5dba664cd  cairn/archive/2026-06-25-survival-mob-drop-typed-event-migration/design.md
 1c8b15a858b8c03fd8cee0b3e3a2e31ca6ccd0911e1cf0b31125805fca6cf3a6  cairn/archive/2026-06-25-survival-mob-drop-typed-event-migration/tasks.md

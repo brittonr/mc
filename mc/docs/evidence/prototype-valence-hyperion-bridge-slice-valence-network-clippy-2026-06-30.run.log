@@ -1,0 +1,133 @@
+command=TMPDIR=/home/brittonr/git/mc/target/tmp nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo clippy -p valence_network --all-targets -- -D warnings
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+   Compiling valence_build_utils v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_build_utils)
+   Compiling valence_ident_macros v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_ident_macros)
+    Checking valence_math v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_math)
+    Checking valence_nbt v0.8.0 (/home/brittonr/git/mc/servers/valence/crates/valence_nbt)
+   Compiling valence_protocol_macros v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_protocol_macros)
+warning: lint `clippy::string_to_string` has been removed: `clippy::implicit_clone` covers those cases
+  |
+  = note: requested on the command line with `-W clippy::string_to_string`
+  = note: `#[warn(renamed_and_removed_lints)]` on by default
+
+warning: `valence_math` (lib) generated 1 warning (1 duplicate)
+warning: `valence_build_utils` (lib) generated 1 warning (1 duplicate)
+   Compiling valence_generated v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_generated)
+   Compiling valence_entity v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_entity)
+   Compiling valence_lang v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_lang)
+warning: `valence_ident_macros` (lib) generated 1 warning (1 duplicate)
+    Checking valence_ident v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_ident)
+warning: `valence_ident` (lib) generated 1 warning (1 duplicate)
+warning: `valence_protocol_macros` (lib) generated 1 warning
+warning: `valence_lang` (build script) generated 1 warning (1 duplicate)
+warning: `valence_nbt` (lib) generated 1 warning (1 duplicate)
+    Checking valence_text v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_text)
+error: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `-D unknown-lints` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(unknown_lints)]`
+
+error: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+error: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+error: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+error: `mod.rs` files are not allowed, found `crates/valence_text/src/color/mod.rs`
+ --> crates/valence_text/src/color/mod.rs:1:1
+  |
+1 | //! [`Color`] and related data structures.
+  | ^
+  |
+  = help: move `crates/valence_text/src/color/mod.rs` to `crates/valence_text/src/color.rs`
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#mod_module_files
+  = note: `-D clippy::mod-module-files` implied by `-D warnings`
+  = help: to override `-D warnings` add `#[allow(clippy::mod_module_files)]`
+
+error: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+error: `mod.rs` files are not allowed, found `crates/valence_text/src/textlike/mod.rs`
+ --> crates/valence_text/src/textlike/mod.rs:1:1
+  |
+1 | //! Provides the [`IntoText`] trait and implementations.
+  | ^
+  |
+  = help: move `crates/valence_text/src/textlike/mod.rs` to `crates/valence_text/src/textlike.rs`
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#mod_module_files
+
+error: all fields have the same prefix: `block_entity_kind`
+  --> crates/valence_generated/build/block/entity.rs:6:1
+   |
+ 6 | / pub(super) struct EntityCode {
+ 7 | |     pub block_entity_kind_variants: TokenStream,
+ 8 | |     pub block_entity_kind_from_id_arms: TokenStream,
+ 9 | |     pub block_entity_kind_to_id_arms: TokenStream,
+10 | |     pub block_entity_kind_from_ident_arms: TokenStream,
+11 | |     pub block_entity_kind_to_ident_arms: TokenStream,
+12 | | }
+   | |_^
+   |
+   = help: remove the prefixes
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#struct_field_names
+   = note: `-D clippy::struct-field-names` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::struct_field_names)]`
+
+error: all fields have the same prefix: `prop`
+  --> crates/valence_generated/build/block/property.rs:6:1
+   |
+ 6 | / pub(super) struct PropertyCode {
+ 7 | |     pub prop_name_variants: Vec<proc_macro2::Ident>,
+ 8 | |     pub prop_name_from_str_arms: TokenStream,
+ 9 | |     pub prop_name_to_str_arms: TokenStream,
+...  |
+16 | |     pub prop_value_count: usize,
+17 | | }
+   | |_^
+   |
+   = help: remove the prefixes
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#struct_field_names
+
+warning: `valence_entity` (build script) generated 1 warning (1 duplicate)
+error: this assertion has a constant value
+  --> crates/valence_generated/build/chunk/view.rs:8:5
+   |
+ 8 | /     debug_assert!(
+ 9 | |         MAX_VIEW_DIST > 0,
+10 | |         "chunk-view table includes positive distances"
+11 | |     );
+   | |_____^
+   |
+   = help: consider moving this into a const block: `const { assert!(..) }`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#assertions_on_constants
+   = note: `-D clippy::assertions-on-constants` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::assertions_on_constants)]`
+
+warning: `valence_lang` (lib) generated 1 warning (1 duplicate)
+warning: `valence_generated` (build script) generated 1 warning (1 duplicate)
+error: could not compile `valence_generated` (build script) due to 3 previous errors; 1 warning emitted
+warning: build failed, waiting for other jobs to finish...
+warning: `valence_text` (lib) generated 1 warning (1 duplicate)
+error: could not compile `valence_text` (lib) due to 7 previous errors; 1 warning emitted

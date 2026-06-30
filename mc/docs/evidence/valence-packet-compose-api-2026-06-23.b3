@@ -2,7 +2,7 @@
 078557aff9f1874b67301559732d75a2fb62f5442923a881dabcbdb58f4f7c70  cairn/archive/2026-06-23-add-valence-packet-compose-api/design.md
 6dde1b7e381fe007387fdded0c2e45ee9116a971582429cb413d0166bde65f4b  cairn/archive/2026-06-23-add-valence-packet-compose-api/tasks.md
 f5167c1a35a04172f47606f3bec99c71721f4bc2aed330d6f4f4273afdb212e6  cairn/archive/2026-06-23-add-valence-packet-compose-api/specs/valence-hyperion-integration/spec.md
-a853f7257f24e32d4ada82e5690cb708f62e2a60e7dc54edf9c8c40415654048  cairn/specs/valence-hyperion-integration/spec.md
+a62b988b0bb06de963c0071ad91e0a907c9a9419f76e02af50e8a9d06281e7ec  cairn/specs/valence-hyperion-integration/spec.md
 bc1467d316f53614081fd2604b17117b6766d89f50e0819e1ecc26b72ba3f6bc  servers/valence/crates/valence_server/src/lib.rs
 a98e0bc7803db247bf93fae1e83ba1ee4ef8e3e7f8fc61424e72e79db285255e  servers/valence/crates/valence_server/src/packet_compose.rs
 132a2163f4623f8ed862fbf373c7f680b21ebafb3ecc7492b69be92bdf96f9e4  servers/valence/crates/valence_server/README.md

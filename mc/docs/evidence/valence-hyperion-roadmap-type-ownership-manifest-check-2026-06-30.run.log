@@ -1,0 +1,9 @@
+command=b3sum --check docs/evidence/valence-hyperion-integration-roadmap-2026-06-30.b3
+docs/evidence/valence-hyperion-integration-roadmap-2026-06-30.md: OK
+docs/evidence/valence-hyperion-integration-roadmap-cairn-gates-2026-06-30.run.log: OK
+exit_status=0
+command=b3sum --check docs/evidence/valence-hyperion-type-ownership-audit-2026-06-30.b3
+docs/evidence/valence-hyperion-type-ownership-audit-2026-06-30.md: OK
+docs/evidence/valence-hyperion-type-ownership-audit-cairn-gates-2026-06-30.run.log: OK
+exit_status=0
+note=repo-wide nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifests is blocked by pre-existing stale drain-state rows in docs/evidence/survival-hunger-food-typed-event-2026-06-25.b3, docs/evidence/survival-mob-drop-typed-event-2026-06-25.b3, and docs/evidence/survival-redstone-toggle-typed-event-2026-06-25.b3

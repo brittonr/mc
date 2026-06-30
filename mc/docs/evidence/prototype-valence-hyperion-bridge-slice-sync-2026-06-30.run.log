@@ -1,0 +1,75 @@
+command=nix run path:/home/brittonr/git/mc#cairn -- sync prototype-valence-hyperion-bridge-slice --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/prototype-valence-hyperion-bridge-slice/specs/valence-hyperion-integration/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/prototype-valence-hyperion-bridge-slice/specs/valence-hyperion-integration/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "prototype-valence-hyperion-bridge-slice",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/prototype-valence-hyperion-bridge-slice/specs/valence-hyperion-integration/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "5f6bb18f54b5f4f295c5a09b5221baad890a94622489dd8d8b6a970b10afb588",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "64948c9bf6b6c6f4423cabca11f57d21d58a952f320a5650916c737bd7a4c1af",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "d603f18e821aa4d08ef028a63dc38160c76d29fcde59a49e2c470a2ee2798a79"
+}
+exit_status=0
+command=nix run path:/home/brittonr/git/mc#cairn -- sync prototype-valence-hyperion-bridge-slice --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/prototype-valence-hyperion-bridge-slice/specs/valence-hyperion-integration/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/prototype-valence-hyperion-bridge-slice/specs/valence-hyperion-integration/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "prototype-valence-hyperion-bridge-slice",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/prototype-valence-hyperion-bridge-slice/specs/valence-hyperion-integration/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "5f6bb18f54b5f4f295c5a09b5221baad890a94622489dd8d8b6a970b10afb588",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "f3f8412eecb26eb93e83cbe9c8ea29ef47afc4e432baa4b9003a2eafcbb65d49",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "1af71377effb700b82d865a34ce02d901695be590ac6996b8ecf8479c630f088"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "f3f8412eecb26eb93e83cbe9c8ea29ef47afc4e432baa4b9003a2eafcbb65d49",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "1af71377effb700b82d865a34ce02d901695be590ac6996b8ecf8479c630f088"
+    },
+    "kind": "sync",
+    "manifest_hash": "3a1998795d5d6bfdb21e7a417a140d0f1a9559649c92537c09ce0ece5d21ede4"
+  },
+  "plan_hash": "1176622f964dbd7f7c788e8ba70769a7f464b266b607041ae2fa30b8ae5b544e",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "0cad7192283da80502d70bad52ad9a6a2541f8e441cb8a9e7ea82ab9604d4a77"
+}
+exit_status=0

@@ -1,0 +1,71 @@
+command=TMPDIR=/home/brittonr/git/mc/target/tmp nix develop --no-update-lock-file /home/brittonr/git/mc -c cargo test -p valence_network bridge_slice -- --nocapture
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:12:9
+   |
+12 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unknown_lints)]` on by default
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:28:9
+   |
+28 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:41:9
+   |
+41 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `path_segment_repetition`
+  --> crates/valence_text/src/color/mod.rs:81:9
+   |
+81 | #[allow(path_segment_repetition)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unknown lint: `deref_polymorphism`
+ --> crates/valence_text/src/ops.rs:2:9
+  |
+2 | #[allow(deref_polymorphism)]
+  |         ^^^^^^^^^^^^^^^^^^
+
+warning: `valence_text` (lib) generated 5 warnings
+warning: function `view_contains_chunk` is never used
+  --> crates/valence_server/src/layer/chunk/targeting.rs:60:15
+   |
+60 | pub(crate) fn view_contains_chunk(view: ChunkView, pos: ChunkPos) -> bool {
+   |               ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `valence_server` (lib) generated 1 warning
+   Compiling valence_network v0.2.0-alpha.1+mc.1.20.1 (/home/brittonr/git/mc/servers/valence/crates/valence_network)
+    Finished `test` profile [optimized + debuginfo] target(s) in 4.26s
+     Running unittests src/lib.rs (/home/brittonr/.cargo-target/debug/deps/valence_network-74765dc8689cf660)
+
+running 15 tests
+test bridge_slice::tests::chat_route_returns_deterministic_authorized_recipients ... ok
+test bridge_slice::tests::chat_route_honors_exclusions_and_visibility ... ok
+test bridge_slice::tests::chat_route_rejects_unauthorized_or_closed_recipients ... ok
+test bridge_slice::tests::disabled_harness_preserves_direct_state ... ok
+test bridge_slice::tests::enabled_harness_applies_only_approved_intents ... ok
+test bridge_slice::tests::enabled_harness_rejects_unknown_movement_session ... ok
+test bridge_slice::tests::join_chunk_plan_accepts_valid_facts ... ok
+test bridge_slice::tests::join_chunk_plan_rejects_invalid_chunk_facts ... ok
+test bridge_slice::tests::join_chunk_plan_rejects_missing_registry ... ok
+test bridge_slice::tests::join_chunk_plan_rejects_oversized_radius ... ok
+test bridge_slice::tests::join_chunk_plan_rejects_unsupported_packet_order ... ok
+test bridge_slice::tests::movement_rejects_entity_mismatch ... ok
+test bridge_slice::tests::movement_maps_one_known_entity ... ok
+test bridge_slice::tests::movement_rejects_malformed_position_and_rotation ... ok
+test bridge_slice::tests::movement_rejects_stale_session ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 52 filtered out; finished in 0.00s
+
+exit_status=0

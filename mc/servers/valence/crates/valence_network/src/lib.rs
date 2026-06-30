@@ -1,5 +1,6 @@
 #![doc = include_str!("../README.md")]
 
+pub mod bridge_slice;
 mod byte_channel;
 mod connect;
 mod legacy_ping;
