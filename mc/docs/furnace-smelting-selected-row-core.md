@@ -12,6 +12,8 @@ Target research scope remains Java Edition 1.20.1 / protocol 763, but this packa
 
 The tool contains a pure core plus a thin CLI self-test shell. The core accepts values and returns values. It does not read files, fetch network pages, mutate Bevy world state, emit packets/events, write logs, inspect environment variables, or depend on wall-clock time.
 
+The CLI shell can additionally run `--fixture compat/config/furnace-smelting-selected-row-fixture.ncl` to read the validated selected-row fixture and hand its row values to the pure core for local unit validation. That file read is outside the core boundary and remains local handoff evidence only.
+
 ## State model
 
 `FurnaceState` contains:
@@ -86,7 +88,7 @@ This package does not claim:
 - DefaultPlugins membership changes.
 - Broad Minecraft compatibility.
 - Broad vanilla parity.
-- Extracted Java Edition 1.20.1 recipe/fuel data coverage.
+- Broad extracted Java Edition 1.20.1 recipe/fuel data coverage.
 - All recipes.
 - Smoker or blast-furnace behavior.
 - Hopper automation.

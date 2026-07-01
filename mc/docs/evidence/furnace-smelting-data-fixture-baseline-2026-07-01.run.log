@@ -1,0 +1,4 @@
+command: rustc --edition=2021 tools/check_furnace_smelting_core.rs -o target/check-furnace-smelting-core-baseline && target/check-furnace-smelting-core-baseline --self-test
+furnace smelting selected-row core check passed
+exit_status=0
+]0;

@@ -1,0 +1,82 @@
+command: CAIRN_ARCHIVE_DATE=2026-07-01 nix run .#cairn -- archive add-furnace-smelting-data-fixture-contract --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-furnace-smelting-data-fixture-contract",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-07-01-add-furnace-smelting-data-fixture-contract"
+    }
+  ],
+  "blocked": false,
+  "change": "add-furnace-smelting-data-fixture-contract",
+  "dry_run": false,
+  "input_hash": "5176afad1a6b941a286870c1f8951ce5f9aa10208a95bbb121861c0c122529e0",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "2a92061d51512b0fe268904e50e43631df4c73a7d654a0fe3997be5419d40f5a",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-furnace-smelting-data-fixture-contract/design.md"
+        },
+        {
+          "content_hash": "4c7cc3267a29fb17350111e5d1938fafb6a74458cb7ae01766dc5f63797429ca",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-furnace-smelting-data-fixture-contract/proposal.md"
+        },
+        {
+          "content_hash": "5dfc641998c2eb6a100583955573741562065f4e7746131449d30b79ce5148fb",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-furnace-smelting-data-fixture-contract/specs/vanilla-composable-plugins/spec.md"
+        },
+        {
+          "content_hash": "fb78f2f70dd277d222508209de1e0c8027f7bb3e7c449688895cf0853b3a7b2a",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-furnace-smelting-data-fixture-contract/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-furnace-smelting-data-fixture-contract"
+        }
+      ],
+      "manifest_hash": "fd8850d89230425c650f5438cc3da0429373b7856b074b07d8a1813cc7879e93"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "2a92061d51512b0fe268904e50e43631df4c73a7d654a0fe3997be5419d40f5a",
+          "exists": true,
+          "path": "./cairn/changes/add-furnace-smelting-data-fixture-contract/design.md"
+        },
+        {
+          "content_hash": "4c7cc3267a29fb17350111e5d1938fafb6a74458cb7ae01766dc5f63797429ca",
+          "exists": true,
+          "path": "./cairn/changes/add-furnace-smelting-data-fixture-contract/proposal.md"
+        },
+        {
+          "content_hash": "5dfc641998c2eb6a100583955573741562065f4e7746131449d30b79ce5148fb",
+          "exists": true,
+          "path": "./cairn/changes/add-furnace-smelting-data-fixture-contract/specs/vanilla-composable-plugins/spec.md"
+        },
+        {
+          "content_hash": "fb78f2f70dd277d222508209de1e0c8027f7bb3e7c449688895cf0853b3a7b2a",
+          "exists": true,
+          "path": "./cairn/changes/add-furnace-smelting-data-fixture-contract/tasks.md"
+        }
+      ],
+      "manifest_hash": "98e91fa28f761b6d20bae3a45edf13124c98dcf422b6a80392f8e1f480cf7b09"
+    },
+    "kind": "archive",
+    "manifest_hash": "2d08932f1a076218a281f2bc588af4113a6c647366272620245eb726a6993287"
+  },
+  "plan_hash": "69a655acf008fa5fc252d426ee911c37ae99ad93ff44587f772a40d3227432d5",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "b90c5de4621342add95d1091abdb22e79fd8755448fb1eed665d7ae62f78f9cd"
+}
+exit_status=0
+]0;

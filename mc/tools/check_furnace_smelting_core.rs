@@ -2,12 +2,15 @@
 
 use std::env;
 use std::fmt::Debug;
+use std::fs;
+use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 const SELF_TEST_FLAG: &str = "--self-test";
 const HELP_FLAG: &str = "--help";
+const FIXTURE_FLAG: &str = "--fixture";
 const SUCCESS_MESSAGE: &str = "furnace smelting selected-row core check passed";
-const HELP_TEXT: &str = "usage: check_furnace_smelting_core.rs [--self-test]";
+const HELP_TEXT: &str = "usage: check_furnace_smelting_core.rs [--self-test] [--fixture PATH]";
 const SUCCESS: ExitCode = ExitCode::SUCCESS;
 const FAILURE: ExitCode = ExitCode::FAILURE;
 
@@ -25,7 +28,8 @@ const COMPATIBLE_OUTPUT_START_COUNT: u32 = 7;
 const TWO_INPUT_ITEMS: u32 = 2;
 const NEAR_COMPLETE_PROGRESS: u32 = STANDARD_FURNACE_COOK_TICKS - TICK_INCREMENT;
 const EXPECTED_ONE_COMPLETED_RECIPE: u32 = 1;
-const EXPECTED_MERGED_OUTPUT_COUNT: u32 = COMPATIBLE_OUTPUT_START_COUNT + SELECTED_RECIPE_OUTPUT_COUNT;
+const EXPECTED_MERGED_OUTPUT_COUNT: u32 =
+    COMPATIBLE_OUTPUT_START_COUNT + SELECTED_RECIPE_OUTPUT_COUNT;
 const EXPECTED_COAL_AFTER_START: u32 = COAL_BURN_TICKS - TICK_INCREMENT;
 const EXPECTED_PROGRESS_AFTER_ONE_TICK: u32 = INITIAL_COOK_PROGRESS + TICK_INCREMENT;
 const EXPECTED_INPUT_AFTER_COMPLETION: u32 = TWO_INPUT_ITEMS - ONE_ITEM;
@@ -36,6 +40,17 @@ const GOLD_INGOT: &str = "minecraft:gold_ingot";
 const COBBLESTONE: &str = "minecraft:cobblestone";
 const COAL: &str = "minecraft:coal";
 const EMPTY_ITEM_ID: &str = "";
+const STANDARD_FURNACE_KIND_TEXT: &str = "standard";
+const SELECTED_RECIPE_INPUT_ITEM_BINDING: &str = "selected_recipe_input_item";
+const SELECTED_RECIPE_OUTPUT_ITEM_BINDING: &str = "selected_recipe_output_item";
+const SELECTED_FUEL_ITEM_BINDING: &str = "selected_fuel_item";
+const SELECTED_RECIPE_OUTPUT_COUNT_BINDING: &str = "selected_recipe_output_count_value";
+const STANDARD_FURNACE_COOK_TICKS_BINDING: &str = "selected_standard_furnace_cook_ticks";
+const COAL_BURN_TICKS_BINDING: &str = "selected_coal_burn_ticks";
+const MAX_STACK_SIZE_BINDING: &str = "selected_max_stack_size";
+const STANDARD_FURNACE_KIND_BINDING: &str = "standard_furnace_kind";
+const RADIX_TEN: u32 = 10;
+const ARGUMENT_STEP: usize = 1;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum FurnaceKind {
@@ -109,7 +124,9 @@ fn main() -> ExitCode {
             println!("{HELP_TEXT}");
             SUCCESS
         }
-        Ok(Command::SelfTest) => run_and_report_self_tests(),
+        Ok(Command::SelfTest { fixture_path }) => {
+            run_and_report_self_tests(fixture_path.as_deref())
+        }
         Err(error) => {
             eprintln!("{error}");
             FAILURE
@@ -117,31 +134,46 @@ fn main() -> ExitCode {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 enum Command {
-    SelfTest,
+    SelfTest { fixture_path: Option<PathBuf> },
     Help,
 }
 
 fn parse_command() -> Result<Command, String> {
+    let args = env::args().skip(1).collect::<Vec<_>>();
+    let mut fixture_path = None;
     let mut saw_self_test = false;
+    let mut index = 0;
 
-    for arg in env::args().skip(1) {
+    while index < args.len() {
+        let arg = &args[index];
         if arg == SELF_TEST_FLAG {
             saw_self_test = true;
-        } else if arg == HELP_FLAG {
-            return Ok(Command::Help);
-        } else {
-            return Err(format!("unknown argument: {arg}"));
+            index += ARGUMENT_STEP;
+            continue;
         }
+        if arg == HELP_FLAG {
+            return Ok(Command::Help);
+        }
+        if arg == FIXTURE_FLAG {
+            index += ARGUMENT_STEP;
+            let Some(path) = args.get(index) else {
+                return Err(format!("{FIXTURE_FLAG} requires a path"));
+            };
+            fixture_path = Some(PathBuf::from(path));
+            index += ARGUMENT_STEP;
+            continue;
+        }
+        return Err(format!("unknown argument: {arg}"));
     }
 
     let _self_test_requested = saw_self_test;
-    Ok(Command::SelfTest)
+    Ok(Command::SelfTest { fixture_path })
 }
 
-fn run_and_report_self_tests() -> ExitCode {
-    match run_self_tests() {
+fn run_and_report_self_tests(fixture_path: Option<&Path>) -> ExitCode {
+    match run_self_tests(fixture_path) {
         Ok(()) => {
             println!("{SUCCESS_MESSAGE}");
             SUCCESS
@@ -223,7 +255,8 @@ fn find_recipe<'a>(input_item: &str, recipes: &[RecipeRow<'a>]) -> Option<Recipe
 
 fn validate_recipe_row(recipe: RecipeRow<'_>, limits: FurnaceLimits) -> Result<(), FurnaceError> {
     let has_valid_items = !recipe.input.is_empty() && !recipe.output.is_empty();
-    let has_valid_output_count = recipe.output_count > EMPTY_COUNT && recipe.output_count <= limits.max_stack_size;
+    let has_valid_output_count =
+        recipe.output_count > EMPTY_COUNT && recipe.output_count <= limits.max_stack_size;
     let has_valid_cook_ticks = recipe.cook_ticks > NO_BURN_TICKS;
 
     if has_valid_items && has_valid_output_count && has_valid_cook_ticks {
@@ -244,7 +277,11 @@ fn validate_fuel_row(fuel: FuelRow<'_>) -> Result<(), FurnaceError> {
     }
 }
 
-fn can_accept_output(output: Option<ItemStack<'_>>, recipe: RecipeRow<'_>, limits: FurnaceLimits) -> bool {
+fn can_accept_output(
+    output: Option<ItemStack<'_>>,
+    recipe: RecipeRow<'_>,
+    limits: FurnaceLimits,
+) -> bool {
     match output {
         Some(stack) if stack.item != recipe.output => false,
         Some(stack) => stack.count.saturating_add(recipe.output_count) <= limits.max_stack_size,
@@ -297,7 +334,10 @@ fn decrement_stack(stack: ItemStack<'_>) -> Option<ItemStack<'_>> {
     }
 }
 
-fn add_recipe_output<'a>(output: Option<ItemStack<'a>>, recipe: RecipeRow<'a>) -> Option<ItemStack<'a>> {
+fn add_recipe_output<'a>(
+    output: Option<ItemStack<'a>>,
+    recipe: RecipeRow<'a>,
+) -> Option<ItemStack<'a>> {
     match output {
         Some(stack) => Some(ItemStack {
             item: stack.item,
@@ -310,7 +350,7 @@ fn add_recipe_output<'a>(output: Option<ItemStack<'a>>, recipe: RecipeRow<'a>) -
     }
 }
 
-fn run_self_tests() -> Result<(), String> {
+fn run_self_tests(fixture_path: Option<&Path>) -> Result<(), String> {
     fuel_start_consumes_one_fuel_and_advances()?;
     active_burn_advances_without_extra_fuel()?;
     compatible_output_merges_on_completion()?;
@@ -323,6 +363,9 @@ fn run_self_tests() -> Result<(), String> {
     unsupported_smoker_kind_fails()?;
     unsupported_blast_furnace_kind_fails()?;
     malformed_fuel_row_fails()?;
+    if let Some(path) = fixture_path {
+        selected_fixture_handoff_uses_core_rows(path)?;
+    }
     Ok(())
 }
 
@@ -335,10 +378,19 @@ fn fuel_start_consumes_one_fuel_and_advances() -> Result<(), String> {
         NO_BURN_TICKS,
     );
 
-    let tick = tick_selected_standard_furnace(state, &selected_recipes(), &selected_fuels(), selected_limits())
-        .map_err(format_error("fuel_start unexpected error"))?;
+    let tick = tick_selected_standard_furnace(
+        state,
+        &selected_recipes(),
+        &selected_fuels(),
+        selected_limits(),
+    )
+    .map_err(format_error("fuel_start unexpected error"))?;
 
-    expect_equal("fuel_start transition", tick.transition, FurnaceTransition::StartedFuel)?;
+    expect_equal(
+        "fuel_start transition",
+        tick.transition,
+        FurnaceTransition::StartedFuel,
+    )?;
     expect_equal("fuel_start fuel consumed", tick.state.fuel, None)?;
     expect_equal(
         "fuel_start remaining burn",
@@ -363,10 +415,19 @@ fn active_burn_advances_without_extra_fuel() -> Result<(), String> {
         COAL_BURN_TICKS,
     );
 
-    let tick = tick_selected_standard_furnace(state, &selected_recipes(), &selected_fuels(), selected_limits())
-        .map_err(format_error("active_burn unexpected error"))?;
+    let tick = tick_selected_standard_furnace(
+        state,
+        &selected_recipes(),
+        &selected_fuels(),
+        selected_limits(),
+    )
+    .map_err(format_error("active_burn unexpected error"))?;
 
-    expect_equal("active_burn transition", tick.transition, FurnaceTransition::AdvancedCooking)?;
+    expect_equal(
+        "active_burn transition",
+        tick.transition,
+        FurnaceTransition::AdvancedCooking,
+    )?;
     expect_equal("active_burn fuel preserved", tick.state.fuel, starting_fuel)?;
     expect_equal(
         "active_burn remaining burn",
@@ -390,10 +451,19 @@ fn compatible_output_merges_on_completion() -> Result<(), String> {
         TICK_INCREMENT,
     );
 
-    let tick = tick_selected_standard_furnace(state, &selected_recipes(), &selected_fuels(), selected_limits())
-        .map_err(format_error("compatible_output unexpected error"))?;
+    let tick = tick_selected_standard_furnace(
+        state,
+        &selected_recipes(),
+        &selected_fuels(),
+        selected_limits(),
+    )
+    .map_err(format_error("compatible_output unexpected error"))?;
 
-    expect_equal("compatible_output transition", tick.transition, FurnaceTransition::ProducedOutput)?;
+    expect_equal(
+        "compatible_output transition",
+        tick.transition,
+        FurnaceTransition::ProducedOutput,
+    )?;
     expect_equal(
         "compatible_output output count",
         tick.state.output,
@@ -412,10 +482,19 @@ fn completed_cook_produces_exact_output() -> Result<(), String> {
         TICK_INCREMENT,
     );
 
-    let tick = tick_selected_standard_furnace(state, &selected_recipes(), &selected_fuels(), selected_limits())
-        .map_err(format_error("completed_cook unexpected error"))?;
+    let tick = tick_selected_standard_furnace(
+        state,
+        &selected_recipes(),
+        &selected_fuels(),
+        selected_limits(),
+    )
+    .map_err(format_error("completed_cook unexpected error"))?;
 
-    expect_equal("completed_cook transition", tick.transition, FurnaceTransition::ProducedOutput)?;
+    expect_equal(
+        "completed_cook transition",
+        tick.transition,
+        FurnaceTransition::ProducedOutput,
+    )?;
     expect_equal(
         "completed_cook input decremented",
         tick.state.input,
@@ -449,10 +528,19 @@ fn missing_recipe_preserves_fuel() -> Result<(), String> {
         NO_BURN_TICKS,
     );
 
-    let tick = tick_selected_standard_furnace(state, &selected_recipes(), &selected_fuels(), selected_limits())
-        .map_err(format_error("missing_recipe unexpected error"))?;
+    let tick = tick_selected_standard_furnace(
+        state,
+        &selected_recipes(),
+        &selected_fuels(),
+        selected_limits(),
+    )
+    .map_err(format_error("missing_recipe unexpected error"))?;
 
-    expect_equal("missing_recipe transition", tick.transition, FurnaceTransition::PausedNoRecipe)?;
+    expect_equal(
+        "missing_recipe transition",
+        tick.transition,
+        FurnaceTransition::PausedNoRecipe,
+    )?;
     expect_equal("missing_recipe state preserved", tick.state, state)?;
     Ok(())
 }
@@ -466,10 +554,19 @@ fn missing_fuel_pauses() -> Result<(), String> {
         NO_BURN_TICKS,
     );
 
-    let tick = tick_selected_standard_furnace(state, &selected_recipes(), &selected_fuels(), selected_limits())
-        .map_err(format_error("missing_fuel unexpected error"))?;
+    let tick = tick_selected_standard_furnace(
+        state,
+        &selected_recipes(),
+        &selected_fuels(),
+        selected_limits(),
+    )
+    .map_err(format_error("missing_fuel unexpected error"))?;
 
-    expect_equal("missing_fuel transition", tick.transition, FurnaceTransition::PausedNoFuel)?;
+    expect_equal(
+        "missing_fuel transition",
+        tick.transition,
+        FurnaceTransition::PausedNoFuel,
+    )?;
     expect_equal("missing_fuel state preserved", tick.state, state)?;
     Ok(())
 }
@@ -483,10 +580,19 @@ fn wrong_output_item_blocks() -> Result<(), String> {
         NO_BURN_TICKS,
     );
 
-    let tick = tick_selected_standard_furnace(state, &selected_recipes(), &selected_fuels(), selected_limits())
-        .map_err(format_error("wrong_output unexpected error"))?;
+    let tick = tick_selected_standard_furnace(
+        state,
+        &selected_recipes(),
+        &selected_fuels(),
+        selected_limits(),
+    )
+    .map_err(format_error("wrong_output unexpected error"))?;
 
-    expect_equal("wrong_output transition", tick.transition, FurnaceTransition::PausedOutputBlocked)?;
+    expect_equal(
+        "wrong_output transition",
+        tick.transition,
+        FurnaceTransition::PausedOutputBlocked,
+    )?;
     expect_equal("wrong_output state preserved", tick.state, state)?;
     Ok(())
 }
@@ -500,10 +606,19 @@ fn full_output_stack_blocks() -> Result<(), String> {
         NO_BURN_TICKS,
     );
 
-    let tick = tick_selected_standard_furnace(state, &selected_recipes(), &selected_fuels(), selected_limits())
-        .map_err(format_error("full_output unexpected error"))?;
+    let tick = tick_selected_standard_furnace(
+        state,
+        &selected_recipes(),
+        &selected_fuels(),
+        selected_limits(),
+    )
+    .map_err(format_error("full_output unexpected error"))?;
 
-    expect_equal("full_output transition", tick.transition, FurnaceTransition::PausedOutputBlocked)?;
+    expect_equal(
+        "full_output transition",
+        tick.transition,
+        FurnaceTransition::PausedOutputBlocked,
+    )?;
     expect_equal("full_output state preserved", tick.state, state)?;
     Ok(())
 }
@@ -523,10 +638,19 @@ fn malformed_recipe_row_fails() -> Result<(), String> {
         cook_ticks: STANDARD_FURNACE_COOK_TICKS,
     }];
 
-    let error = tick_selected_standard_furnace(state, &malformed_recipes, &selected_fuels(), selected_limits())
-        .expect_err("malformed recipe should fail");
+    let error = tick_selected_standard_furnace(
+        state,
+        &malformed_recipes,
+        &selected_fuels(),
+        selected_limits(),
+    )
+    .expect_err("malformed recipe should fail");
 
-    expect_equal("malformed_recipe error", error, FurnaceError::MalformedRecipeRow)
+    expect_equal(
+        "malformed_recipe error",
+        error,
+        FurnaceError::MalformedRecipeRow,
+    )
 }
 
 fn unsupported_smoker_kind_fails() -> Result<(), String> {
@@ -547,8 +671,13 @@ fn unsupported_kind_fails(kind: FurnaceKind, test_name: &str) -> Result<(), Stri
     );
     state.kind = kind;
 
-    let error = tick_selected_standard_furnace(state, &selected_recipes(), &selected_fuels(), selected_limits())
-        .expect_err("unsupported furnace kind should fail");
+    let error = tick_selected_standard_furnace(
+        state,
+        &selected_recipes(),
+        &selected_fuels(),
+        selected_limits(),
+    )
+    .expect_err("unsupported furnace kind should fail");
 
     expect_equal(test_name, error, FurnaceError::UnsupportedFurnaceKind)
 }
@@ -566,10 +695,139 @@ fn malformed_fuel_row_fails() -> Result<(), String> {
         burn_ticks: NO_BURN_TICKS,
     }];
 
-    let error = tick_selected_standard_furnace(state, &selected_recipes(), &malformed_fuels, selected_limits())
-        .expect_err("malformed fuel should fail");
+    let error = tick_selected_standard_furnace(
+        state,
+        &selected_recipes(),
+        &malformed_fuels,
+        selected_limits(),
+    )
+    .expect_err("malformed fuel should fail");
 
-    expect_equal("malformed_fuel error", error, FurnaceError::MalformedFuelRow)
+    expect_equal(
+        "malformed_fuel error",
+        error,
+        FurnaceError::MalformedFuelRow,
+    )
+}
+
+fn selected_fixture_handoff_uses_core_rows(path: &Path) -> Result<(), String> {
+    let text = fs::read_to_string(path).map_err(|error| format!("{}: {error}", path.display()))?;
+    let rows = parse_selected_fixture_rows(&text)?;
+
+    expect_equal("fixture input item", rows.recipe_input.as_str(), RAW_IRON)?;
+    expect_equal(
+        "fixture output item",
+        rows.recipe_output.as_str(),
+        IRON_INGOT,
+    )?;
+    expect_equal("fixture fuel item", rows.fuel_item.as_str(), COAL)?;
+    expect_equal(
+        "fixture output count",
+        rows.recipe_output_count,
+        SELECTED_RECIPE_OUTPUT_COUNT,
+    )?;
+    expect_equal(
+        "fixture cook ticks",
+        rows.recipe_cook_ticks,
+        STANDARD_FURNACE_COOK_TICKS,
+    )?;
+    expect_equal("fixture burn ticks", rows.fuel_burn_ticks, COAL_BURN_TICKS)?;
+    expect_equal("fixture max stack", rows.max_stack_size, MAX_STACK_SIZE)?;
+
+    let recipe = RecipeRow {
+        input: rows.recipe_input.as_str(),
+        output: rows.recipe_output.as_str(),
+        output_count: rows.recipe_output_count,
+        cook_ticks: rows.recipe_cook_ticks,
+    };
+    let fuel = FuelRow {
+        item: rows.fuel_item.as_str(),
+        burn_ticks: rows.fuel_burn_ticks,
+    };
+    let limits = FurnaceLimits {
+        max_stack_size: rows.max_stack_size,
+    };
+    let state = base_state(
+        Some(stack(rows.recipe_input.as_str(), ONE_ITEM)),
+        Some(stack(rows.fuel_item.as_str(), ONE_ITEM)),
+        None,
+        INITIAL_COOK_PROGRESS,
+        NO_BURN_TICKS,
+    );
+
+    let tick = tick_selected_standard_furnace(state, &[recipe], &[fuel], limits)
+        .map_err(format_error("fixture_handoff unexpected error"))?;
+
+    expect_equal(
+        "fixture_handoff transition",
+        tick.transition,
+        FurnaceTransition::StartedFuel,
+    )?;
+    expect_equal(
+        "fixture_handoff remaining burn",
+        tick.state.remaining_burn_ticks,
+        EXPECTED_COAL_AFTER_START,
+    )
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct SelectedFixtureRows {
+    recipe_input: String,
+    recipe_output: String,
+    recipe_output_count: u32,
+    recipe_cook_ticks: u32,
+    fuel_item: String,
+    fuel_burn_ticks: u32,
+    max_stack_size: u32,
+}
+
+fn parse_selected_fixture_rows(text: &str) -> Result<SelectedFixtureRows, String> {
+    let furnace_kind = read_string_binding(text, STANDARD_FURNACE_KIND_BINDING)?;
+    if furnace_kind != STANDARD_FURNACE_KIND_TEXT {
+        return Err(format!(
+            "fixture furnace kind must be {STANDARD_FURNACE_KIND_TEXT:?}, got {furnace_kind:?}"
+        ));
+    }
+
+    Ok(SelectedFixtureRows {
+        recipe_input: read_string_binding(text, SELECTED_RECIPE_INPUT_ITEM_BINDING)?,
+        recipe_output: read_string_binding(text, SELECTED_RECIPE_OUTPUT_ITEM_BINDING)?,
+        recipe_output_count: read_number_binding(text, SELECTED_RECIPE_OUTPUT_COUNT_BINDING)?,
+        recipe_cook_ticks: read_number_binding(text, STANDARD_FURNACE_COOK_TICKS_BINDING)?,
+        fuel_item: read_string_binding(text, SELECTED_FUEL_ITEM_BINDING)?,
+        fuel_burn_ticks: read_number_binding(text, COAL_BURN_TICKS_BINDING)?,
+        max_stack_size: read_number_binding(text, MAX_STACK_SIZE_BINDING)?,
+    })
+}
+
+fn read_string_binding(text: &str, binding: &str) -> Result<String, String> {
+    let needle = format!("let {binding} = \"");
+    let Some(start) = text.find(&needle).map(|start| start + needle.len()) else {
+        return Err(format!("fixture missing string binding {binding}"));
+    };
+    let remainder = &text[start..];
+    let Some(end) = remainder.find('"') else {
+        return Err(format!("fixture string binding {binding} is unterminated"));
+    };
+    Ok(remainder[..end].to_string())
+}
+
+fn read_number_binding(text: &str, binding: &str) -> Result<u32, String> {
+    let needle = format!("let {binding} = ");
+    let Some(start) = text.find(&needle).map(|start| start + needle.len()) else {
+        return Err(format!("fixture missing numeric binding {binding}"));
+    };
+    let remainder = &text[start..];
+    let raw_number = remainder
+        .chars()
+        .take_while(|character| character.is_ascii_digit() || *character == '_')
+        .collect::<String>();
+    if raw_number.is_empty() {
+        return Err(format!("fixture numeric binding {binding} is empty"));
+    }
+    let normalized = raw_number.replace('_', "");
+    u32::from_str_radix(&normalized, RADIX_TEN)
+        .map_err(|error| format!("fixture numeric binding {binding} is invalid: {error}"))
 }
 
 fn selected_recipes() -> [RecipeRow<'static>; 1] {

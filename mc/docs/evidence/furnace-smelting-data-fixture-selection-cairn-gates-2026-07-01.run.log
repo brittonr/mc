@@ -1,0 +1,78 @@
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+command: nix run .#cairn -- gate proposal add-furnace-smelting-data-fixture-contract --root .
+{
+  "change": "add-furnace-smelting-data-fixture-contract",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "fbc325e216c6fcfd394880f938dd72d64ecdc9f24704f9a58b52ce443b7656df",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "cf53ab90d75e80f6b41658869364d9aa79dee454be9da5b86f9f175da308dfe6",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run .#cairn -- gate design add-furnace-smelting-data-fixture-contract --root .
+{
+  "change": "add-furnace-smelting-data-fixture-contract",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "4eb0a6e03c6034ee718c68956b5b1c6c6a4e868f02d557b7235f1f2e6dab3724",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "ed54314402d0b2eae2701efe4a11b10009b572d6b00e717d9569c570b1a48523",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run .#cairn -- gate tasks add-furnace-smelting-data-fixture-contract --root .
+{
+  "change": "add-furnace-smelting-data-fixture-contract",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c0cfa3f276fe65b78751078a3bff3cfe06f37f8657af890d4afe0f2520d11dd6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "529f4a6c271da38c65729252ddcb40e9b1ded6137fb7043abbf3f0c92462b463",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+exit_status=0

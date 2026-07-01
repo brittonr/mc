@@ -1,0 +1,3 @@
+command: grep accepted vanilla-composable-plugins furnace_smelting_data_fixture IDs
+exit_status=0
+]0;

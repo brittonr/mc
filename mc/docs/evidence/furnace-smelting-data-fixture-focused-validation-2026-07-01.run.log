@@ -1,0 +1,10 @@
+command: nix develop --no-update-lock-file -c bash -lc nickel-export/fixture-validator/core-handoff
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+furnace smelting selected-row data fixture self-test passed
+furnace smelting selected-row data fixture check passed
+furnace smelting selected-row core check passed
+exit_status=0
+]0;

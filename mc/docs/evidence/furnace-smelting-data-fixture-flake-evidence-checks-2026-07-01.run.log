@@ -1,0 +1,11 @@
+command: nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh .#checks.x86_64-linux.mc-compat-evidence-manifests .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+these 3 derivations will be built:
+  /nix/store/77ficaf76baq6n57ali2sj2f6khcnadn-mc-compat-evidence-manifests.drv
+  /nix/store/sbmzknil2cqp70hx3xv5rsbi57z0ax1k-mc-compat-evidence-manifest-refresh.drv
+  /nix/store/wpcvj1jr0mqpcay7lw5sjvkjb719chsi-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/wpcvj1jr0mqpcay7lw5sjvkjb719chsi-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/sbmzknil2cqp70hx3xv5rsbi57z0ax1k-mc-compat-evidence-manifest-refresh.drv'...
+building '/nix/store/77ficaf76baq6n57ali2sj2f6khcnadn-mc-compat-evidence-manifests.drv'...
+exit_status=0
+]0;
