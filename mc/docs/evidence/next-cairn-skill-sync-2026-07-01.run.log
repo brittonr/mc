@@ -1,0 +1,85 @@
+command: nix run .#cairn -- sync add-next-cairn-target-skill --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-next-cairn-target-skill/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-next-cairn-target-skill/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-next-cairn-target-skill",
+  "delta_specs": [
+    "./cairn/changes/add-next-cairn-target-skill/specs/repository-layout/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "51182c3ff3eeaf9e9295615d60608279be93f7abb28a65349a7bf2db91e4de8d",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "f0db6a5e58232d0aa2061cf8a3316a1476d05b1e2856749a308a0cd53d3e4224",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "e57643b23a86fff47f1f6364760c21750462e1c7191fc02fed238b57ad717679"
+}
+command: nix run .#cairn -- sync add-next-cairn-target-skill --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-next-cairn-target-skill/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-next-cairn-target-skill/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-next-cairn-target-skill",
+  "delta_specs": [
+    "./cairn/changes/add-next-cairn-target-skill/specs/repository-layout/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "51182c3ff3eeaf9e9295615d60608279be93f7abb28a65349a7bf2db91e4de8d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "3e8a548b6dc21af44ec0d86f78668c92ced800d2e53c64a647403e91c88e2052",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "5bfd2511dce36c7877d7228c2e0fb8b3bbf0b0dc45a513e864f2bdc5880870d0"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "d7eb1c27efc03bae9bdd27f683607cc4aa4dbe986c3aa5db9187c48c6b5bc028",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "0cf890292ea8062ff3fa3fece78b103814a959ba89d367f34a1a1280586a122d"
+    },
+    "kind": "sync",
+    "manifest_hash": "55468b5ffaf4def064d101e4e41e140a49a5db79b1831ed5e2dc0165489f5a46"
+  },
+  "plan_hash": "ab6fe2f12bb6f8ca60ba6f715124b40f1fb9cc4b3e92985926231b64d20af7b3",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "771a26df09c881fe923310743be6cf3953155fc6578a61e588cd7ca1b8330c89"
+}
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+exit_status=0

@@ -1,0 +1,23 @@
+command: rg next_cairn_target_skill cairn/specs/repository-layout/spec.md
+r[repository_layout.next_cairn_target_skill] The repository SHOULD provide a project-level Pi skill for hunting the next bounded work target and writing one native Cairn package.
+r[repository_layout.next_cairn_target_skill.bounded]
+r[repository_layout.next_cairn_target_skill.package]
+r[repository_layout.next_cairn_target_skill.docs] The next-target skill work MUST document the selected project skill path, Pi discovery assumptions, workflow, scoring rubric, Cairn output shape, and non-claims.
+r[repository_layout.next_cairn_target_skill.docs.reviewable]
+r[repository_layout.next_cairn_target_skill.validation] The next-target skill work MUST include focused validation with positive and negative self-tests for required skill and documentation rules.
+r[repository_layout.next_cairn_target_skill.validation.positive]
+r[repository_layout.next_cairn_target_skill.validation.negative]
+r[repository_layout.next_cairn_target_skill.closeout] The next-target skill work MUST record focused validation, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, accepted-spec sync verification, evidence-manifest checks, flake evidence checks, and archive receipts before closeout.
+r[repository_layout.next_cairn_target_skill.closeout.log]
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+exit_status=0

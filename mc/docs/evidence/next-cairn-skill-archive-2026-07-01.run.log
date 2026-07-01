@@ -1,0 +1,114 @@
+command: nix run .#cairn -- archive add-next-cairn-target-skill --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-next-cairn-target-skill",
+      "kind": "archive_change",
+      "path": "./cairn/changes/add-next-cairn-target-skill"
+    }
+  ],
+  "blocked": false,
+  "change": "add-next-cairn-target-skill",
+  "dry_run": true,
+  "input_hash": "51182c3ff3eeaf9e9295615d60608279be93f7abb28a65349a7bf2db91e4de8d",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "d31410da66dbd67ab514c7bed96d62965ab01a45eb4d563c75098f365464af0d",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "2eae2d1b3d5fe99ad0bb9ae28996e4c2cdcd6c61a7231e9897387c252a5ad858"
+}
+command: CAIRN_ARCHIVE_DATE=2026-07-01 nix run .#cairn -- archive add-next-cairn-target-skill --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-next-cairn-target-skill",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-07-01-add-next-cairn-target-skill"
+    }
+  ],
+  "blocked": false,
+  "change": "add-next-cairn-target-skill",
+  "dry_run": false,
+  "input_hash": "51182c3ff3eeaf9e9295615d60608279be93f7abb28a65349a7bf2db91e4de8d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "fa89e96770113d0db8761ce9e518f77680ba766febe71649149c3967482d43f1",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-next-cairn-target-skill/design.md"
+        },
+        {
+          "content_hash": "f937ee804301abc71ce3396a164a762e968579f604b3787fabae9d9a2c6e8f23",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-next-cairn-target-skill/proposal.md"
+        },
+        {
+          "content_hash": "f6562e128af475bb2627604f113463d8c55744aacf932c2d322de7f05c3210ed",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-next-cairn-target-skill/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "567fd2f95bc37497a70f544474ab40b646751e5f4830633778a75755f300fe7d",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-next-cairn-target-skill/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-next-cairn-target-skill"
+        }
+      ],
+      "manifest_hash": "0decb4ca2fe388ea4e57f20c5d7acfb542d32dab3ca2b8cbcf912c1683278b11"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "fa89e96770113d0db8761ce9e518f77680ba766febe71649149c3967482d43f1",
+          "exists": true,
+          "path": "./cairn/changes/add-next-cairn-target-skill/design.md"
+        },
+        {
+          "content_hash": "f937ee804301abc71ce3396a164a762e968579f604b3787fabae9d9a2c6e8f23",
+          "exists": true,
+          "path": "./cairn/changes/add-next-cairn-target-skill/proposal.md"
+        },
+        {
+          "content_hash": "f6562e128af475bb2627604f113463d8c55744aacf932c2d322de7f05c3210ed",
+          "exists": true,
+          "path": "./cairn/changes/add-next-cairn-target-skill/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "567fd2f95bc37497a70f544474ab40b646751e5f4830633778a75755f300fe7d",
+          "exists": true,
+          "path": "./cairn/changes/add-next-cairn-target-skill/tasks.md"
+        }
+      ],
+      "manifest_hash": "e38fd2443a9b856becffb60051fdbaf096611c800750a0494b80639bb4458629"
+    },
+    "kind": "archive",
+    "manifest_hash": "1dca6208d224fd56e658819463950d2a9427b1914a369ed8d81cb260c21f41d4"
+  },
+  "plan_hash": "65de97d9bc706571eb47ebb5b653c23e171712132c33a5192949a1cff2cd366f",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "495f6dc4a4885ce90ea3d23c4f6a6ab9b91e9f4036d863dbb9eef078cc4f7a1f"
+}
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+exit_status=0

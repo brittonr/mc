@@ -1,0 +1,5 @@
+command: tools/check_next_cairn_target_skill.rs --self-test
+next cairn target skill self-test passed
+command: tools/check_next_cairn_target_skill.rs --root .
+next cairn target skill check passed
+exit_status=0
