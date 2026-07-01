@@ -1,0 +1,76 @@
+command: nix run path:/home/brittonr/git/mc#cairn -- sync add-crafting-recipe-behavior-card --root /home/brittonr/git/mc
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/add-crafting-recipe-behavior-card/specs/vanilla-composable-plugins/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/add-crafting-recipe-behavior-card/specs/vanilla-composable-plugins/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-crafting-recipe-behavior-card",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/add-crafting-recipe-behavior-card/specs/vanilla-composable-plugins/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "cc0c84ad29ccd214653468327a57f4659371a6590ddd369e23d89b4dbcee0128",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "fe1b594446c02c89f7a9bc94edf4670a85676b8bfffa60cb121cf03cdcbc5658",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "451e3772e3b6e943b56072976cdc4359c5a75054c258656f0bda42c080b2840b"
+}
+command_exit_status=0
+command: nix run path:/home/brittonr/git/mc#cairn -- sync add-crafting-recipe-behavior-card --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/add-crafting-recipe-behavior-card/specs/vanilla-composable-plugins/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/add-crafting-recipe-behavior-card/specs/vanilla-composable-plugins/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-crafting-recipe-behavior-card",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/add-crafting-recipe-behavior-card/specs/vanilla-composable-plugins/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "cc0c84ad29ccd214653468327a57f4659371a6590ddd369e23d89b4dbcee0128",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "5a0df0c2104750da33b59045ee8f65da3ab2f88e7fcec091f9f7fc6d3d20b606",
+          "exists": true,
+          "path": "./cairn/specs/vanilla-composable-plugins/spec.md"
+        }
+      ],
+      "manifest_hash": "23b92a5c76ce85d9df695b06601e4d3245b9bebd8baa9f14846ab27ffec2916a"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "29d29128621f70776265f7b720bcc1340c80bdf2b15c4c3dee56883911a35b14",
+          "exists": true,
+          "path": "./cairn/specs/vanilla-composable-plugins/spec.md"
+        }
+      ],
+      "manifest_hash": "a0a87ff2b60b965bbc976051bdd11376f00e9c671910fdbac79b23acd86d524f"
+    },
+    "kind": "sync",
+    "manifest_hash": "55f0fabf737703e0e18a93924341667a3a46eb4ec19a1bac958692bc253abb2c"
+  },
+  "plan_hash": "b36724d8f2d72ead11c7d0c4eee055e68ac9c5582237c97f45652fea7029533a",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "bd772e1372257fdc287e36a2964397c6f67825aa7345392be2267ea5f90d8600"
+}
+command_exit_status=0
+exit_status=0

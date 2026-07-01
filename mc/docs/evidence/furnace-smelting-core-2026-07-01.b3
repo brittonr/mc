@@ -15,7 +15,7 @@ ca993928ae12425e66111eb8592f9be86127b93a13042cdcb5779766ce967c8f  docs/evidence/
 076caf9b9448ed1d83a07b073ef3e2a314d071e71aed33cf0b8d2e8264e63f7f  docs/evidence/furnace-smelting-core-post-archive-evidence-manifest-check-2026-07-01.run.log
 d0f8ca3010d5e34624d69c3800b278c628f4e140032d3f87aff7d001e1856735  docs/furnace-smelting-selected-row-core.md
 3b6bd6c3610660d52cd28044ee89e78c42ce0e3d4d8cae445ff1e175a1e9976b  tools/check_furnace_smelting_core.rs
-29d29128621f70776265f7b720bcc1340c80bdf2b15c4c3dee56883911a35b14  cairn/specs/vanilla-composable-plugins/spec.md
+5a0df0c2104750da33b59045ee8f65da3ab2f88e7fcec091f9f7fc6d3d20b606  cairn/specs/vanilla-composable-plugins/spec.md
 7800b968b40ef4811b8c5bd419c20944e9f16ddbfd424c1bfd4a87f8eb9b2746  cairn/archive/2026-07-01-add-furnace-smelting-selected-row-core/proposal.md
 08b864743bcf72cedd31a1fd8ee0229bac93c437e5ffee7106baa82bb4abda38  cairn/archive/2026-07-01-add-furnace-smelting-selected-row-core/design.md
 2e86d7f39fa009cd6a7a9a3b30f9d614b3551abe9ce1f6af8040720a5cd89487  cairn/archive/2026-07-01-add-furnace-smelting-selected-row-core/tasks.md

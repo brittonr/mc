@@ -1,0 +1,11 @@
+command: verify crafting recipe card inventory required phrases
+found: roadmap row
+found: accepted behavior-card
+found: survival-crafting-recipe-breadth-parity
+found: typed-event migration
+found: Java Edition 1.20.1 / protocol 763
+found: target-version recipe JSON
+found: predecessor row evidence
+found: not evidence of a reusable pure core
+crafting recipe card inventory check passed
+exit_status=0

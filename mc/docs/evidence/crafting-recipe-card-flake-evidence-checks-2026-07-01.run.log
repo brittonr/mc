@@ -1,0 +1,13 @@
+command: nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/1vadayx8wddaymk1iijr9hhbcsbmavl4-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/1vadayx8wddaymk1iijr9hhbcsbmavl4-mc-compat-cairn-task-evidence.drv'...
+command_exit_status=0
+command: nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L
+this derivation will be built:
+  /nix/store/k5ad3v7rn00id1ghf8pydhja7cndwq7m-mc-compat-evidence-manifest-refresh.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/k5ad3v7rn00id1ghf8pydhja7cndwq7m-mc-compat-evidence-manifest-refresh.drv'...
+command_exit_status=0
+exit_status=0

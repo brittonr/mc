@@ -1,0 +1,7 @@
+command: verify accepted vanilla-composable-plugins spec contains crafting recipe-card IDs
+found: r[vanilla_composable_plugins.crafting_recipe_card.inventory]
+found: r[vanilla_composable_plugins.crafting_recipe_card]
+found: r[vanilla_composable_plugins.crafting_recipe_card.validation]
+found: r[vanilla_composable_plugins.crafting_recipe_card.docs]
+found: r[vanilla_composable_plugins.crafting_recipe_card.closeout]
+exit_status=0

@@ -1,0 +1,20 @@
+command: nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+command_exit_status=0
+command: nix run path:/home/brittonr/git/mc#cairn -- change list --root /home/brittonr/git/mc
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "/home/brittonr/git/mc"
+}
+command_exit_status=0
+exit_status=0

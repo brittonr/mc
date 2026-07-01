@@ -1,0 +1,7 @@
+command: tools/check_crafting_recipe_behavior_card.rs --self-test
+crafting recipe behavior card self-test passed
+self_test_exit_status=0
+command: tools/check_crafting_recipe_behavior_card.rs --root .
+crafting recipe behavior card check passed: selected matrix shaped=minecraft:chest shapeless=minecraft:oak_planks invalid=minecraft:stick_insufficient_input_rejection collection=primary-click
+root_check_exit_status=0
+exit_status=0

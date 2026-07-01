@@ -102,6 +102,12 @@ Every follow-on wiki-guided plugin Cairn should include a card with this shape:
 - mc-compat matrix row:
 ```
 
+## Crafting recipe behavior-card handoff
+
+`docs/crafting-recipe-behavior-card.md` is now the prerequisite card for future `CraftingRecipeCorePlugin` or `CraftingTableShellPlugin` work. It uses the existing `survival-crafting-recipe-breadth` shaped chest, shapeless oak-planks, invalid stick-input rejection, and primary-click collection receipts as predecessor row evidence only. Follow-on implementation must still add target-version recipe JSON extraction, a pure recipe core, a thin opt-in Valence shell, positive and negative tests, disabled-plugin evidence, and separate closeout evidence before claiming runtime behavior.
+
+The card preserves non-claims for all recipes, arbitrary collection modes, shift-click/drag/split breadth, data-pack loading, recipe-book UI behavior, automated crafter behavior, DefaultPlugins membership, broad vanilla parity, broad Minecraft compatibility, public-server safety, and production readiness.
+
 ## Filled behavior card example: furnace smelting
 
 ## Source pages
