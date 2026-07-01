@@ -1,9 +1,9 @@
 //! Optional profile and skin cache helpers for login-adjacent workflows.
 //!
 //! This module is intentionally inert by default. It provides a Valence-owned
-//! functional core for provider response parsing, cache freshness decisions, and
-//! request-budget admission, plus small adapter traits for HTTP providers and
-//! storage shells.
+//! functional core for provider response parsing, cache freshness decisions,
+//! and request-budget admission, plus small adapter traits for HTTP providers
+//! and storage shells.
 
 use std::collections::HashMap;
 use std::sync::Mutex;
@@ -34,7 +34,8 @@ const INITIAL_USED_REQUESTS: u32 = 0;
 pub struct ProfileCacheConfig {
     /// Enables cache/provider resolution when true.
     pub enabled: bool,
-    /// Explicit provider configuration. Required when [`Self::enabled`] is true.
+    /// Explicit provider configuration. Required when [`Self::enabled`] is
+    /// true.
     pub provider: Option<ProfileProviderConfig>,
     /// Request budget used before provider calls.
     pub request_budget: RequestBudgetConfig,

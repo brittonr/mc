@@ -2,15 +2,15 @@
 //!
 //! This module is a Valence-owned boundary for proxy-mode experiments. The
 //! pure core validates server/proxy messages, resolves route intents against an
-//! explicit proxy state snapshot, and returns delivery plans without reading ECS
-//! state or touching sockets. [`ProxyBroadcastBackendPlugin`] is a thin opt-in
-//! shell that stores disabled backend state unless an application explicitly
-//! enables it.
+//! explicit proxy state snapshot, and returns delivery plans without reading
+//! ECS state or touching sockets. [`ProxyBroadcastBackendPlugin`] is a thin
+//! opt-in shell that stores disabled backend state unless an application
+//! explicitly enables it.
 //!
 //! The contract intentionally does not copy Hyperion's runtime, transport,
 //! rkyv frames, mTLS/Iroh setup, or Bedwars gameplay code. Direct Valence
-//! networking remains the default path when this plugin is not added or when the
-//! backend resource is left disabled.
+//! networking remains the default path when this plugin is not added or when
+//! the backend resource is left disabled.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
@@ -94,7 +94,8 @@ impl ProxyPlayerPosition {
 pub enum ProxyStreamLifecycle {
     /// Stream may receive outbound packet deliveries.
     Active,
-    /// Shutdown was requested; in-flight inbound packets may still arrive until disconnect.
+    /// Shutdown was requested; in-flight inbound packets may still arrive until
+    /// disconnect.
     ShuttingDown,
 }
 
@@ -221,11 +222,13 @@ pub enum ServerToProxyMessage {
     UpdatePlayerPosition(ProxyPlayerPosition),
     /// Update several stream positions in author order.
     UpdatePlayerPositions(Vec<ProxyPlayerPosition>),
-    /// Register a channel before it may receive subscriptions or channel broadcasts.
+    /// Register a channel before it may receive subscriptions or channel
+    /// broadcasts.
     AddChannel { channel: ProxyChannelId },
     /// Remove a channel and any subscriptions to it.
     RemoveChannel { channel: ProxyChannelId },
-    /// Send channel subscription packet bytes to subscribers, excluding one stream if present.
+    /// Send channel subscription packet bytes to subscribers, excluding one
+    /// stream if present.
     SubscribeChannelPackets {
         channel: ProxyChannelId,
         exclude: Option<ProxyStreamId>,
@@ -238,7 +241,8 @@ pub enum ServerToProxyMessage {
         exclude: Option<ProxyStreamId>,
         payload: Vec<u8>,
     },
-    /// Broadcast packet bytes to broadcast-enabled streams inside a chunk radius.
+    /// Broadcast packet bytes to broadcast-enabled streams inside a chunk
+    /// radius.
     BroadcastLocal {
         center: ProxyChunkPosition,
         radius_chunks: u16,
@@ -422,12 +426,13 @@ pub enum ProxyMessageDiagnosticKind {
     StreamAlreadyConnected { stream: ProxyStreamId },
 }
 
-/// Plans proxy deliveries without touching sockets, ECS state, clocks, or transport encoders.
+/// Plans proxy deliveries without touching sockets, ECS state, clocks, or
+/// transport encoders.
 ///
 /// The planner validates the full state snapshot first. Duplicate streams,
-/// duplicate channels, invalid positions, or stale subscriptions fail closed and
-/// produce no deliveries. Per-message diagnostics also suppress deliveries for
-/// that message. Delivery ordering preserves input message order and sorts
+/// duplicate channels, invalid positions, or stale subscriptions fail closed
+/// and produce no deliveries. Per-message diagnostics also suppress deliveries
+/// for that message. Delivery ordering preserves input message order and sorts
 /// recipients by [`ProxyStreamId`] inside each message.
 pub fn plan_proxy_deliveries(
     messages: &[ServerToProxyMessage],
@@ -458,7 +463,8 @@ pub fn plan_proxy_deliveries(
     }
 }
 
-/// Applies one server-to-proxy state message to an explicit proxy state snapshot.
+/// Applies one server-to-proxy state message to an explicit proxy state
+/// snapshot.
 ///
 /// Delivery messages are validated and leave state unchanged. State update
 /// messages return a new state snapshot without mutating the input.
@@ -520,7 +526,8 @@ pub fn apply_server_to_proxy_message(
     Ok(next)
 }
 
-/// Applies one proxy-to-server lifecycle or subscription message to a state snapshot.
+/// Applies one proxy-to-server lifecycle or subscription message to a state
+/// snapshot.
 pub fn apply_proxy_to_server_message(
     state: &ProxyRouteState,
     message: &ProxyToServerMessage,
