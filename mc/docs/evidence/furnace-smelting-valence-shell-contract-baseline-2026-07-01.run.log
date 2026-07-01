@@ -1,0 +1,43 @@
+# Furnace smelting Valence shell contract baseline
+root=/home/brittonr/git/mc
+change=add-furnace-smelting-valence-shell-contract
+inventory_sources=docs/furnace-smelting-behavior-card.md docs/furnace-smelting-selected-row-core.md docs/furnace-smelting-selected-row-data-fixture.md docs/furnace-smelting-selected-row-receipt-handoff.md cairn/specs/vanilla-composable-plugins/spec.md cairn/specs/valence-bevy-ecs/spec.md
+command=env CARGO_TARGET_DIR=target/check-furnace-smelting-data-fixture-script nix shell fenix#minimal.toolchain nixpkgs#gcc nixpkgs#nickel -c cargo -q -Zscript tools/check_furnace_smelting_data_fixture.rs --self-test
+unpacking 'github:nix-community/fenix/16810aa8f4ad89ca480b1513774e8b6f485fe368' into the Git cache...
+copying path '/nix/store/w8w3fia26p35xays42lixahnzigsl8dv-source' from 'https://cache.nixos.org'...
+these 7 derivations will be built:
+  /nix/store/6y8vxry3gqcwm288xb011g8yhsm2lr4m-rustc-nightly-x86_64-unknown-linux-gnu.tar.gz.drv
+  /nix/store/js34fg9i2vil7q8bxgyhqg17nyzw4125-cargo-nightly-x86_64-unknown-linux-gnu.tar.gz.drv
+  /nix/store/nyjymg62vwpx8jy3bp162mmdpgbjgpwm-rust-std-nightly-x86_64-unknown-linux-gnu.tar.gz.drv
+  /nix/store/qbjag5f2ip0zgwidxwx3did30m1mn7cv-rust-std-nightly-minimal-2026-07-01.drv
+  /nix/store/sbi5c7ia9ljw0ig0llckr992dmd6pxza-cargo-nightly-minimal-2026-07-01.drv
+  /nix/store/wsb6svccmikkihhxk6fx043xl79xib58-rustc-nightly-minimal-2026-07-01.drv
+  /nix/store/qf31ys9vqgx4gbb1i8d691i18vw2rfp7-rust-nightly-minimal-2026-07-01.drv
+building '/nix/store/4mgvnwzbf42m3f6cczzhvp18zz5qbpcn-cargo-nightly-x86_64-unknown-linux-gnu.tar.gz.drv'...
+building '/nix/store/sbzs0023b1qwj2s9qxgl25zbhllg08r9-rust-std-nightly-x86_64-unknown-linux-gnu.tar.gz.drv'...
+building '/nix/store/zx5gdg3nhdf0y84369rjayd21ppsakia-rustc-nightly-x86_64-unknown-linux-gnu.tar.gz.drv'...
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/sbi5c7ia9ljw0ig0llckr992dmd6pxza-cargo-nightly-minimal-2026-07-01.drv'...
+building '/nix/store/wsb6svccmikkihhxk6fx043xl79xib58-rustc-nightly-minimal-2026-07-01.drv'...
+building '/nix/store/qbjag5f2ip0zgwidxwx3did30m1mn7cv-rust-std-nightly-minimal-2026-07-01.drv'...
+building '/nix/store/qf31ys9vqgx4gbb1i8d691i18vw2rfp7-rust-nightly-minimal-2026-07-01.drv'...
+warning: `package.edition` is unspecified, defaulting to the latest edition (currently `2024`)
+furnace smelting selected-row data fixture self-test passed
+fixture_self_test_exit_status=0
+command=env CARGO_TARGET_DIR=target/check-furnace-smelting-data-fixture-script nix shell fenix#minimal.toolchain nixpkgs#gcc nixpkgs#nickel -c cargo -q -Zscript tools/check_furnace_smelting_data_fixture.rs --fixture compat/config/furnace-smelting-selected-row-fixture.ncl
+warning: `package.edition` is unspecified, defaulting to the latest edition (currently `2024`)
+furnace smelting selected-row data fixture check passed
+fixture_check_exit_status=0
+command=env CARGO_TARGET_DIR=target/check-furnace-smelting-core-script nix shell fenix#minimal.toolchain nixpkgs#gcc -c cargo -q -Zscript tools/check_furnace_smelting_core.rs --self-test --fixture compat/config/furnace-smelting-selected-row-fixture.ncl
+warning: `package.edition` is unspecified, defaulting to the latest edition (currently `2024`)
+furnace smelting selected-row core check passed
+core_fixture_check_exit_status=0
+command=env CARGO_TARGET_DIR=target/check-furnace-smelting-receipt-handoff-script nix shell fenix#minimal.toolchain nixpkgs#gcc nixpkgs#nickel -c cargo -q -Zscript tools/check_furnace_smelting_receipt_handoff.rs --self-test
+warning: `package.edition` is unspecified, defaulting to the latest edition (currently `2024`)
+furnace smelting selected-row receipt handoff self-test passed: positive selected-row handoff and 14 negative cases exercised
+receipt_handoff_self_test_exit_status=0
+command=env CARGO_TARGET_DIR=target/check-furnace-smelting-receipt-handoff-script nix shell fenix#minimal.toolchain nixpkgs#gcc nixpkgs#nickel -c cargo -q -Zscript tools/check_furnace_smelting_receipt_handoff.rs --fixture compat/config/furnace-smelting-selected-row-fixture.ncl --paper docs/evidence/survival-furnace-smelting-breadth-paper-2026-06-21.kv --valence docs/evidence/survival-furnace-smelting-breadth-valence-2026-06-21.kv
+warning: `package.edition` is unspecified, defaulting to the latest edition (currently `2024`)
+furnace smelting selected-row receipt handoff check passed: target=Java Edition 1.20.1 protocol 763 row=survival-furnace-smelting-breadth-parity input=minecraft:raw_iron fuel=minecraft:coal output=minecraft:iron_ingotx1 cook_ticks=200 burn_ticks=1600 paper=66c0f31c620b52258d9a424a03375e4b6ef708f8 valence=53ec70c527796b158463d087fbbb9d0826bc52c5 paper_path=docs/evidence/survival-furnace-smelting-breadth-paper-2026-06-21.kv valence_path=docs/evidence/survival-furnace-smelting-breadth-valence-2026-06-21.kv
+receipt_handoff_check_exit_status=0
+overall_exit_status=0

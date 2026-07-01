@@ -12,7 +12,7 @@ fdbf346bc8ba0e95cc949e8fe4afb4c616889fb8758e13832ebf7c5e1a265c09  docs/evidence/
 e27a1abd448ca3464e607a654273b22e2669d1f533aa2ddeaac878edaf797f9d  tools/check_minecraft_wiki_guidance.rs
 026c6bd8d996db7d305f36c8368435c74acf8ed4d1c03557ae4a9996a6166b0c  .pi/skills/minecraft-wiki/SKILL.md
 3e8a548b6dc21af44ec0d86f78668c92ced800d2e53c64a647403e91c88e2052  cairn/specs/repository-layout/spec.md
-94b5f55bfaedd29703f5ceee4f1deac9813ef61ff85e64205e72d64d2ca68e62  cairn/specs/vanilla-composable-plugins/spec.md
+5652105f4c1f711be59845910976a763db623cadf15bf7eeac17f10783801a1e  cairn/specs/vanilla-composable-plugins/spec.md
 3ebefb787bdb2d2f80f952d31dd48e5060d0b5ff3df1b65c3ce2d9ad98c47209  cairn/archive/2026-07-01-add-minecraft-wiki-pi-skill/design.md
 6904b8674f2fc3b43e1c37010eef36680d179bcdf977e8ea17e8dd153a36d85f  cairn/archive/2026-07-01-add-minecraft-wiki-pi-skill/proposal.md
 41429594afd0e7c17eb63779a83b922d5246bdff3dc530b4636df2035a0bed22  cairn/archive/2026-07-01-add-minecraft-wiki-pi-skill/specs/repository-layout/spec.md

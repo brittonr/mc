@@ -81,8 +81,8 @@ This fixture does not claim:
 
 ## Receipt handoff
 
-`docs/furnace-smelting-selected-row-receipt-handoff.md` records the deterministic bridge from this fixture to archived Paper/reference and Valence receipt metrics. The handoff checker validates the selected RawIron + Coal row, timing constants, backend identities, and retained non-claims before the archived receipts are reused as selected-row evidence.
+`docs/furnace-smelting-selected-row-receipt-handoff.md` records the deterministic bridge from this fixture to archived Paper/reference and Valence receipt metrics. The handoff checker validates the selected RawIron + Coal row, timing constants, backend identities, and retained non-claims before the archived receipts are reused as selected-row evidence. `docs/furnace-smelting-valence-shell-contract.md` is the follow-on shell boundary for mapping this fixture-backed core into future opt-in Valence runtime work.
 
 ## Follow-on evidence
 
-Before promoting stronger target-version behavior, follow-on work still needs all-recipe extraction if breadth is claimed, Valence Bevy/ECS shell evidence if runtime behavior is claimed, and separate cards for hoppers, XP, recipe book, smoker, blast furnace, and chunk-unload semantics. The receipt handoff does not add a runtime shell or broaden the selected-row claim.
+Before promoting stronger target-version behavior, follow-on work still needs all-recipe extraction if breadth is claimed, the Valence Bevy/ECS shell contract in `docs/furnace-smelting-valence-shell-contract.md` plus focused schedule evidence if runtime behavior is claimed, and separate cards for hoppers, XP, recipe book, smoker, blast furnace, and chunk-unload semantics. The receipt handoff does not add a runtime shell or broaden the selected-row claim.

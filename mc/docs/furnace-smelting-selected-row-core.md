@@ -100,12 +100,12 @@ This package does not claim:
 
 ## Receipt handoff
 
-`docs/furnace-smelting-selected-row-receipt-handoff.md` now distinguishes this local unit core from selected-row receipt evidence. The handoff proves that the validated fixture row matches archived Paper/reference and Valence normalized receipt metrics for RawIron + Coal -> IronIngot timing, while this core remains an in-memory rule slice and not a Valence runtime shell.
+`docs/furnace-smelting-selected-row-receipt-handoff.md` now distinguishes this local unit core from selected-row receipt evidence. The handoff proves that the validated fixture row matches archived Paper/reference and Valence normalized receipt metrics for RawIron + Coal -> IronIngot timing, while this core remains an in-memory rule slice and not a Valence runtime shell. `docs/furnace-smelting-valence-shell-contract.md` maps this core to the future opt-in Bevy/ECS shell boundary and remains a prerequisite before runtime behavior claims.
 
 ## Next required evidence before broader claims
 
 Before promoting target-version behavior beyond this local unit core plus receipt handoff, follow-on work must add:
 
 - All-recipe Java Edition 1.20.1 recipe/fuel extraction if breadth is claimed.
-- A Valence Bevy/ECS shell design and schedule evidence before runtime behavior is claimed.
+- The Valence Bevy/ECS shell contract in `docs/furnace-smelting-valence-shell-contract.md`, plus schedule evidence and disabled-plugin tests, before runtime behavior is claimed.
 - Separate behavior cards for hoppers, XP, recipe book, smoker, blast furnace, and chunk-unload semantics.

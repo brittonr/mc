@@ -1,0 +1,9 @@
+command=rustc --edition=2021 tools/check_furnace_smelting_valence_shell_contract.rs -o target/check-furnace-smelting-valence-shell-contract
+rustc_compile_exit_status=0
+command=target/check-furnace-smelting-valence-shell-contract --self-test
+furnace smelting Valence shell contract self-test passed: positive complete contract and 21 negative cases exercised
+checker_self_test_exit_status=0
+command=target/check-furnace-smelting-valence-shell-contract --root .
+furnace smelting Valence shell contract check passed: contract=docs/furnace-smelting-valence-shell-contract.md
+contract_check_exit_status=0
+overall_exit_status=0

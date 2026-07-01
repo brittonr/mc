@@ -1,0 +1,12 @@
+command=target/refresh-evidence-manifests --check --root .
+evidence manifest refresh ok: mode=check; passes=0; manifests=579; entries=6255; current=6255; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+refresh_check_exit_status=0
+command=rustc --edition=2021 tools/check_evidence_manifests.rs -o target/check-evidence-manifests
+checker_compile_exit_status=0
+command=target/check-evidence-manifests --self-test
+evidence manifest self-test ok: positive and negative fixtures exercised
+checker_self_test_exit_status=0
+command=target/check-evidence-manifests
+evidence manifests ok: 579 manifests, 6255 entries, 143 receipts scanned
+checker_exit_status=0
+overall_exit_status=0

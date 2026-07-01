@@ -1,0 +1,26 @@
+command=target/refresh-evidence-manifests --check --root .
+evidence manifest refresh ok: mode=check; passes=0; manifests=579; entries=6260; current=6260; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+refresh_check_exit_status=0
+command=target/check-evidence-manifests
+evidence manifests ok: 579 manifests, 6260 entries, 143 receipts scanned
+checker_exit_status=0
+command=nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+cairn_validate_exit_status=0
+command=nix run .#cairn -- change list --root .
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+change_list_exit_status=0
+overall_exit_status=0

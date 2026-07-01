@@ -1,0 +1,2 @@
+command=rustfmt --edition 2021 tools/check_furnace_smelting_valence_shell_contract.rs
+exit_status=0

@@ -57,6 +57,8 @@ The successful handoff proves that the validated selected fixture row and the ar
 
 ## Non-claims retained
 
+The follow-on shell boundary is `docs/furnace-smelting-valence-shell-contract.md`. It maps this selected-row evidence to future opt-in Valence runtime planning and remains a prerequisite before any runtime behavior claim.
+
 This handoff does not claim:
 
 - Broad Minecraft compatibility.
@@ -71,6 +73,7 @@ This handoff does not claim:
 - Recipe-book synchronization.
 - Chunk-unload semantics.
 - Valence runtime integration.
+- Valence shell implementation.
 - DefaultPlugins membership changes.
 - Public-server safety.
 - Production readiness.
@@ -84,3 +87,7 @@ This handoff does not claim:
 - Cairn gates, accepted-spec sync, evidence-manifest refresh/check, and flake evidence checks are summarized in `docs/evidence/furnace-smelting-selected-row-receipts-2026-07-01.md`.
 
 BLAKE3 coverage is recorded in `docs/evidence/furnace-smelting-selected-row-receipts-2026-07-01.b3`.
+
+## Shell-contract prerequisite
+
+`docs/furnace-smelting-valence-shell-contract.md` records the opt-in Bevy/ECS shell contract, disabled-plugin behavior, schedule boundary, mutation boundary, and validation prerequisites that must be satisfied before this selected-row handoff is used for Valence runtime behavior claims.

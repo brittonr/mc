@@ -1,0 +1,37 @@
+command=rustc --edition=2021 tools/check_furnace_smelting_behavior_card.rs -o target/check-furnace-smelting-behavior-card
+behavior_compile_exit_status=0
+command=target/check-furnace-smelting-behavior-card --self-test
+furnace smelting behavior card self-test passed
+behavior_self_test_exit_status=0
+command=target/check-furnace-smelting-behavior-card --root .
+furnace smelting behavior card check passed
+behavior_check_exit_status=0
+command=env CARGO_TARGET_DIR=target/check-furnace-smelting-data-fixture-script nix shell fenix#minimal.toolchain nixpkgs#gcc nixpkgs#nickel -c cargo -q -Zscript tools/check_furnace_smelting_data_fixture.rs --self-test
+warning: `package.edition` is unspecified, defaulting to the latest edition (currently `2024`)
+furnace smelting selected-row data fixture self-test passed
+fixture_self_test_exit_status=0
+command=env CARGO_TARGET_DIR=target/check-furnace-smelting-data-fixture-script nix shell fenix#minimal.toolchain nixpkgs#gcc nixpkgs#nickel -c cargo -q -Zscript tools/check_furnace_smelting_data_fixture.rs --fixture compat/config/furnace-smelting-selected-row-fixture.ncl
+warning: `package.edition` is unspecified, defaulting to the latest edition (currently `2024`)
+furnace smelting selected-row data fixture check passed
+fixture_check_exit_status=0
+command=env CARGO_TARGET_DIR=target/check-furnace-smelting-core-script nix shell fenix#minimal.toolchain nixpkgs#gcc -c cargo -q -Zscript tools/check_furnace_smelting_core.rs --self-test --fixture compat/config/furnace-smelting-selected-row-fixture.ncl
+warning: `package.edition` is unspecified, defaulting to the latest edition (currently `2024`)
+furnace smelting selected-row core check passed
+core_fixture_check_exit_status=0
+command=env CARGO_TARGET_DIR=target/check-furnace-smelting-receipt-handoff-script nix shell fenix#minimal.toolchain nixpkgs#gcc nixpkgs#nickel -c cargo -q -Zscript tools/check_furnace_smelting_receipt_handoff.rs --self-test
+warning: `package.edition` is unspecified, defaulting to the latest edition (currently `2024`)
+furnace smelting selected-row receipt handoff self-test passed: positive selected-row handoff and 14 negative cases exercised
+receipt_handoff_self_test_exit_status=0
+command=env CARGO_TARGET_DIR=target/check-furnace-smelting-receipt-handoff-script nix shell fenix#minimal.toolchain nixpkgs#gcc nixpkgs#nickel -c cargo -q -Zscript tools/check_furnace_smelting_receipt_handoff.rs --fixture compat/config/furnace-smelting-selected-row-fixture.ncl --paper docs/evidence/survival-furnace-smelting-breadth-paper-2026-06-21.kv --valence docs/evidence/survival-furnace-smelting-breadth-valence-2026-06-21.kv
+warning: `package.edition` is unspecified, defaulting to the latest edition (currently `2024`)
+furnace smelting selected-row receipt handoff check passed: target=Java Edition 1.20.1 protocol 763 row=survival-furnace-smelting-breadth-parity input=minecraft:raw_iron fuel=minecraft:coal output=minecraft:iron_ingotx1 cook_ticks=200 burn_ticks=1600 paper=66c0f31c620b52258d9a424a03375e4b6ef708f8 valence=53ec70c527796b158463d087fbbb9d0826bc52c5 paper_path=docs/evidence/survival-furnace-smelting-breadth-paper-2026-06-21.kv valence_path=docs/evidence/survival-furnace-smelting-breadth-valence-2026-06-21.kv
+receipt_handoff_check_exit_status=0
+command=rustc --edition=2021 tools/check_valence_schedule_hygiene.rs -o target/check-valence-schedule-hygiene
+schedule_compile_exit_status=0
+command=target/check-valence-schedule-hygiene --self-test
+valence schedule hygiene self-test passed
+schedule_self_test_exit_status=0
+command=target/check-valence-schedule-hygiene --root .
+valence schedule hygiene check passed
+schedule_check_exit_status=0
+overall_exit_status=0

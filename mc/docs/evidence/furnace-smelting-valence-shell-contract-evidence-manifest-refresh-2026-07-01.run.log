@@ -1,0 +1,12 @@
+command=rustc --edition=2021 tools/refresh_evidence_manifests.rs -o target/refresh-evidence-manifests
+refresh_compile_exit_status=0
+command=target/refresh-evidence-manifests --self-test
+evidence manifest refresh self-test ok: positive and negative fixtures exercised
+refresh_self_test_exit_status=0
+command=target/refresh-evidence-manifests --refresh --root .
+evidence manifest refresh ok: mode=refresh; passes=2; manifests=579; entries=6254; current=6254; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=2; manifest_writes=5
+refresh_exit_status=0
+command=target/refresh-evidence-manifests --check --root .
+evidence manifest refresh ok: mode=check; passes=0; manifests=579; entries=6254; current=6254; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+check_exit_status=0
+overall_exit_status=0
