@@ -11,9 +11,9 @@ c6f06f7f007f9f13b319d78fd9ea040368a457faa57776782fbdfaeaa938a355  docs/evidence/
 4b630a008bf1a54a2573e5125f8b543c215edd1cdb2d015580a040ba63e3cfea  docs/evidence/crafting-recipe-selected-matrix-core-evidence-manifest-check-2026-07-01.run.log
 134b5a3f1111f2bad4e4637a8f9b00d38ed105e88ec4460c9a6688aa86d92581  docs/evidence/crafting-recipe-selected-matrix-core-archive-dry-run-2026-07-01.run.log
 a0dc70b7fd5fb95f39cfaeb54dd3fdd6791afb3a1e33d54973c7fba846bbdc81  docs/evidence/crafting-recipe-selected-matrix-core-archive-execute-2026-07-01.run.log
-5447d4b01e7a0fa5783799faa94db54784fa5dd1c1a1c7929afeed4f120e5348  docs/crafting-recipe-selected-matrix-core.md
+8b6ac782899c265120d46cfbe4e6d6cce7dd79291768f10f569b9b823abead41  docs/crafting-recipe-selected-matrix-core.md
 3a8b4fbe63423b69b32530196136822561cdf51486c72f1576fecd8592219801  tools/check_crafting_recipe_core.rs
-5f9f63af0248d976f65cb188908d60d843d03be27fc69e5bd9ba61442e3ee81d  cairn/specs/vanilla-composable-plugins/spec.md
+6860e62c6ea8ff1eb3e8bdaf6ba7ad13321f22d7570f72afa1dd35a40f071777  cairn/specs/vanilla-composable-plugins/spec.md
 6377fb3340b0f18313cf21e789b724b72d343183cf5b4450cb26048499fd04e3  cairn/archive/2026-07-01-add-crafting-recipe-selected-matrix-core/proposal.md
 9262114f98fdcc1cc3bc32e47e57a3608e3d4d5adfcb9e3b617ec192052f282d  cairn/archive/2026-07-01-add-crafting-recipe-selected-matrix-core/design.md
 1103bb00793634ddf0189bb60a1b7ef7121b309eec4b52cd3200f1264ce5e954  cairn/archive/2026-07-01-add-crafting-recipe-selected-matrix-core/tasks.md

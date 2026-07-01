@@ -1,0 +1,16 @@
+command: rg crafting_recipe_selected_matrix_receipts cairn/specs/vanilla-composable-plugins/spec.md
+r[vanilla_composable_plugins.crafting_recipe_selected_matrix_receipts.baseline] Selected-matrix receipt-handoff work MUST record the current fixture and core validation baseline before changing checker or handoff logic.
+r[vanilla_composable_plugins.crafting_recipe_selected_matrix_receipts.baseline.captured]
+r[vanilla_composable_plugins.crafting_recipe_selected_matrix_receipts] Selected-matrix crafting receipt-handoff work MUST verify that the validated Java Edition 1.20.1 / protocol 763 fixture rows match reviewable Paper/reference and Valence receipt evidence before promoting selected-matrix target-version behavior beyond local unit semantics.
+r[vanilla_composable_plugins.crafting_recipe_selected_matrix_receipts.bounded]
+r[vanilla_composable_plugins.crafting_recipe_selected_matrix_receipts.checker] The handoff implementation MUST provide a focused checker with a pure deterministic comparison core plus a thin file-reading shell.
+r[vanilla_composable_plugins.crafting_recipe_selected_matrix_receipts.checker.positive]
+r[vanilla_composable_plugins.crafting_recipe_selected_matrix_receipts.checker.negative]
+r[vanilla_composable_plugins.crafting_recipe_selected_matrix_receipts.evidence] Selected-matrix handoff work MAY reuse archived Paper/reference and Valence crafting receipts only when the checker proves they match the validated selected-matrix fixture and preserve the required non-claims; otherwise it MUST stop or produce fresh selected-matrix receipt evidence before promotion.
+r[vanilla_composable_plugins.crafting_recipe_selected_matrix_receipts.evidence.reuse]
+r[vanilla_composable_plugins.crafting_recipe_selected_matrix_receipts.docs] Crafting selected-matrix documentation MUST distinguish local fixture/core semantics, selected-matrix receipt handoff evidence, and deferred Valence runtime shell work.
+r[vanilla_composable_plugins.crafting_recipe_selected_matrix_receipts.docs.non_overclaiming]
+r[vanilla_composable_plugins.crafting_recipe_selected_matrix_receipts.closeout] Selected-matrix receipt-handoff work MUST record baseline validation, focused positive and negative checker tests, handoff validation, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, accepted-spec sync verification, evidence-manifest checks, flake evidence checks, and archive receipts before closeout.
+r[vanilla_composable_plugins.crafting_recipe_selected_matrix_receipts.closeout.log]
+accepted_spec_verify_exit_status=0
+exit_status=0

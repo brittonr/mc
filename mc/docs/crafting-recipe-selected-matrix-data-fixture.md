@@ -6,7 +6,7 @@ This document records the Java Edition 1.20.1 / protocol 763 selected-matrix cra
 
 The checked fixture is `compat/config/crafting-recipe-selected-matrix-fixture.ncl`, typed by `compat/config/crafting-recipe-selected-matrix-fixture-contracts.ncl`, validated by `tools/check_crafting_recipe_data_fixture.rs`, and handed to the pure core by `tools/check_crafting_recipe_core.rs --self-test --fixture compat/config/crafting-recipe-selected-matrix-fixture.ncl`.
 
-This is selected-row fixture evidence only. It is not all-recipe extraction, Paper/vanilla parity, or Valence runtime behavior.
+This is selected-row fixture evidence only. `docs/crafting-recipe-selected-matrix-receipt-handoff.md` records the separate bridge from these fixture rows to archived Paper/reference and Valence receipt metrics. Neither artifact is all-recipe extraction, Paper/vanilla parity, or Valence runtime behavior.
 
 ## Target scope
 
@@ -94,4 +94,4 @@ This fixture does not claim:
 
 ## Follow-on evidence
 
-Before promoting stronger target-version or runtime behavior, follow-on work still needs selected receipt handoff against Paper/reference and Valence evidence, a Valence shell contract, opt-in runtime shell tests, and separate scopes for all-recipe breadth, data-pack loading, recipe-book behavior, automated crafter behavior, and additional collection modes.
+Before promoting runtime behavior, follow-on work still needs a Valence shell contract, opt-in runtime shell tests, and separate scopes for all-recipe breadth, data-pack loading, recipe-book behavior, automated crafter behavior, and additional collection modes.

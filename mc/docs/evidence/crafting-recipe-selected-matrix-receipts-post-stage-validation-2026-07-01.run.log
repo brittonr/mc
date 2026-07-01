@@ -1,0 +1,28 @@
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+post_stage_cairn_validate_exit_status=0
+command: nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=584; entries=6378; current=6378; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+post_stage_evidence_manifest_check_exit_status=0
+command: nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L
+this derivation will be built:
+  /nix/store/c7q545hir6zwzm8mma8na1diqr90yxgp-mc-compat-evidence-manifest-refresh.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/c7q545hir6zwzm8mma8na1diqr90yxgp-mc-compat-evidence-manifest-refresh.drv'...
+post_stage_flake_evidence_manifest_refresh_exit_status=0
+command: nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/3541xjhhx6k3hbw4w54891hn9nz4gkc1-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/3541xjhhx6k3hbw4w54891hn9nz4gkc1-mc-compat-cairn-task-evidence.drv'...
+post_stage_flake_cairn_task_evidence_exit_status=0
+exit_status=0

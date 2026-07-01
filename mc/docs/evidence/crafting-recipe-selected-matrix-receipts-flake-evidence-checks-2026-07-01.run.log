@@ -1,0 +1,16 @@
+command: nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=583; entries=6353; current=6353; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+command: nix build .#checks.x86_64-linux.mc-compat-evidence-manifest-refresh --no-link -L
+this derivation will be built:
+  /nix/store/jc6zymc9r8k2nbsb9ishw0rqxq4y2lgw-mc-compat-evidence-manifest-refresh.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/jc6zymc9r8k2nbsb9ishw0rqxq4y2lgw-mc-compat-evidence-manifest-refresh.drv'...
+flake_evidence_manifest_refresh_exit_status=0
+command: nix build .#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link -L
+this derivation will be built:
+  /nix/store/y54j9ni9bxcz5vqdzwfqyc6bq6cl7idl-mc-compat-cairn-task-evidence.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/y54j9ni9bxcz5vqdzwfqyc6bq6cl7idl-mc-compat-cairn-task-evidence.drv'...
+flake_cairn_task_evidence_exit_status=0
+exit_status=0

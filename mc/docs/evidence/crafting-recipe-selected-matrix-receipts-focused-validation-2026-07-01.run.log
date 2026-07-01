@@ -1,0 +1,22 @@
+command: tools/check_crafting_recipe_data_fixture.rs --self-test
+crafting recipe selected-matrix data fixture self-test passed
+fixture_self_test_exit_status=0
+command: tools/check_crafting_recipe_data_fixture.rs --fixture compat/config/crafting-recipe-selected-matrix-fixture.ncl
+crafting recipe selected-matrix data fixture check passed
+fixture_check_exit_status=0
+command: tools/check_crafting_recipe_core.rs --self-test --fixture compat/config/crafting-recipe-selected-matrix-fixture.ncl
+crafting recipe selected-matrix core check passed
+core_check_exit_status=0
+command: tools/check_crafting_recipe_behavior_card.rs --self-test
+crafting recipe behavior card self-test passed
+behavior_card_self_test_exit_status=0
+command: tools/check_crafting_recipe_behavior_card.rs --root .
+crafting recipe behavior card check passed: selected matrix shaped=minecraft:chest shapeless=minecraft:oak_planks invalid=minecraft:stick_insufficient_input_rejection collection=primary-click
+behavior_card_check_exit_status=0
+command: tools/check_crafting_recipe_receipt_handoff.rs --self-test
+crafting recipe selected-matrix receipt handoff self-test passed: positive selected-matrix handoff and 13 negative cases exercised
+handoff_self_test_exit_status=0
+command: tools/check_crafting_recipe_receipt_handoff.rs --fixture compat/config/crafting-recipe-selected-matrix-fixture.ncl --paper docs/evidence/survival-crafting-recipe-breadth-paper-2026-06-20.kv --valence docs/evidence/survival-crafting-recipe-breadth-valence-2026-06-20.kv
+crafting recipe selected-matrix receipt handoff check passed: target=Java Edition 1.20.1 protocol 763 row=survival-crafting-recipe-breadth-parity shaped=minecraft:chest shaped_inputs=1:minecraft:oak_planks:1,2:minecraft:oak_planks:1,3:minecraft:oak_planks:1,4:minecraft:oak_planks:1,6:minecraft:oak_planks:1,7:minecraft:oak_planks:1,8:minecraft:oak_planks:1,9:minecraft:oak_planks:1 shaped_output=minecraft:chestx1 shaped_slot=36 shapeless=minecraft:oak_planks shapeless_inputs=1:minecraft:oak_log:1 shapeless_output=minecraft:oak_planksx4 shapeless_slot=37 invalid=minecraft:stick_insufficient_input_rejection invalid_input=1:minecraft:oak_planks:1 invalid_outcome=no_result collection_mode=primary_click paper_child=paper-1.20.1-fixture-jar-b3:c5243a9830de707bedaca1084e170283e1a531249165ba38f8ac1662d9888ed2 valence_child=858a453 paper_kv=docs/evidence/survival-crafting-recipe-breadth-paper-2026-06-20.kv valence_kv=docs/evidence/survival-crafting-recipe-breadth-valence-2026-06-20.kv retained_nonclaims=nonclaim.all_recipes,nonclaim.recipe_book_ui,nonclaim.arbitrary_collection_modes,nonclaim.full_survival_compatibility,nonclaim.broad_vanilla_parity
+handoff_check_exit_status=0
+exit_status=0

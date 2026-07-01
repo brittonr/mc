@@ -73,7 +73,7 @@ Focused evidence for the original selected-matrix core package is local unit evi
 - `docs/evidence/crafting-recipe-selected-matrix-core-focused-validation-2026-07-01.run.log`
 - `docs/evidence/crafting-recipe-selected-matrix-core-2026-07-01.b3`
 
-The selected-matrix data fixture is now documented in `docs/crafting-recipe-selected-matrix-data-fixture.md`. Its validation and local core handoff remain selected-fixture/unit evidence only and do not promote receipt parity or Valence runtime behavior.
+The selected-matrix data fixture is now documented in `docs/crafting-recipe-selected-matrix-data-fixture.md`. Its validation and local core handoff remain selected-fixture/unit evidence only. Receipt handoff evidence is documented separately in `docs/crafting-recipe-selected-matrix-receipt-handoff.md`; it proves fixture-to-receipt agreement for the finite selected matrix, not Valence runtime behavior.
 
 ## Non-claims
 
@@ -101,4 +101,4 @@ This package does not claim:
 
 ## Next required evidence before broader claims
 
-Before promoting target-version or runtime behavior beyond this local selected-matrix unit core plus fixture handoff, follow-on work must add selected receipt handoff, a Valence shell contract, opt-in runtime shell tests, and separate scopes for all-recipe breadth, data-pack loading, recipe-book behavior, automated crafter behavior, or additional collection modes.
+Before promoting runtime behavior beyond this local selected-matrix unit core, fixture handoff, and selected receipt handoff, follow-on work must add a Valence shell contract, opt-in runtime shell tests, and separate scopes for all-recipe breadth, data-pack loading, recipe-book behavior, automated crafter behavior, or additional collection modes.

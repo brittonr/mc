@@ -31,7 +31,7 @@ The first implementation slice is finite and selected:
 | shapeless oak-planks | `minecraft:oak_planks` | shapeless | one `minecraft:oak_log` input in slot `1` | `minecraft:oak_planks` count `4` | primary-click collection mode into inventory slot `37` | `docs/evidence/survival-crafting-recipe-breadth-receipts-2026-06-20.md` |
 | invalid stick rejection | `minecraft:stick_insufficient_input_rejection` | rejected/no-result | one `minecraft:oak_planks` input in slot `1` | empty result slot with `no_result` diagnostic | no collection | `docs/evidence/survival-crafting-recipe-breadth-receipts-2026-06-20.md` |
 
-The existing row receipts are predecessor receipt evidence only. They do not implement a reusable recipe core or Valence shell.
+The existing row receipts are predecessor receipt evidence only until bridged by `docs/crafting-recipe-selected-matrix-receipt-handoff.md`. The receipt handoff proves fixture-to-receipt agreement for this finite matrix, but it does not implement a reusable recipe core or Valence shell.
 
 ## Bounded claim
 
@@ -140,7 +140,7 @@ Required before implementation claims:
 - Existing `survival-crafting-recipe-breadth` row evidence and typed-event migration evidence may be used as predecessor vocabulary only.
 - mc-compat row or evidence note that records target version, tested inputs, rejected invalid inputs, collection mode, and explicit non-claims.
 
-Evidence in this behavior-card-only package may claim only that the card is complete enough to seed a follow-on implementation Cairn. The selected-matrix pure core is documented in `docs/crafting-recipe-selected-matrix-core.md`, and the selected data fixture is documented in `docs/crafting-recipe-selected-matrix-data-fixture.md`; those artifacts remain local selected-matrix evidence and do not claim the Valence shell, all recipes, data-pack loading, recipe-book UI behavior, automated crafter behavior, default plugin membership, public-server safety, production readiness, broad Minecraft compatibility, or broad vanilla parity.
+Evidence in this behavior-card-only package may claim only that the card is complete enough to seed a follow-on implementation Cairn. The selected-matrix pure core is documented in `docs/crafting-recipe-selected-matrix-core.md`, the selected data fixture is documented in `docs/crafting-recipe-selected-matrix-data-fixture.md`, and the receipt handoff is documented in `docs/crafting-recipe-selected-matrix-receipt-handoff.md`. The handoff proves only that the selected fixture rows match archived Paper/reference and Valence receipt metrics for the finite selected matrix; these artifacts do not claim the Valence shell, all recipes, data-pack loading, recipe-book UI behavior, automated crafter behavior, default plugin membership, public-server safety, production readiness, broad Minecraft compatibility, or broad vanilla parity.
 
 ## Stop conditions before broader work
 

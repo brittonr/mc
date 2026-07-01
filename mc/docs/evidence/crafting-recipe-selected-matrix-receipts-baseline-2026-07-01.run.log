@@ -1,0 +1,7 @@
+command: tools/check_crafting_recipe_data_fixture.rs --fixture compat/config/crafting-recipe-selected-matrix-fixture.ncl
+crafting recipe selected-matrix data fixture check passed
+fixture_exit_status=0
+command: tools/check_crafting_recipe_core.rs --self-test --fixture compat/config/crafting-recipe-selected-matrix-fixture.ncl
+crafting recipe selected-matrix core check passed
+core_exit_status=0
+exit_status=0
