@@ -1,0 +1,7 @@
+# Furnace smelting Valence runtime shell accepted spec verification
+date=2026-07-01
+r[vanilla_composable_plugins.furnace_smelting_valence_runtime_shell] Furnace smelting runtime-shell work MUST provide an explicit opt-in Valence Bevy/ECS shell for only the selected standard-furnace row, using the existing pure core for rule decisions and preserving default Valence behavior.
+runtime_shell_id_exit_status=0
+r[vanilla_composable_plugins.furnace_smelting_valence_runtime_shell.closeout] Selected-row runtime-shell work MUST record baseline fixture/core/receipt/contract validation, focused positive and negative shell tests, schedule hygiene when wiring changes, Cairn gates, Cairn validation, task-evidence validation, accepted-spec sync verification, evidence-manifest checks, affected Valence checks, and archive receipts before closeout.
+closeout_id_exit_status=0
+overall_exit_status=0

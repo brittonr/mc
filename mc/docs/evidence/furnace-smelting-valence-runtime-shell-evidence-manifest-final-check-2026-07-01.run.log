@@ -1,0 +1,7 @@
+# Furnace smelting Valence runtime shell evidence manifest final check
+date=2026-07-01
+waiting for another Nix process to finish fetching input 'git+file:///home/brittonr/git'...
+error (ignored): SQLite database '/home/brittonr/.cache/nix/eval-cache-v6/b5a862561f1b2a3dc6214dba4d7cce7cae5eb276b2f1c1a50f7e3ba2938c67f3.sqlite' is busy
+evidence manifest refresh ok: mode=check; passes=0; manifests=580; entries=6282; current=6282; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+evidence_manifest_check_exit_status=0
+overall_exit_status=0

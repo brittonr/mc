@@ -1,0 +1,83 @@
+# Furnace smelting Valence runtime shell archive execute
+date=2026-07-01
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-furnace-smelting-valence-runtime-shell",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-07-01-add-furnace-smelting-valence-runtime-shell"
+    }
+  ],
+  "blocked": false,
+  "change": "add-furnace-smelting-valence-runtime-shell",
+  "dry_run": false,
+  "input_hash": "ba1f4c76c1ccc84b1794b6e4a869481ecf0666a60fb62e595b0b8e83dc023a67",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "5b9fa042cbb9c37fd49d92b7ba1d50c25bbf64fca3614ca0d64e101b2e3730a0",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-furnace-smelting-valence-runtime-shell/design.md"
+        },
+        {
+          "content_hash": "970ac09916f8b5e614f9024c4ec80eafd9316721fec43480d3f87080a8587087",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-furnace-smelting-valence-runtime-shell/proposal.md"
+        },
+        {
+          "content_hash": "fdaed7c7481a641bd5be73db49fe47e18e11a105a478ec969597ca66a0209819",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-furnace-smelting-valence-runtime-shell/specs/vanilla-composable-plugins/spec.md"
+        },
+        {
+          "content_hash": "5dcf5bfc66761ab4fdb66712924c00fe10665c52819af745832a4e3486bb5669",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-furnace-smelting-valence-runtime-shell/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-furnace-smelting-valence-runtime-shell"
+        }
+      ],
+      "manifest_hash": "5280267e01fb97f1c9aca2eb730f17fe58c1da1df71df025052cab784e79c8da"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "5b9fa042cbb9c37fd49d92b7ba1d50c25bbf64fca3614ca0d64e101b2e3730a0",
+          "exists": true,
+          "path": "./cairn/changes/add-furnace-smelting-valence-runtime-shell/design.md"
+        },
+        {
+          "content_hash": "970ac09916f8b5e614f9024c4ec80eafd9316721fec43480d3f87080a8587087",
+          "exists": true,
+          "path": "./cairn/changes/add-furnace-smelting-valence-runtime-shell/proposal.md"
+        },
+        {
+          "content_hash": "fdaed7c7481a641bd5be73db49fe47e18e11a105a478ec969597ca66a0209819",
+          "exists": true,
+          "path": "./cairn/changes/add-furnace-smelting-valence-runtime-shell/specs/vanilla-composable-plugins/spec.md"
+        },
+        {
+          "content_hash": "5dcf5bfc66761ab4fdb66712924c00fe10665c52819af745832a4e3486bb5669",
+          "exists": true,
+          "path": "./cairn/changes/add-furnace-smelting-valence-runtime-shell/tasks.md"
+        }
+      ],
+      "manifest_hash": "6e57e922b918d1511c551f41fa0607559ec09b1a095718288a80596c93832c0b"
+    },
+    "kind": "archive",
+    "manifest_hash": "fd43bb9cad3efffbc5e3332e9acfea730c6f3396900dcfb40d2438e3dfeb2e36"
+  },
+  "plan_hash": "f92bc1a056a8282166d3ac9de4488012e4c803fdd6c326e63c43a1485b3a057c",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "c697269eacb9c0965b5d930be3278baaabdde5e085303faf3aa6b4a126557ecd"
+}
+archive_execute_exit_status=0
+overall_exit_status=0

@@ -1,0 +1,9 @@
+# Furnace smelting Valence runtime shell archived task evidence
+date=2026-07-01
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+task evidence gate passed: 7 completed tasks checked across 1 task files
+archive_task_evidence_exit_status=0
+overall_exit_status=0

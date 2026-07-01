@@ -57,7 +57,7 @@ The successful handoff proves that the validated selected fixture row and the ar
 
 ## Non-claims retained
 
-The follow-on shell boundary is `docs/furnace-smelting-valence-shell-contract.md`. It maps this selected-row evidence to future opt-in Valence runtime planning and remains a prerequisite before any runtime behavior claim.
+The shell boundary is `docs/furnace-smelting-valence-shell-contract.md`. The first opt-in selected-row Valence runtime shell is documented separately in `docs/furnace-smelting-valence-runtime-shell.md`; it uses this handoff as prerequisite context but does not broaden the archived receipt claim.
 
 This handoff does not claim:
 
@@ -72,8 +72,8 @@ This handoff does not claim:
 - XP behavior.
 - Recipe-book synchronization.
 - Chunk-unload semantics.
-- Valence runtime integration.
-- Valence shell implementation.
+- Valence runtime integration beyond the selected-row opt-in shell documented in `docs/furnace-smelting-valence-runtime-shell.md`.
+- Valence shell implementation breadth beyond that selected-row shell.
 - DefaultPlugins membership changes.
 - Public-server safety.
 - Production readiness.
@@ -90,4 +90,4 @@ BLAKE3 coverage is recorded in `docs/evidence/furnace-smelting-selected-row-rece
 
 ## Shell-contract prerequisite
 
-`docs/furnace-smelting-valence-shell-contract.md` records the opt-in Bevy/ECS shell contract, disabled-plugin behavior, schedule boundary, mutation boundary, and validation prerequisites that must be satisfied before this selected-row handoff is used for Valence runtime behavior claims.
+`docs/furnace-smelting-valence-shell-contract.md` records the opt-in Bevy/ECS shell contract, disabled-plugin behavior, schedule boundary, mutation boundary, and validation prerequisites. `docs/furnace-smelting-valence-runtime-shell.md` records the selected-row shell implementation and focused tests that now satisfy those prerequisites for the bounded opt-in runtime-shell claim only.

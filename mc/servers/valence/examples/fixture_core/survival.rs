@@ -20,7 +20,16 @@ pub use block_entities::{should_place_block_entity_sign, validate_block_entity_p
 pub use containers::{
     collect_event_matches, should_open_fixture_container, slot_event_matches, stack_matches,
 };
-pub use furnace::{should_emit_furnace_breadth_rejection, should_reject_furnace_invalid_fuel};
+pub use furnace::{
+    furnace_stack, initial_furnace_state, selected_fuel_rows, selected_limits,
+    selected_recipe_rows, should_emit_furnace_breadth_rejection,
+    should_reject_furnace_invalid_fuel, tick_selected_standard_furnace, FurnaceError,
+    FurnaceFuelRow, FurnaceKind, FurnaceLimits, FurnaceRecipeRow, FurnaceStack, FurnaceState,
+    FurnaceTick, FurnaceTransition, EMPTY_ITEM_COUNT, FURNACE_TICK_INCREMENT,
+    INITIAL_COOK_PROGRESS_TICKS, INITIAL_RECIPE_COUNT, NO_BURN_TICKS, SELECTED_COAL_BURN_TICKS,
+    SELECTED_COAL_ITEM, SELECTED_IRON_INGOT_ITEM, SELECTED_MAX_STACK_SIZE, SELECTED_RAW_IRON_ITEM,
+    SELECTED_RECIPE_OUTPUT_COUNT, SELECTED_STANDARD_FURNACE_COOK_TICKS, UNSUPPORTED_FURNACE_ITEM,
+};
 pub use hunger_health::{
     select_hunger_profile, should_consume_hunger_food, HungerUseContract, HungerUseInput,
 };

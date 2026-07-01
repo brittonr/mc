@@ -1,0 +1,5 @@
+# Furnace smelting Valence runtime shell evidence manifest refresh
+date=2026-07-01
+evidence manifest refresh ok: mode=refresh; passes=2; manifests=580; entries=6281; current=6281; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=2; manifest_writes=7
+evidence_manifest_refresh_exit_status=0
+overall_exit_status=0

@@ -94,6 +94,13 @@ const SURVIVAL_FURNACE_FUEL_NAME: &str = "Coal";
 const SURVIVAL_FURNACE_OUTPUT_NAME: &str = "IronIngot";
 const SURVIVAL_FURNACE_SMELTING_RECIPE: &str = "minecraft:iron_ingot";
 const SURVIVAL_FURNACE_INVALID_FUEL_OUTCOME: &str = "no_burn";
+const SURVIVAL_FURNACE_SMELTING_PLUGIN_NAME: &str = "SurvivalFurnaceSmeltingPlugin";
+const SURVIVAL_FURNACE_RECIPE_TABLE_RESOURCE_NAME: &str = "SurvivalFurnaceRecipeTableResource";
+const SURVIVAL_FURNACE_FUEL_TABLE_RESOURCE_NAME: &str = "SurvivalFurnaceFuelTableResource";
+const SURVIVAL_FURNACE_CONFIG_RESOURCE_NAME: &str = "SurvivalFurnaceSmeltingConfigResource";
+const SURVIVAL_FURNACE_BLOCK_ENTITY_RESOURCE_NAME: &str = "SurvivalFurnaceBlockEntity";
+const SURVIVAL_FURNACE_STATE_CHANGED_EVENT_NAME: &str = "SurvivalFurnaceStateChangedEvent";
+const SURVIVAL_FURNACE_DIAGNOSTIC_EVENT_NAME: &str = "SurvivalFurnaceDiagnosticEvent";
 const SURVIVAL_HUNGER_FOOD_FIXTURE_ENV: &str = "MC_COMPAT_SURVIVAL_HUNGER_FOOD_FIXTURE";
 const SURVIVAL_HUNGER_FOOD_INVENTORY_SLOT: u16 = 36;
 const SURVIVAL_HUNGER_FOOD_ITEM_COUNT_BEFORE: i8 = 1;
@@ -244,6 +251,45 @@ const SURVIVAL_RUNTIME_CONFIG_SOURCE_CONTRACT: GameplayPluginContract = Gameplay
     owned_resources: SURVIVAL_SOURCE_OWNED_RESOURCES,
     owned_events: SURVIVAL_SOURCE_OWNED_EVENTS,
     non_claims: SURVIVAL_NON_CLAIMS,
+};
+const SURVIVAL_FURNACE_SMELTING_SCHEDULES: &[GameplayScheduleContract] =
+    &[GameplayScheduleContract {
+        label: UPDATE_SCHEDULE_LABEL,
+        phases: SURVIVAL_GAMEPLAY_PHASE_ORDER,
+    }];
+const SURVIVAL_FURNACE_SMELTING_OWNED_RESOURCES: &[&str] = &[
+    SURVIVAL_FURNACE_RECIPE_TABLE_RESOURCE_NAME,
+    SURVIVAL_FURNACE_FUEL_TABLE_RESOURCE_NAME,
+    SURVIVAL_FURNACE_CONFIG_RESOURCE_NAME,
+    SURVIVAL_FURNACE_BLOCK_ENTITY_RESOURCE_NAME,
+];
+const SURVIVAL_FURNACE_SMELTING_OWNED_EVENTS: &[&str] = &[
+    SURVIVAL_FURNACE_STATE_CHANGED_EVENT_NAME,
+    SURVIVAL_FURNACE_DIAGNOSTIC_EVENT_NAME,
+];
+const SURVIVAL_FURNACE_SMELTING_NON_CLAIMS: &[&str] = &[
+    "DefaultPlugins membership change",
+    "all-recipe breadth",
+    "all-fuel breadth",
+    "smoker behavior",
+    "blast-furnace behavior",
+    "hopper automation",
+    "XP behavior",
+    "recipe-book synchronization",
+    "chunk-unload semantics",
+    "broad vanilla parity",
+    "public-server safety",
+    "production readiness",
+];
+const SURVIVAL_FURNACE_SMELTING_CONTRACT: GameplayPluginContract = GameplayPluginContract {
+    plugin: SURVIVAL_FURNACE_SMELTING_PLUGIN_NAME,
+    install_mode: GameplayInstallMode::ExplicitOptIn,
+    scope_model: GameplayScopeModel::ArenaOwnedLayer,
+    scope: Some(SURVIVAL_PRIMARY_SCOPE),
+    schedules: SURVIVAL_FURNACE_SMELTING_SCHEDULES,
+    owned_resources: SURVIVAL_FURNACE_SMELTING_OWNED_RESOURCES,
+    owned_events: SURVIVAL_FURNACE_SMELTING_OWNED_EVENTS,
+    non_claims: SURVIVAL_FURNACE_SMELTING_NON_CLAIMS,
 };
 
 #[derive(Resource, Clone, Debug, PartialEq, Eq)]
@@ -574,6 +620,86 @@ struct SurvivalCraftingBreadthFixture {
     logged: bool,
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum SurvivalFurnaceShellDiagnostic {
+    PausedNoFuel,
+    PausedNoRecipe,
+    PausedOutputBlocked,
+    UnsupportedFurnaceKind,
+    MalformedRecipeRow,
+    MalformedFuelRow,
+    MissingInventory,
+    StaleBlockEntity,
+}
+
+#[derive(Event, Clone, Copy, Debug, Eq, PartialEq)]
+struct SurvivalFurnaceStateChangedEvent {
+    inventory: Entity,
+    transition: survival_core::FurnaceTransition,
+}
+
+#[derive(Event, Clone, Copy, Debug, Eq, PartialEq)]
+struct SurvivalFurnaceDiagnosticEvent {
+    inventory: Option<Entity>,
+    diagnostic: SurvivalFurnaceShellDiagnostic,
+}
+
+#[derive(Resource, Clone, Debug, Eq, PartialEq)]
+struct SurvivalFurnaceRecipeTableResource {
+    rows: [survival_core::FurnaceRecipeRow<'static>; 1],
+}
+
+impl Default for SurvivalFurnaceRecipeTableResource {
+    fn default() -> Self {
+        Self {
+            rows: survival_core::selected_recipe_rows(),
+        }
+    }
+}
+
+#[derive(Resource, Clone, Debug, Eq, PartialEq)]
+struct SurvivalFurnaceFuelTableResource {
+    rows: [survival_core::FurnaceFuelRow<'static>; 1],
+}
+
+impl Default for SurvivalFurnaceFuelTableResource {
+    fn default() -> Self {
+        Self {
+            rows: survival_core::selected_fuel_rows(),
+        }
+    }
+}
+
+#[derive(Resource, Clone, Copy, Debug, Eq, PartialEq)]
+struct SurvivalFurnaceSmeltingConfigResource {
+    enabled: bool,
+    limits: survival_core::FurnaceLimits,
+}
+
+impl Default for SurvivalFurnaceSmeltingConfigResource {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            limits: survival_core::selected_limits(),
+        }
+    }
+}
+
+#[derive(Resource, Clone, Copy, Debug, Eq, PartialEq)]
+struct SurvivalFurnaceBlockEntity {
+    kind: survival_core::FurnaceKind,
+    loaded: bool,
+}
+
+impl Default for SurvivalFurnaceBlockEntity {
+    fn default() -> Self {
+        Self {
+            kind: survival_core::FurnaceKind::Standard,
+            loaded: true,
+        }
+    }
+}
+
 #[derive(Resource)]
 struct SurvivalFurnaceFixture {
     inventory: Entity,
@@ -588,6 +714,11 @@ struct SurvivalFurnaceFixture {
     breadth_state_logged: bool,
     reopen_logged: bool,
     state_logged: bool,
+    cook_progress_ticks: u32,
+    remaining_burn_ticks: u32,
+    recipes_completed: u32,
+    last_shell_transition: Option<survival_core::FurnaceTransition>,
+    last_shell_diagnostic: Option<SurvivalFurnaceShellDiagnostic>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -800,6 +931,11 @@ impl SurvivalFurnaceFixture {
             breadth_state_logged: false,
             reopen_logged: false,
             state_logged: false,
+            cook_progress_ticks: survival_core::INITIAL_COOK_PROGRESS_TICKS,
+            remaining_burn_ticks: survival_core::NO_BURN_TICKS,
+            recipes_completed: survival_core::INITIAL_RECIPE_COUNT,
+            last_shell_transition: None,
+            last_shell_diagnostic: None,
         }
     }
 }
@@ -915,6 +1051,38 @@ impl Plugin for SurvivalCompatibilityPlugin {
     }
 }
 
+struct SurvivalFurnaceSmeltingPlugin;
+
+impl Plugin for SurvivalFurnaceSmeltingPlugin {
+    fn build(&self, app: &mut App) {
+        register_gameplay_plugin_template(
+            app,
+            GameplayPluginTemplate::new(SURVIVAL_FURNACE_SMELTING_CONTRACT),
+        );
+        app.init_resource::<SurvivalFurnaceRecipeTableResource>()
+            .init_resource::<SurvivalFurnaceFuelTableResource>()
+            .init_resource::<SurvivalFurnaceSmeltingConfigResource>()
+            .init_resource::<SurvivalFurnaceBlockEntity>()
+            .add_event::<SurvivalFurnaceStateChangedEvent>()
+            .add_event::<SurvivalFurnaceDiagnosticEvent>()
+            .configure_sets(
+                Update,
+                (
+                    SurvivalGameplayPhase::Input,
+                    SurvivalGameplayPhase::RuleEvaluation.after(SurvivalGameplayPhase::Input),
+                    SurvivalGameplayPhase::WorldMutation
+                        .after(SurvivalGameplayPhase::RuleEvaluation),
+                    SurvivalGameplayPhase::Presentation.after(SurvivalGameplayPhase::WorldMutation),
+                    SurvivalGameplayPhase::Cleanup.after(SurvivalGameplayPhase::Presentation),
+                ),
+            )
+            .add_systems(
+                Update,
+                tick_survival_furnace_smelting_shell.in_set(SurvivalGameplayPhase::WorldMutation),
+            );
+    }
+}
+
 pub fn main() {
     App::new()
         .insert_resource(NetworkSettings {
@@ -924,6 +1092,7 @@ pub fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugins(SurvivalRuntimeConfigSourcePlugin)
         .add_plugins(SurvivalCompatibilityPlugin)
+        .add_plugins(SurvivalFurnaceSmeltingPlugin)
         .run();
 }
 
@@ -2291,6 +2460,274 @@ fn emit_survival_furnace_output_if_ready(
     }
 }
 
+fn tick_survival_furnace_smelting_shell(
+    fixture: Option<ResMut<SurvivalFurnaceFixture>>,
+    block_entity: Option<Res<SurvivalFurnaceBlockEntity>>,
+    recipe_table: Option<Res<SurvivalFurnaceRecipeTableResource>>,
+    fuel_table: Option<Res<SurvivalFurnaceFuelTableResource>>,
+    config: Option<Res<SurvivalFurnaceSmeltingConfigResource>>,
+    mut inventories: Query<&mut Inventory>,
+    mut state_events: EventWriter<SurvivalFurnaceStateChangedEvent>,
+    mut diagnostic_events: EventWriter<SurvivalFurnaceDiagnosticEvent>,
+) {
+    let Some(mut fixture) = fixture else {
+        return;
+    };
+    if fixture.output_logged || fixture.collect_logged {
+        return;
+    }
+    fixture.last_shell_transition = None;
+    fixture.last_shell_diagnostic = None;
+
+    let inventory_entity = fixture.inventory;
+    let Some(config) = config else {
+        record_survival_furnace_diagnostic(
+            &mut fixture,
+            &mut diagnostic_events,
+            Some(inventory_entity),
+            SurvivalFurnaceShellDiagnostic::StaleBlockEntity,
+        );
+        return;
+    };
+    if !config.enabled {
+        return;
+    }
+    let Some(block_entity) = block_entity else {
+        record_survival_furnace_diagnostic(
+            &mut fixture,
+            &mut diagnostic_events,
+            Some(inventory_entity),
+            SurvivalFurnaceShellDiagnostic::StaleBlockEntity,
+        );
+        return;
+    };
+    if !block_entity.loaded {
+        record_survival_furnace_diagnostic(
+            &mut fixture,
+            &mut diagnostic_events,
+            Some(inventory_entity),
+            SurvivalFurnaceShellDiagnostic::StaleBlockEntity,
+        );
+        return;
+    }
+    let Some(recipe_table) = recipe_table else {
+        record_survival_furnace_diagnostic(
+            &mut fixture,
+            &mut diagnostic_events,
+            Some(inventory_entity),
+            SurvivalFurnaceShellDiagnostic::MalformedRecipeRow,
+        );
+        return;
+    };
+    let Some(fuel_table) = fuel_table else {
+        record_survival_furnace_diagnostic(
+            &mut fixture,
+            &mut diagnostic_events,
+            Some(inventory_entity),
+            SurvivalFurnaceShellDiagnostic::MalformedFuelRow,
+        );
+        return;
+    };
+    let Ok(mut inventory) = inventories.get_mut(inventory_entity) else {
+        record_survival_furnace_diagnostic(
+            &mut fixture,
+            &mut diagnostic_events,
+            Some(inventory_entity),
+            SurvivalFurnaceShellDiagnostic::MissingInventory,
+        );
+        return;
+    };
+    if inventory.kind() != InventoryKind::Furnace {
+        record_survival_furnace_diagnostic(
+            &mut fixture,
+            &mut diagnostic_events,
+            Some(inventory_entity),
+            SurvivalFurnaceShellDiagnostic::MissingInventory,
+        );
+        return;
+    }
+
+    let snapshot = snapshot_survival_furnace_state(&inventory, &fixture, &block_entity);
+    match survival_core::tick_selected_standard_furnace(
+        snapshot,
+        &recipe_table.rows,
+        &fuel_table.rows,
+        config.limits,
+    ) {
+        Ok(tick) => commit_survival_furnace_tick(
+            &mut fixture,
+            &mut inventory,
+            tick,
+            inventory_entity,
+            &mut state_events,
+            &mut diagnostic_events,
+        ),
+        Err(error) => record_survival_furnace_diagnostic(
+            &mut fixture,
+            &mut diagnostic_events,
+            Some(inventory_entity),
+            survival_furnace_error_diagnostic(error),
+        ),
+    }
+}
+
+fn snapshot_survival_furnace_state<'a>(
+    inventory: &Inventory,
+    fixture: &SurvivalFurnaceFixture,
+    block_entity: &SurvivalFurnaceBlockEntity,
+) -> survival_core::FurnaceState<'a> {
+    survival_core::FurnaceState {
+        kind: block_entity.kind,
+        input: snapshot_survival_furnace_stack(inventory.slot(SURVIVAL_FURNACE_INPUT_SLOT)),
+        fuel: snapshot_survival_furnace_stack(inventory.slot(SURVIVAL_FURNACE_FUEL_SLOT)),
+        output: snapshot_survival_furnace_stack(inventory.slot(SURVIVAL_FURNACE_OUTPUT_SLOT)),
+        cook_progress_ticks: fixture.cook_progress_ticks,
+        remaining_burn_ticks: fixture.remaining_burn_ticks,
+        recipes_completed: fixture.recipes_completed,
+    }
+}
+
+fn snapshot_survival_furnace_stack(
+    stack: &ItemStack,
+) -> Option<survival_core::FurnaceStack<'static>> {
+    if is_empty_item(stack) {
+        return None;
+    }
+    Some(survival_core::furnace_stack(
+        survival_furnace_item_id(stack.item),
+        stack.count,
+    ))
+}
+
+fn survival_furnace_item_id(item: ItemKind) -> &'static str {
+    match item {
+        ItemKind::RawIron => survival_core::SELECTED_RAW_IRON_ITEM,
+        ItemKind::Coal => survival_core::SELECTED_COAL_ITEM,
+        ItemKind::IronIngot => survival_core::SELECTED_IRON_INGOT_ITEM,
+        _ => survival_core::UNSUPPORTED_FURNACE_ITEM,
+    }
+}
+
+fn commit_survival_furnace_tick(
+    fixture: &mut SurvivalFurnaceFixture,
+    inventory: &mut Inventory,
+    tick: survival_core::FurnaceTick<'_>,
+    inventory_entity: Entity,
+    state_events: &mut EventWriter<SurvivalFurnaceStateChangedEvent>,
+    diagnostic_events: &mut EventWriter<SurvivalFurnaceDiagnosticEvent>,
+) {
+    match tick.transition {
+        survival_core::FurnaceTransition::StartedFuel
+        | survival_core::FurnaceTransition::AdvancedCooking
+        | survival_core::FurnaceTransition::ProducedOutput => {
+            commit_survival_furnace_state(fixture, inventory, tick.state);
+            fixture.last_shell_transition = Some(tick.transition);
+            state_events.send(SurvivalFurnaceStateChangedEvent {
+                inventory: inventory_entity,
+                transition: tick.transition,
+            });
+        }
+        survival_core::FurnaceTransition::PausedNoFuel
+        | survival_core::FurnaceTransition::PausedNoRecipe
+        | survival_core::FurnaceTransition::PausedOutputBlocked => {
+            record_survival_furnace_diagnostic(
+                fixture,
+                diagnostic_events,
+                Some(inventory_entity),
+                survival_furnace_pause_diagnostic(tick.transition),
+            );
+        }
+    }
+}
+
+fn commit_survival_furnace_state(
+    fixture: &mut SurvivalFurnaceFixture,
+    inventory: &mut Inventory,
+    state: survival_core::FurnaceState<'_>,
+) {
+    fixture.cook_progress_ticks = state.cook_progress_ticks;
+    fixture.remaining_burn_ticks = state.remaining_burn_ticks;
+    fixture.recipes_completed = state.recipes_completed;
+    inventory.set_slot(
+        SURVIVAL_FURNACE_INPUT_SLOT,
+        survival_furnace_stack_from_core(state.input),
+    );
+    inventory.set_slot(
+        SURVIVAL_FURNACE_FUEL_SLOT,
+        survival_furnace_stack_from_core(state.fuel),
+    );
+    inventory.set_slot(
+        SURVIVAL_FURNACE_OUTPUT_SLOT,
+        survival_furnace_stack_from_core(state.output),
+    );
+}
+
+fn survival_furnace_stack_from_core(stack: Option<survival_core::FurnaceStack<'_>>) -> ItemStack {
+    let Some(stack) = stack else {
+        return ItemStack::EMPTY;
+    };
+    match stack.item {
+        survival_core::SELECTED_RAW_IRON_ITEM => {
+            survival_furnace_input_stack_with_count(stack.count)
+        }
+        survival_core::SELECTED_COAL_ITEM => survival_furnace_fuel_stack_with_count(stack.count),
+        survival_core::SELECTED_IRON_INGOT_ITEM => {
+            survival_furnace_output_stack_with_count(stack.count)
+        }
+        _ => ItemStack::EMPTY,
+    }
+}
+
+fn survival_furnace_pause_diagnostic(
+    transition: survival_core::FurnaceTransition,
+) -> SurvivalFurnaceShellDiagnostic {
+    match transition {
+        survival_core::FurnaceTransition::PausedNoFuel => {
+            SurvivalFurnaceShellDiagnostic::PausedNoFuel
+        }
+        survival_core::FurnaceTransition::PausedNoRecipe => {
+            SurvivalFurnaceShellDiagnostic::PausedNoRecipe
+        }
+        survival_core::FurnaceTransition::PausedOutputBlocked => {
+            SurvivalFurnaceShellDiagnostic::PausedOutputBlocked
+        }
+        survival_core::FurnaceTransition::StartedFuel
+        | survival_core::FurnaceTransition::AdvancedCooking
+        | survival_core::FurnaceTransition::ProducedOutput => {
+            unreachable!("successful furnace transition is not a diagnostic")
+        }
+    }
+}
+
+fn survival_furnace_error_diagnostic(
+    error: survival_core::FurnaceError,
+) -> SurvivalFurnaceShellDiagnostic {
+    match error {
+        survival_core::FurnaceError::UnsupportedFurnaceKind => {
+            SurvivalFurnaceShellDiagnostic::UnsupportedFurnaceKind
+        }
+        survival_core::FurnaceError::MalformedRecipeRow => {
+            SurvivalFurnaceShellDiagnostic::MalformedRecipeRow
+        }
+        survival_core::FurnaceError::MalformedFuelRow => {
+            SurvivalFurnaceShellDiagnostic::MalformedFuelRow
+        }
+    }
+}
+
+fn record_survival_furnace_diagnostic(
+    fixture: &mut SurvivalFurnaceFixture,
+    diagnostic_events: &mut EventWriter<SurvivalFurnaceDiagnosticEvent>,
+    inventory: Option<Entity>,
+    diagnostic: SurvivalFurnaceShellDiagnostic,
+) {
+    fixture.last_shell_diagnostic = Some(diagnostic);
+    diagnostic_events.send(SurvivalFurnaceDiagnosticEvent {
+        inventory,
+        diagnostic,
+    });
+}
+
 fn log_survival_furnace_reopen(
     username: &str,
     fixture: &mut SurvivalFurnaceFixture,
@@ -2828,27 +3265,27 @@ fn is_empty_item(stack: &ItemStack) -> bool {
 }
 
 fn survival_furnace_input_stack() -> ItemStack {
-    ItemStack::new(
-        survival_furnace_input_kind(),
-        SURVIVAL_FURNACE_ITEM_COUNT,
-        None,
-    )
+    survival_furnace_input_stack_with_count(SURVIVAL_FURNACE_ITEM_COUNT)
+}
+
+fn survival_furnace_input_stack_with_count(count: i8) -> ItemStack {
+    ItemStack::new(survival_furnace_input_kind(), count, None)
 }
 
 fn survival_furnace_fuel_stack() -> ItemStack {
-    ItemStack::new(
-        survival_furnace_fuel_kind(),
-        SURVIVAL_FURNACE_ITEM_COUNT,
-        None,
-    )
+    survival_furnace_fuel_stack_with_count(SURVIVAL_FURNACE_ITEM_COUNT)
+}
+
+fn survival_furnace_fuel_stack_with_count(count: i8) -> ItemStack {
+    ItemStack::new(survival_furnace_fuel_kind(), count, None)
 }
 
 fn survival_furnace_output_stack() -> ItemStack {
-    ItemStack::new(
-        survival_furnace_output_kind(),
-        SURVIVAL_FURNACE_ITEM_COUNT,
-        None,
-    )
+    survival_furnace_output_stack_with_count(SURVIVAL_FURNACE_ITEM_COUNT)
+}
+
+fn survival_furnace_output_stack_with_count(count: i8) -> ItemStack {
+    ItemStack::new(survival_furnace_output_kind(), count, None)
 }
 
 fn survival_furnace_input_kind() -> ItemKind {
@@ -3663,6 +4100,16 @@ mod tests {
     const TEST_CLICK_BUTTON: i8 = 0;
     const TEST_MOB_DROP_ID: i32 = 42_101;
     const TEST_DUPLICATE_MOB_DROP_ID: i32 = 42_102;
+    const FURNACE_COMPATIBLE_OUTPUT_START_COUNT: i8 = 7;
+    const FURNACE_EXPECTED_MERGED_OUTPUT_COUNT: i8 = 8;
+    const FURNACE_TWO_INPUT_ITEMS: i8 = 2;
+    const FURNACE_EXPECTED_ONE_COMPLETED_RECIPE: u32 = 1;
+    const FURNACE_NEAR_COMPLETE_PROGRESS: u32 =
+        survival_core::SELECTED_STANDARD_FURNACE_COOK_TICKS - survival_core::FURNACE_TICK_INCREMENT;
+    const FURNACE_EXPECTED_COAL_AFTER_START: u32 =
+        survival_core::SELECTED_COAL_BURN_TICKS - survival_core::FURNACE_TICK_INCREMENT;
+    const FURNACE_EXPECTED_PROGRESS_AFTER_TICK: u32 =
+        survival_core::INITIAL_COOK_PROGRESS_TICKS + survival_core::FURNACE_TICK_INCREMENT;
 
     fn app_with_survival_event_loop_schedule() -> App {
         let mut app = App::new();
@@ -3723,6 +4170,67 @@ mod tests {
                 }],
                 carried_item: ItemStack::EMPTY,
             });
+    }
+
+    fn app_with_furnace_shell_fixture() -> (App, Entity) {
+        let mut app = App::new();
+        app.add_plugins(SurvivalFurnaceSmeltingPlugin);
+        let inventory = app
+            .world_mut()
+            .spawn(Inventory::with_title(
+                InventoryKind::Furnace,
+                SURVIVAL_FURNACE_TITLE,
+            ))
+            .id();
+        app.insert_resource(SurvivalFurnaceFixture::new(inventory, true));
+        (app, inventory)
+    }
+
+    fn app_with_disabled_furnace_shell_fixture() -> (App, Entity) {
+        let mut app = App::new();
+        let inventory = app
+            .world_mut()
+            .spawn(Inventory::with_title(
+                InventoryKind::Furnace,
+                SURVIVAL_FURNACE_TITLE,
+            ))
+            .id();
+        app.insert_resource(SurvivalFurnaceFixture::new(inventory, true));
+        (app, inventory)
+    }
+
+    fn set_furnace_slots(
+        app: &mut App,
+        inventory: Entity,
+        input: ItemStack,
+        fuel: ItemStack,
+        output: ItemStack,
+    ) {
+        let mut inventory = app
+            .world_mut()
+            .get_mut::<Inventory>(inventory)
+            .expect("furnace inventory exists");
+        inventory.set_slot(SURVIVAL_FURNACE_INPUT_SLOT, input);
+        inventory.set_slot(SURVIVAL_FURNACE_FUEL_SLOT, fuel);
+        inventory.set_slot(SURVIVAL_FURNACE_OUTPUT_SLOT, output);
+    }
+
+    fn furnace_slot(app: &App, inventory: Entity, slot: u16) -> ItemStack {
+        app.world()
+            .get::<Inventory>(inventory)
+            .expect("furnace inventory exists")
+            .slot(slot)
+            .clone()
+    }
+
+    fn set_furnace_progress(app: &mut App, cook_progress_ticks: u32, remaining_burn_ticks: u32) {
+        let mut fixture = app.world_mut().resource_mut::<SurvivalFurnaceFixture>();
+        fixture.cook_progress_ticks = cook_progress_ticks;
+        fixture.remaining_burn_ticks = remaining_burn_ticks;
+    }
+
+    fn furnace_fixture(app: &App) -> &SurvivalFurnaceFixture {
+        app.world().resource::<SurvivalFurnaceFixture>()
     }
 
     fn insert_pending_mob_drop_fixture(app: &mut App) -> Entity {
@@ -3801,6 +4309,80 @@ mod tests {
         gameplay_contracts::assert_gameplay_contract_absent(
             &app,
             SURVIVAL_RUNTIME_CONFIG_SOURCE_PLUGIN_NAME,
+        );
+    }
+
+    #[test]
+    fn furnace_smelting_plugin_installs_explicit_contract_resources_events_and_schedule() {
+        let (app, _inventory) = app_with_furnace_shell_fixture();
+
+        let shared_contract = gameplay_contracts::assert_gameplay_contract_present(
+            &app,
+            SURVIVAL_FURNACE_SMELTING_PLUGIN_NAME,
+        );
+        assert_eq!(
+            shared_contract.install_mode,
+            GameplayInstallMode::ExplicitOptIn
+        );
+        assert_eq!(shared_contract.scope, Some(SURVIVAL_PRIMARY_SCOPE));
+        gameplay_contracts::assert_schedule_phases(
+            shared_contract,
+            UPDATE_SCHEDULE_LABEL,
+            SURVIVAL_GAMEPLAY_PHASE_ORDER,
+        );
+        assert!(shared_contract
+            .owned_resources
+            .contains(&SURVIVAL_FURNACE_RECIPE_TABLE_RESOURCE_NAME));
+        assert!(shared_contract
+            .owned_events
+            .contains(&SURVIVAL_FURNACE_STATE_CHANGED_EVENT_NAME));
+        assert!(shared_contract
+            .non_claims
+            .contains(&"DefaultPlugins membership change"));
+        assert!(app
+            .world()
+            .contains_resource::<SurvivalFurnaceRecipeTableResource>());
+        assert!(app
+            .world()
+            .contains_resource::<Events<SurvivalFurnaceStateChangedEvent>>());
+    }
+
+    #[test]
+    fn disabled_furnace_smelting_plugin_installs_no_shell_and_does_not_mutate() {
+        let (mut app, inventory) = app_with_disabled_furnace_shell_fixture();
+        set_furnace_slots(
+            &mut app,
+            inventory,
+            survival_furnace_input_stack(),
+            survival_furnace_fuel_stack(),
+            ItemStack::EMPTY,
+        );
+
+        app.update();
+
+        assert_eq!(
+            furnace_slot(&app, inventory, SURVIVAL_FURNACE_INPUT_SLOT),
+            survival_furnace_input_stack()
+        );
+        assert_eq!(
+            furnace_slot(&app, inventory, SURVIVAL_FURNACE_FUEL_SLOT),
+            survival_furnace_fuel_stack()
+        );
+        assert_eq!(
+            furnace_slot(&app, inventory, SURVIVAL_FURNACE_OUTPUT_SLOT),
+            ItemStack::EMPTY
+        );
+        assert_eq!(furnace_fixture(&app).last_shell_transition, None);
+        assert_eq!(furnace_fixture(&app).last_shell_diagnostic, None);
+        assert!(!app
+            .world()
+            .contains_resource::<SurvivalFurnaceRecipeTableResource>());
+        assert!(!app
+            .world()
+            .contains_resource::<Events<SurvivalFurnaceStateChangedEvent>>());
+        gameplay_contracts::assert_gameplay_contract_absent(
+            &app,
+            SURVIVAL_FURNACE_SMELTING_PLUGIN_NAME,
         );
     }
 
@@ -4594,6 +5176,258 @@ mod tests {
             SURVIVAL_FURNACE_WINDOW + 1,
             SURVIVAL_FURNACE_FUEL_SLOT_ID,
         ));
+    }
+
+    #[test]
+    fn survival_furnace_shell_starts_fuel_and_advances_active_burn() {
+        let (mut start_app, start_inventory) = app_with_furnace_shell_fixture();
+        set_furnace_slots(
+            &mut start_app,
+            start_inventory,
+            survival_furnace_input_stack(),
+            survival_furnace_fuel_stack(),
+            ItemStack::EMPTY,
+        );
+
+        start_app.update();
+
+        assert_eq!(
+            furnace_slot(&start_app, start_inventory, SURVIVAL_FURNACE_FUEL_SLOT),
+            ItemStack::EMPTY
+        );
+        assert_eq!(
+            furnace_fixture(&start_app).remaining_burn_ticks,
+            FURNACE_EXPECTED_COAL_AFTER_START
+        );
+        assert_eq!(
+            furnace_fixture(&start_app).cook_progress_ticks,
+            FURNACE_EXPECTED_PROGRESS_AFTER_TICK
+        );
+        assert_eq!(
+            furnace_fixture(&start_app).last_shell_transition,
+            Some(survival_core::FurnaceTransition::StartedFuel)
+        );
+
+        let (mut active_app, active_inventory) = app_with_furnace_shell_fixture();
+        set_furnace_slots(
+            &mut active_app,
+            active_inventory,
+            survival_furnace_input_stack(),
+            survival_furnace_fuel_stack(),
+            ItemStack::EMPTY,
+        );
+        set_furnace_progress(
+            &mut active_app,
+            survival_core::INITIAL_COOK_PROGRESS_TICKS,
+            survival_core::SELECTED_COAL_BURN_TICKS,
+        );
+
+        active_app.update();
+
+        assert_eq!(
+            furnace_slot(&active_app, active_inventory, SURVIVAL_FURNACE_FUEL_SLOT),
+            survival_furnace_fuel_stack()
+        );
+        assert_eq!(
+            furnace_fixture(&active_app).last_shell_transition,
+            Some(survival_core::FurnaceTransition::AdvancedCooking)
+        );
+    }
+
+    #[test]
+    fn survival_furnace_shell_produces_output_and_merges_compatible_stack() {
+        let (mut output_app, output_inventory) = app_with_furnace_shell_fixture();
+        set_furnace_slots(
+            &mut output_app,
+            output_inventory,
+            survival_furnace_input_stack_with_count(FURNACE_TWO_INPUT_ITEMS),
+            ItemStack::EMPTY,
+            ItemStack::EMPTY,
+        );
+        set_furnace_progress(
+            &mut output_app,
+            FURNACE_NEAR_COMPLETE_PROGRESS,
+            survival_core::FURNACE_TICK_INCREMENT,
+        );
+
+        output_app.update();
+
+        assert_eq!(
+            furnace_slot(&output_app, output_inventory, SURVIVAL_FURNACE_INPUT_SLOT),
+            survival_furnace_input_stack()
+        );
+        assert_eq!(
+            furnace_slot(&output_app, output_inventory, SURVIVAL_FURNACE_OUTPUT_SLOT),
+            survival_furnace_output_stack()
+        );
+        assert_eq!(
+            furnace_fixture(&output_app).recipes_completed,
+            FURNACE_EXPECTED_ONE_COMPLETED_RECIPE
+        );
+        assert_eq!(
+            furnace_fixture(&output_app).last_shell_transition,
+            Some(survival_core::FurnaceTransition::ProducedOutput)
+        );
+
+        let (mut merge_app, merge_inventory) = app_with_furnace_shell_fixture();
+        set_furnace_slots(
+            &mut merge_app,
+            merge_inventory,
+            survival_furnace_input_stack(),
+            ItemStack::EMPTY,
+            survival_furnace_output_stack_with_count(FURNACE_COMPATIBLE_OUTPUT_START_COUNT),
+        );
+        set_furnace_progress(
+            &mut merge_app,
+            FURNACE_NEAR_COMPLETE_PROGRESS,
+            survival_core::FURNACE_TICK_INCREMENT,
+        );
+
+        merge_app.update();
+
+        assert_eq!(
+            furnace_slot(&merge_app, merge_inventory, SURVIVAL_FURNACE_OUTPUT_SLOT),
+            survival_furnace_output_stack_with_count(FURNACE_EXPECTED_MERGED_OUTPUT_COUNT)
+        );
+    }
+
+    #[test]
+    fn survival_furnace_shell_rejects_invalid_missing_blocked_and_stale_state() {
+        let (mut invalid_app, invalid_inventory) = app_with_furnace_shell_fixture();
+        let invalid_input = ItemStack::new(ItemKind::GoldIngot, SURVIVAL_FURNACE_ITEM_COUNT, None);
+        set_furnace_slots(
+            &mut invalid_app,
+            invalid_inventory,
+            invalid_input.clone(),
+            survival_furnace_fuel_stack(),
+            ItemStack::EMPTY,
+        );
+
+        invalid_app.update();
+
+        assert_eq!(
+            furnace_fixture(&invalid_app).last_shell_diagnostic,
+            Some(SurvivalFurnaceShellDiagnostic::PausedNoRecipe)
+        );
+        assert_eq!(
+            furnace_slot(&invalid_app, invalid_inventory, SURVIVAL_FURNACE_FUEL_SLOT),
+            survival_furnace_fuel_stack()
+        );
+
+        let (mut no_fuel_app, no_fuel_inventory) = app_with_furnace_shell_fixture();
+        set_furnace_slots(
+            &mut no_fuel_app,
+            no_fuel_inventory,
+            survival_furnace_input_stack(),
+            ItemStack::EMPTY,
+            ItemStack::EMPTY,
+        );
+
+        no_fuel_app.update();
+
+        assert_eq!(
+            furnace_fixture(&no_fuel_app).last_shell_diagnostic,
+            Some(SurvivalFurnaceShellDiagnostic::PausedNoFuel)
+        );
+
+        let (mut blocked_app, blocked_inventory) = app_with_furnace_shell_fixture();
+        set_furnace_slots(
+            &mut blocked_app,
+            blocked_inventory,
+            survival_furnace_input_stack(),
+            survival_furnace_fuel_stack(),
+            invalid_input,
+        );
+
+        blocked_app.update();
+
+        assert_eq!(
+            furnace_fixture(&blocked_app).last_shell_diagnostic,
+            Some(SurvivalFurnaceShellDiagnostic::PausedOutputBlocked)
+        );
+        assert_eq!(
+            furnace_slot(&blocked_app, blocked_inventory, SURVIVAL_FURNACE_INPUT_SLOT),
+            survival_furnace_input_stack()
+        );
+
+        let (mut stale_app, stale_inventory) = app_with_furnace_shell_fixture();
+        stale_app.insert_resource(SurvivalFurnaceBlockEntity {
+            kind: survival_core::FurnaceKind::Standard,
+            loaded: false,
+        });
+        set_furnace_slots(
+            &mut stale_app,
+            stale_inventory,
+            survival_furnace_input_stack(),
+            survival_furnace_fuel_stack(),
+            ItemStack::EMPTY,
+        );
+
+        stale_app.update();
+
+        assert_eq!(
+            furnace_fixture(&stale_app).last_shell_diagnostic,
+            Some(SurvivalFurnaceShellDiagnostic::StaleBlockEntity)
+        );
+        assert_eq!(
+            furnace_slot(&stale_app, stale_inventory, SURVIVAL_FURNACE_FUEL_SLOT),
+            survival_furnace_fuel_stack()
+        );
+    }
+
+    #[test]
+    fn survival_furnace_shell_rejects_unsupported_kind_and_malformed_data() {
+        let (mut unsupported_app, unsupported_inventory) = app_with_furnace_shell_fixture();
+        unsupported_app.insert_resource(SurvivalFurnaceBlockEntity {
+            kind: survival_core::FurnaceKind::Smoker,
+            loaded: true,
+        });
+        set_furnace_slots(
+            &mut unsupported_app,
+            unsupported_inventory,
+            survival_furnace_input_stack(),
+            survival_furnace_fuel_stack(),
+            ItemStack::EMPTY,
+        );
+
+        unsupported_app.update();
+
+        assert_eq!(
+            furnace_fixture(&unsupported_app).last_shell_diagnostic,
+            Some(SurvivalFurnaceShellDiagnostic::UnsupportedFurnaceKind)
+        );
+
+        let (mut malformed_app, malformed_inventory) = app_with_furnace_shell_fixture();
+        malformed_app.insert_resource(SurvivalFurnaceRecipeTableResource {
+            rows: [survival_core::FurnaceRecipeRow {
+                input: survival_core::SELECTED_RAW_IRON_ITEM,
+                output: survival_core::SELECTED_IRON_INGOT_ITEM,
+                output_count: survival_core::EMPTY_ITEM_COUNT,
+                cook_ticks: survival_core::SELECTED_STANDARD_FURNACE_COOK_TICKS,
+            }],
+        });
+        set_furnace_slots(
+            &mut malformed_app,
+            malformed_inventory,
+            survival_furnace_input_stack(),
+            survival_furnace_fuel_stack(),
+            ItemStack::EMPTY,
+        );
+
+        malformed_app.update();
+
+        assert_eq!(
+            furnace_fixture(&malformed_app).last_shell_diagnostic,
+            Some(SurvivalFurnaceShellDiagnostic::MalformedRecipeRow)
+        );
+        assert_eq!(
+            furnace_slot(
+                &malformed_app,
+                malformed_inventory,
+                SURVIVAL_FURNACE_FUEL_SLOT
+            ),
+            survival_furnace_fuel_stack()
+        );
     }
 
     #[test]

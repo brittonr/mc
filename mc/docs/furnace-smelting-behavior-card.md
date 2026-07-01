@@ -115,12 +115,12 @@ Required before implementation claims:
 - Paper/vanilla receipt for at least one selected standard-furnace scenario.
 - mc-compat row or evidence note that records target version, tested inputs, rejected invalid inputs, and explicit non-claims.
 
-Evidence in this behavior-card-only package may claim only that the card is complete enough to seed a follow-on implementation Cairn. Later selected-row receipt handoff evidence is tracked separately in `docs/furnace-smelting-selected-row-receipt-handoff.md`; it bridges one fixture row to archived Paper/reference and Valence receipts without adding a Valence runtime shell or breadth claim. `docs/furnace-smelting-valence-shell-contract.md` is the required shell-planning prerequisite before any Valence runtime behavior claim is promoted.
+Evidence in this behavior-card-only package may claim only that the card is complete enough to seed a follow-on implementation Cairn. Selected-row receipt handoff evidence is tracked separately in `docs/furnace-smelting-selected-row-receipt-handoff.md`; it bridges one fixture row to archived Paper/reference and Valence receipts without adding a breadth claim. The shell contract is tracked in `docs/furnace-smelting-valence-shell-contract.md`. The first opt-in Valence runtime-shell implementation and focused shell evidence are tracked in `docs/furnace-smelting-valence-runtime-shell.md`.
 
 ## Stop conditions before broader work
 
 - Stop before all-recipe breadth until target-version recipe extraction exists.
 - Stop before smoker and blast-furnace category claims until category-specific extracted data exists.
 - Stop before hoppers, XP, recipe book, data packs, or chunk-unload behavior until each has a dedicated behavior card and parity receipt.
-- Stop before Valence runtime shell behavior until `docs/furnace-smelting-valence-shell-contract.md` prerequisites, schedule evidence, disabled-plugin tests, and mutation-boundary tests are satisfied.
+- Stop before broader Valence runtime behavior until `docs/furnace-smelting-valence-runtime-shell.md` evidence is extended beyond the selected-row opt-in shell with separate schedule, disabled-plugin, mutation-boundary, and breadth evidence.
 - Stop before default plugin membership changes until schedule impact and compatibility evidence are recorded.

@@ -4,7 +4,7 @@
 
 This document defines the selected-row Valence shell contract for the furnace-smelting chain. The target remains Java Edition 1.20.1 / protocol 763, standard furnace only, selected-row input `minecraft:raw_iron`, fuel `minecraft:coal`, and output `minecraft:iron_ingot`.
 
-The contract plans a thin opt-in Bevy/ECS shell around the existing selected-row core. It adds no runtime behavior in this package. No Valence runtime integration is implemented, no Bevy system is registered, no schedule is changed, and no DefaultPlugins membership change is permitted.
+The contract planned a thin opt-in Bevy/ECS shell around the existing selected-row core. The first bounded implementation is now recorded in `docs/furnace-smelting-valence-runtime-shell.md`. No DefaultPlugins membership change is permitted.
 
 ## Inventory and prerequisite evidence
 
@@ -55,7 +55,7 @@ The shell owns Bevy queries, resources, commands, schedule registration, invento
 
 ## Opt-in plugin ownership
 
-A future `FurnaceSmeltingPlugin` must be explicit opt-in. Its metadata should follow `GameplayInstallMode::ExplicitOptIn` and a scoped gameplay model such as `GameplayScopeModel::ArenaOwnedLayer` when it is attached to a survival arena or layer.
+The implemented `SurvivalFurnaceSmeltingPlugin` is explicit opt-in. Its metadata follows `GameplayInstallMode::ExplicitOptIn` and `GameplayScopeModel::ArenaOwnedLayer` for the focused survival arena/layer fixture.
 
 Planned shell-owned resources:
 
@@ -93,7 +93,7 @@ Ordering dependencies:
 - Data-loading or source-adapter systems must run before `GameplayPhase::RuleEvaluation`.
 - Furnace slot commits must run after any same-tick `InventoryMutationSet` input mutation that can affect the same slots.
 - Furnace commits must run before `InventoryPresentationSet` and before `FlushPacketsSet` so client-visible inventory packets observe committed state.
-- The future implementation must record focused schedule hygiene evidence and a disabled-plugin comparison if it adds plugin wiring, schedule labels, system sets, ordering constraints, event-loop phases, or default plugin membership.
+- The selected-row runtime shell records focused schedule hygiene evidence and a disabled-plugin comparison because it adds plugin wiring, resources, events, and system registration.
 
 This contract does not choose a final schedule API for block-entity ticking. If source inspection shows a safer Valence-owned block-entity phase, the implementation may revise the candidate phase with evidence before runtime claims are promoted.
 
@@ -109,7 +109,7 @@ When FurnaceSmeltingPlugin is not installed:
 - no gameplay contract metadata is recorded for the furnace plugin;
 - the pure core remains callable by tests because it is independent of Bevy and plugin installation.
 
-A future Valence test must include a negative disabled-plugin case proving the shell-owned resources, events, systems, and metadata are absent when the plugin is not added.
+The selected-row runtime shell includes a negative disabled-plugin case proving the shell-owned resources, events, systems, metadata, and mutation are absent when the plugin is not added.
 
 ## Data loading boundary
 
@@ -119,7 +119,7 @@ The furnace tick system must not parse data packs, evaluate Nickel, read JSON, r
 
 ## Mutation, packet, and logging boundaries
 
-The future shell uses a snapshot before rule evaluation and a single commit step after the core returns. Inventory or block-entity mutation is skipped when the core returns a typed error.
+The selected-row shell uses a snapshot before rule evaluation and a single commit step after the core returns. Inventory or block-entity mutation is skipped when the core returns a typed error.
 
 Packet writes remain outside the core. Client-visible slot, screen, or layer updates must be produced by existing Valence presentation boundaries or by explicit shell events that run after mutation and before packet flush. Logging remains outside the core; rule diagnostics travel as returned transitions or typed errors.
 
@@ -145,7 +145,7 @@ Focused contract validation must include positive validation for this complete c
 
 ## Future closeout prerequisites
 
-before any Valence runtime behavior claim is promoted, follow-on implementation must record:
+The selected-row runtime shell in `docs/furnace-smelting-valence-runtime-shell.md` records these prerequisites for the bounded opt-in shell claim. Before broader Valence runtime behavior is promoted, follow-on implementation must record:
 
 - exact Valence block-entity, inventory, and layer APIs inspected;
 - positive runtime tests for selected-row fuel start, active burn, output production, and compatible output merge;
@@ -171,7 +171,7 @@ This contract does not claim:
 - No XP behavior.
 - No recipe-book synchronization.
 - No chunk-unload semantics.
-- No Valence runtime integration.
+- No Valence runtime integration beyond the selected-row opt-in shell documented in `docs/furnace-smelting-valence-runtime-shell.md`.
 - No DefaultPlugins membership change.
 - No public-server safety.
 - No production readiness.

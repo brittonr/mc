@@ -1,0 +1,15 @@
+# Furnace smelting Valence runtime shell baseline
+date=2026-07-01
+command=data_fixture
+furnace smelting selected-row data fixture self-test passed
+data_fixture_exit_status=0
+command=core
+furnace smelting selected-row core check passed
+core_exit_status=0
+command=receipt_handoff
+furnace smelting selected-row receipt handoff self-test passed: positive selected-row handoff and 14 negative cases exercised
+receipt_handoff_exit_status=0
+command=shell_contract
+furnace smelting Valence shell contract self-test passed: positive complete contract and 21 negative cases exercised
+shell_contract_exit_status=0
+overall_exit_status=0

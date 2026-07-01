@@ -1,0 +1,22 @@
+# Furnace smelting Valence runtime shell post-archive Cairn validation
+date=2026-07-01
+command=change_list
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+change_list_exit_status=0
+command=validate
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+cairn_validate_exit_status=0
+overall_exit_status=0
