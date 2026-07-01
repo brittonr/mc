@@ -13,7 +13,7 @@ f27a4a2731636f2f39093d9998fe92d2beee1b601d9532bbd5a9159aea87d8ea  docs/evidence/
 b0891334fe4dfbf630f1232965ecbba9d719579748ebfa62f216ccbe4c83ebdc  docs/evidence/furnace-smelting-card-post-archive-cairn-validate-2026-07-01.run.log
 db4f5cb488f3cbc3ba766f8c8fe768f9d3d4e405ddbb25c6e671f81ca0489403  docs/evidence/furnace-smelting-card-post-archive-evidence-manifest-check-2026-07-01.run.log
 8e44878d0ffd1fb1cd09fc81cc09ce7cf164e11af728ceea6dfd5b63dd38ed83  docs/evidence/furnace-smelting-card-flake-evidence-checks-2026-07-01.run.log
-dd45a012631edb3f3ccaa6b51a0c0cf19a46c8c76c9238c235d3ee4cea76e908  cairn/specs/vanilla-composable-plugins/spec.md
+5f9f63af0248d976f65cb188908d60d843d03be27fc69e5bd9ba61442e3ee81d  cairn/specs/vanilla-composable-plugins/spec.md
 f71fbd9b8e3edd0c8f9bec68a941504534a689ba3d3dc9b78a22ace0b24c30b6  cairn/archive/2026-07-01-add-furnace-smelting-behavior-card/proposal.md
 7cacc9fb959b9ed5657b504cc123cd0610bbbf867bb508ade5cca20145df3f0b  cairn/archive/2026-07-01-add-furnace-smelting-behavior-card/design.md
 899677b7372b0a467a7a1fe579b4f7c0f233c2aaaa5fb0b79662b263e8ca481c  cairn/archive/2026-07-01-add-furnace-smelting-behavior-card/tasks.md

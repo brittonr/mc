@@ -2,11 +2,14 @@
 
 use std::env;
 use std::fmt::Debug;
+use std::fs;
+use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 const SELF_TEST_FLAG: &str = "--self-test";
 const HELP_FLAG: &str = "--help";
-const HELP_TEXT: &str = "usage: check_crafting_recipe_core.rs [--self-test]";
+const FIXTURE_FLAG: &str = "--fixture";
+const HELP_TEXT: &str = "usage: check_crafting_recipe_core.rs [--self-test] [--fixture PATH]";
 const SUCCESS_MESSAGE: &str = "crafting recipe selected-matrix core check passed";
 const SUCCESS: ExitCode = ExitCode::SUCCESS;
 const FAILURE: ExitCode = ExitCode::FAILURE;
@@ -53,6 +56,45 @@ const CHEST: &str = "minecraft:chest";
 const COBBLESTONE: &str = "minecraft:cobblestone";
 const INVALID_ITEM_ID: &str = "Minecraft:Chest";
 const UNSUPPORTED_RECIPE_KIND: &str = "minecraft:stonecutting";
+const RADIX_TEN: u32 = 10;
+const ARGUMENT_STEP: usize = 1;
+
+const TARGET_EDITION_BINDING: &str = "target_edition";
+const TARGET_GAME_VERSION_BINDING: &str = "target_game_version";
+const TARGET_PROTOCOL_BINDING: &str = "target_protocol";
+const GRID_WIDTH_BINDING: &str = "selected_grid_width";
+const GRID_HEIGHT_BINDING: &str = "selected_grid_height";
+const MAX_STACK_SIZE_BINDING: &str = "selected_max_stack_size";
+const RESULT_SLOT_STACK_LIMIT_BINDING: &str = "selected_result_slot_stack_limit";
+const CHEST_OUTPUT_COUNT_BINDING: &str = "selected_chest_output_count_value";
+const OAK_PLANKS_OUTPUT_COUNT_BINDING: &str = "selected_oak_planks_output_count_value";
+const CHEST_TARGET_SLOT_BINDING: &str = "selected_chest_target_slot_value";
+const OAK_PLANKS_TARGET_SLOT_BINDING: &str = "selected_oak_planks_target_slot_value";
+const SHAPED_KIND_BINDING: &str = "selected_shaped_recipe_kind";
+const SHAPELESS_KIND_BINDING: &str = "selected_shapeless_recipe_kind";
+const REJECTED_NO_RESULT_KIND_BINDING: &str = "selected_rejected_no_result_kind";
+const COLLECTION_MODE_BINDING: &str = "selected_collection_mode";
+const CHEST_RECIPE_ID_BINDING: &str = "selected_chest_recipe_id";
+const CHEST_KEY_SYMBOL_BINDING: &str = "selected_chest_key_symbol";
+const CHEST_PATTERN_TOP_BINDING: &str = "selected_chest_pattern_top";
+const CHEST_PATTERN_MIDDLE_BINDING: &str = "selected_chest_pattern_middle";
+const CHEST_PATTERN_BOTTOM_BINDING: &str = "selected_chest_pattern_bottom";
+const CHEST_KEY_ITEM_BINDING: &str = "selected_chest_key_item";
+const CHEST_KEY_COUNT_BINDING: &str = "selected_chest_key_count";
+const CHEST_OUTPUT_ITEM_BINDING: &str = "selected_chest_output_item";
+const OAK_PLANKS_RECIPE_ID_BINDING: &str = "selected_oak_planks_recipe_id";
+const SHAPELESS_INPUT_ITEM_BINDING: &str = "selected_shapeless_input_item";
+const SHAPELESS_INPUT_COUNT_BINDING: &str = "selected_shapeless_input_count";
+const SHAPELESS_OUTPUT_ITEM_BINDING: &str = "selected_shapeless_output_item";
+const INVALID_PROBE_ID_BINDING: &str = "selected_invalid_probe_id";
+const INVALID_PROBE_INPUT_ITEM_BINDING: &str = "selected_invalid_probe_input_item";
+const INVALID_PROBE_INPUT_COUNT_BINDING: &str = "selected_invalid_probe_input_count";
+const INVALID_PROBE_DIAGNOSTIC_BINDING: &str = "selected_invalid_probe_diagnostic";
+const SHAPED_KIND: &str = "shaped";
+const SHAPELESS_KIND: &str = "shapeless";
+const REJECTED_NO_RESULT_KIND: &str = "rejected_no_result";
+const COLLECTION_MODE: &str = "primary_click";
+const INVALID_PROBE_DIAGNOSTIC: &str = "no_result";
 
 const CHEST_SYMBOL: char = 'P';
 const EMPTY_PATTERN_SYMBOL: char = ' ';
@@ -256,7 +298,9 @@ fn main() -> ExitCode {
             println!("{HELP_TEXT}");
             SUCCESS
         }
-        Ok(Command::SelfTest) => run_and_report_self_tests(),
+        Ok(Command::SelfTest { fixture_path }) => {
+            run_and_report_self_tests(fixture_path.as_deref())
+        }
         Err(error) => {
             eprintln!("{error}");
             FAILURE
@@ -264,30 +308,46 @@ fn main() -> ExitCode {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 enum Command {
-    SelfTest,
+    SelfTest { fixture_path: Option<PathBuf> },
     Help,
 }
 
 fn parse_command() -> Result<Command, String> {
-    let mut command = Command::SelfTest;
-    for arg in env::args().skip(1) {
+    let args = env::args().skip(1).collect::<Vec<_>>();
+    let mut fixture_path = None;
+    let mut saw_self_test = false;
+    let mut index = 0;
+
+    while index < args.len() {
+        let arg = &args[index];
         if arg == SELF_TEST_FLAG {
-            command = Command::SelfTest;
+            saw_self_test = true;
+            index += ARGUMENT_STEP;
             continue;
         }
         if arg == HELP_FLAG {
-            command = Command::Help;
+            return Ok(Command::Help);
+        }
+        if arg == FIXTURE_FLAG {
+            index += ARGUMENT_STEP;
+            let Some(path) = args.get(index) else {
+                return Err(format!("{FIXTURE_FLAG} requires a path"));
+            };
+            fixture_path = Some(PathBuf::from(path));
+            index += ARGUMENT_STEP;
             continue;
         }
         return Err(format!("unknown argument: {arg}"));
     }
-    Ok(command)
+
+    let _self_test_requested = saw_self_test;
+    Ok(Command::SelfTest { fixture_path })
 }
 
-fn run_and_report_self_tests() -> ExitCode {
-    match run_self_tests() {
+fn run_and_report_self_tests(fixture_path: Option<&Path>) -> ExitCode {
+    match run_self_tests(fixture_path) {
         Ok(()) => {
             println!("{SUCCESS_MESSAGE}");
             SUCCESS
@@ -656,7 +716,7 @@ fn decrement_slot<'a>(slot: Option<ItemStack<'a>>, count: u32) -> Option<ItemSta
     }
 }
 
-fn run_self_tests() -> Result<(), String> {
+fn run_self_tests(fixture_path: Option<&Path>) -> Result<(), String> {
     shaped_chest_matches()?;
     shapeless_oak_planks_matches()?;
     primary_click_collection_merges_with_compatible_inventory()?;
@@ -672,6 +732,9 @@ fn run_self_tests() -> Result<(), String> {
     unsupported_recipe_kind_fails()?;
     unsupported_collection_modes_fail()?;
     inventory_capacity_block_fails()?;
+    if let Some(path) = fixture_path {
+        selected_fixture_handoff_uses_core_rows(path)?;
+    }
     Ok(())
 }
 
@@ -1164,6 +1227,434 @@ fn inventory_capacity_block_fails() -> Result<(), String> {
         error,
         CraftingError::InventoryCapacityBlocked,
     )
+}
+
+fn selected_fixture_handoff_uses_core_rows(path: &Path) -> Result<(), String> {
+    let text = fs::read_to_string(path).map_err(|error| format!("{}: {error}", path.display()))?;
+    let rows = parse_selected_fixture_rows(&text)?;
+
+    expect_equal(
+        "fixture target edition",
+        rows.target_edition.as_str(),
+        TARGET_EDITION,
+    )?;
+    expect_equal(
+        "fixture target version",
+        rows.target_game_version.as_str(),
+        TARGET_VERSION,
+    )?;
+    expect_equal(
+        "fixture target protocol",
+        rows.target_protocol,
+        TARGET_PROTOCOL,
+    )?;
+    expect_equal(
+        "fixture grid width",
+        rows.grid_width,
+        CRAFTING_GRID_WIDTH as u32,
+    )?;
+    expect_equal(
+        "fixture grid height",
+        rows.grid_height,
+        CRAFTING_GRID_HEIGHT as u32,
+    )?;
+    expect_equal("fixture max stack", rows.max_stack_size, MAX_STACK_SIZE)?;
+    expect_equal(
+        "fixture result stack limit",
+        rows.result_slot_stack_limit,
+        RESULT_SLOT_STACK_LIMIT,
+    )?;
+    expect_equal(
+        "fixture chest recipe id",
+        rows.chest_recipe_id.as_str(),
+        CHEST_RECIPE_ID,
+    )?;
+    expect_equal(
+        "fixture chest key item",
+        rows.chest_key_item.as_str(),
+        OAK_PLANKS,
+    )?;
+    expect_equal(
+        "fixture chest output item",
+        rows.chest_output_item.as_str(),
+        CHEST,
+    )?;
+    expect_equal(
+        "fixture chest output count",
+        rows.chest_output_count,
+        ONE_ITEM,
+    )?;
+    expect_equal(
+        "fixture oak planks recipe id",
+        rows.oak_planks_recipe_id.as_str(),
+        OAK_PLANKS_RECIPE_ID,
+    )?;
+    expect_equal(
+        "fixture shapeless input item",
+        rows.shapeless_input_item.as_str(),
+        OAK_LOG,
+    )?;
+    expect_equal(
+        "fixture shapeless output item",
+        rows.shapeless_output_item.as_str(),
+        OAK_PLANKS,
+    )?;
+    expect_equal(
+        "fixture shapeless output count",
+        rows.oak_planks_output_count,
+        OAK_PLANKS_OUTPUT_COUNT,
+    )?;
+    expect_equal(
+        "fixture invalid probe id",
+        rows.invalid_probe_id.as_str(),
+        STICK_REJECTION_ID,
+    )?;
+    expect_equal(
+        "fixture invalid probe diagnostic",
+        rows.invalid_probe_diagnostic.as_str(),
+        INVALID_PROBE_DIAGNOSTIC,
+    )?;
+
+    let chest_pattern_values = [
+        rows.chest_pattern_top.as_str(),
+        rows.chest_pattern_middle.as_str(),
+        rows.chest_pattern_bottom.as_str(),
+    ];
+    let chest_key_values = [SymbolIngredient {
+        symbol: rows.chest_key_symbol,
+        item: rows.chest_key_item.as_str(),
+        count: rows.chest_key_count,
+    }];
+    let shapeless_ingredients = [stack(
+        rows.shapeless_input_item.as_str(),
+        rows.shapeless_input_count,
+    )];
+    let selected_rows = [
+        RecipeRow {
+            id: rows.chest_recipe_id.as_str(),
+            kind: RecipeKind::Shaped {
+                pattern: &chest_pattern_values,
+                key: &chest_key_values,
+            },
+            output: stack(rows.chest_output_item.as_str(), rows.chest_output_count),
+            target: Some(TARGET_SCOPE),
+        },
+        RecipeRow {
+            id: rows.oak_planks_recipe_id.as_str(),
+            kind: RecipeKind::Shapeless {
+                ingredients: &shapeless_ingredients,
+            },
+            output: stack(
+                rows.shapeless_output_item.as_str(),
+                rows.oak_planks_output_count,
+            ),
+            target: Some(TARGET_SCOPE),
+        },
+    ];
+    let matrix = RecipeMatrix {
+        rows: &selected_rows,
+    };
+    let limits = CraftingLimits {
+        max_stack_size: rows.max_stack_size,
+        result_slot_stack_limit: rows.result_slot_stack_limit,
+    };
+
+    let chest_decision = evaluate_selected_matrix(
+        fixture_chest_grid(&rows),
+        matrix,
+        empty_output_slot(),
+        collection_request(
+            to_slot_index(rows.chest_target_slot, "fixture chest target slot")?,
+            None,
+            CollectionMode::PrimaryClick,
+        ),
+        limits,
+    )
+    .map_err(format_error("fixture chest handoff unexpected error"))?;
+    match chest_decision {
+        CraftingDecision::Matched {
+            recipe_id,
+            output,
+            grid_after,
+            inventory_delta,
+        } => {
+            expect_equal("fixture chest matched id", recipe_id, CHEST_RECIPE_ID)?;
+            expect_equal(
+                "fixture chest matched output",
+                output,
+                stack(CHEST, ONE_ITEM),
+            )?;
+            expect_equal("fixture chest grid consumed", grid_after, empty_grid())?;
+            expect_equal(
+                "fixture chest inventory delta",
+                inventory_delta,
+                InventoryDelta {
+                    slot_index: to_slot_index(rows.chest_target_slot, "fixture chest target slot")?,
+                    item: CHEST,
+                    count_before: EMPTY_COUNT,
+                    count_after: ONE_ITEM,
+                },
+            )
+        }
+        other => Err(format!(
+            "fixture chest handoff expected matched decision, got {other:?}"
+        )),
+    }?;
+
+    let shapeless_decision = evaluate_selected_matrix(
+        fixture_shapeless_grid(&rows),
+        matrix,
+        empty_output_slot(),
+        collection_request(
+            to_slot_index(
+                rows.oak_planks_target_slot,
+                "fixture oak-planks target slot",
+            )?,
+            None,
+            CollectionMode::PrimaryClick,
+        ),
+        limits,
+    )
+    .map_err(format_error("fixture shapeless handoff unexpected error"))?;
+    match shapeless_decision {
+        CraftingDecision::Matched {
+            recipe_id,
+            output,
+            grid_after,
+            inventory_delta,
+        } => {
+            expect_equal(
+                "fixture shapeless matched id",
+                recipe_id,
+                OAK_PLANKS_RECIPE_ID,
+            )?;
+            expect_equal(
+                "fixture shapeless matched output",
+                output,
+                stack(OAK_PLANKS, OAK_PLANKS_OUTPUT_COUNT),
+            )?;
+            expect_equal("fixture shapeless grid consumed", grid_after, empty_grid())?;
+            expect_equal(
+                "fixture shapeless inventory delta",
+                inventory_delta,
+                InventoryDelta {
+                    slot_index: to_slot_index(
+                        rows.oak_planks_target_slot,
+                        "fixture oak-planks target slot",
+                    )?,
+                    item: OAK_PLANKS,
+                    count_before: EMPTY_COUNT,
+                    count_after: OAK_PLANKS_OUTPUT_COUNT,
+                },
+            )
+        }
+        other => Err(format!(
+            "fixture shapeless handoff expected matched decision, got {other:?}"
+        )),
+    }?;
+
+    let invalid_grid = fixture_invalid_probe_grid(&rows);
+    let invalid_target_slot = inventory_slot(
+        to_slot_index(rows.oak_planks_target_slot, "fixture invalid target slot")?,
+        None,
+    );
+    let invalid_decision = evaluate_selected_matrix(
+        invalid_grid,
+        matrix,
+        empty_output_slot(),
+        CollectionRequest {
+            mode: CollectionMode::PrimaryClick,
+            target_slot: invalid_target_slot,
+        },
+        limits,
+    )
+    .map_err(format_error("fixture invalid probe unexpected error"))?;
+    match invalid_decision {
+        CraftingDecision::NoResult {
+            reason,
+            grid_after,
+            inventory_after,
+        } => {
+            expect_equal(
+                "fixture invalid no-result reason",
+                reason,
+                NoResultReason::SelectedProbeRejected(STICK_REJECTION_ID),
+            )?;
+            expect_equal("fixture invalid grid preserved", grid_after, invalid_grid)?;
+            expect_equal(
+                "fixture invalid inventory preserved",
+                inventory_after,
+                invalid_target_slot,
+            )
+        }
+        other => Err(format!(
+            "fixture invalid probe expected no-result decision, got {other:?}"
+        )),
+    }
+}
+
+fn fixture_chest_grid<'a>(rows: &'a SelectedFixtureRows) -> CraftingGrid<'a> {
+    let mut grid = empty_grid();
+    let plank = stack(rows.chest_key_item.as_str(), rows.chest_key_count);
+    grid.slots[SLOT_TOP_LEFT] = Some(plank);
+    grid.slots[SLOT_TOP_MIDDLE] = Some(plank);
+    grid.slots[SLOT_TOP_RIGHT] = Some(plank);
+    grid.slots[SLOT_MIDDLE_LEFT] = Some(plank);
+    grid.slots[SLOT_MIDDLE_CENTER] = None;
+    grid.slots[SLOT_MIDDLE_RIGHT] = Some(plank);
+    grid.slots[SLOT_BOTTOM_LEFT] = Some(plank);
+    grid.slots[SLOT_BOTTOM_MIDDLE] = Some(plank);
+    grid.slots[SLOT_BOTTOM_RIGHT] = Some(plank);
+    grid
+}
+
+fn fixture_shapeless_grid<'a>(rows: &'a SelectedFixtureRows) -> CraftingGrid<'a> {
+    let mut grid = empty_grid();
+    grid.slots[SLOT_TOP_LEFT] = Some(stack(
+        rows.shapeless_input_item.as_str(),
+        rows.shapeless_input_count,
+    ));
+    grid
+}
+
+fn fixture_invalid_probe_grid<'a>(rows: &'a SelectedFixtureRows) -> CraftingGrid<'a> {
+    let mut grid = empty_grid();
+    grid.slots[SLOT_TOP_LEFT] = Some(stack(
+        rows.invalid_probe_input_item.as_str(),
+        rows.invalid_probe_input_count,
+    ));
+    grid
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct SelectedFixtureRows {
+    target_edition: String,
+    target_game_version: String,
+    target_protocol: u32,
+    grid_width: u32,
+    grid_height: u32,
+    max_stack_size: u32,
+    result_slot_stack_limit: u32,
+    chest_target_slot: u32,
+    oak_planks_target_slot: u32,
+    chest_recipe_id: String,
+    chest_key_symbol: char,
+    chest_pattern_top: String,
+    chest_pattern_middle: String,
+    chest_pattern_bottom: String,
+    chest_key_item: String,
+    chest_key_count: u32,
+    chest_output_item: String,
+    chest_output_count: u32,
+    oak_planks_recipe_id: String,
+    shapeless_input_item: String,
+    shapeless_input_count: u32,
+    shapeless_output_item: String,
+    oak_planks_output_count: u32,
+    invalid_probe_id: String,
+    invalid_probe_input_item: String,
+    invalid_probe_input_count: u32,
+    invalid_probe_diagnostic: String,
+}
+
+fn parse_selected_fixture_rows(text: &str) -> Result<SelectedFixtureRows, String> {
+    require_fixture_string(text, SHAPED_KIND_BINDING, SHAPED_KIND)?;
+    require_fixture_string(text, SHAPELESS_KIND_BINDING, SHAPELESS_KIND)?;
+    require_fixture_string(
+        text,
+        REJECTED_NO_RESULT_KIND_BINDING,
+        REJECTED_NO_RESULT_KIND,
+    )?;
+    require_fixture_string(text, COLLECTION_MODE_BINDING, COLLECTION_MODE)?;
+
+    Ok(SelectedFixtureRows {
+        target_edition: read_string_binding(text, TARGET_EDITION_BINDING)?,
+        target_game_version: read_string_binding(text, TARGET_GAME_VERSION_BINDING)?,
+        target_protocol: read_number_binding(text, TARGET_PROTOCOL_BINDING)?,
+        grid_width: read_number_binding(text, GRID_WIDTH_BINDING)?,
+        grid_height: read_number_binding(text, GRID_HEIGHT_BINDING)?,
+        max_stack_size: read_number_binding(text, MAX_STACK_SIZE_BINDING)?,
+        result_slot_stack_limit: read_number_binding(text, RESULT_SLOT_STACK_LIMIT_BINDING)?,
+        chest_target_slot: read_number_binding(text, CHEST_TARGET_SLOT_BINDING)?,
+        oak_planks_target_slot: read_number_binding(text, OAK_PLANKS_TARGET_SLOT_BINDING)?,
+        chest_recipe_id: read_string_binding(text, CHEST_RECIPE_ID_BINDING)?,
+        chest_key_symbol: read_symbol_binding(text, CHEST_KEY_SYMBOL_BINDING)?,
+        chest_pattern_top: read_string_binding(text, CHEST_PATTERN_TOP_BINDING)?,
+        chest_pattern_middle: read_string_binding(text, CHEST_PATTERN_MIDDLE_BINDING)?,
+        chest_pattern_bottom: read_string_binding(text, CHEST_PATTERN_BOTTOM_BINDING)?,
+        chest_key_item: read_string_binding(text, CHEST_KEY_ITEM_BINDING)?,
+        chest_key_count: read_number_binding(text, CHEST_KEY_COUNT_BINDING)?,
+        chest_output_item: read_string_binding(text, CHEST_OUTPUT_ITEM_BINDING)?,
+        chest_output_count: read_number_binding(text, CHEST_OUTPUT_COUNT_BINDING)?,
+        oak_planks_recipe_id: read_string_binding(text, OAK_PLANKS_RECIPE_ID_BINDING)?,
+        shapeless_input_item: read_string_binding(text, SHAPELESS_INPUT_ITEM_BINDING)?,
+        shapeless_input_count: read_number_binding(text, SHAPELESS_INPUT_COUNT_BINDING)?,
+        shapeless_output_item: read_string_binding(text, SHAPELESS_OUTPUT_ITEM_BINDING)?,
+        oak_planks_output_count: read_number_binding(text, OAK_PLANKS_OUTPUT_COUNT_BINDING)?,
+        invalid_probe_id: read_string_binding(text, INVALID_PROBE_ID_BINDING)?,
+        invalid_probe_input_item: read_string_binding(text, INVALID_PROBE_INPUT_ITEM_BINDING)?,
+        invalid_probe_input_count: read_number_binding(text, INVALID_PROBE_INPUT_COUNT_BINDING)?,
+        invalid_probe_diagnostic: read_string_binding(text, INVALID_PROBE_DIAGNOSTIC_BINDING)?,
+    })
+}
+
+fn require_fixture_string(text: &str, binding: &str, expected: &str) -> Result<(), String> {
+    let actual = read_string_binding(text, binding)?;
+    if actual == expected {
+        Ok(())
+    } else {
+        Err(format!(
+            "fixture binding {binding} expected {expected:?}, got {actual:?}"
+        ))
+    }
+}
+
+fn read_symbol_binding(text: &str, binding: &str) -> Result<char, String> {
+    let value = read_string_binding(text, binding)?;
+    let mut chars = value.chars();
+    let Some(symbol) = chars.next() else {
+        return Err(format!("fixture symbol binding {binding} is empty"));
+    };
+    if chars.next().is_some() {
+        return Err(format!(
+            "fixture symbol binding {binding} must contain one character, got {value:?}"
+        ));
+    }
+    Ok(symbol)
+}
+
+fn read_string_binding(text: &str, binding: &str) -> Result<String, String> {
+    let needle = format!("let {binding} = \"");
+    let Some(start) = text.find(&needle).map(|start| start + needle.len()) else {
+        return Err(format!("fixture missing string binding {binding}"));
+    };
+    let remainder = &text[start..];
+    let Some(end) = remainder.find('"') else {
+        return Err(format!("fixture string binding {binding} is unterminated"));
+    };
+    Ok(remainder[..end].to_string())
+}
+
+fn read_number_binding(text: &str, binding: &str) -> Result<u32, String> {
+    let needle = format!("let {binding} = ");
+    let Some(start) = text.find(&needle).map(|start| start + needle.len()) else {
+        return Err(format!("fixture missing numeric binding {binding}"));
+    };
+    let remainder = &text[start..];
+    let raw_number = remainder
+        .chars()
+        .take_while(|character| character.is_ascii_digit() || *character == '_')
+        .collect::<String>();
+    if raw_number.is_empty() {
+        return Err(format!("fixture numeric binding {binding} is empty"));
+    }
+    let normalized = raw_number.replace('_', "");
+    u32::from_str_radix(&normalized, RADIX_TEN)
+        .map_err(|error| format!("fixture numeric binding {binding} is invalid: {error}"))
+}
+
+fn to_slot_index(value: u32, label: &str) -> Result<u16, String> {
+    u16::try_from(value).map_err(|error| format!("{label} {value} is invalid: {error}"))
 }
 
 fn selected_matrix<'a>() -> RecipeMatrix<'a> {

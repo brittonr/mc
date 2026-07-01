@@ -1,0 +1,26 @@
+command: nix run .#cairn -- sync add-crafting-recipe-data-fixture --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-crafting-recipe-data-fixture/specs/vanilla-composable-plugins/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-crafting-recipe-data-fixture/specs/vanilla-composable-plugins/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-crafting-recipe-data-fixture",
+  "delta_specs": [
+    "./cairn/changes/add-crafting-recipe-data-fixture/specs/vanilla-composable-plugins/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "e03f3f8acd62a953618bf5c3a46d286a9307ce824449999dc082cea61181e0d2",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "e20f00025eede12e10eb2a0c79feae95088980c69dde240baf29b2ae52c43d88",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "9ff86847acde95639b1239efa308b9f9b6992b34a0c7f33a14fd713200e2bfa3"
+}
+exit_status=0

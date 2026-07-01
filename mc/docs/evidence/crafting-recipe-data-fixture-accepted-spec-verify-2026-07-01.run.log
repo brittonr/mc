@@ -1,0 +1,7 @@
+command: grep accepted crafting recipe data fixture IDs
+found r[vanilla_composable_plugins.crafting_recipe_data_fixture]
+found r[vanilla_composable_plugins.crafting_recipe_data_fixture.validation]
+found r[vanilla_composable_plugins.crafting_recipe_data_fixture.core_handoff]
+found r[vanilla_composable_plugins.crafting_recipe_data_fixture.docs]
+found r[vanilla_composable_plugins.crafting_recipe_data_fixture.closeout]
+exit_status=0

@@ -66,12 +66,14 @@ The self-test covers:
 
 ## Evidence
 
-Focused evidence for this package is local unit evidence only:
+Focused evidence for the original selected-matrix core package is local unit evidence only:
 
 - `docs/evidence/crafting-recipe-selected-matrix-core-inventory-2026-07-01.md`
 - `docs/evidence/crafting-recipe-selected-matrix-core-baseline-2026-07-01.run.log`
 - `docs/evidence/crafting-recipe-selected-matrix-core-focused-validation-2026-07-01.run.log`
 - `docs/evidence/crafting-recipe-selected-matrix-core-2026-07-01.b3`
+
+The selected-matrix data fixture is now documented in `docs/crafting-recipe-selected-matrix-data-fixture.md`. Its validation and local core handoff remain selected-fixture/unit evidence only and do not promote receipt parity or Valence runtime behavior.
 
 ## Non-claims
 
@@ -93,6 +95,10 @@ This package does not claim:
 - public-server safety;
 - production readiness.
 
+## Fixture handoff
+
+`docs/crafting-recipe-selected-matrix-data-fixture.md` defines the selected Java Edition 1.20.1 / protocol 763 fixture rows for shaped chest, shapeless oak-planks, and invalid/no-result rejection. `tools/check_crafting_recipe_core.rs --self-test --fixture compat/config/crafting-recipe-selected-matrix-fixture.ncl` feeds those validated rows into the pure core as local unit evidence only.
+
 ## Next required evidence before broader claims
 
-Before promoting target-version or runtime behavior beyond this local selected-matrix unit core, follow-on work must add target-version Java Edition 1.20.1 recipe-row extraction, malformed-data validation, selected receipt handoff, a Valence shell contract, opt-in runtime shell tests, and separate scopes for all-recipe breadth or additional collection modes.
+Before promoting target-version or runtime behavior beyond this local selected-matrix unit core plus fixture handoff, follow-on work must add selected receipt handoff, a Valence shell contract, opt-in runtime shell tests, and separate scopes for all-recipe breadth, data-pack loading, recipe-book behavior, automated crafter behavior, or additional collection modes.

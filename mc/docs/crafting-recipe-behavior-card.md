@@ -140,7 +140,7 @@ Required before implementation claims:
 - Existing `survival-crafting-recipe-breadth` row evidence and typed-event migration evidence may be used as predecessor vocabulary only.
 - mc-compat row or evidence note that records target version, tested inputs, rejected invalid inputs, collection mode, and explicit non-claims.
 
-Evidence in this behavior-card-only package may claim only that the card is complete enough to seed a follow-on implementation Cairn. It does not claim the pure recipe core, the Valence shell, all recipes, data-pack loading, recipe-book UI behavior, automated crafter behavior, default plugin membership, public-server safety, production readiness, broad Minecraft compatibility, or broad vanilla parity.
+Evidence in this behavior-card-only package may claim only that the card is complete enough to seed a follow-on implementation Cairn. The selected-matrix pure core is documented in `docs/crafting-recipe-selected-matrix-core.md`, and the selected data fixture is documented in `docs/crafting-recipe-selected-matrix-data-fixture.md`; those artifacts remain local selected-matrix evidence and do not claim the Valence shell, all recipes, data-pack loading, recipe-book UI behavior, automated crafter behavior, default plugin membership, public-server safety, production readiness, broad Minecraft compatibility, or broad vanilla parity.
 
 ## Stop conditions before broader work
 

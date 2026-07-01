@@ -1,0 +1,82 @@
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+command_exit_status=0
+command: nix run .#cairn -- gate proposal add-crafting-recipe-data-fixture --root .
+{
+  "change": "add-crafting-recipe-data-fixture",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "83911457eb18b459514f2383bf488b91dbbfbc9d769ed1c609b77a99adf7781f",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "835899bb8bb3ab91d1162167626db2db1b204977dbdb6981813ad428ad9162bb",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+command: nix run .#cairn -- gate design add-crafting-recipe-data-fixture --root .
+{
+  "change": "add-crafting-recipe-data-fixture",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f3012d1e723f7dbdbc2f94f9c893afc623479c4ed46cfbd6f52ffcad9853a977",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "268848a0e33b7d25e8b9e54c0d263c36055cc8b9b606d4ffc23a7abe88c94f35",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+command: nix run .#cairn -- gate tasks add-crafting-recipe-data-fixture --root .
+{
+  "change": "add-crafting-recipe-data-fixture",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "806e6a6598955954fe100158dacf5f9bf19a678bc6a4e70734300227afb690cb",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "1c1066e69e7c9c023e2cdc13f42bd09a134005bde2fbb04b048434caedb04185",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command_exit_status=0
+exit_status=0

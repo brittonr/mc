@@ -1,0 +1,3 @@
+command: tools/check_crafting_recipe_core.rs --self-test
+crafting recipe selected-matrix core check passed
+exit_status=0

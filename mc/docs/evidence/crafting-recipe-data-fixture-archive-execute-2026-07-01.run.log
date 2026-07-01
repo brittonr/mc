@@ -1,0 +1,81 @@
+command: CAIRN_ARCHIVE_DATE=2026-07-01 nix run .#cairn -- archive add-crafting-recipe-data-fixture --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-crafting-recipe-data-fixture",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-07-01-add-crafting-recipe-data-fixture"
+    }
+  ],
+  "blocked": false,
+  "change": "add-crafting-recipe-data-fixture",
+  "dry_run": false,
+  "input_hash": "68cbd3290500c4885ba1819811c59d3914b754e9c9cdfedd9829b3e8332c4ea6",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "3a1e8b6a40f7b37a0631e77eb858cf9bb590dc75c7267294bf0bd082dd501bfd",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-crafting-recipe-data-fixture/design.md"
+        },
+        {
+          "content_hash": "db2481798964bd383d0b79e1192067c22f0817e95baaf458221fc201c2fbd612",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-crafting-recipe-data-fixture/proposal.md"
+        },
+        {
+          "content_hash": "d5e7a832bf548e0477423ce1930698c99ac76ef03b7d0ccdf77c69c846a3c9c5",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-crafting-recipe-data-fixture/specs/vanilla-composable-plugins/spec.md"
+        },
+        {
+          "content_hash": "c93dd6761d9787372c59d66583931a3d0b20b012b7285b33c23ef1c8c92c5e81",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-crafting-recipe-data-fixture/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-crafting-recipe-data-fixture"
+        }
+      ],
+      "manifest_hash": "906859e5d3876f0f5265a41570909f4be11b27c78b65b1bbced4722a059db7ea"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "3a1e8b6a40f7b37a0631e77eb858cf9bb590dc75c7267294bf0bd082dd501bfd",
+          "exists": true,
+          "path": "./cairn/changes/add-crafting-recipe-data-fixture/design.md"
+        },
+        {
+          "content_hash": "db2481798964bd383d0b79e1192067c22f0817e95baaf458221fc201c2fbd612",
+          "exists": true,
+          "path": "./cairn/changes/add-crafting-recipe-data-fixture/proposal.md"
+        },
+        {
+          "content_hash": "d5e7a832bf548e0477423ce1930698c99ac76ef03b7d0ccdf77c69c846a3c9c5",
+          "exists": true,
+          "path": "./cairn/changes/add-crafting-recipe-data-fixture/specs/vanilla-composable-plugins/spec.md"
+        },
+        {
+          "content_hash": "c93dd6761d9787372c59d66583931a3d0b20b012b7285b33c23ef1c8c92c5e81",
+          "exists": true,
+          "path": "./cairn/changes/add-crafting-recipe-data-fixture/tasks.md"
+        }
+      ],
+      "manifest_hash": "f7d33eb1e1a3f7c917c700aa48f707e3ed6efce0a5be36e9ddb924c7f77ff2fd"
+    },
+    "kind": "archive",
+    "manifest_hash": "9d8c8f12b59d2d262bdd794251635380f47ffb739380a181f490a3becec33a38"
+  },
+  "plan_hash": "623f241d0958445832576313e169d0a938b68966fc449b1f4057d3e4c033b2f1",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "33c509d574ed9ac38ea3de429983743d9a76596b94ae271e0725d07ff8bf552e"
+}
+exit_status=0

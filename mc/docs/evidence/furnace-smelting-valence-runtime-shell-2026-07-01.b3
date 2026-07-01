@@ -4,7 +4,7 @@ d0f8ca3010d5e34624d69c3800b278c628f4e140032d3f87aff7d001e1856735  docs/furnace-s
 552e845351fdc5a5a46cfee50439bff65887377fe2885aae3b192c9a35c43270  docs/furnace-smelting-selected-row-data-fixture.md
 cf81ed4d352ec56b6b0c047947e6b802a4ee5bdf8d8d12dd56018add69aa3ad8  docs/furnace-smelting-selected-row-receipt-handoff.md
 bc98ee62404cf3e7602c683b307d4ae80e13bff4cd7bb609024d43ec1874a456  docs/furnace-smelting-valence-shell-contract.md
-dd45a012631edb3f3ccaa6b51a0c0cf19a46c8c76c9238c235d3ee4cea76e908  cairn/specs/vanilla-composable-plugins/spec.md
+5f9f63af0248d976f65cb188908d60d843d03be27fc69e5bd9ba61442e3ee81d  cairn/specs/vanilla-composable-plugins/spec.md
 296a0de83f55a781680436f8453115399c524da59c5bb2b64ee207d7fff95a49  cairn/archive/2026-07-01-add-furnace-smelting-valence-runtime-shell/tasks.md
 970ac09916f8b5e614f9024c4ec80eafd9316721fec43480d3f87080a8587087  cairn/archive/2026-07-01-add-furnace-smelting-valence-runtime-shell/proposal.md
 5b9fa042cbb9c37fd49d92b7ba1d50c25bbf64fca3614ca0d64e101b2e3730a0  cairn/archive/2026-07-01-add-furnace-smelting-valence-runtime-shell/design.md

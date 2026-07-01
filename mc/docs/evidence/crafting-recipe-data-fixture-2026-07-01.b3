@@ -1,0 +1,17 @@
+dc0b79065f89aa0a2bb86f02e0788229d81328307e988b0386b03d2ef7c17b54  compat/config/crafting-recipe-selected-matrix-fixture-contracts.ncl
+344912b210ba473aed05ddfbeddcb3f4ae1c8e136598efeda2e89c6b0a942b03  compat/config/crafting-recipe-selected-matrix-fixture.ncl
+a7ab527abaeaff0743c2d39bcdac5de4ce50ebf36cd23b2fc131707d570e0e08  docs/crafting-recipe-selected-matrix-data-fixture.md
+5447d4b01e7a0fa5783799faa94db54784fa5dd1c1a1c7929afeed4f120e5348  docs/crafting-recipe-selected-matrix-core.md
+7d6d611ad1fd108680dd448ab51fc724183163adcd38788d212141d7566cb490  docs/crafting-recipe-behavior-card.md
+60b855ec641a50df4271da6c3e44a7fe8bedfa264735413c062d98a98b0aa120  tools/check_crafting_recipe_data_fixture.rs
+3a8b4fbe63423b69b32530196136822561cdf51486c72f1576fecd8592219801  tools/check_crafting_recipe_core.rs
+639d90b29930041b112435f725ea4435f3c1e000b52226b6300da23ab5c1c894  docs/evidence/crafting-recipe-data-fixture-baseline-2026-07-01.run.log
+1b59aa1ff9c97dfaf181145c4c314da243f739956e8fac29aa20f90b5590762c  docs/evidence/crafting-recipe-data-fixture-focused-validation-2026-07-01.run.log
+ce25c62f276f13cdf937d32dd2f01eb08e75fb6a4aaf2cb0d0495550e6b8b508  docs/evidence/crafting-recipe-data-fixture-task-evidence-initial-2026-07-01.run.log
+95986ede29dde29388774fe4cd0217890ea2b55a9ece070287882ea10421dc38  docs/evidence/crafting-recipe-data-fixture-cairn-gates-2026-07-01.run.log
+7edbd51387589b6d5ebd601cc608d141e3a6e5c7ee2413d1f661127af36ae3de  docs/evidence/crafting-recipe-data-fixture-sync-dry-run-2026-07-01.run.log
+a2cec53832c3d4293d70579dad0ebcae581adaa63130b7d16f188000eae7b150  docs/evidence/crafting-recipe-data-fixture-sync-execute-2026-07-01.run.log
+37fa7269dd5ca9424e59665d04235aae0e09e8e8b8e8dbb1005d0184e3403013  docs/evidence/crafting-recipe-data-fixture-accepted-spec-verify-2026-07-01.run.log
+6fde6e2a219c158bfc17738a34c749a2b9912ecb65d9d9cf05420881124453f3  docs/evidence/crafting-recipe-data-fixture-evidence-manifest-refresh-2026-07-01.run.log
+cc0301d2b0aa77eca2b0fe1c2fcb93caae67f80c800a9562642f67ba13f6572a  docs/evidence/crafting-recipe-data-fixture-evidence-manifest-check-2026-07-01.run.log
+5f9f63af0248d976f65cb188908d60d843d03be27fc69e5bd9ba61442e3ee81d  cairn/specs/vanilla-composable-plugins/spec.md
