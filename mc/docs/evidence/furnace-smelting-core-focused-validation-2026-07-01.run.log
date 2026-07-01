@@ -1,0 +1,3 @@
+command: tools/check_furnace_smelting_core.rs --self-test
+furnace smelting selected-row core check passed
+exit_status=0

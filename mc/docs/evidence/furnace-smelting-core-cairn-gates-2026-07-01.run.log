@@ -1,0 +1,78 @@
+command: nix run .#cairn -- gate proposal add-furnace-smelting-selected-row-core --root .
+{
+  "change": "add-furnace-smelting-selected-row-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "82aa81007d3c065b9598a737facb6aaf88d35b1b041aa426e8a52839936fb98e",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "612b24bc08e31a1a0af149651a0b7015d356012b540a8456550b93ca3a2d665c",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run .#cairn -- gate design add-furnace-smelting-selected-row-core --root .
+{
+  "change": "add-furnace-smelting-selected-row-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "82ecc050065cbd655befd13adfcfa967531b437216ee682aff963ad06815b3bd",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "b3dbac315db70afa3727fdef4216b53061a6eba64e29564544c47cbbc438e821",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run .#cairn -- gate tasks add-furnace-smelting-selected-row-core --root .
+{
+  "change": "add-furnace-smelting-selected-row-core",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e226008eaa3e7fa114a002a9f209e1fb3faea35cd791f5bbeaf0b210011d9121",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "ff057acd2c00800c63bf3ff7cb7651a9d8cfedaccf17dda4192b90f12070d9f4",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+exit_status=0

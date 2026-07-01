@@ -1,0 +1,23 @@
+command: rg furnace_smelting_core cairn/specs/vanilla-composable-plugins/spec.md
+r[vanilla_composable_plugins.furnace_smelting_core] Furnace smelting implementation work MUST provide a pure deterministic selected-row standard-furnace core before any Bevy/ECS shell is introduced.
+r[vanilla_composable_plugins.furnace_smelting_core.deterministic]
+r[vanilla_composable_plugins.furnace_smelting_core.bounded]
+r[vanilla_composable_plugins.furnace_smelting_core.tests] The selected-row furnace core MUST include positive and negative tests for valid progress and rejected or blocked states.
+r[vanilla_composable_plugins.furnace_smelting_core.tests.positive]
+r[vanilla_composable_plugins.furnace_smelting_core.tests.negative]
+r[vanilla_composable_plugins.furnace_smelting_core.docs] Selected-row core work MUST document local semantics, data assumptions, test coverage, and non-claims.
+r[vanilla_composable_plugins.furnace_smelting_core.docs.reviewable]
+r[vanilla_composable_plugins.furnace_smelting_core.closeout] Selected-row core work MUST record baseline validation, focused core validation, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, accepted-spec sync verification, evidence-manifest checks, flake evidence checks, and archive receipts before closeout.
+r[vanilla_composable_plugins.furnace_smelting_core.closeout.log]
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+exit_status=0
