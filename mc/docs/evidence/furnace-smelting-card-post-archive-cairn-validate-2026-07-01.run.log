@@ -1,0 +1,19 @@
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+command: nix run .#cairn -- change list --root .
+waiting for another Nix process to finish fetching input 'git+file:///home/brittonr/git'...
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+exit_status=0

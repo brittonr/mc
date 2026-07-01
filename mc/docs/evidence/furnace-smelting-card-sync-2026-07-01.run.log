@@ -1,0 +1,85 @@
+command: nix run .#cairn -- sync add-furnace-smelting-behavior-card --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-furnace-smelting-behavior-card/specs/vanilla-composable-plugins/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-furnace-smelting-behavior-card/specs/vanilla-composable-plugins/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-furnace-smelting-behavior-card",
+  "delta_specs": [
+    "./cairn/changes/add-furnace-smelting-behavior-card/specs/vanilla-composable-plugins/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "a0f322bd8d192bc5b548baadd262098b9096151eb020b39ddfc4ab545c756b1e",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "2da5f0646383f5666c9edbc33b021e225ef3f361ef3e461f3dc07a3be9a6a910",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "8fba075247d4ba9c8f039b50e022db1c2b2723687ad2cf949e4fa64cfcfb0953"
+}
+command: nix run .#cairn -- sync add-furnace-smelting-behavior-card --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-furnace-smelting-behavior-card/specs/vanilla-composable-plugins/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-furnace-smelting-behavior-card/specs/vanilla-composable-plugins/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-furnace-smelting-behavior-card",
+  "delta_specs": [
+    "./cairn/changes/add-furnace-smelting-behavior-card/specs/vanilla-composable-plugins/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "a0f322bd8d192bc5b548baadd262098b9096151eb020b39ddfc4ab545c756b1e",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "eb1f4bfb4a7b756e54726cc8d7eb23cac285eb291a7c404291e5d3467cb2ee98",
+          "exists": true,
+          "path": "./cairn/specs/vanilla-composable-plugins/spec.md"
+        }
+      ],
+      "manifest_hash": "b58e26100d0f8662a1e0a78e449d9f05e0779284c00ee865647320a65d2502b2"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "f1ce47e520890665abd83dc09ed4027fc45e28aaa8536129e015332222dc0902",
+          "exists": true,
+          "path": "./cairn/specs/vanilla-composable-plugins/spec.md"
+        }
+      ],
+      "manifest_hash": "995e96c7c13b78a97233e6618ac6919dc31c2d57b36580eb5e6ba075a150dd1c"
+    },
+    "kind": "sync",
+    "manifest_hash": "60c79bab1a87f5c8e6697d683f6653ebcbda0445fa9710f0c21706738bd93f89"
+  },
+  "plan_hash": "3960d42237b2cf0801b008e7ce9bcae7a5a784080c90e84d013a4bf172a6567b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "ec9828c6a4761fdd05e2617b04fbf3a87dc6d1c439978840e288b65ec0cd74ce"
+}
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+exit_status=0

@@ -1,0 +1,21 @@
+command: rg furnace_smelting_card cairn/specs/vanilla-composable-plugins/spec.md
+r[vanilla_composable_plugins.furnace_smelting_card] Furnace smelting follow-on work MUST start from a dedicated behavior card that records source pages, target Java/protocol scope, bounded selected-row claim, non-claims, pure rule-core inputs and outputs, thin Bevy/ECS shell boundaries, positive tests, negative tests, evidence requirements, and stop conditions.
+r[vanilla_composable_plugins.furnace_smelting_card.bounded]
+r[vanilla_composable_plugins.furnace_smelting_card.core_shell]
+r[vanilla_composable_plugins.furnace_smelting_card.validation] The furnace smelting card work MUST include focused validation with positive and negative self-tests for required card sections and workflow rules.
+r[vanilla_composable_plugins.furnace_smelting_card.validation.positive]
+r[vanilla_composable_plugins.furnace_smelting_card.validation.negative]
+r[vanilla_composable_plugins.furnace_smelting_card.closeout] Furnace smelting behavior-card work MUST record focused validation, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, evidence-manifest checks, accepted-spec sync verification, and archive receipts before closeout.
+r[vanilla_composable_plugins.furnace_smelting_card.closeout.log]
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+exit_status=0

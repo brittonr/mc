@@ -1,0 +1,5 @@
+command: tools/check_furnace_smelting_behavior_card.rs --self-test
+furnace smelting behavior card self-test passed
+command: tools/check_furnace_smelting_behavior_card.rs --root .
+furnace smelting behavior card check passed
+exit_status=0
