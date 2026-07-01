@@ -1,0 +1,7 @@
+command=delete untracked local Hyperion checkout after durable backup
+start=2026-07-01T01:19:13-04:00
+parent_hyperion_tracked_count=0
+before_present=true
+delete_exit_status=0
+after_present=false
+exit_status=0

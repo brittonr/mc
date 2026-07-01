@@ -6,12 +6,12 @@ f1600c9059d5d98fb217a14fd9801c7d508d5f2bbc89f5d7e96c6659d037c0e9  compat/config/
 c53a2241b42d59b11a50e619c4e63bfd2b55ebbad74a768eccb5a0043e36b9eb  docs/evidence/mc-compat-scenario-index.generated.md
 f9683fe396f5aba704255884657b28cae2ad2f1a947c6ba5cbc5d788f974a296  docs/scenario-commands.generated.md
 263fc039ae63b748be738606abb829a7e74ba9cdf9b845204ae507777102cb34  tools/check_scenario_manifest.rs
-29aff128ba946156edb6424c22c154cfb6c29125f84178f95726e7c6e76a69a6  cairn/specs/mc-compatibility/spec.md
+a102e595f77de51ae68ed5c6f9f279519be9678ca39d51b4a60b4a8a3e1c4c17  cairn/specs/mc-compatibility/spec.md
 dbabe3f3d595fdd4e0935d87f22477402d04936c9b015385be03adefb0c20a43  cairn/archive/2026-06-25-survival-hunger-food-typed-event-migration/proposal.md
 154a9b5a93930b702e6390757e6a05436df5d81b77f8f72de76a034f5e592dec  cairn/archive/2026-06-25-survival-hunger-food-typed-event-migration/design.md
 c9efe0dbfd99255e6f95e49f33a4eb95976e5b9b8e1e13a6ffc3feff8cd71ad3  cairn/archive/2026-06-25-survival-hunger-food-typed-event-migration/tasks.md
 04c17c16ee4f795f4c3f402e869cce1c3181ad5caf79e4af6cb0c3c6b516be68  cairn/archive/2026-06-25-survival-hunger-food-typed-event-migration/specs/mc-compatibility/spec.md
-eab1b5e196ce03a4bc56a16902e6a62e36ad524fecc2e32a874bd886efac9359  cairn/changes/.drain-state.md
+3ffd18578619e073117cbd93290d724ce04804ab22123c42646683055dbca75e  cairn/changes/.drain-state.md
 d3b14f36f585a77d0ea6535f73ec513806f74f3b32cbd23515b8c876d12ed474  docs/evidence/survival-hunger-food-typed-event-accepted-spec-merge.run.log
 c1546559c805785e9caf390652029d03d24eb8c8ce5496e24455731d16d1d674  docs/evidence/survival-hunger-food-typed-event-baseline.run.log
 5eab7d0211aa7742688ff4884702099cc47c24d6aebfe24ad129346436557749  docs/evidence/survival-hunger-food-typed-event-cairn-baseline.run.log

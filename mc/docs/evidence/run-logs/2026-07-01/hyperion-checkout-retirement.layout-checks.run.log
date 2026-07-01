@@ -1,0 +1,27 @@
+command=layout/component registry checks after Hyperion checkout retirement
+start=2026-07-01T01:23:53-04:00
+$ rustc --edition=2021 tools/check_component_registry.rs -o target/pi-check-component-registry
+component_registry_compile_exit_status=0
+$ target/pi-check-component-registry --self-test
+component registry self-test passed
+component_registry_self_test_exit_status=0
+$ target/pi-check-component-registry --root /home/brittonr/git/mc
+component registry checks passed
+component_registry_root_exit_status=0
+$ rustc --edition=2021 tools/check_layout_boundaries.rs -o target/pi-check-layout-boundaries
+layout_boundaries_compile_exit_status=0
+$ target/pi-check-layout-boundaries --self-test
+layout boundary self-test passed
+layout_boundaries_self_test_exit_status=0
+$ target/pi-check-layout-boundaries --root /home/brittonr/git/mc
+layout boundary checks passed; advisory_findings=2
+severity=Advisory code=root_transient_artifact path=result rule=root_transient_artifact message=root transient artifact result should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=target rule=root_transient_artifact message=root transient artifact target should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+layout_boundaries_root_exit_status=0
+$ nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-layout-boundaries --no-link
+this derivation will be built:
+  /nix/store/p1zc93niwjr74mmr6ddxrh6d0fc5d22m-mc-compat-layout-boundaries.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/p1zc93niwjr74mmr6ddxrh6d0fc5d22m-mc-compat-layout-boundaries.drv'...
+nix_layout_boundaries_exit_status=0
+exit_status=0

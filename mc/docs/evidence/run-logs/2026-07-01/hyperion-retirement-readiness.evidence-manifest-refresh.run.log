@@ -1,0 +1,5 @@
+command=refresh evidence manifests after hyperion retirement accepted spec edit
+start=2026-07-01T00:53:15-04:00
+compile_exit_status=0
+evidence manifest refresh ok: mode=refresh; passes=3; manifests=569; entries=6027; current=6027; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=3; manifest_writes=22
+exit_status=0

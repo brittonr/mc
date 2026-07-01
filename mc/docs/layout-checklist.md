@@ -43,7 +43,6 @@ Retired root evidence notes have been moved under `docs/evidence/` with legacy f
 | `clients/stevenarella/` | Core client | Parent repository owned | `clients/stevenarella/AGENTS.md` and `clients/stevenarella/README.md` | Included when selected by mc-compat scenario or client checks |
 | `servers/valence/` | Core server | Parent repository owned | `servers/valence/AGENTS.md`, `servers/valence/README.md`, and `servers/valence/CONTRIBUTING.md` | Included when selected by mc-compat or Valence checks |
 | `compat/` | Compatibility harness/config/fixtures root | Parent repository owned | Root `AGENTS.md` plus `docs/architecture.md` | Included by runner, generated-surface, and evidence checks |
-| `hyperion/` | Independent engine/proxy repository | Nested repo, separate jj/git workflow | `hyperion/AGENTS.md`, `hyperion/README.md`, `hyperion/CONTRIBUTING.md`, and `hyperion/.agent/napkin.md` | Excluded from parent default gates unless explicitly selected |
 | `Leafish/` | Reference client checkout | Reference-only nested Git checkout | `Leafish/README.md`; Waived here because the nested checkout is not parent-owned | Excluded from default gates unless explicitly selected |
 
 ## Registry subcomponents
@@ -77,5 +76,4 @@ Retired root evidence notes have been moved under `docs/evidence/` with legacy f
 
 ## Current nested Git exceptions
 
-- `hyperion/`: independent repository with separate jj/git workflow. Run Hyperion commands from inside `hyperion/`; do not use parent repo status as Hyperion status.
 - `Leafish/`: reference-only client checkout retained for comparison and historical investigation. Do not include it in default compatibility gates, source-tree revision evidence, or parent-owned component scans unless a future Cairn explicitly reclassifies it.

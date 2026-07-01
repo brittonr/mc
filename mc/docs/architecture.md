@@ -24,7 +24,7 @@ Leafish is classified as a reference-only nested Git checkout at `Leafish/`. It 
 
 `compat/runner/src/layout.rs` is the central resolver for client, server, and compatibility roots. It uses canonical role-based paths for active defaults and fails closed with migration diagnostics for old transition roots, missing required roots, ambiguous duplicate roots, or nested Git directories inside core component trees.
 
-Root-level nested Git checkouts are intentional only when named in `compat/config/component-registry.ncl` and summarized in `docs/layout-checklist.md`. Current exceptions are `hyperion/` as an independent engine/proxy repository and `Leafish/` as a reference-only client checkout.
+Root-level nested Git checkouts are intentional only when named in `compat/config/component-registry.ncl` and summarized in `docs/layout-checklist.md`. The current exception is `Leafish/` as a reference-only client checkout. The former local Hyperion checkout has been retired; historical Hyperion evidence remains under `docs/evidence/` and Cairn archives.
 
 Runner defaults, Valence worktree source detection, and validation tests should use this resolver rather than adding ad hoc path probes.
 
@@ -63,4 +63,4 @@ New durable evidence SHOULD follow the partition rules in `docs/evidence/README.
 
 Receipts keep historical field names such as `client.git_rev`, `valence.git_rev_resolved`, and `stevenarella_child_revision` for schema compatibility. In this repository those fields mean parent-repository evidence scoped to the component path, not nested child-repo HEADs.
 
-Promoted Cairn task evidence should cite copied artifacts under `docs/evidence/` with BLAKE3 manifests. Direct paths under `clients/stevenarella/`, `servers/valence/`, `hyperion/`, `target/`, `result`, `result-*`, root `target-*.log`, root `*.run.log`, or retired root `evidence/` are not reviewable evidence artifacts.
+Promoted Cairn task evidence should cite copied artifacts under `docs/evidence/` with BLAKE3 manifests. Direct paths under component trees, retired external checkouts, `target/`, `result`, `result-*`, root `target-*.log`, root `*.run.log`, or retired root `evidence/` are not reviewable evidence artifacts.

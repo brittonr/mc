@@ -1,0 +1,32 @@
+command=backup nested Hyperion working-copy state before checkout retirement
+start=2026-07-01T01:14:24-04:00
+root=/home/brittonr/git/mc
+outdir=/home/brittonr/git/mc/docs/evidence/archive/2026-07-01/hyperion-checkout-retirement
+
+## Parent tracking
+parent_hyperion_tracked_count=0
+
+## Nested jj status
+Working copy changes:
+M crates/hyperion-game-modes/src/composition.rs
+M events/bedwars/src/lib.rs
+Working copy  (@) : mntowvtn d92b1332 (no description set)
+Parent commit (@-): ktkksnry c5f83a4d separate gameplay modes from shared composition
+
+## Nested commit summary
+mntowvtn b@robitzs.ch 2026-06-30 21:28:30 d92b1332
+(no description set)
+ktkksnry b@robitzs.ch 2026-06-30 19:20:08 c5f83a4d
+separate gameplay modes from shared composition
+
+## Git refs
+c5f83a4d7ca86245bede0afc972d5471852e5a57
+origin	git@github.com:brittonr/hyperion.git (fetch)
+origin	git@github.com:brittonr/hyperion.git (push)
+
+## Patch
+patch_exit_status=0
+patch_bytes=23714
+e1ac0a3ad632d8a0ab78983aaea24617c35d91dcfab5c6ae5328dc7a84963f62  /home/brittonr/git/mc/docs/evidence/archive/2026-07-01/hyperion-checkout-retirement/hyperion-working-copy.patch
+4bdb5a8e7dd65880933dc3d2ae8b6bb7289d57ca873ad6e74b7ce6d6bc1c928d  /home/brittonr/git/mc/docs/evidence/archive/2026-07-01/hyperion-checkout-retirement/hyperion-nested-status.txt
+exit_status=0

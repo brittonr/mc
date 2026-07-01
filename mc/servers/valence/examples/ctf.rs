@@ -11,9 +11,9 @@ mod schedule_contracts;
 use arena::Portals;
 use fixture_core::ctf as ctf_core;
 use gameplay_contracts::{
-    gameplay_scope_matches, register_gameplay_plugin_contract, GameplayArenaId,
-    GameplayInstallMode, GameplayMode, GameplayPhase as CtfGameplayPhase, GameplayScope,
-    CTF_PRIMARY_ARENA_ID,
+    gameplay_scope_matches, register_gameplay_plugin_contract, register_gameplay_plugin_template,
+    GameplayArenaId, GameplayInstallMode, GameplayMode, GameplayPhase as CtfGameplayPhase,
+    GameplayPluginTemplate, GameplayScope, CTF_PRIMARY_ARENA_ID,
 };
 use schedule_contracts::{
     CTF_GAMEPLAY_CONTRACT, CTF_GAMEPLAY_PHASE_ORDER, CTF_GAMEPLAY_PLUGIN_NAME, CTF_PRIMARY_SCOPE,
@@ -916,7 +916,7 @@ impl Plugin for CtfGameplayPlugin {
         assert_eq!(contract.event_loop_phase_order, CTF_GAMEPLAY_PHASE_ORDER);
         assert_eq!(contract.scope, CTF_PRIMARY_SCOPE);
 
-        register_gameplay_plugin_contract(app, CTF_GAMEPLAY_CONTRACT);
+        register_gameplay_plugin_template(app, GameplayPluginTemplate::new(CTF_GAMEPLAY_CONTRACT));
         app.init_resource::<CtfRuntimeConfig>()
             .insert_resource(ArrowPolicyState::default())
             .insert_resource(contract)
@@ -3975,6 +3975,7 @@ mod tests {
             shared_contract.install_mode,
             GameplayInstallMode::ExplicitOptIn
         );
+        assert_eq!(shared_contract.scope, Some(CTF_PRIMARY_SCOPE));
         gameplay_contracts::assert_schedule_phases(
             shared_contract,
             UPDATE_SCHEDULE_LABEL,
@@ -4018,6 +4019,7 @@ mod tests {
             shared_contract.install_mode,
             GameplayInstallMode::SourceAdapter
         );
+        assert_eq!(shared_contract.scope, None);
         assert!(shared_contract
             .owned_events
             .contains(&CTF_RUNTIME_CONFIG_RELOAD_EVENT_NAME));

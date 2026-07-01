@@ -189,21 +189,6 @@ let Contracts = import "component-registry-contracts.ncl" in
       nested_git_exception = false,
     },
     {
-      path = "hyperion/",
-      role = "independent-engine",
-      owner = "independent-nested-repository",
-      vcs_boundary = "nested-git-and-jj",
-      commands = [
-        "just fmt",
-        "just lint",
-        "just test",
-      ],
-      default_gate_participation = "excluded",
-      evidence_policy = "reference-excluded",
-      local_notes = ["hyperion/AGENTS.md", "hyperion/README.md", "hyperion/CONTRIBUTING.md", "hyperion/.agent/napkin.md"],
-      nested_git_exception = true,
-    },
-    {
       path = "Leafish/",
       role = "reference-client",
       owner = "reference-only-checkout",

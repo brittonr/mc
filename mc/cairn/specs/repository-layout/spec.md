@@ -305,7 +305,7 @@ r[repository_layout.component_registry.current_inventory] The initial registry M
 #### Scenario: Current layout is captured
 
 r[repository_layout.component_registry.current_inventory.captured]
-- GIVEN Stevenarella, Valence, Hyperion, compat runner/config/fixtures, Cairn, docs/evidence, and any classified reference clients exist
+- GIVEN Stevenarella, Valence, compat runner/config/fixtures, Cairn, docs/evidence, and any classified reference clients exist
 - WHEN the registry is reviewed
 - THEN each current role or exception is represented with its current path
 - AND no component is silently reclassified by registry introduction alone.

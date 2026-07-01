@@ -62,7 +62,7 @@ nix run .#mc-compat-smoke -- --dry-run --server-backend valence --scenario smoke
 nix build .#checks.x86_64-linux.mc-compat-maintained-dry-runs --no-link -L
 ```
 
-Component source changes require the local subtree workflow from `clients/stevenarella/AGENTS.md`, `servers/valence/AGENTS.md`, or `hyperion/AGENTS.md` as applicable.
+Component source changes require the local subtree workflow from `clients/stevenarella/AGENTS.md` or `servers/valence/AGENTS.md` as applicable. Historical Hyperion-derived work must use reviewable source snapshots or archived evidence rather than a live local checkout.
 
 ## Cairn closeout
 

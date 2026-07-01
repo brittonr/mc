@@ -1,0 +1,8 @@
+command=nix build mc-compat-evidence-manifests (post-archive final)
+start=2026-06-30T22:28:32-04:00
+$ nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-evidence-manifests --no-link
+this derivation will be built:
+  /nix/store/njmg9vkwsx4pmrv0p2m3s25grhzqmsci-mc-compat-evidence-manifests.drv
+cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
+building '/nix/store/njmg9vkwsx4pmrv0p2m3s25grhzqmsci-mc-compat-evidence-manifests.drv'...
+exit_status=0

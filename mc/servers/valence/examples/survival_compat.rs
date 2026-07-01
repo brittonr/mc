@@ -6,11 +6,11 @@ mod scenario_contracts_generated;
 
 use fixture_core::survival as survival_core;
 use gameplay_contracts::{
-    gameplay_scope_matches, register_gameplay_plugin_contract, GameplayArenaId,
-    GameplayInstallMode, GameplayMode, GameplayPhase as SurvivalGameplayPhase,
-    GameplayPluginContract, GameplayScheduleContract, GameplayScope, GameplayScopeModel,
-    EVENT_LOOP_PRE_UPDATE_SCHEDULE_LABEL, GAMEPLAY_PHASE_ORDER, SURVIVAL_PRIMARY_ARENA_ID,
-    UPDATE_SCHEDULE_LABEL,
+    gameplay_scope_matches, register_gameplay_plugin_contract, register_gameplay_plugin_template,
+    GameplayArenaId, GameplayInstallMode, GameplayMode, GameplayPhase as SurvivalGameplayPhase,
+    GameplayPluginContract, GameplayPluginTemplate, GameplayScheduleContract, GameplayScope,
+    GameplayScopeModel, EVENT_LOOP_PRE_UPDATE_SCHEDULE_LABEL, GAMEPLAY_PHASE_ORDER,
+    SURVIVAL_PRIMARY_ARENA_ID, UPDATE_SCHEDULE_LABEL,
 };
 use std::fs;
 use std::path::PathBuf;
@@ -229,6 +229,7 @@ const SURVIVAL_GAMEPLAY_CONTRACT: GameplayPluginContract = GameplayPluginContrac
     plugin: SURVIVAL_COMPATIBILITY_PLUGIN_NAME,
     install_mode: GameplayInstallMode::ExplicitOptIn,
     scope_model: GameplayScopeModel::LayerOwnedFixture,
+    scope: Some(SURVIVAL_PRIMARY_SCOPE),
     schedules: SURVIVAL_GAMEPLAY_SCHEDULES,
     owned_resources: SURVIVAL_GAMEPLAY_OWNED_RESOURCES,
     owned_events: SURVIVAL_NO_OWNED_EVENTS,
@@ -238,6 +239,7 @@ const SURVIVAL_RUNTIME_CONFIG_SOURCE_CONTRACT: GameplayPluginContract = Gameplay
     plugin: SURVIVAL_RUNTIME_CONFIG_SOURCE_PLUGIN_NAME,
     install_mode: GameplayInstallMode::SourceAdapter,
     scope_model: GameplayScopeModel::SourceOnly,
+    scope: None,
     schedules: SURVIVAL_SOURCE_SCHEDULES,
     owned_resources: SURVIVAL_SOURCE_OWNED_RESOURCES,
     owned_events: SURVIVAL_SOURCE_OWNED_EVENTS,
@@ -843,7 +845,10 @@ impl Plugin for SurvivalCompatibilityPlugin {
         );
         assert_eq!(contract.scope, SURVIVAL_PRIMARY_SCOPE);
 
-        register_gameplay_plugin_contract(app, SURVIVAL_GAMEPLAY_CONTRACT);
+        register_gameplay_plugin_template(
+            app,
+            GameplayPluginTemplate::new(SURVIVAL_GAMEPLAY_CONTRACT),
+        );
         app.init_resource::<SurvivalRuntimeConfig>()
             .insert_resource(contract)
             .configure_sets(
@@ -3765,6 +3770,7 @@ mod tests {
             shared_contract.install_mode,
             GameplayInstallMode::ExplicitOptIn
         );
+        assert_eq!(shared_contract.scope, Some(SURVIVAL_PRIMARY_SCOPE));
         gameplay_contracts::assert_schedule_phases(
             shared_contract,
             UPDATE_SCHEDULE_LABEL,
@@ -3812,6 +3818,7 @@ mod tests {
             shared_contract.install_mode,
             GameplayInstallMode::SourceAdapter
         );
+        assert_eq!(shared_contract.scope, None);
         assert!(shared_contract
             .owned_events
             .contains(&SURVIVAL_RUNTIME_CONFIG_RELOAD_EVENT_NAME));

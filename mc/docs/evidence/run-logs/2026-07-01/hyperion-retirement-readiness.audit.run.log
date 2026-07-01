@@ -1,0 +1,506 @@
+command=hyperion retirement readiness audit
+start=2026-07-01T00:26:56-04:00
+root=/home/brittonr/git/mc
+
+## Parent tracking
+$ git -C /home/brittonr/git ls-files -- mc/hyperion
+parent_hyperion_tracked_count=0
+
+## Nested checkout existence
+hyperion_git_dir=present
+hyperion_jj_dir=present
+
+## Nested jj status
+$ jj status
+Working copy changes:
+M crates/hyperion-game-modes/src/composition.rs
+M events/bedwars/src/lib.rs
+Working copy  (@) : mntowvtn d92b1332 (no description set)
+Parent commit (@-): ktkksnry c5f83a4d separate gameplay modes from shared composition
+
+## First-order repo references outside hyperion/
+$ rg -l -i hyperion --glob '!hyperion/**' --glob '!target/**' --glob '!docs/evidence/run-logs/**' --glob '!docs/evidence/manifests/**' .
+cairn/archive/1970-01-01-add-gameplay-plugin-template-helper/tasks.md
+cairn/archive/1970-01-01-add-plugin-composition-preflight/design.md
+cairn/archive/1970-01-01-add-plugin-composition-preflight/proposal.md
+cairn/archive/1970-01-01-add-plugin-composition-preflight/specs/hyperion-game-modes/spec.md
+cairn/archive/1970-01-01-add-plugin-composition-preflight/tasks.md
+cairn/archive/1970-01-01-add-structured-schedule-receipts/tasks.md
+cairn/archive/1970-01-01-execute-hyperion-preset-plugin-slots/design.md
+cairn/archive/1970-01-01-execute-hyperion-preset-plugin-slots/proposal.md
+cairn/archive/1970-01-01-execute-hyperion-preset-plugin-slots/specs/hyperion-game-modes/spec.md
+cairn/archive/1970-01-01-execute-hyperion-preset-plugin-slots/tasks.md
+cairn/archive/1970-01-01-expose-plugin-diagnostics-registry/design.md
+cairn/archive/1970-01-01-expose-plugin-diagnostics-registry/proposal.md
+cairn/archive/1970-01-01-expose-plugin-diagnostics-registry/specs/hyperion-game-modes/spec.md
+cairn/archive/1970-01-01-expose-plugin-diagnostics-registry/tasks.md
+cairn/archive/1970-01-01-support-scoped-plugin-instances/tasks.md
+cairn/archive/1970-01-01-unify-plugin-contract-metadata/design.md
+cairn/archive/1970-01-01-unify-plugin-contract-metadata/proposal.md
+cairn/archive/1970-01-01-unify-plugin-contract-metadata/specs/hyperion-game-modes/spec.md
+cairn/archive/1970-01-01-unify-plugin-contract-metadata/specs/valence-bevy-ecs/spec.md
+cairn/archive/1970-01-01-unify-plugin-contract-metadata/tasks.md
+cairn/archive/2026-05-24-valence-compat-bot-probe/design.md
+cairn/archive/2026-05-24-valence-compat-bot-probe/proposal.md
+cairn/archive/2026-05-24-valence-compat-bot-probe/specs/mc-compatibility/spec.md
+cairn/archive/2026-05-24-valence-gameplay-oracles-from-hyperion/design.md
+cairn/archive/2026-05-24-valence-gameplay-oracles-from-hyperion/proposal.md
+cairn/archive/2026-05-24-valence-gameplay-oracles-from-hyperion/specs/mc-compatibility/spec.md
+cairn/archive/2026-05-24-valence-gameplay-oracles-from-hyperion/tasks.md
+cairn/archive/2026-05-24-valence-packet-capture-oracle/design.md
+cairn/archive/2026-05-24-valence-packet-capture-oracle/proposal.md
+cairn/archive/2026-05-24-valence-proxy-compat-seam/design.md
+cairn/archive/2026-05-24-valence-proxy-compat-seam/proposal.md
+cairn/archive/2026-05-24-valence-proxy-compat-seam/specs/mc-compatibility/spec.md
+cairn/archive/2026-05-24-valence-status-response-resource/design.md
+cairn/archive/2026-05-24-valence-status-response-resource/proposal.md
+cairn/archive/2026-05-27-roi-01-armor-equipment-mitigation/proposal.md
+cairn/archive/2026-05-27-roi-02-equipment-update-rail/proposal.md
+cairn/archive/2026-05-27-roi-03-projectile-hit-rail/proposal.md
+cairn/archive/2026-05-27-roi-04-scenario-triage-receipts/proposal.md
+cairn/archive/2026-05-27-roi-05-current-head-live-refresh/proposal.md
+cairn/archive/2026-05-31-harden-mc-compat-harness-coverage/design.md
+cairn/archive/2026-05-31-harden-mc-compat-harness-coverage/specs/mc-compatibility/spec.md
+cairn/archive/2026-06-22-classify-leafish-layout/design.md
+cairn/archive/2026-06-22-classify-leafish-layout/proposal.md
+cairn/archive/2026-06-22-core-component-layout/design.md
+cairn/archive/2026-06-22-core-component-layout/proposal.md
+cairn/archive/2026-06-22-guard-hyperion-integration-boundaries/design.md
+cairn/archive/2026-06-22-guard-hyperion-integration-boundaries/proposal.md
+cairn/archive/2026-06-22-guard-hyperion-integration-boundaries/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-22-guard-hyperion-integration-boundaries/tasks.md
+cairn/archive/2026-06-23-add-anticheat-statistics-plugin/design.md
+cairn/archive/2026-06-23-add-anticheat-statistics-plugin/proposal.md
+cairn/archive/2026-06-23-add-anticheat-statistics-plugin/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-add-anticheat-statistics-plugin/tasks.md
+cairn/archive/2026-06-23-add-cached-chunk-egress-pipeline/design.md
+cairn/archive/2026-06-23-add-cached-chunk-egress-pipeline/proposal.md
+cairn/archive/2026-06-23-add-cached-chunk-egress-pipeline/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-add-cached-chunk-egress-pipeline/tasks.md
+cairn/archive/2026-06-23-add-gui-helper-plugin/design.md
+cairn/archive/2026-06-23-add-gui-helper-plugin/proposal.md
+cairn/archive/2026-06-23-add-gui-helper-plugin/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-add-gui-helper-plugin/tasks.md
+cairn/archive/2026-06-23-add-hyperion-derived-load-tools/design.md
+cairn/archive/2026-06-23-add-hyperion-derived-load-tools/proposal.md
+cairn/archive/2026-06-23-add-hyperion-derived-load-tools/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-add-hyperion-derived-load-tools/tasks.md
+cairn/archive/2026-06-23-add-observability-profiling-hooks/design.md
+cairn/archive/2026-06-23-add-observability-profiling-hooks/proposal.md
+cairn/archive/2026-06-23-add-observability-profiling-hooks/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-add-observability-profiling-hooks/tasks.md
+cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/design.md
+cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/proposal.md
+cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-add-profile-skin-cache-rate-limiter/tasks.md
+cairn/archive/2026-06-23-add-static-world-snapshot-loader/design.md
+cairn/archive/2026-06-23-add-static-world-snapshot-loader/proposal.md
+cairn/archive/2026-06-23-add-static-world-snapshot-loader/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-add-static-world-snapshot-loader/tasks.md
+cairn/archive/2026-06-23-add-valence-packet-compose-api/design.md
+cairn/archive/2026-06-23-add-valence-packet-compose-api/proposal.md
+cairn/archive/2026-06-23-add-valence-packet-compose-api/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-add-valence-packet-compose-api/tasks.md
+cairn/archive/2026-06-23-add-valence-tick-scheduler/design.md
+cairn/archive/2026-06-23-add-valence-tick-scheduler/proposal.md
+cairn/archive/2026-06-23-add-valence-tick-scheduler/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-add-valence-tick-scheduler/tasks.md
+cairn/archive/2026-06-23-audit-entity-metadata-diff-tracking/design.md
+cairn/archive/2026-06-23-audit-entity-metadata-diff-tracking/proposal.md
+cairn/archive/2026-06-23-audit-entity-metadata-diff-tracking/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-audit-entity-metadata-diff-tracking/tasks.md
+cairn/archive/2026-06-23-define-admin-permission-ergonomics/design.md
+cairn/archive/2026-06-23-define-admin-permission-ergonomics/proposal.md
+cairn/archive/2026-06-23-define-admin-permission-ergonomics/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-define-admin-permission-ergonomics/tasks.md
+cairn/archive/2026-06-23-define-workspace-component-registry/specs/repository-layout/spec.md
+cairn/archive/2026-06-23-evaluate-command-ergonomics-macros/design.md
+cairn/archive/2026-06-23-evaluate-command-ergonomics-macros/proposal.md
+cairn/archive/2026-06-23-evaluate-command-ergonomics-macros/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-evaluate-command-ergonomics-macros/tasks.md
+cairn/archive/2026-06-23-evaluate-paletted-container-optimizations/design.md
+cairn/archive/2026-06-23-evaluate-paletted-container-optimizations/proposal.md
+cairn/archive/2026-06-23-evaluate-paletted-container-optimizations/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-evaluate-paletted-container-optimizations/tasks.md
+cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/design.md
+cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/proposal.md
+cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-introduce-valence-proxy-broadcast-backend/tasks.md
+cairn/archive/2026-06-23-optimize-packet-encoder-buffer-reuse/design.md
+cairn/archive/2026-06-23-optimize-packet-encoder-buffer-reuse/proposal.md
+cairn/archive/2026-06-23-optimize-packet-encoder-buffer-reuse/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-optimize-packet-encoder-buffer-reuse/tasks.md
+cairn/archive/2026-06-23-unify-spatial-raycast-collision/design.md
+cairn/archive/2026-06-23-unify-spatial-raycast-collision/proposal.md
+cairn/archive/2026-06-23-unify-spatial-raycast-collision/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-23-unify-spatial-raycast-collision/tasks.md
+cairn/archive/2026-06-24-upstream-byte-backed-protocol-path/design.md
+cairn/archive/2026-06-24-upstream-byte-backed-protocol-path/proposal.md
+cairn/archive/2026-06-24-upstream-byte-backed-protocol-path/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-24-upstream-byte-backed-protocol-path/tasks.md
+cairn/archive/2026-06-26-introduce-shared-gameplay-plugin-contracts/proposal.md
+cairn/archive/2026-06-26-introduce-shared-gameplay-plugin-contracts/specs/valence-bevy-ecs/spec.md
+cairn/archive/2026-06-26-scope-gameplay-plugins-to-arenas/proposal.md
+cairn/archive/2026-06-26-separate-gameplay-config-sources/proposal.md
+cairn/archive/2026-06-28-extract-hyperion-bot-packet-core/design.md
+cairn/archive/2026-06-28-extract-hyperion-bot-packet-core/proposal.md
+cairn/archive/2026-06-28-extract-hyperion-bot-packet-core/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-28-extract-hyperion-bot-packet-core/tasks.md
+cairn/archive/2026-06-28-extract-hyperion-inventory-core/design.md
+cairn/archive/2026-06-28-extract-hyperion-inventory-core/proposal.md
+cairn/archive/2026-06-28-extract-hyperion-inventory-core/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-28-extract-hyperion-inventory-core/tasks.md
+cairn/archive/2026-06-28-extract-hyperion-player-join-core/design.md
+cairn/archive/2026-06-28-extract-hyperion-player-join-core/proposal.md
+cairn/archive/2026-06-28-extract-hyperion-player-join-core/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-28-extract-hyperion-player-join-core/tasks.md
+cairn/archive/2026-06-29-modularize-hyperion-block-loader/design.md
+cairn/archive/2026-06-29-modularize-hyperion-block-loader/proposal.md
+cairn/archive/2026-06-29-modularize-hyperion-block-loader/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-29-modularize-hyperion-block-loader/tasks.md
+cairn/archive/2026-06-29-modularize-hyperion-packet-inspector-ui/design.md
+cairn/archive/2026-06-29-modularize-hyperion-packet-inspector-ui/proposal.md
+cairn/archive/2026-06-29-modularize-hyperion-packet-inspector-ui/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-29-modularize-hyperion-packet-inspector-ui/tasks.md
+cairn/archive/2026-06-29-modularize-hyperion-simulation-shell/design.md
+cairn/archive/2026-06-29-modularize-hyperion-simulation-shell/proposal.md
+cairn/archive/2026-06-29-modularize-hyperion-simulation-shell/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-29-modularize-hyperion-simulation-shell/tasks.md
+cairn/archive/2026-06-30-add-hyperion-gameplay-composition-tests/design.md
+cairn/archive/2026-06-30-add-hyperion-gameplay-composition-tests/proposal.md
+cairn/archive/2026-06-30-add-hyperion-gameplay-composition-tests/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-add-hyperion-gameplay-composition-tests/tasks.md
+cairn/archive/2026-06-30-add-hyperion-game-preset-builder/design.md
+cairn/archive/2026-06-30-add-hyperion-game-preset-builder/proposal.md
+cairn/archive/2026-06-30-add-hyperion-game-preset-builder/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-add-hyperion-game-preset-builder/tasks.md
+cairn/archive/2026-06-30-add-hyperion-mode-markers-run-conditions/design.md
+cairn/archive/2026-06-30-add-hyperion-mode-markers-run-conditions/proposal.md
+cairn/archive/2026-06-30-add-hyperion-mode-markers-run-conditions/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-add-hyperion-mode-markers-run-conditions/tasks.md
+cairn/archive/2026-06-30-build-battle-creative-contest-mode/proposal.md
+cairn/archive/2026-06-30-build-battle-creative-contest-mode/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-build-battle-creative-contest-mode/tasks.md
+cairn/archive/2026-06-30-coop-summit-climb-game-mode/design.md
+cairn/archive/2026-06-30-coop-summit-climb-game-mode/proposal.md
+cairn/archive/2026-06-30-coop-summit-climb-game-mode/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-coop-summit-climb-game-mode/tasks.md
+cairn/archive/2026-06-30-duels-kitpvp-arena-mode/design.md
+cairn/archive/2026-06-30-duels-kitpvp-arena-mode/proposal.md
+cairn/archive/2026-06-30-duels-kitpvp-arena-mode/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-duels-kitpvp-arena-mode/tasks.md
+cairn/archive/2026-06-30-expose-hyperion-gameplay-plugin-group/design.md
+cairn/archive/2026-06-30-expose-hyperion-gameplay-plugin-group/proposal.md
+cairn/archive/2026-06-30-expose-hyperion-gameplay-plugin-group/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-expose-hyperion-gameplay-plugin-group/tasks.md
+cairn/archive/2026-06-30-extract-hyperion-common-gameplay-crate/design.md
+cairn/archive/2026-06-30-extract-hyperion-common-gameplay-crate/proposal.md
+cairn/archive/2026-06-30-extract-hyperion-common-gameplay-crate/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-extract-hyperion-common-gameplay-crate/tasks.md
+cairn/archive/2026-06-30-factions-claims-raid-loop/design.md
+cairn/archive/2026-06-30-factions-claims-raid-loop/proposal.md
+cairn/archive/2026-06-30-factions-claims-raid-loop/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-factions-claims-raid-loop/tasks.md
+cairn/archive/2026-06-30-factions-clans-social-core/design.md
+cairn/archive/2026-06-30-factions-clans-social-core/proposal.md
+cairn/archive/2026-06-30-factions-clans-social-core/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-factions-clans-social-core/tasks.md
+cairn/archive/2026-06-30-factions-diplomacy-economy-progression/proposal.md
+cairn/archive/2026-06-30-factions-diplomacy-economy-progression/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-factions-diplomacy-economy-progression/tasks.md
+cairn/archive/2026-06-30-lifesteal-smp-mode/proposal.md
+cairn/archive/2026-06-30-lifesteal-smp-mode/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-lifesteal-smp-mode/tasks.md
+cairn/archive/2026-06-30-make-hyperion-mode-plugins-mode-only/design.md
+cairn/archive/2026-06-30-make-hyperion-mode-plugins-mode-only/proposal.md
+cairn/archive/2026-06-30-make-hyperion-mode-plugins-mode-only/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-make-hyperion-mode-plugins-mode-only/tasks.md
+cairn/archive/2026-06-30-murder-mystery-social-deduction-mode/proposal.md
+cairn/archive/2026-06-30-murder-mystery-social-deduction-mode/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-murder-mystery-social-deduction-mode/tasks.md
+cairn/archive/2026-06-30-parkour-time-trial-mode/design.md
+cairn/archive/2026-06-30-parkour-time-trial-mode/proposal.md
+cairn/archive/2026-06-30-parkour-time-trial-mode/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-parkour-time-trial-mode/tasks.md
+cairn/archive/2026-06-30-prototype-valence-hyperion-bridge-slice/design.md
+cairn/archive/2026-06-30-prototype-valence-hyperion-bridge-slice/proposal.md
+cairn/archive/2026-06-30-prototype-valence-hyperion-bridge-slice/specs/valence-hyperion-integration/spec.md
+cairn/archive/2026-06-30-prototype-valence-hyperion-bridge-slice/tasks.md
+cairn/archive/2026-06-30-remove-hyperion-plugin-component-derives/design.md
+cairn/archive/2026-06-30-remove-hyperion-plugin-component-derives/proposal.md
+cairn/archive/2026-06-30-remove-hyperion-plugin-component-derives/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-remove-hyperion-plugin-component-derives/tasks.md
+cairn/archive/2026-06-30-skyblock-oneblock-island-mode/design.md
+cairn/archive/2026-06-30-skyblock-oneblock-island-mode/proposal.md
+cairn/archive/2026-06-30-skyblock-oneblock-island-mode/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-skyblock-oneblock-island-mode/tasks.md
+cairn/archive/2026-06-30-skywars-elimination-mode/proposal.md
+cairn/archive/2026-06-30-skywars-elimination-mode/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-skywars-elimination-mode/tasks.md
+cairn/archive/2026-06-30-survival-games-uhc-elimination-mode/proposal.md
+cairn/archive/2026-06-30-survival-games-uhc-elimination-mode/specs/hyperion-game-modes/spec.md
+cairn/archive/2026-06-30-survival-games-uhc-elimination-mode/tasks.md
+first_order_reference_file_count=627
+
+## Config/layout blockers
+/home/brittonr/git/mc/docs/layout-checklist.md:46:| `hyperion/` | Independent engine/proxy repository | Nested repo, separate jj/git workflow | `hyperion/AGENTS.md`, `hyperion/README.md`, `hyperion/CONTRIBUTING.md`, and `hyperion/.agent/napkin.md` | Excluded from parent default gates unless explicitly selected |
+/home/brittonr/git/mc/docs/layout-checklist.md:80:- `hyperion/`: independent repository with separate jj/git workflow. Run Hyperion commands from inside `hyperion/`; do not use parent repo status as Hyperion status.
+/home/brittonr/git/mc/docs/architecture.md:27:Root-level nested Git checkouts are intentional only when named in `compat/config/component-registry.ncl` and summarized in `docs/layout-checklist.md`. Current exceptions are `hyperion/` as an independent engine/proxy repository and `Leafish/` as a reference-only client checkout.
+/home/brittonr/git/mc/docs/architecture.md:66:Promoted Cairn task evidence should cite copied artifacts under `docs/evidence/` with BLAKE3 manifests. Direct paths under `clients/stevenarella/`, `servers/valence/`, `hyperion/`, `target/`, `result`, `result-*`, root `target-*.log`, root `*.run.log`, or retired root `evidence/` are not reviewable evidence artifacts.
+/home/brittonr/git/mc/AGENTS.md:5:- `hyperion/` remains an independent nested Rust repo. Run Hyperion commands from inside `hyperion/`, not from `mc/`.
+/home/brittonr/git/mc/AGENTS.md:12:- `hyperion/` has both `.git/` and `.jj/`. Check `.jj/` before assuming git-only workflow, and do not use parent repo status as Hyperion status.
+/home/brittonr/git/mc/AGENTS.md:16:- `hyperion/`: Minecraft engine/proxy workspace. Core crates live under `crates/`; event/game logic lives under `events/bedwars`; helper tools live under `tools/`. Repo-specific workflow now lives in `hyperion/AGENTS.md`; Hyperion-to-Valence integration boundaries live in `docs/hyperion-integration-boundaries.md`.
+/home/brittonr/git/mc/AGENTS.md:23:- `hyperion/` already has repo-local agent notes in `hyperion/.agent/napkin.md`. Keep workspace-wide notes here; prefer subtree-local `AGENTS.md` files for repo-specific commands and conventions.
+/home/brittonr/git/mc/AGENTS.md:31:- Avoid mixed commits across `hyperion/` and the parent-owned `servers/valence/`/`clients/stevenarella/` trees unless user asks for cross-repo change.
+/home/brittonr/git/mc/AGENTS.md:45:- Toolchain pinned in `hyperion/rust-toolchain.toml`: `nightly-2025-02-22` with `rustfmt` and `clippy`.
+/home/brittonr/git/mc/AGENTS.md:46:- `hyperion/.cargo/config.toml` adds `--cfg tokio_unstable` and `-Ctarget-cpu=native`; run cargo from inside `hyperion/` so config applies.
+/home/brittonr/git/mc/compat/config/component-registry.ncl:21:      nested_git_exception = false,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:35:      nested_git_exception = false,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:49:      nested_git_exception = false,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:63:      nested_git_exception = false,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:77:      nested_git_exception = false,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:91:      nested_git_exception = false,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:105:      nested_git_exception = false,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:119:      nested_git_exception = false,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:133:      nested_git_exception = false,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:147:      nested_git_exception = false,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:161:      nested_git_exception = false,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:175:      nested_git_exception = false,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:189:      nested_git_exception = false,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:192:      path = "hyperion/",
+/home/brittonr/git/mc/compat/config/component-registry.ncl:193:      role = "independent-engine",
+/home/brittonr/git/mc/compat/config/component-registry.ncl:203:      local_notes = ["hyperion/AGENTS.md", "hyperion/README.md", "hyperion/CONTRIBUTING.md", "hyperion/.agent/napkin.md"],
+/home/brittonr/git/mc/compat/config/component-registry.ncl:204:      nested_git_exception = true,
+/home/brittonr/git/mc/compat/config/component-registry.ncl:217:      nested_git_exception = true,
+
+## Accepted spec references
+/home/brittonr/git/mc/cairn/specs/repository-layout/spec.md:308:- GIVEN Stevenarella, Valence, Hyperion, compat runner/config/fixtures, Cairn, docs/evidence, and any classified reference clients exist
+/home/brittonr/git/mc/cairn/specs/valence-bevy-ecs/spec.md:861:- AND CTF, survival compatibility, terrain, smaller example plugins, and out-of-scope BedWars/Hyperion boundaries are classified explicitly.
+/home/brittonr/git/mc/cairn/specs/valence-bevy-ecs/spec.md:885:- AND non-claims for dynamic plugins, default gameplay, vanilla parity, production readiness, and BedWars/Hyperion scope are visible.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:1:# Valence Hyperion Integration Specification
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:5:Defines the `valence-hyperion-integration` capability.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:9:### Requirement: Hyperion integration inventory
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:11:r[valence_hyperion_integration.boundaries.inventory] Future Hyperion-to-Valence integration work MUST classify inspected Hyperion sources as adopt, port, reference, or reject before implementation.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:15:r[valence_hyperion_integration.boundaries.inventory.precedes]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:16:- GIVEN a future integration Cairn proposes using Hyperion code or concepts
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:23:r[valence_hyperion_integration.boundaries.forbidden_core] Integration work MUST NOT merge Bedwars-specific game logic, replace Valence's runtime with Hyperion's runtime wholesale, add custom combat as Valence core behavior, or import unaudited nightly/unsafe-heavy code directly into Valence core.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:27:r[valence_hyperion_integration.boundaries.forbidden_core.rejected]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:28:- GIVEN an inspected Hyperion source is Bedwars-specific, runtime-replacement scope, custom combat core behavior, or unaudited nightly/unsafe-heavy implementation
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:35:r[valence_hyperion_integration.boundaries.optional_plugins] Gameplay semantics inspired by Hyperion MAY be implemented only as optional plugins or examples unless separate accepted Valence scope and reference evidence justify core behavior.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:39:r[valence_hyperion_integration.boundaries.optional_plugins.combat]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:40:- GIVEN Hyperion combat behavior is considered for Valence
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:47:r[valence_hyperion_integration.boundaries.review_gate] Future Hyperion integration Cairns SHOULD cite the boundary inventory and non-claim checklist before archive.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:51:r[valence_hyperion_integration.boundaries.review_gate.non_claims]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:54:- THEN production-scale, vanilla-parity, Hyperion-compatibility, default-behavior, and safety claims are each either supported by evidence or explicitly left as non-claims.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:58:r[valence_hyperion_integration.boundaries.fixtures] Boundary work SHOULD include positive and negative checklist examples or fixtures for allowed reference use and forbidden direct imports.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:62:r[valence_hyperion_integration.boundaries.fixtures.reference_only]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:63:- GIVEN a future Cairn uses Hyperion code only as design reference
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:70:r[valence_hyperion_integration.boundaries.validation] Boundary work MUST record inventory/checklist validation, negative forbidden-import examples, and Cairn gates before archive.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:74:r[valence_hyperion_integration.boundaries.validation.log]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:79:### Requirement: Hyperion bot packet scope
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:81:r[valence_hyperion_integration.hyperion_bot_packet.scope] Hyperion bot packet utility work MUST be scoped as Hyperion tool-owned nested-repo work unless a separate integration Cairn classifies specific code or concepts for Valence adoption, porting, or reference use.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:83:#### Scenario: Hyperion bot ownership is explicit
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:85:r[valence_hyperion_integration.hyperion_bot_packet.scope.owned]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:86:- GIVEN Hyperion bot packet work is planned
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:88:- THEN it states that implementation and validation are Hyperion-local tool work
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:91:### Requirement: Hyperion bot packet core
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:93:r[valence_hyperion_integration.hyperion_bot_packet.core] Hyperion bot packet utilities SHOULD expose pure cores for packet construction, packet classification, byte-shape validation, and protocol-assumption checks.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:97:r[valence_hyperion_integration.hyperion_bot_packet.core.testable]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:99:- WHEN the Hyperion bot packet core processes them
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:102:### Requirement: Hyperion bot packet shell boundary
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:104:r[valence_hyperion_integration.hyperion_bot_packet.shell_boundary] Hyperion bot packet extraction MUST keep socket IO, connection state, async tasks, sleeps/timing, logging, and bot orchestration outside pure packet cores.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:108:r[valence_hyperion_integration.hyperion_bot_packet.shell_boundary.effects]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:110:- WHEN the Hyperion bot shell applies that decision
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:113:### Requirement: Hyperion bot packet parity
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:115:r[valence_hyperion_integration.hyperion_bot_packet.parity] Hyperion bot packet extraction MUST preserve bot tool CLI/API behavior, packet bytes, protocol assumptions, and non-claims.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:117:#### Scenario: Hyperion bot packet behavior remains stable
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:119:r[valence_hyperion_integration.hyperion_bot_packet.parity.stable]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:124:### Requirement: Hyperion bot packet tests
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:126:r[valence_hyperion_integration.hyperion_bot_packet.tests] The change MUST include positive and negative tests for valid packet construction, packet classification, malformed packet bytes, unsupported protocol assumptions, closed connections, and missing bot state.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:130:r[valence_hyperion_integration.hyperion_bot_packet.tests.coverage]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:135:### Requirement: Hyperion bot packet validation
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:137:r[valence_hyperion_integration.hyperion_bot_packet.validation] The change MUST record focused Hyperion bot tests run from the Hyperion root, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:141:r[valence_hyperion_integration.hyperion_bot_packet.validation.logs]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:142:- GIVEN Hyperion bot packet extraction is complete
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:144:- THEN reviewable logs show Hyperion-local bot tests plus Cairn gates passing.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:146:### Requirement: Hyperion player join scope
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:148:r[valence_hyperion_integration.hyperion_player_join.scope] Hyperion player-join modularity work MUST be scoped as Hyperion-owned nested-repo work unless a separate integration Cairn classifies specific code or concepts for Valence adoption, porting, or reference use.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:150:#### Scenario: Hyperion player-join ownership is explicit
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:152:r[valence_hyperion_integration.hyperion_player_join.scope.owned]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:153:- GIVEN Hyperion player-join work is planned
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:155:- THEN it states that implementation and validation are Hyperion-local
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:158:### Requirement: Hyperion player join core
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:160:r[valence_hyperion_integration.hyperion_player_join.core] Hyperion player-join egress SHOULD expose pure cores for initial packet selection, packet ordering, state summaries, chunk/view facts, and diagnostics.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:164:r[valence_hyperion_integration.hyperion_player_join.core.testable]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:166:- WHEN the Hyperion player-join core processes them
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:169:### Requirement: Hyperion player join shell boundary
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:171:r[valence_hyperion_integration.hyperion_player_join.shell_boundary] Hyperion player-join extraction MUST keep ECS reads, packet sends, network/proxy state, tracing, scheduling, and runtime side effects outside pure join cores.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:175:r[valence_hyperion_integration.hyperion_player_join.shell_boundary.effects]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:177:- WHEN the Hyperion egress shell applies that plan
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:180:### Requirement: Hyperion player join parity
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:182:r[valence_hyperion_integration.hyperion_player_join.parity] Hyperion player-join extraction MUST preserve Hyperion join behavior, packet order, public APIs, performance-sensitive boundaries, and non-claims.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:184:#### Scenario: Hyperion join behavior remains stable
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:186:r[valence_hyperion_integration.hyperion_player_join.parity.stable]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:187:- GIVEN a supported pre-refactor Hyperion player-join input
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:191:### Requirement: Hyperion player join tests
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:193:r[valence_hyperion_integration.hyperion_player_join.tests] The change MUST include positive and negative tests for valid join plans, missing player state, invalid chunk/view facts, packet-order regressions, and rejected join inputs.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:197:r[valence_hyperion_integration.hyperion_player_join.tests.coverage]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:198:- GIVEN representative valid and invalid Hyperion player-join inputs
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:202:### Requirement: Hyperion player join validation
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:204:r[valence_hyperion_integration.hyperion_player_join.validation] The change MUST record focused Hyperion tests run from the Hyperion root, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:208:r[valence_hyperion_integration.hyperion_player_join.validation.logs]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:209:- GIVEN Hyperion player-join extraction is complete
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:211:- THEN reviewable logs show Hyperion-local tests plus Cairn gates passing.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:213:### Requirement: Hyperion inventory scope
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:215:r[valence_hyperion_integration.hyperion_inventory.scope] Hyperion inventory modularity work MUST be scoped as Hyperion-owned nested-repo work unless a separate integration Cairn classifies specific code or concepts for Valence adoption, porting, or reference use.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:217:#### Scenario: Hyperion ownership is explicit
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:219:r[valence_hyperion_integration.hyperion_inventory.scope.owned]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:220:- GIVEN Hyperion inventory modularity work is planned
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:222:- THEN it states that implementation and validation are Hyperion-local
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:225:### Requirement: Hyperion inventory core
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:227:r[valence_hyperion_integration.hyperion_inventory.core] Hyperion inventory simulation SHOULD expose pure cores for inventory transitions, slot validation, transaction outcomes, and packet-facing summaries.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:231:r[valence_hyperion_integration.hyperion_inventory.core.testable]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:233:- WHEN the Hyperion inventory core processes them
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:236:### Requirement: Hyperion inventory shell boundary
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:238:r[valence_hyperion_integration.hyperion_inventory.shell_boundary] Hyperion inventory extraction MUST keep ECS mutation, packet emission, scheduling, tracing, and network/proxy side effects outside pure inventory cores.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:242:r[valence_hyperion_integration.hyperion_inventory.shell_boundary.effects]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:244:- WHEN the Hyperion shell applies that decision
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:247:### Requirement: Hyperion inventory parity
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:249:r[valence_hyperion_integration.hyperion_inventory.parity] Hyperion inventory extraction MUST preserve Hyperion public APIs, simulation behavior, packet-facing behavior, performance-sensitive boundaries, and non-claims.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:251:#### Scenario: Hyperion inventory behavior remains stable
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:253:r[valence_hyperion_integration.hyperion_inventory.parity.stable]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:254:- GIVEN a supported pre-refactor Hyperion inventory input
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:258:### Requirement: Hyperion inventory tests
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:260:r[valence_hyperion_integration.hyperion_inventory.tests] The change MUST include positive and negative tests for valid transactions, invalid slots, malformed packets, empty inventories, boundary stack sizes, and rejected transitions.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:264:r[valence_hyperion_integration.hyperion_inventory.tests.coverage]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:265:- GIVEN representative valid and invalid Hyperion inventory inputs
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:269:### Requirement: Hyperion inventory validation
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:271:r[valence_hyperion_integration.hyperion_inventory.validation] The change MUST record focused Hyperion tests run from the Hyperion root, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:275:r[valence_hyperion_integration.hyperion_inventory.validation.logs]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:276:- GIVEN Hyperion inventory extraction is complete
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:278:- THEN reviewable logs show Hyperion-local tests plus Cairn gates passing.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:280:### Requirement: Hyperion block loader scope
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:282:r[valence_hyperion_integration.hyperion_block_loader.scope] Hyperion block-loader modularity work MUST be scoped as Hyperion-owned nested-repo work unless a separate integration Cairn classifies specific code or concepts for Valence adoption, porting, or reference use.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:284:#### Scenario: Hyperion block-loader ownership is explicit
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:286:r[valence_hyperion_integration.hyperion_block_loader.scope.owned]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:287:- GIVEN Hyperion block-loader modularity work is planned
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:289:- THEN it states that implementation and validation are Hyperion-local
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:292:### Requirement: Hyperion block loader core
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:294:r[valence_hyperion_integration.hyperion_block_loader.core] Hyperion block loading SHOULD expose pure cores for parsing summaries, validation decisions, palette or section plans, and storage update plans.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:298:r[valence_hyperion_integration.hyperion_block_loader.core.testable]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:300:- WHEN the Hyperion block-loader core processes them
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:303:### Requirement: Hyperion block loader shell boundary
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:305:r[valence_hyperion_integration.hyperion_block_loader.shell_boundary] Hyperion block-loader extraction MUST keep file/resource reads, decompression, storage mutation, ECS mutation, tracing, and runtime scheduling outside pure block-loader cores.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:309:r[valence_hyperion_integration.hyperion_block_loader.shell_boundary.effects]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:311:- WHEN the Hyperion shell applies that plan
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:314:### Requirement: Hyperion block loader parity
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:316:r[valence_hyperion_integration.hyperion_block_loader.parity] Hyperion block-loader modularization MUST preserve Hyperion block-loader APIs, world/block behavior, performance-sensitive boundaries, and non-claims.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:318:#### Scenario: Hyperion block-loader behavior remains stable
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:320:r[valence_hyperion_integration.hyperion_block_loader.parity.stable]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:321:- GIVEN a supported pre-refactor Hyperion block-loader input
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:325:### Requirement: Hyperion block loader tests
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:327:r[valence_hyperion_integration.hyperion_block_loader.tests] The change MUST include positive and negative tests for valid sections, malformed sections, palette edge cases, missing resources, invalid block ids, and rejected update plans.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:331:r[valence_hyperion_integration.hyperion_block_loader.tests.coverage]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:332:- GIVEN representative valid and invalid Hyperion block-loader inputs
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:336:### Requirement: Hyperion block loader validation
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:338:r[valence_hyperion_integration.hyperion_block_loader.validation] The change MUST record focused Hyperion tests run from the Hyperion root, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:342:r[valence_hyperion_integration.hyperion_block_loader.validation.logs]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:343:- GIVEN Hyperion block-loader modularization is complete
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:345:- THEN reviewable logs show Hyperion-local tests plus Cairn gates passing.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:347:### Requirement: Hyperion packet inspector scope
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:349:r[valence_hyperion_integration.hyperion_packet_inspector.scope] Hyperion packet-inspector UI modularity work MUST be scoped as Hyperion tool-owned nested-repo work unless a separate integration Cairn classifies specific code or concepts for Valence adoption, porting, or reference use.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:351:#### Scenario: Hyperion packet-inspector ownership is explicit
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:353:r[valence_hyperion_integration.hyperion_packet_inspector.scope.owned]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:354:- GIVEN Hyperion packet-inspector UI work is planned
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:356:- THEN it states that implementation and validation are Hyperion-local tool work
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:359:### Requirement: Hyperion packet inspector boundaries
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:361:r[valence_hyperion_integration.hyperion_packet_inspector.boundaries] Hyperion packet-inspector UI code SHOULD expose cohesive boundaries for packet-list state, filters, selection, sorting/grouping, render models, and UI rendering shells.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:365:r[valence_hyperion_integration.hyperion_packet_inspector.boundaries.ownership]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:367:- WHEN maintainers inspect Hyperion packet-inspector modules
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:368:- THEN the responsibility is owned by a focused Hyperion tool module.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:370:### Requirement: Hyperion packet inspector core
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:372:r[valence_hyperion_integration.hyperion_packet_inspector.core] Packet-inspector filtering, selection, sorting/grouping, viewport state, and render-model generation SHOULD be pure over explicit packet-list inputs.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:376:r[valence_hyperion_integration.hyperion_packet_inspector.core.testable]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:381:### Requirement: Hyperion packet inspector parity
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:383:r[valence_hyperion_integration.hyperion_packet_inspector.parity] Packet-inspector UI modularization MUST preserve packet inspector UI behavior, keyboard/mouse interactions, filter semantics, public tool behavior, and non-claims.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:387:r[valence_hyperion_integration.hyperion_packet_inspector.parity.stable]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:392:### Requirement: Hyperion packet inspector tests
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:394:r[valence_hyperion_integration.hyperion_packet_inspector.tests] The change MUST include positive and negative tests for filter matches, empty filters, selection movement, sorting/grouping, empty packet lists, malformed packet summaries, and render models.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:398:r[valence_hyperion_integration.hyperion_packet_inspector.tests.coverage]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:403:### Requirement: Hyperion packet inspector validation
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:405:r[valence_hyperion_integration.hyperion_packet_inspector.validation] The change MUST record focused Hyperion packet-inspector tests run from the Hyperion root, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:409:r[valence_hyperion_integration.hyperion_packet_inspector.validation.logs]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:410:- GIVEN Hyperion packet-inspector modularization is complete
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:412:- THEN reviewable logs show Hyperion-local tool tests plus Cairn gates passing.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:414:### Requirement: Hyperion simulation scope
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:416:r[valence_hyperion_integration.hyperion_simulation.scope] Hyperion simulation shell modularity work MUST be scoped as Hyperion-owned nested-repo work unless a separate integration Cairn classifies specific code or concepts for Valence adoption, porting, or reference use.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:418:#### Scenario: Hyperion simulation ownership is explicit
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:420:r[valence_hyperion_integration.hyperion_simulation.scope.owned]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:421:- GIVEN Hyperion simulation modularity work is planned
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:423:- THEN it states that implementation and validation are Hyperion-local
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:426:### Requirement: Hyperion simulation boundaries
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:428:r[valence_hyperion_integration.hyperion_simulation.boundaries] Hyperion simulation code SHOULD expose cohesive boundaries for system registration, simulation state orchestration, packet-facing adapters, domain coordination, diagnostics, and pure simulation decisions.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:432:r[valence_hyperion_integration.hyperion_simulation.boundaries.ownership]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:433:- GIVEN a Hyperion simulation responsibility is reviewed
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:435:- THEN the responsibility is owned by a focused Hyperion module.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:437:### Requirement: Hyperion simulation shell boundary
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:439:r[valence_hyperion_integration.hyperion_simulation.shell_boundary] Hyperion simulation modularization MUST keep ECS mutation, packet emission, network/proxy integration, tracing, scheduling, and hot-path side effects outside pure simulation cores.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:443:r[valence_hyperion_integration.hyperion_simulation.shell_boundary.effects]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:445:- WHEN the Hyperion shell applies that decision
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:448:### Requirement: Hyperion simulation parity
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:450:r[valence_hyperion_integration.hyperion_simulation.parity] Hyperion simulation modularization MUST preserve Hyperion public APIs, simulation behavior, performance-sensitive boundaries, and non-claims.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:452:#### Scenario: Hyperion simulation behavior remains stable
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:454:r[valence_hyperion_integration.hyperion_simulation.parity.stable]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:455:- GIVEN a supported pre-refactor Hyperion simulation input
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:459:### Requirement: Hyperion simulation tests
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:461:r[valence_hyperion_integration.hyperion_simulation.tests] The change MUST include positive and negative tests for simulation state transitions, missing state, invalid packet-facing summaries, empty worlds, and rejected update plans.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:465:r[valence_hyperion_integration.hyperion_simulation.tests.coverage]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:466:- GIVEN representative valid and invalid Hyperion simulation inputs
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:470:### Requirement: Hyperion simulation validation
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:472:r[valence_hyperion_integration.hyperion_simulation.validation] The change MUST record focused Hyperion tests run from the Hyperion root, Cairn proposal/design/tasks gates, and Cairn validation before archive.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:476:r[valence_hyperion_integration.hyperion_simulation.validation.logs]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:477:- GIVEN Hyperion simulation modularization is complete
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:479:- THEN reviewable logs show Hyperion-local tests plus Cairn gates passing.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:483:r[valence_hyperion_integration.spatial_raycast.inventory] The integration MUST inventory Valence spatial APIs and Hyperion geometry/raycast/collision helpers before changing public spatial behavior.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:487:r[valence_hyperion_integration.spatial_raycast.inventory.classified]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:490:- THEN each relevant Hyperion and Valence source is classified as adopt, port, reference, or reject
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:495:r[valence_hyperion_integration.spatial_raycast.contract] Valence SHOULD define deterministic semantics for entity hitboxes, block hits, owner exclusion, invalid rays, boundary hits, starts inside hitboxes, and block/entity tie ordering.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:499:r[valence_hyperion_integration.spatial_raycast.contract.tie]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:507:r[valence_hyperion_integration.spatial_raycast.core] Ray traversal, hitbox intersection, and collision comparison MUST be pure deterministic functions over explicit inputs, with ECS/world access limited to thin shells.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:511:r[valence_hyperion_integration.spatial_raycast.core.invalid_ray]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:519:r[valence_hyperion_integration.spatial_raycast.fixtures] Spatial/raycast work MUST include positive and negative fixtures for common rays and edge cases.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:523:r[valence_hyperion_integration.spatial_raycast.fixtures.owner_exclusion]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:531:r[valence_hyperion_integration.spatial_raycast.wiring] Valence MAY expose gameplay/plugin helpers for raycast and collision queries, but those helpers MUST NOT claim vanilla combat parity without separate reference evidence.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:535:r[valence_hyperion_integration.spatial_raycast.wiring.non_overclaiming]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:543:r[valence_hyperion_integration.spatial_raycast.validation] Spatial/raycast work MUST record geometry fixtures, gameplay smoke tests, selected projectile/raycast mc-compat scenarios, and Cairn gates before archive.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:547:r[valence_hyperion_integration.spatial_raycast.validation.log]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:554:r[valence_hyperion_integration.command_ergonomics.scope] The integration MUST review Hyperion command ergonomics and Valence command graph APIs before adding command helper macros or builders.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:558:r[valence_hyperion_integration.command_ergonomics.scope.ownership]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:561:- THEN the notes state that Hyperion's command framework is reference-only
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:566:r[valence_hyperion_integration.command_ergonomics.contract] Optional command helpers SHOULD define semantics for literals, arguments, parsers, suggestions, scopes, handlers, diagnostics, and manual fallback.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:570:r[valence_hyperion_integration.command_ergonomics.contract.duplicate]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:578:r[valence_hyperion_integration.command_ergonomics.prototype] Command helper output MUST be inspectable as Valence command graph data or equivalent testable structures.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:582:r[valence_hyperion_integration.command_ergonomics.prototype.parity]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:589:r[valence_hyperion_integration.command_ergonomics.tests] Command ergonomics work MUST include positive and negative tests for generated graphs, manual parity, parser errors, duplicate literals, missing handlers, invalid scopes, suggestions, and disabled behavior.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:593:r[valence_hyperion_integration.command_ergonomics.tests.missing_handler]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:601:r[valence_hyperion_integration.command_ergonomics.docs] Command helper documentation SHOULD explain usage, diagnostics, limitations, and when manual graph construction remains preferred.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:605:r[valence_hyperion_integration.command_ergonomics.docs.non_claim]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:613:r[valence_hyperion_integration.command_ergonomics.validation] Command ergonomics work MUST record macro or builder tests, graph parity tests, parser/suggestion fixtures, and Cairn gates before archive.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:617:r[valence_hyperion_integration.command_ergonomics.validation.log]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:624:r[valence_hyperion_integration.admin_permissions.scope] The integration MUST compare Hyperion permission/admin behavior with Valence command scopes before adding permission ergonomics.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:628:r[valence_hyperion_integration.admin_permissions.scope.ownership]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:631:- THEN they identify the Hyperion concepts referenced, the Valence command/scopes surfaces affected, and the decision not to introduce a parallel command framework.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:635:r[valence_hyperion_integration.admin_permissions.evaluator] Permission decisions MUST be implemented as pure deterministic evaluation over command metadata, player roles/scopes, and explicit context.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:639:r[valence_hyperion_integration.admin_permissions.evaluator.denied]
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:647:r[valence_hyperion_integration.admin_permissions.command_integration] Optional permission ergonomics SHOULD integrate with Valence's existing command system for command visibility, execution denial, and command-tree refresh.
+/home/brittonr/git/mc/cairn/specs/valence-hyperion-integration/spec.md:651:r[valence_hyperion_integration.admin_permissions.command_integration.refresh]
+accepted_spec_reference_file_count=5
+
+## Decision inputs
+parent_tracks_hyperion=false
+deletion_commit_scope=not_parent_tracked
+blocker_nested_worktree_dirty=true
+blocker_live_references=true
+blocker_accepted_specs_reference_hyperion=true
+decision=do_not_delete_hyperion_checkout_in_this_change
+exit_status=0

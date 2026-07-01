@@ -64,7 +64,6 @@ const REQUIRED_COMPONENT_PATHS: &[&str] = &[
     "compat/fixtures/paper-survival/",
     "cairn/",
     "docs/evidence/",
-    "hyperion/",
     "Leafish/",
 ];
 
@@ -953,13 +952,6 @@ fn fixture_rows() -> Vec<ComponentRow> {
     ));
     rows.push(fixture_component("cairn/", "cairn-lifecycle"));
     rows.push(fixture_component("docs/evidence/", "durable-evidence"));
-    let mut hyperion = fixture_component("hyperion/", "independent-engine");
-    hyperion.owner = Some("independent-nested-repository".to_string());
-    hyperion.vcs_boundary = Some("nested-git-and-jj".to_string());
-    hyperion.default_gate_participation = Some(EXCLUDED_GATE.to_string());
-    hyperion.evidence_policy = Some("reference-excluded".to_string());
-    hyperion.nested_git_exception = Some(true);
-    rows.push(hyperion);
     let mut leafish = fixture_component("Leafish/", "reference-client");
     leafish.owner = Some("reference-only-checkout".to_string());
     leafish.vcs_boundary = Some("nested-git".to_string());
@@ -982,7 +974,7 @@ fn fixture_model(rows: &[ComponentRow]) -> RepositoryModel {
     }
     RepositoryModel {
         paths,
-        nested_git_roots: BTreeSet::from(["hyperion".to_string(), "Leafish".to_string()]),
+        nested_git_roots: BTreeSet::from(["Leafish".to_string()]),
         checklist: fixture_checklist(rows),
     }
 }

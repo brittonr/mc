@@ -1,0 +1,10 @@
+96a7bbd45d80c4ca14a37261c8c9109db19255fea27bb3812a2077b5dd17b963  docs/evidence/run-logs/2026-07-01/hyperion-retirement-readiness.audit.run.log
+05cf73a166edc5cafbaa52a1846081ac2557edb7c25603a828fb670e29638f05  docs/evidence/run-logs/2026-07-01/hyperion-retirement-readiness.cairn-gates.run.log
+ae7aacf4fd127d1cf4c55ac6e02da770e7e9ca4a58919019eea5dbe579a27db8  docs/evidence/run-logs/2026-07-01/hyperion-retirement-readiness.archive.run.log
+c04b60cc30f1a6f6e573543afa43216339c94f50da119956f920cf0834f47fb0  docs/evidence/run-logs/2026-07-01/hyperion-retirement-readiness.post-archive-validate.run.log
+a7a67d060f5eca918efb4023cca00bff42f84edd4e12cc1ba1e89e81a1dea711  docs/evidence/oracles/2026-07-01/hyperion-retirement-readiness.md
+74fbf292207ccf40c1dbdc71c8d369965c5af51118a11d1b9c00a275d3bd1a99  cairn/specs/valence-hyperion-integration/spec.md
+588876c362b48307428e7046d5a122ddbfde61cbd53ef358495993a9b8d8294a  cairn/archive/2026-07-01-gate-hyperion-checkout-retirement/proposal.md
+a409ea21aa67e86f991cdd5e01d75249423ab0175fb83b2c75117dfde4ac623a  cairn/archive/2026-07-01-gate-hyperion-checkout-retirement/design.md
+0b0043045980e07a4f68e86c9b22157e6840935d0ab3b56632272d7499d082b6  cairn/archive/2026-07-01-gate-hyperion-checkout-retirement/tasks.md
+52809584359f93c72c60cc27696304000a22a15a9a601968bafbbd63ad93b14d  cairn/archive/2026-07-01-gate-hyperion-checkout-retirement/specs/valence-hyperion-integration/spec.md

@@ -54,6 +54,207 @@ const WEATHER_POST_UPDATE_SETS: &[&str] = &["WeatherClientUpdateSet", "WeatherLa
 const WORLD_BORDER_POST_UPDATE_SETS: &[&str] = &["UpdateWorldBorderSet"];
 const BOSS_BAR_POST_UPDATE_SETS: &[&str] = &["BossBarUpdateSet"];
 
+const MISSING_EVENT_LOOP_SETS: &[&str] = &[MISSING_EVENT_LOOP_SET];
+const SCHEDULE_RECEIPT_COMMAND: &str = "cargo test core_plugin_sets";
+const DEFAULT_PLUGIN_CONFIGURATION: &str = "DefaultPlugins without network/log";
+const DISABLED_ACTION_PLUGIN_CONFIGURATION: &str = "DefaultPlugins without network/log/action";
+const UNKNOWN_SCHEDULE_LABEL: &str = "MissingSchedule";
+const AMBIGUITY_DISABLED: &str = "disabled";
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum ScheduleAmbiguityMode {
+    Disabled,
+}
+
+impl ScheduleAmbiguityMode {
+    const fn as_str(self) -> &'static str {
+        match self {
+            Self::Disabled => AMBIGUITY_DISABLED,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+struct ScheduleReceiptExpectation {
+    schedule_label: &'static str,
+    plugin_configuration: &'static str,
+    expected_sets: &'static [&'static str],
+    expected_systems: &'static [&'static str],
+    absent_sets: &'static [&'static str],
+    absent_systems: &'static [&'static str],
+    ambiguity_mode: ScheduleAmbiguityMode,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+struct StructuredScheduleReceipt {
+    command: &'static str,
+    plugin_configuration: &'static str,
+    schedule_label: &'static str,
+    expected_sets: Vec<&'static str>,
+    observed_sets: Vec<&'static str>,
+    missing_sets: Vec<&'static str>,
+    absent_sets: Vec<&'static str>,
+    unexpected_sets: Vec<&'static str>,
+    expected_systems: Vec<&'static str>,
+    observed_systems: Vec<&'static str>,
+    missing_systems: Vec<&'static str>,
+    absent_systems: Vec<&'static str>,
+    unexpected_systems: Vec<&'static str>,
+    ambiguity_mode: &'static str,
+    missing_schedule: bool,
+    passed: bool,
+    diagnostics: Vec<String>,
+}
+
+fn structured_schedule_receipt(
+    command: &'static str,
+    expectation: ScheduleReceiptExpectation,
+    observed_graph: Option<&str>,
+) -> StructuredScheduleReceipt {
+    let missing_schedule = observed_graph.is_none();
+    let observed_sets = observed_matching_facts(observed_graph, expectation.expected_sets);
+    let observed_systems = observed_matching_facts(observed_graph, expectation.expected_systems);
+    let missing_sets = missing_facts(observed_graph, expectation.expected_sets);
+    let missing_systems = missing_facts(observed_graph, expectation.expected_systems);
+    let unexpected_sets = unexpected_facts(observed_graph, expectation.absent_sets);
+    let unexpected_systems = unexpected_facts(observed_graph, expectation.absent_systems);
+    let passed = !missing_schedule
+        && missing_sets.is_empty()
+        && missing_systems.is_empty()
+        && unexpected_sets.is_empty()
+        && unexpected_systems.is_empty();
+    let diagnostics = schedule_receipt_diagnostics(
+        expectation.schedule_label,
+        missing_schedule,
+        &missing_sets,
+        &missing_systems,
+        &unexpected_sets,
+        &unexpected_systems,
+    );
+
+    StructuredScheduleReceipt {
+        command,
+        plugin_configuration: expectation.plugin_configuration,
+        schedule_label: expectation.schedule_label,
+        expected_sets: expectation.expected_sets.to_vec(),
+        observed_sets,
+        missing_sets,
+        absent_sets: expectation.absent_sets.to_vec(),
+        unexpected_sets,
+        expected_systems: expectation.expected_systems.to_vec(),
+        observed_systems,
+        missing_systems,
+        absent_systems: expectation.absent_systems.to_vec(),
+        unexpected_systems,
+        ambiguity_mode: expectation.ambiguity_mode.as_str(),
+        missing_schedule,
+        passed,
+        diagnostics,
+    }
+}
+
+fn observed_matching_facts(
+    observed_graph: Option<&str>,
+    expected: &[&'static str],
+) -> Vec<&'static str> {
+    let Some(graph) = observed_graph else {
+        return Vec::new();
+    };
+    expected
+        .iter()
+        .copied()
+        .filter(|fact| graph.contains(fact))
+        .collect()
+}
+
+fn missing_facts(observed_graph: Option<&str>, expected: &[&'static str]) -> Vec<&'static str> {
+    let Some(graph) = observed_graph else {
+        return expected.to_vec();
+    };
+    expected
+        .iter()
+        .copied()
+        .filter(|fact| !graph.contains(fact))
+        .collect()
+}
+
+fn unexpected_facts(observed_graph: Option<&str>, absent: &[&'static str]) -> Vec<&'static str> {
+    let Some(graph) = observed_graph else {
+        return Vec::new();
+    };
+    absent
+        .iter()
+        .copied()
+        .filter(|fact| graph.contains(fact))
+        .collect()
+}
+
+fn schedule_receipt_diagnostics(
+    schedule_label: &str,
+    missing_schedule: bool,
+    missing_sets: &[&str],
+    missing_systems: &[&str],
+    unexpected_sets: &[&str],
+    unexpected_systems: &[&str],
+) -> Vec<String> {
+    let mut diagnostics = Vec::new();
+    if missing_schedule {
+        diagnostics.push(format!("missing schedule {schedule_label}"));
+    }
+    diagnostics.extend(
+        missing_sets
+            .iter()
+            .map(|fact| format!("missing set {fact}")),
+    );
+    diagnostics.extend(
+        missing_systems
+            .iter()
+            .map(|fact| format!("missing system {fact}")),
+    );
+    diagnostics.extend(
+        unexpected_sets
+            .iter()
+            .map(|fact| format!("unexpected set {fact}")),
+    );
+    diagnostics.extend(
+        unexpected_systems
+            .iter()
+            .map(|fact| format!("unexpected system {fact}")),
+    );
+    diagnostics
+}
+
+fn schedule_receipt_for_app(
+    app: &App,
+    command: &'static str,
+    expectation: ScheduleReceiptExpectation,
+) -> StructuredScheduleReceipt {
+    let graph = schedule_graph_option(app, expectation.schedule_label);
+    structured_schedule_receipt(command, expectation, graph.as_deref())
+}
+
+fn render_structured_schedule_receipt(receipt: &StructuredScheduleReceipt) -> String {
+    format!(
+        "command={}\nplugin_configuration={}\nschedule_label={}\nambiguity_mode={}\npassed={}\nexpected_sets={}\nobserved_sets={}\nmissing_sets={}\nexpected_systems={}\nobserved_systems={}\nmissing_systems={}\nabsent_sets={}\nunexpected_sets={}\nabsent_systems={}\nunexpected_systems={}\ndiagnostics={}\n",
+        receipt.command,
+        receipt.plugin_configuration,
+        receipt.schedule_label,
+        receipt.ambiguity_mode,
+        receipt.passed,
+        receipt.expected_sets.join(","),
+        receipt.observed_sets.join(","),
+        receipt.missing_sets.join(","),
+        receipt.expected_systems.join(","),
+        receipt.observed_systems.join(","),
+        receipt.missing_systems.join(","),
+        receipt.absent_sets.join(","),
+        receipt.unexpected_sets.join(","),
+        receipt.absent_systems.join(","),
+        receipt.unexpected_systems.join(","),
+        receipt.diagnostics.join(";"),
+    )
+}
+
 #[test]
 fn default_core_plugins_expose_selected_ordering_sets() {
     let app = app_with_default_core_plugins();
@@ -275,6 +476,132 @@ fn disabled_boss_bar_plugin_omits_boss_bar_schedule_contract() {
     assert_schedule_omits_sets(&post_update, BOSS_BAR_POST_UPDATE_SETS);
 }
 
+#[test]
+fn structured_schedule_receipt_reports_default_core_facts() {
+    let app = app_with_default_core_plugins();
+    let expectation = ScheduleReceiptExpectation {
+        schedule_label: PRE_UPDATE_LABEL,
+        plugin_configuration: DEFAULT_PLUGIN_CONFIGURATION,
+        expected_sets: INVENTORY_PRE_UPDATE_SETS,
+        expected_systems: &[],
+        absent_sets: &[],
+        absent_systems: &[],
+        ambiguity_mode: ScheduleAmbiguityMode::Disabled,
+    };
+
+    let receipt = schedule_receipt_for_app(&app, SCHEDULE_RECEIPT_COMMAND, expectation);
+
+    assert!(receipt.passed);
+    assert_eq!(receipt.observed_sets, INVENTORY_PRE_UPDATE_SETS.to_vec());
+    assert!(receipt.diagnostics.is_empty());
+    let rendered = render_structured_schedule_receipt(&receipt);
+    assert!(rendered.contains("schedule_label=PreUpdate"));
+    assert!(rendered.contains("ambiguity_mode=disabled"));
+    assert!(rendered.contains("passed=true"));
+}
+
+#[test]
+fn structured_schedule_receipt_reports_disabled_plugin_absence() {
+    let app = app_without_plugin::<crate::action::ActionPlugin>();
+    let expectation = ScheduleReceiptExpectation {
+        schedule_label: EVENT_LOOP_PRE_UPDATE_LABEL,
+        plugin_configuration: DISABLED_ACTION_PLUGIN_CONFIGURATION,
+        expected_sets: &[],
+        expected_systems: &[],
+        absent_sets: &[],
+        absent_systems: EVENT_LOOP_ACTION_SYSTEMS,
+        ambiguity_mode: ScheduleAmbiguityMode::Disabled,
+    };
+
+    let receipt = schedule_receipt_for_app(&app, SCHEDULE_RECEIPT_COMMAND, expectation);
+
+    assert!(receipt.passed);
+    assert!(receipt.unexpected_systems.is_empty());
+}
+
+#[test]
+fn structured_schedule_receipt_rejects_unknown_schedule_and_missing_set() {
+    let missing_schedule_expectation = ScheduleReceiptExpectation {
+        schedule_label: UNKNOWN_SCHEDULE_LABEL,
+        plugin_configuration: DEFAULT_PLUGIN_CONFIGURATION,
+        expected_sets: EVENT_LOOP_PRE_UPDATE_PHASE_SETS,
+        expected_systems: &[],
+        absent_sets: &[],
+        absent_systems: &[],
+        ambiguity_mode: ScheduleAmbiguityMode::Disabled,
+    };
+    let missing_schedule_receipt =
+        structured_schedule_receipt(SCHEDULE_RECEIPT_COMMAND, missing_schedule_expectation, None);
+    assert!(!missing_schedule_receipt.passed);
+    assert!(missing_schedule_receipt.missing_schedule);
+    assert_eq!(
+        missing_schedule_receipt.diagnostics,
+        vec![
+            "missing schedule MissingSchedule".to_string(),
+            "missing set RawPacketObservers".to_string(),
+            "missing set TypedAdapters".to_string(),
+            "missing set DomainConsumers".to_string(),
+            "missing set Diagnostics".to_string(),
+        ]
+    );
+
+    let missing_set_expectation = ScheduleReceiptExpectation {
+        schedule_label: EVENT_LOOP_PRE_UPDATE_LABEL,
+        plugin_configuration: DEFAULT_PLUGIN_CONFIGURATION,
+        expected_sets: MISSING_EVENT_LOOP_SETS,
+        expected_systems: &[],
+        absent_sets: &[],
+        absent_systems: &[],
+        ambiguity_mode: ScheduleAmbiguityMode::Disabled,
+    };
+    let missing_set_receipt =
+        structured_schedule_receipt(SCHEDULE_RECEIPT_COMMAND, missing_set_expectation, Some(""));
+    assert!(!missing_set_receipt.passed);
+    assert_eq!(
+        missing_set_receipt.missing_sets,
+        MISSING_EVENT_LOOP_SETS.to_vec()
+    );
+    assert_eq!(
+        missing_set_receipt.diagnostics,
+        vec!["missing set MissingEventLoopSet".to_string()]
+    );
+}
+
+#[test]
+fn structured_schedule_receipt_rejects_unexpected_system_and_is_deterministic() {
+    let app = app_with_default_core_plugins();
+    let expectation = ScheduleReceiptExpectation {
+        schedule_label: EVENT_LOOP_PRE_UPDATE_LABEL,
+        plugin_configuration: DEFAULT_PLUGIN_CONFIGURATION,
+        expected_sets: &[],
+        expected_systems: &[],
+        absent_sets: &[],
+        absent_systems: EVENT_LOOP_ACTION_SYSTEMS,
+        ambiguity_mode: ScheduleAmbiguityMode::Disabled,
+    };
+
+    let first_receipt = schedule_receipt_for_app(&app, SCHEDULE_RECEIPT_COMMAND, expectation);
+    let second_receipt = schedule_receipt_for_app(&app, SCHEDULE_RECEIPT_COMMAND, expectation);
+
+    assert_eq!(first_receipt, second_receipt);
+    assert_eq!(
+        render_structured_schedule_receipt(&first_receipt),
+        render_structured_schedule_receipt(&second_receipt)
+    );
+    assert!(!first_receipt.passed);
+    assert_eq!(
+        first_receipt.unexpected_systems,
+        EVENT_LOOP_ACTION_SYSTEMS.to_vec()
+    );
+    assert_eq!(
+        first_receipt.diagnostics,
+        vec![
+            "unexpected system valence_server::action::emit_player_action_events".to_string(),
+            "unexpected system valence_server::action::handle_player_action".to_string(),
+        ]
+    );
+}
+
 fn app_with_default_core_plugins() -> App {
     let mut app = App::new();
     app.add_plugins(
@@ -321,22 +648,24 @@ where
 }
 
 fn schedule_graph(app: &App, schedule_label: &str) -> String {
-    let schedules = app.world().resource::<Schedules>();
-    let Some((_, schedule)) = schedules
-        .iter()
-        .find(|(label, _)| format!("{label:?}") == schedule_label)
-    else {
-        panic!("schedule {schedule_label} is not installed");
-    };
+    schedule_graph_option(app, schedule_label)
+        .unwrap_or_else(|| panic!("schedule {schedule_label} is not installed"))
+}
 
-    bevy_mod_debugdump::schedule_graph::schedule_graph_dot(
+fn schedule_graph_option(app: &App, schedule_label: &str) -> Option<String> {
+    let schedules = app.world().resource::<Schedules>();
+    let (_, schedule) = schedules
+        .iter()
+        .find(|(label, _)| format!("{label:?}") == schedule_label)?;
+
+    Some(bevy_mod_debugdump::schedule_graph::schedule_graph_dot(
         schedule,
         app.world(),
         &bevy_mod_debugdump::schedule_graph::Settings {
             ambiguity_enable: false,
             ..Default::default()
         },
-    )
+    ))
 }
 
 fn assert_schedule_contains_sets(graph: &str, expected_sets: &[&str]) {

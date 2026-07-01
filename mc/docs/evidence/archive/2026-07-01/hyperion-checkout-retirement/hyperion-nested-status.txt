@@ -1,0 +1,5 @@
+Working copy changes:
+M crates/hyperion-game-modes/src/composition.rs
+M events/bedwars/src/lib.rs
+Working copy  (@) : mntowvtn d92b1332 (no description set)
+Parent commit (@-): ktkksnry c5f83a4d separate gameplay modes from shared composition

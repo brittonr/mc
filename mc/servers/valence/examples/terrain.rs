@@ -14,10 +14,10 @@ use valence::prelude::*;
 use valence::spawn::IsFlat;
 
 use gameplay_contracts::{
-    register_gameplay_plugin_contract, GameplayArenaId, GameplayInstallMode, GameplayMode,
-    GameplayPhase as TerrainGameplayPhase, GameplayPluginContract, GameplayScheduleContract,
-    GameplayScope, GameplayScopeModel, GAMEPLAY_PHASE_ORDER, TERRAIN_PRIMARY_ARENA_ID,
-    UPDATE_SCHEDULE_LABEL,
+    register_gameplay_plugin_template, GameplayArenaId, GameplayInstallMode, GameplayMode,
+    GameplayPhase as TerrainGameplayPhase, GameplayPluginContract, GameplayPluginTemplate,
+    GameplayScheduleContract, GameplayScope, GameplayScopeModel, GAMEPLAY_PHASE_ORDER,
+    TERRAIN_PRIMARY_ARENA_ID, UPDATE_SCHEDULE_LABEL,
 };
 
 const SPAWN_X: f64 = 0.0;
@@ -62,6 +62,7 @@ const TERRAIN_GAMEPLAY_CONTRACT: GameplayPluginContract = GameplayPluginContract
     plugin: TERRAIN_GAMEPLAY_PLUGIN_NAME,
     install_mode: GameplayInstallMode::ExplicitOptIn,
     scope_model: GameplayScopeModel::LayerOwnedFixture,
+    scope: Some(TERRAIN_PRIMARY_SCOPE),
     schedules: TERRAIN_GAMEPLAY_SCHEDULES,
     owned_resources: TERRAIN_GAMEPLAY_OWNED_RESOURCES,
     owned_events: TERRAIN_NO_OWNED_EVENTS,
@@ -260,7 +261,10 @@ impl Plugin for TerrainGameplayPlugin {
         assert_eq!(contract.update_phase_order, TERRAIN_GAMEPLAY_PHASE_ORDER);
         assert_eq!(contract.scope, TERRAIN_PRIMARY_SCOPE);
 
-        register_gameplay_plugin_contract(app, TERRAIN_GAMEPLAY_CONTRACT);
+        register_gameplay_plugin_template(
+            app,
+            GameplayPluginTemplate::new(TERRAIN_GAMEPLAY_CONTRACT),
+        );
         app.insert_resource(contract)
             .configure_sets(
                 Update,
@@ -984,6 +988,7 @@ mod tests {
             shared_contract.install_mode,
             GameplayInstallMode::ExplicitOptIn
         );
+        assert_eq!(shared_contract.scope, Some(TERRAIN_PRIMARY_SCOPE));
         gameplay_contracts::assert_schedule_phases(
             shared_contract,
             UPDATE_SCHEDULE_LABEL,

@@ -1,0 +1,5 @@
+command=refresh evidence manifests after checkout retirement
+start=2026-07-01T01:35:32-04:00
+compile_exit_status=0
+evidence manifest refresh ok: mode=refresh; passes=4; manifests=569; entries=6027; current=6027; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=4; manifest_writes=108
+exit_status=0

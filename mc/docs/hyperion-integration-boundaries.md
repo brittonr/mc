@@ -1,14 +1,14 @@
 # Hyperion integration boundaries
 
-Use this boundary before any Hyperion-to-Valence implementation work. It classifies sources, blocks unsafe core merges, and keeps gameplay semantics behind optional plugin or reference-evidence gates. This document is governance evidence only; it does not implement a Valence feature or claim Hyperion compatibility.
+Use this boundary before any Hyperion-to-Valence implementation work based on archived evidence, a reviewable source snapshot, or a deliberately restored external checkout. The local `hyperion/` checkout is retired from this workspace. This document classifies sources, blocks unsafe core merges, and keeps gameplay semantics behind optional plugin or reference-evidence gates. It is governance evidence only; it does not implement a Valence feature or claim Hyperion compatibility.
 
 ## Inventory template
 
-Every future integration Cairn that uses Hyperion code or concepts MUST include an inventory row for each inspected source before implementation.
+Every future integration Cairn that uses Hyperion code or concepts MUST include an inventory row for each inspected archived source, source snapshot, or external checkout source before implementation.
 
 | Field | Required content |
 | --- | --- |
-| `source_path` | Hyperion path, crate/module/function, or design note inspected |
+| `source_path` | Archived Hyperion path, source-snapshot path, external checkout path, crate/module/function, or design note inspected |
 | `classification` | One of `adopt`, `port`, `reference`, or `reject` |
 | `owner` | Person/change responsible for the decision |
 | `reason` | Why the classification is safe for Valence |
@@ -54,7 +54,7 @@ Combat, GUI helpers, anti-cheat observations, Bedwars gameplay, projectile seman
 
 ## Review gate checklist
 
-Future Hyperion integration Cairns SHOULD cite this checklist before archive.
+Future Hyperion integration Cairns SHOULD cite this checklist before archive and identify the reviewable source snapshot or archived evidence used instead of assuming a live local checkout.
 
 - [ ] Inventory rows exist for all inspected Hyperion sources.
 - [ ] Each row has one classification: `adopt`, `port`, `reference`, or `reject`.

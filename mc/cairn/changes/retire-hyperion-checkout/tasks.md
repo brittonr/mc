@@ -1,0 +1,12 @@
+# Tasks
+
+- [x] [serial] Back up the nested Hyperion working-copy state into durable evidence before local deletion. r[hyperion_game_modes.retired_checkout.validation] r[valence_hyperion_integration.retired_checkout.validation]
+  - Evidence: `docs/evidence/run-logs/2026-07-01/hyperion-checkout-retirement.backup.run.log`, `docs/evidence/archive/2026-07-01/hyperion-checkout-retirement/hyperion-working-copy.patch`, `docs/evidence/archive/2026-07-01/hyperion-checkout-retirement/hyperion-nested-status.txt`, and `docs/evidence/manifests/2026-07-01/hyperion-checkout-retirement.b3`.
+- [x] [depends:backup] Remove the retired checkout from active component registry, layout summaries, agent guidance, and verification guidance while preserving historical evidence boundaries. r[repository_layout.hyperion_checkout_retirement.registry] r[valence_hyperion_integration.retired_checkout.status]
+  - Evidence: `docs/evidence/run-logs/2026-07-01/hyperion-checkout-retirement.layout-checks.run.log` and `docs/evidence/manifests/2026-07-01/hyperion-checkout-retirement.b3`.
+- [x] [depends:backup] Retire accepted Hyperion-local obligations so default workspace validation no longer requires a live checkout. r[hyperion_game_modes.retired_checkout.status] r[valence_hyperion_integration.retired_checkout.future_source]
+  - Evidence: `docs/evidence/run-logs/2026-07-01/hyperion-checkout-retirement.cairn-gates.run.log` and `docs/evidence/manifests/2026-07-01/hyperion-checkout-retirement.b3`.
+- [x] [depends:registry] Physically remove the untracked local checkout after backup and live-reference cleanup, recording deletion as local workspace cleanup. r[repository_layout.hyperion_checkout_retirement.registry] r[valence_hyperion_integration.retired_checkout.status]
+  - Evidence: `docs/evidence/run-logs/2026-07-01/hyperion-checkout-retirement.delete.run.log` and `docs/evidence/manifests/2026-07-01/hyperion-checkout-retirement.b3`.
+- [x] [depends:delete] Run layout/config validation, Cairn gates, Cairn validation, task-evidence validation, and evidence-manifest validation with promoted logs. r[repository_layout.hyperion_checkout_retirement.validation] r[hyperion_game_modes.retired_checkout.validation] r[valence_hyperion_integration.retired_checkout.validation]
+  - Evidence: `docs/evidence/run-logs/2026-07-01/hyperion-checkout-retirement.layout-checks.run.log`, `docs/evidence/run-logs/2026-07-01/hyperion-checkout-retirement.cairn-gates.run.log`, and `docs/evidence/manifests/2026-07-01/hyperion-checkout-retirement.b3`.

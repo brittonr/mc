@@ -932,7 +932,7 @@ r[mc_compatibility.protocol_763.chunk_data.evidence_recorded.non_overclaiming]
 
 ### Requirement: Compatibility testing
 
-r[mc_compatibility.valence_compat_bot.safe_bounded_probe] Valence compatibility testing MUST provide a bounded owned bot/probe mode derived from the Hyperion bot pattern without enabling unbounded public stress traffic.
+r[mc_compatibility.valence_compat_bot.safe_bounded_probe] Valence compatibility testing MUST provide a bounded owned bot/probe mode derived from the historical Hyperion bot pattern without enabling unbounded public stress traffic.
 
 #### Scenario: Probe run is bounded
 
@@ -1059,7 +1059,7 @@ r[mc_compatibility.valence_proxy_compat.boundary_documented.scenario]
 
 - GIVEN the proxy compatibility seam is planned
 - WHEN the proposal/design is reviewed
-- THEN the plan records direct-vs-proxy claims and defers full Hyperion-style multi-proxy/mTLS unless separately requested
+- THEN the plan records direct-vs-proxy claims and defers full Hyperion-style multi-proxy/mTLS unless separately requested with reviewable source evidence
 
 ### Requirement: Proxy-path compatibility receipts
 
@@ -1087,13 +1087,13 @@ r[mc_compatibility.valence_proxy_compat.local_gate.scenario]
 
 ### Requirement: Gameplay compatibility work
 
-r[mc_compatibility.valence_gameplay_oracles.milestone_catalog] Valence compatibility work MUST catalog Hyperion-derived gameplay milestones before implementing new scenario claims.
+r[mc_compatibility.valence_gameplay_oracles.milestone_catalog] Valence compatibility work MUST catalog historical Hyperion-derived gameplay milestones before implementing new scenario claims.
 
 #### Scenario: Milestones are mapped to Valence
 
 r[mc_compatibility.valence_gameplay_oracles.milestone_catalog.scenario]
 
-- GIVEN Hyperion Bedwars milestones are reviewed
+- GIVEN archived or source-snapshot Hyperion Bedwars milestones are reviewed
 - WHEN the Valence scenario plan is written
 - THEN the plan maps each selected milestone to a Valence example/client/server evidence source
 

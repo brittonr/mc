@@ -1,0 +1,939 @@
+command=Cairn sync and archive completed Hyperion/Valence integration changes
+start=2026-06-30T22:19:01-04:00
+$ nix run path:/home/brittonr/git/mc#cairn -- sync add-gameplay-plugin-template-helper --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/add-gameplay-plugin-template-helper/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/add-gameplay-plugin-template-helper/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-gameplay-plugin-template-helper",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/add-gameplay-plugin-template-helper/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "23953b8ff91d63abfe9c4a5456279f7410fb5d968c6072906f8fa15992abad6c",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "76202225a9b92ce10f062bfe83b9c1fa07928b36e2c5e095e94b48a2ad29b2fc",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "c342e10c88a69966bc17db61a4f1cbf2fc1d7837635105098686cc66558e3e81"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "76202225a9b92ce10f062bfe83b9c1fa07928b36e2c5e095e94b48a2ad29b2fc",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "c342e10c88a69966bc17db61a4f1cbf2fc1d7837635105098686cc66558e3e81"
+    },
+    "kind": "sync",
+    "manifest_hash": "478bec1dbeaff45b8a4a3114e37231def4392ee451ba2a7039e4a4de7440106c"
+  },
+  "plan_hash": "608b102191b635a39bd82b6196dfccb5018cbc5a72ab4ec38183405bbdd3dcf3",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "d52dd7087fa90e93323cc5334dfd912026acd0d2e2b6d60258545650731f1298"
+}
+add-gameplay-plugin-template-helper_sync_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- sync add-plugin-composition-preflight --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/add-plugin-composition-preflight/specs/hyperion-game-modes/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/add-plugin-composition-preflight/specs/hyperion-game-modes/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-plugin-composition-preflight",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/add-plugin-composition-preflight/specs/hyperion-game-modes/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "2afd754d00bd4a41a45856d3e32bd8b256d04994cda71a2e61131134f381fb5d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "4b30a5d9f36f012d7446e8a8425ef9f736b68bf9c5553f7e299452380d41e69e",
+          "exists": true,
+          "path": "./cairn/specs/hyperion-game-modes/spec.md"
+        }
+      ],
+      "manifest_hash": "e4e34314775ab3e6728a709198ced0f4527d44ee694498f092e1e522cd6e1cbe"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "4b30a5d9f36f012d7446e8a8425ef9f736b68bf9c5553f7e299452380d41e69e",
+          "exists": true,
+          "path": "./cairn/specs/hyperion-game-modes/spec.md"
+        }
+      ],
+      "manifest_hash": "e4e34314775ab3e6728a709198ced0f4527d44ee694498f092e1e522cd6e1cbe"
+    },
+    "kind": "sync",
+    "manifest_hash": "42eac487f377b65140adf7f2a68ecb6ad99f31a19a54abe9d96c3493700ff0b3"
+  },
+  "plan_hash": "2f708f7def9e50f8c579d6899d178275b41d0d0ee6edcf0ccff4b15a74faede7",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "898bafb4b3a792d60d0ac571c93ae9f5aba79cc233d89d39d994a23de1fc5553"
+}
+add-plugin-composition-preflight_sync_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- sync add-structured-schedule-receipts --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/add-structured-schedule-receipts/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/add-structured-schedule-receipts/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-structured-schedule-receipts",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/add-structured-schedule-receipts/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "34c3d90841c36f2735797b8f09b953ae89ea9b890e0b16992c21f39a64b47866",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "76202225a9b92ce10f062bfe83b9c1fa07928b36e2c5e095e94b48a2ad29b2fc",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "c342e10c88a69966bc17db61a4f1cbf2fc1d7837635105098686cc66558e3e81"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "76202225a9b92ce10f062bfe83b9c1fa07928b36e2c5e095e94b48a2ad29b2fc",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "c342e10c88a69966bc17db61a4f1cbf2fc1d7837635105098686cc66558e3e81"
+    },
+    "kind": "sync",
+    "manifest_hash": "478bec1dbeaff45b8a4a3114e37231def4392ee451ba2a7039e4a4de7440106c"
+  },
+  "plan_hash": "cf3f3ab612106069b9cabeffaabc6a509cf922a242eda94fdfdca9f53d413b5c",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "65a2e80ef360e356d8fd994e0cad522b26744f8434404e91e7d1f25ac8434ad1"
+}
+add-structured-schedule-receipts_sync_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- sync execute-hyperion-preset-plugin-slots --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/execute-hyperion-preset-plugin-slots/specs/hyperion-game-modes/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/execute-hyperion-preset-plugin-slots/specs/hyperion-game-modes/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "execute-hyperion-preset-plugin-slots",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/execute-hyperion-preset-plugin-slots/specs/hyperion-game-modes/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "2fb7aaf639b7e474e3f351cbe3019db17d6a12cbb47eb54370c24916ccdc21d6",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "4b30a5d9f36f012d7446e8a8425ef9f736b68bf9c5553f7e299452380d41e69e",
+          "exists": true,
+          "path": "./cairn/specs/hyperion-game-modes/spec.md"
+        }
+      ],
+      "manifest_hash": "e4e34314775ab3e6728a709198ced0f4527d44ee694498f092e1e522cd6e1cbe"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "4b30a5d9f36f012d7446e8a8425ef9f736b68bf9c5553f7e299452380d41e69e",
+          "exists": true,
+          "path": "./cairn/specs/hyperion-game-modes/spec.md"
+        }
+      ],
+      "manifest_hash": "e4e34314775ab3e6728a709198ced0f4527d44ee694498f092e1e522cd6e1cbe"
+    },
+    "kind": "sync",
+    "manifest_hash": "42eac487f377b65140adf7f2a68ecb6ad99f31a19a54abe9d96c3493700ff0b3"
+  },
+  "plan_hash": "99989e2b9c2f9bdf37238701e68f07d501c104ef3f603a5854cf70b95dd9c523",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "19eba2c90d13c143b8cf3b8e1fc6fcf200f1bf9e2efb4f2ea5205271724b44a5"
+}
+execute-hyperion-preset-plugin-slots_sync_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- sync expose-plugin-diagnostics-registry --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/expose-plugin-diagnostics-registry/specs/hyperion-game-modes/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/expose-plugin-diagnostics-registry/specs/hyperion-game-modes/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "expose-plugin-diagnostics-registry",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/expose-plugin-diagnostics-registry/specs/hyperion-game-modes/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "b6f0aededc924cc634f58ad3055fd7da73093f11cf52660c884a4327c0e43895",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "4b30a5d9f36f012d7446e8a8425ef9f736b68bf9c5553f7e299452380d41e69e",
+          "exists": true,
+          "path": "./cairn/specs/hyperion-game-modes/spec.md"
+        }
+      ],
+      "manifest_hash": "e4e34314775ab3e6728a709198ced0f4527d44ee694498f092e1e522cd6e1cbe"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "4b30a5d9f36f012d7446e8a8425ef9f736b68bf9c5553f7e299452380d41e69e",
+          "exists": true,
+          "path": "./cairn/specs/hyperion-game-modes/spec.md"
+        }
+      ],
+      "manifest_hash": "e4e34314775ab3e6728a709198ced0f4527d44ee694498f092e1e522cd6e1cbe"
+    },
+    "kind": "sync",
+    "manifest_hash": "42eac487f377b65140adf7f2a68ecb6ad99f31a19a54abe9d96c3493700ff0b3"
+  },
+  "plan_hash": "b6fe55adaf5ce775c2a4d9675f6d8939b30f2e47b65b05f00a1db0d784571f2c",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "3a71f7480fdb73107e8bacbcebc5a7ed2e9eaccd8f465c73d30042ba4a7868c3"
+}
+expose-plugin-diagnostics-registry_sync_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- sync support-scoped-plugin-instances --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/support-scoped-plugin-instances/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/support-scoped-plugin-instances/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "support-scoped-plugin-instances",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/support-scoped-plugin-instances/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "8326627d3dad94c54d4b8450564392b07e4f77a7c56a86ce9cdf9493b68fccf4",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "76202225a9b92ce10f062bfe83b9c1fa07928b36e2c5e095e94b48a2ad29b2fc",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "c342e10c88a69966bc17db61a4f1cbf2fc1d7837635105098686cc66558e3e81"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "76202225a9b92ce10f062bfe83b9c1fa07928b36e2c5e095e94b48a2ad29b2fc",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "c342e10c88a69966bc17db61a4f1cbf2fc1d7837635105098686cc66558e3e81"
+    },
+    "kind": "sync",
+    "manifest_hash": "478bec1dbeaff45b8a4a3114e37231def4392ee451ba2a7039e4a4de7440106c"
+  },
+  "plan_hash": "58aa20e52f295db7749c2639ed65f2ef578c7059e52506f8c2d4a59848c14d55",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "2fd4bc6779507f8cad38537ee0b8e5fe069d70cad9fdabef74112448ff6e981a"
+}
+support-scoped-plugin-instances_sync_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- sync unify-plugin-contract-metadata --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/unify-plugin-contract-metadata/specs/hyperion-game-modes/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/unify-plugin-contract-metadata/specs/hyperion-game-modes/spec.md"
+    },
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/unify-plugin-contract-metadata/specs/valence-bevy-ecs/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/unify-plugin-contract-metadata/specs/valence-bevy-ecs/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "unify-plugin-contract-metadata",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/unify-plugin-contract-metadata/specs/hyperion-game-modes/spec.md",
+    "/home/brittonr/git/mc/cairn/changes/unify-plugin-contract-metadata/specs/valence-bevy-ecs/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "ba7a76dbaaef54c9eb78b2c91b54439249ec36a32fb42de5abf9c21c687d626b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "4b30a5d9f36f012d7446e8a8425ef9f736b68bf9c5553f7e299452380d41e69e",
+          "exists": true,
+          "path": "./cairn/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "76202225a9b92ce10f062bfe83b9c1fa07928b36e2c5e095e94b48a2ad29b2fc",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "0cb754d33029d9369ff303f2eae1dc3e329d73b9850e6c84905f6bac44ae87a5"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "4b30a5d9f36f012d7446e8a8425ef9f736b68bf9c5553f7e299452380d41e69e",
+          "exists": true,
+          "path": "./cairn/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "76202225a9b92ce10f062bfe83b9c1fa07928b36e2c5e095e94b48a2ad29b2fc",
+          "exists": true,
+          "path": "./cairn/specs/valence-bevy-ecs/spec.md"
+        }
+      ],
+      "manifest_hash": "0cb754d33029d9369ff303f2eae1dc3e329d73b9850e6c84905f6bac44ae87a5"
+    },
+    "kind": "sync",
+    "manifest_hash": "cd5dd689400b8d4d586fdcd85ede3a0a273032bd8766283948aa565b488d1901"
+  },
+  "plan_hash": "0ed165a2b2026a5ab0703f37964cd5d93d385ace65800df85df76a372aaf1f75",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "9eee258cd79f419ad25955f49424cb21f3e005a9dea56bbf2f4d478f7878a9e7"
+}
+unify-plugin-contract-metadata_sync_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- archive add-gameplay-plugin-template-helper --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-gameplay-plugin-template-helper",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/1970-01-01-add-gameplay-plugin-template-helper"
+    }
+  ],
+  "blocked": false,
+  "change": "add-gameplay-plugin-template-helper",
+  "dry_run": false,
+  "input_hash": "23953b8ff91d63abfe9c4a5456279f7410fb5d968c6072906f8fa15992abad6c",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "1bf12baea43743834a714a4443eb1fe4434ac19dda0a04a1d8906821e16f1a24",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-add-gameplay-plugin-template-helper/design.md"
+        },
+        {
+          "content_hash": "4f629e2914e5a7ee6b50293e6bb8fd18dc9b800bcdb9d91b0a1283e140b37834",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-add-gameplay-plugin-template-helper/proposal.md"
+        },
+        {
+          "content_hash": "f7403c85f2085ea177d204639be86634754d35e552d6e2d5403758c81509102c",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-add-gameplay-plugin-template-helper/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "7b3abd53487454afd0055773361d3d96b4e1625dd10c697b8d40049fe714d9b4",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-add-gameplay-plugin-template-helper/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-gameplay-plugin-template-helper"
+        }
+      ],
+      "manifest_hash": "e11ee49a62e8987c039c128039dda46986844aa25e3d7404f74139f9673b478d"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "1bf12baea43743834a714a4443eb1fe4434ac19dda0a04a1d8906821e16f1a24",
+          "exists": true,
+          "path": "./cairn/changes/add-gameplay-plugin-template-helper/design.md"
+        },
+        {
+          "content_hash": "4f629e2914e5a7ee6b50293e6bb8fd18dc9b800bcdb9d91b0a1283e140b37834",
+          "exists": true,
+          "path": "./cairn/changes/add-gameplay-plugin-template-helper/proposal.md"
+        },
+        {
+          "content_hash": "f7403c85f2085ea177d204639be86634754d35e552d6e2d5403758c81509102c",
+          "exists": true,
+          "path": "./cairn/changes/add-gameplay-plugin-template-helper/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "7b3abd53487454afd0055773361d3d96b4e1625dd10c697b8d40049fe714d9b4",
+          "exists": true,
+          "path": "./cairn/changes/add-gameplay-plugin-template-helper/tasks.md"
+        }
+      ],
+      "manifest_hash": "95ae19c4b31a6dcb4854098dc187fa126f0552352f6cec5d1af096a92527ff02"
+    },
+    "kind": "archive",
+    "manifest_hash": "f4f6925c179bfd7e0ed7cf55b3f07a6176a11d1f5bc1542d7e7ff0f6e42239b4"
+  },
+  "plan_hash": "f366715126a5662a8e9044b167f1219accc40ea8e8c294c9a0fc7a1a17a2e916",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "80bb79bda34dfc850ee24923b71e0b272803d550098c88eee38b63d5c1661aac"
+}
+add-gameplay-plugin-template-helper_archive_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- archive add-plugin-composition-preflight --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-plugin-composition-preflight",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/1970-01-01-add-plugin-composition-preflight"
+    }
+  ],
+  "blocked": false,
+  "change": "add-plugin-composition-preflight",
+  "dry_run": false,
+  "input_hash": "2afd754d00bd4a41a45856d3e32bd8b256d04994cda71a2e61131134f381fb5d",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "25b693728cbbeab3dcf86d93ccebe6f0eb9d6191bfc95f42f5680310ef9dfd43",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-add-plugin-composition-preflight/design.md"
+        },
+        {
+          "content_hash": "29dc748439be4a372f849d68369d5e091e59ceed96f0263a7e9692a0c5f46680",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-add-plugin-composition-preflight/proposal.md"
+        },
+        {
+          "content_hash": "08cd5131ce09efea832279391bf17f9fccd06b37481aa08d7c146d1181d03237",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-add-plugin-composition-preflight/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "0cb94731808b844a61778b63ee7fdc372217a9428028e33a246130f735610bfd",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-add-plugin-composition-preflight/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-plugin-composition-preflight"
+        }
+      ],
+      "manifest_hash": "42280261aad74521d9b8aabdb707fe5e4101d3c6c6e10797e634ed0e30170f5c"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "25b693728cbbeab3dcf86d93ccebe6f0eb9d6191bfc95f42f5680310ef9dfd43",
+          "exists": true,
+          "path": "./cairn/changes/add-plugin-composition-preflight/design.md"
+        },
+        {
+          "content_hash": "29dc748439be4a372f849d68369d5e091e59ceed96f0263a7e9692a0c5f46680",
+          "exists": true,
+          "path": "./cairn/changes/add-plugin-composition-preflight/proposal.md"
+        },
+        {
+          "content_hash": "08cd5131ce09efea832279391bf17f9fccd06b37481aa08d7c146d1181d03237",
+          "exists": true,
+          "path": "./cairn/changes/add-plugin-composition-preflight/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "0cb94731808b844a61778b63ee7fdc372217a9428028e33a246130f735610bfd",
+          "exists": true,
+          "path": "./cairn/changes/add-plugin-composition-preflight/tasks.md"
+        }
+      ],
+      "manifest_hash": "5ccee4ffdf8ed32ace2df4049466d3028baf00067769a6c0bd0eaccebce65a53"
+    },
+    "kind": "archive",
+    "manifest_hash": "0cb004312ceadbfe92c35c7a81438eb4436b714359cb0b8ebc0aa8ef87892750"
+  },
+  "plan_hash": "2b0abce37b1ed2c092873c2f67d12c11b11f31e23dfd6cd60b1bcde1f8c10f5c",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "dad992628fb496945d5d87f987a3540a99b537bdac50c51d478ab2c2f102f626"
+}
+add-plugin-composition-preflight_archive_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- archive add-structured-schedule-receipts --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-structured-schedule-receipts",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/1970-01-01-add-structured-schedule-receipts"
+    }
+  ],
+  "blocked": false,
+  "change": "add-structured-schedule-receipts",
+  "dry_run": false,
+  "input_hash": "34c3d90841c36f2735797b8f09b953ae89ea9b890e0b16992c21f39a64b47866",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "e37d99c8847cab57ef7f707cf39af5e7bbe858a2b624489af5b61d7b72f72ad1",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-add-structured-schedule-receipts/design.md"
+        },
+        {
+          "content_hash": "8faa2970442074797972bce1a6873ea6cc66bdf4823ef1037ce5b89f9c6d700c",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-add-structured-schedule-receipts/proposal.md"
+        },
+        {
+          "content_hash": "62fc1fd9d9cba6dcedac80e199ead660e5263e05d0937bbfafd0051d25c3486f",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-add-structured-schedule-receipts/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "15a49779dc43fabf68564855bfb86f694ed47a1ddd5ad0701b3a4862ca8049e7",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-add-structured-schedule-receipts/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-structured-schedule-receipts"
+        }
+      ],
+      "manifest_hash": "1dc432d903f2571410035c4d14d8d33aa0777896e18d9b1f985adc5a0a8faf7f"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "e37d99c8847cab57ef7f707cf39af5e7bbe858a2b624489af5b61d7b72f72ad1",
+          "exists": true,
+          "path": "./cairn/changes/add-structured-schedule-receipts/design.md"
+        },
+        {
+          "content_hash": "8faa2970442074797972bce1a6873ea6cc66bdf4823ef1037ce5b89f9c6d700c",
+          "exists": true,
+          "path": "./cairn/changes/add-structured-schedule-receipts/proposal.md"
+        },
+        {
+          "content_hash": "62fc1fd9d9cba6dcedac80e199ead660e5263e05d0937bbfafd0051d25c3486f",
+          "exists": true,
+          "path": "./cairn/changes/add-structured-schedule-receipts/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "15a49779dc43fabf68564855bfb86f694ed47a1ddd5ad0701b3a4862ca8049e7",
+          "exists": true,
+          "path": "./cairn/changes/add-structured-schedule-receipts/tasks.md"
+        }
+      ],
+      "manifest_hash": "c90ac3326258f2440d0fb12dcdd81a9608bf1501cbf0b789e9b64d18a1df642e"
+    },
+    "kind": "archive",
+    "manifest_hash": "5cdaa6c26140a44961d702f8c245a31ad3857a478ec86a0a43626d4938bd7e29"
+  },
+  "plan_hash": "a30591e33f086c3934baeaa57b5ecf65695e6473c91dc4a724d778daef9e7405",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "3663e46f89ca3bfcac8563146df709ac2726e6fa45e4952577344298b4aba94b"
+}
+add-structured-schedule-receipts_archive_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- archive execute-hyperion-preset-plugin-slots --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: execute-hyperion-preset-plugin-slots",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/1970-01-01-execute-hyperion-preset-plugin-slots"
+    }
+  ],
+  "blocked": false,
+  "change": "execute-hyperion-preset-plugin-slots",
+  "dry_run": false,
+  "input_hash": "2fb7aaf639b7e474e3f351cbe3019db17d6a12cbb47eb54370c24916ccdc21d6",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "5cc7d9ddee618fc3dd76eaea04f963555d6cd6d631bbfc0aecdf1f2cad4879fb",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-execute-hyperion-preset-plugin-slots/design.md"
+        },
+        {
+          "content_hash": "144bbf8305718b85727869db8d5148a48c120d73ffa25b2b1d4d120bd47dcef6",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-execute-hyperion-preset-plugin-slots/proposal.md"
+        },
+        {
+          "content_hash": "80b8f1e0192b60c442b075ad65041877bf8c6f0a89ba0513295ecc62155139ac",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-execute-hyperion-preset-plugin-slots/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "425b120fa5041bd722844b2c3598283d2774cea31e812decbecfd5c436470ba9",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-execute-hyperion-preset-plugin-slots/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/execute-hyperion-preset-plugin-slots"
+        }
+      ],
+      "manifest_hash": "56b46b9f9dbaf9d7cd11516344c65873ac5f1f8a2f62d42c2a754e571b6d41b8"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "5cc7d9ddee618fc3dd76eaea04f963555d6cd6d631bbfc0aecdf1f2cad4879fb",
+          "exists": true,
+          "path": "./cairn/changes/execute-hyperion-preset-plugin-slots/design.md"
+        },
+        {
+          "content_hash": "144bbf8305718b85727869db8d5148a48c120d73ffa25b2b1d4d120bd47dcef6",
+          "exists": true,
+          "path": "./cairn/changes/execute-hyperion-preset-plugin-slots/proposal.md"
+        },
+        {
+          "content_hash": "80b8f1e0192b60c442b075ad65041877bf8c6f0a89ba0513295ecc62155139ac",
+          "exists": true,
+          "path": "./cairn/changes/execute-hyperion-preset-plugin-slots/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "425b120fa5041bd722844b2c3598283d2774cea31e812decbecfd5c436470ba9",
+          "exists": true,
+          "path": "./cairn/changes/execute-hyperion-preset-plugin-slots/tasks.md"
+        }
+      ],
+      "manifest_hash": "d041fc6d20321551dac9efa094770c5287e4300a5187987cc00e36605b502b41"
+    },
+    "kind": "archive",
+    "manifest_hash": "88af6fd060ac80eb278fd8b0e99e7ebb901f3d34b4e58939c602d638d8a7c75b"
+  },
+  "plan_hash": "5e9838af2ae1f0700d8ca3eef110b2a6f33842c9966533da4e573abeb9e199b3",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "148b74b4a03a157687d4cf8934b25f4e4574feb6b0bfac11fee51906cb175ced"
+}
+execute-hyperion-preset-plugin-slots_archive_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- archive expose-plugin-diagnostics-registry --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: expose-plugin-diagnostics-registry",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/1970-01-01-expose-plugin-diagnostics-registry"
+    }
+  ],
+  "blocked": false,
+  "change": "expose-plugin-diagnostics-registry",
+  "dry_run": false,
+  "input_hash": "b6f0aededc924cc634f58ad3055fd7da73093f11cf52660c884a4327c0e43895",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "4c555524c471e64683d8414e5a8c4d950eca6c43071e6c01634cd94e01910972",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-expose-plugin-diagnostics-registry/design.md"
+        },
+        {
+          "content_hash": "ae0604b17bd246c015185069d12e33e4c5d5424f44505286908580e9c1f10482",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-expose-plugin-diagnostics-registry/proposal.md"
+        },
+        {
+          "content_hash": "5667b02a7d3a013780ced0a03e80e35cfad56d5584c09c80536c1636fea38013",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-expose-plugin-diagnostics-registry/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "48614cd33dfd3af77172b7c568531d4604303fb36fea0cdeecf9a2f0897a361e",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-expose-plugin-diagnostics-registry/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/expose-plugin-diagnostics-registry"
+        }
+      ],
+      "manifest_hash": "d257f1415feb0dbea96192f85f16a8f051dce95b9b1790c5ddd1c2947fe50cb4"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "4c555524c471e64683d8414e5a8c4d950eca6c43071e6c01634cd94e01910972",
+          "exists": true,
+          "path": "./cairn/changes/expose-plugin-diagnostics-registry/design.md"
+        },
+        {
+          "content_hash": "ae0604b17bd246c015185069d12e33e4c5d5424f44505286908580e9c1f10482",
+          "exists": true,
+          "path": "./cairn/changes/expose-plugin-diagnostics-registry/proposal.md"
+        },
+        {
+          "content_hash": "5667b02a7d3a013780ced0a03e80e35cfad56d5584c09c80536c1636fea38013",
+          "exists": true,
+          "path": "./cairn/changes/expose-plugin-diagnostics-registry/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "48614cd33dfd3af77172b7c568531d4604303fb36fea0cdeecf9a2f0897a361e",
+          "exists": true,
+          "path": "./cairn/changes/expose-plugin-diagnostics-registry/tasks.md"
+        }
+      ],
+      "manifest_hash": "427f5b020dab1ef18e342b05f0886957780b3eb114065bc60b7b9c55eb03065f"
+    },
+    "kind": "archive",
+    "manifest_hash": "460e2fc38783ffe6eb750b12ca26b71234e75a91b441289b33b46ab8440b4853"
+  },
+  "plan_hash": "21d60d00249dbbcb6a4fe39ca214cb1f2f371fd789a3ae25df3e9cbad5227e91",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "7d512382b48b8640c68f8d773de211270a2ed08d90e0a5e20787cacaf5c3bb23"
+}
+expose-plugin-diagnostics-registry_archive_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- archive support-scoped-plugin-instances --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: support-scoped-plugin-instances",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/1970-01-01-support-scoped-plugin-instances"
+    }
+  ],
+  "blocked": false,
+  "change": "support-scoped-plugin-instances",
+  "dry_run": false,
+  "input_hash": "8326627d3dad94c54d4b8450564392b07e4f77a7c56a86ce9cdf9493b68fccf4",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "6c512cbbeeece150905942e6cd07afdb780b675b2fa1f2d76bde0361df5da396",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-support-scoped-plugin-instances/design.md"
+        },
+        {
+          "content_hash": "b5dfd19eb67c198ec830e3ebd31fdeb366fa72b9db5bce6c1ad2e606787de965",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-support-scoped-plugin-instances/proposal.md"
+        },
+        {
+          "content_hash": "45b4b6ad5f3a846c4938f66e0ab449991a50da94e1e0e5241edcccc63dd8c389",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-support-scoped-plugin-instances/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "5b2d4fc64d612ab5e4d4b7c456ab42304830c417b4bc20f6dce9ad35b61ceba4",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-support-scoped-plugin-instances/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/support-scoped-plugin-instances"
+        }
+      ],
+      "manifest_hash": "f4827157511c60f37898ed446e34867dcf9c6474547f8fe614c945959055fd96"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "6c512cbbeeece150905942e6cd07afdb780b675b2fa1f2d76bde0361df5da396",
+          "exists": true,
+          "path": "./cairn/changes/support-scoped-plugin-instances/design.md"
+        },
+        {
+          "content_hash": "b5dfd19eb67c198ec830e3ebd31fdeb366fa72b9db5bce6c1ad2e606787de965",
+          "exists": true,
+          "path": "./cairn/changes/support-scoped-plugin-instances/proposal.md"
+        },
+        {
+          "content_hash": "45b4b6ad5f3a846c4938f66e0ab449991a50da94e1e0e5241edcccc63dd8c389",
+          "exists": true,
+          "path": "./cairn/changes/support-scoped-plugin-instances/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "5b2d4fc64d612ab5e4d4b7c456ab42304830c417b4bc20f6dce9ad35b61ceba4",
+          "exists": true,
+          "path": "./cairn/changes/support-scoped-plugin-instances/tasks.md"
+        }
+      ],
+      "manifest_hash": "a20ea447fe05a8167f479c7807018c6c1446e4535e301a1fd25862efcc9981ff"
+    },
+    "kind": "archive",
+    "manifest_hash": "9e988f6cb1777c45844c8cc11bca9ac306a3cf7524e56d179f4ff56ff08dffee"
+  },
+  "plan_hash": "1da93108a0e61b7660ff1395ac424f489c0b460daafd660551636e8d33364a6b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "928324553ab02eb88b94abc2afaf0d65014c21d36ef20276a7602ac8ad42da1b"
+}
+support-scoped-plugin-instances_archive_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- archive unify-plugin-contract-metadata --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: unify-plugin-contract-metadata",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/1970-01-01-unify-plugin-contract-metadata"
+    }
+  ],
+  "blocked": false,
+  "change": "unify-plugin-contract-metadata",
+  "dry_run": false,
+  "input_hash": "ba7a76dbaaef54c9eb78b2c91b54439249ec36a32fb42de5abf9c21c687d626b",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "ceee591375cd762369768682429efbe66ed3afd8e8abf457d8db459604763d27",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-unify-plugin-contract-metadata/design.md"
+        },
+        {
+          "content_hash": "a241de93833ef263b13c41b5b07985bf432be6c77cb4c9e898d178a357817978",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-unify-plugin-contract-metadata/proposal.md"
+        },
+        {
+          "content_hash": "404548f1e6b91c72f4438697b0fe43321fed2a75dcdb06efea5be7d0995d7840",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-unify-plugin-contract-metadata/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "885cc45205ac337536af062b553eef3eca49d530f46012653d9511fc5e2e3145",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-unify-plugin-contract-metadata/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "e5955bf99a81f7b5b06a0ef449992ad7daba774dcf8ab5fa4c6d53633f231097",
+          "exists": true,
+          "path": "./cairn/archive/1970-01-01-unify-plugin-contract-metadata/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/unify-plugin-contract-metadata"
+        }
+      ],
+      "manifest_hash": "59085e3761ee313b668ffecd9b1c2d0735e2cbb070e366482c557730207ab5b2"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "ceee591375cd762369768682429efbe66ed3afd8e8abf457d8db459604763d27",
+          "exists": true,
+          "path": "./cairn/changes/unify-plugin-contract-metadata/design.md"
+        },
+        {
+          "content_hash": "a241de93833ef263b13c41b5b07985bf432be6c77cb4c9e898d178a357817978",
+          "exists": true,
+          "path": "./cairn/changes/unify-plugin-contract-metadata/proposal.md"
+        },
+        {
+          "content_hash": "404548f1e6b91c72f4438697b0fe43321fed2a75dcdb06efea5be7d0995d7840",
+          "exists": true,
+          "path": "./cairn/changes/unify-plugin-contract-metadata/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "885cc45205ac337536af062b553eef3eca49d530f46012653d9511fc5e2e3145",
+          "exists": true,
+          "path": "./cairn/changes/unify-plugin-contract-metadata/specs/valence-bevy-ecs/spec.md"
+        },
+        {
+          "content_hash": "e5955bf99a81f7b5b06a0ef449992ad7daba774dcf8ab5fa4c6d53633f231097",
+          "exists": true,
+          "path": "./cairn/changes/unify-plugin-contract-metadata/tasks.md"
+        }
+      ],
+      "manifest_hash": "6e80ec10a80ac5c898a88c9efa4bd9c3182c49f803962fe6064e94ea8fdd0bcd"
+    },
+    "kind": "archive",
+    "manifest_hash": "28624646cb98f4dd0d223b5ac42410d2a5c6a9ec9feaa06d7b1e1cf25b7dac6e"
+  },
+  "plan_hash": "3495faf7efbe2c5ed189057d0196bc843a35094e564c1d2af23774fdc9abc086",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "801e5835df094a3abccbf74daa16441cdf05c42e597d94240ac111d9dd3972ac"
+}
+unify-plugin-contract-metadata_archive_exit_status=0
+exit_status=0

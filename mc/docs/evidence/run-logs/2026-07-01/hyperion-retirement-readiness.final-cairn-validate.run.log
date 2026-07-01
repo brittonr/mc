@@ -1,0 +1,14 @@
+command=cairn validate final after drain state update
+start=2026-07-01T01:04:12-04:00
+$ nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 6,
+  "valid": true
+}
+exit_status=0

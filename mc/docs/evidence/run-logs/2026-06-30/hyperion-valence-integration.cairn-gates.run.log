@@ -1,0 +1,498 @@
+command=Cairn gates for Hyperion/Valence integration changes (final after task evidence edits)
+start=2026-06-30T22:04:43-04:00
+$ nix run path:/home/brittonr/git/mc#cairn -- gate proposal add-gameplay-plugin-template-helper --root /home/brittonr/git/mc
+{
+  "change": "add-gameplay-plugin-template-helper",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "dcd81a941df073d5baae74fceb48b40ae1e4d0874d47ec1be19357c663c7027a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "2a73d6a77f2769def881702701f06599aaae4b860d3e382f38e8cb9cb6f57932",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-gameplay-plugin-template-helper_proposal_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate design add-gameplay-plugin-template-helper --root /home/brittonr/git/mc
+{
+  "change": "add-gameplay-plugin-template-helper",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f11b49596ec1f86b09961b9b027880558a125702af31e5a11a7514be94310ef2",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "85438ecd87cbccf58d5b2311afd71f860c906599f9f2cd01606db4747f5ee92f",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-gameplay-plugin-template-helper_design_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate tasks add-gameplay-plugin-template-helper --root /home/brittonr/git/mc
+{
+  "change": "add-gameplay-plugin-template-helper",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "66100b00997b5968a50465b770910940a9da77f52dd9c338d6318dc101eb9ad7",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "1091ee647341156a9caac7c464da00aa69b2b55f89303690df1088c892664faa",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-gameplay-plugin-template-helper_tasks_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate proposal add-plugin-composition-preflight --root /home/brittonr/git/mc
+{
+  "change": "add-plugin-composition-preflight",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "e317e9bf980b21f8a0e6e755d8ad58d4cc0af87b9726debbf5effbe656502343",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "3d183b43e01cc71358799e2cb5ce1f80234d2bcc4c9be29edb0e5c9719eadd03",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-plugin-composition-preflight_proposal_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate design add-plugin-composition-preflight --root /home/brittonr/git/mc
+{
+  "change": "add-plugin-composition-preflight",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "9412d3e6ca50a9c1b66daa9574a7e7de8757f3aff966f2f09ea296ab3bb356d2",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "c6a6c8327a80a03831535f4edac5ac626d9d3e8e542173ecd04bd2efee04bcb7",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-plugin-composition-preflight_design_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate tasks add-plugin-composition-preflight --root /home/brittonr/git/mc
+{
+  "change": "add-plugin-composition-preflight",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "1c514a8bf6facd9e381437b1b5eaaae6ac87ab036ffa07f29a0fecd365326ee0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "7e6f1337acb1268ef8e7e5969dffa2c2d299a1e3d6d5712870fa7361244b474e",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-plugin-composition-preflight_tasks_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate proposal add-structured-schedule-receipts --root /home/brittonr/git/mc
+{
+  "change": "add-structured-schedule-receipts",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "a22294760439675dbfc634a3b6497b63dcdb79c570878e616be510ed80de9b67",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "8e793095b37e56fa7e8feff1f0f030b38445b329ab965e90b2f7f048ef96dbb9",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-structured-schedule-receipts_proposal_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate design add-structured-schedule-receipts --root /home/brittonr/git/mc
+{
+  "change": "add-structured-schedule-receipts",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "2bdbd0b291b4866f5ed95452589ff0d47376935de63e16f6d4555df2f9b7a046",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "93cb0792de6e6f7225890b3b279c4454e26c3fc1f69cdfcf6dfa096e5ed8952f",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-structured-schedule-receipts_design_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate tasks add-structured-schedule-receipts --root /home/brittonr/git/mc
+{
+  "change": "add-structured-schedule-receipts",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "05d82f3ac5164a44d2650cf17da409b5241519b983144d59bc0ca3bc7a1d6aec",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "cce6ba6c47adc01055ac5bc36788cfe31587d895b8ee4399a6383046136236fa",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+add-structured-schedule-receipts_tasks_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate proposal execute-hyperion-preset-plugin-slots --root /home/brittonr/git/mc
+{
+  "change": "execute-hyperion-preset-plugin-slots",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "324d1b86a6def9ca178ae94eabc44164892463075d8799afd6b2f65e94b6c5c6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "b6cffe91463b35849901a16c9b5320376b1b93dd7ddc5af29e834ae30691cbe0",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+execute-hyperion-preset-plugin-slots_proposal_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate design execute-hyperion-preset-plugin-slots --root /home/brittonr/git/mc
+{
+  "change": "execute-hyperion-preset-plugin-slots",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "f364fd308c6890d247d117271154906fe5ddbe68ad35ae2fb3b312195c757de1",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "a0f1c02ba501d4d2673ff94eb4a10149ef9db59b4a1abb063bb68a77878bcfc8",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+execute-hyperion-preset-plugin-slots_design_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate tasks execute-hyperion-preset-plugin-slots --root /home/brittonr/git/mc
+{
+  "change": "execute-hyperion-preset-plugin-slots",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c4a8c2a170958378bd626d8090c8e235a3635225e10a4f374c633d1cf0cdd37d",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "cf849d13fd11c6c63ea742517a6b3985f874c0d8641786962529a398d0334bcd",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+execute-hyperion-preset-plugin-slots_tasks_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate proposal expose-plugin-diagnostics-registry --root /home/brittonr/git/mc
+{
+  "change": "expose-plugin-diagnostics-registry",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3de42cb7dee5806ef9a6e68f4e1eb4a95cd3e961cc16c1a97e2b9b3daa1ba746",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "404640d2a266690b4fe4c94882be840955a393c6e3cd6eabe63db32526cb28ef",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+expose-plugin-diagnostics-registry_proposal_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate design expose-plugin-diagnostics-registry --root /home/brittonr/git/mc
+{
+  "change": "expose-plugin-diagnostics-registry",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "df8b878627642853c0473a83ffdb7d8c76195a6bc46f95e4620841e894be42f3",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "3d84f0d6df79682bf5c2c57613d5ea9bf2a03fa9cc3d6879a237aec8a880bca7",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+expose-plugin-diagnostics-registry_design_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate tasks expose-plugin-diagnostics-registry --root /home/brittonr/git/mc
+{
+  "change": "expose-plugin-diagnostics-registry",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "adb3642a2d66d198f5892b7f420bbbe51b1f6850f56180be44b9762c0e7d8a75",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "0d16de032deb6b9332af126c60b770008e97153a33dd42dadae6e0439f3e067a",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+expose-plugin-diagnostics-registry_tasks_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate proposal support-scoped-plugin-instances --root /home/brittonr/git/mc
+{
+  "change": "support-scoped-plugin-instances",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3d4cc56056cae671030db78e8782db9fca1a12a365184b124dab4b0c4ce3907a",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "e9b4409ea4403ac9b40014d076b5edde0308900cc1112e4221dbf0e21b87d14f",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+support-scoped-plugin-instances_proposal_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate design support-scoped-plugin-instances --root /home/brittonr/git/mc
+{
+  "change": "support-scoped-plugin-instances",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "c57029c73ff946782cc9991648105b795bec23a9f47d8d3a66dd7c1aeec7dee0",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "45c1549c774537917980eec713bbc99ef148b3bbc967dfec4541499eb621196d",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+support-scoped-plugin-instances_design_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate tasks support-scoped-plugin-instances --root /home/brittonr/git/mc
+{
+  "change": "support-scoped-plugin-instances",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "6015783f90b3d5d0451549b1f2483524287bfa5214fcd6422c163e2135eb1ac6",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "07224550e2f02b4f00ec3d052580fa00a81c92e69170bf8909551c1cfce5e9b1",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+support-scoped-plugin-instances_tasks_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate proposal unify-plugin-contract-metadata --root /home/brittonr/git/mc
+{
+  "change": "unify-plugin-contract-metadata",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "be1a085785e93a961fa2cbae40b4cf43c4307323da2078dc3045f7531b515d48",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "a8a9a48b672d83626114bd9ce6920138f1b37943a16c8c4fd82b16b77d918b3f",
+  "stage": "proposal",
+  "valid": true,
+  "verdict": "PASS"
+}
+unify-plugin-contract-metadata_proposal_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate design unify-plugin-contract-metadata --root /home/brittonr/git/mc
+{
+  "change": "unify-plugin-contract-metadata",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "b16ee0d3b6fbe0ab8c4a7154a8217cdeaae4fbea46df66f94ce0c52079bb18de",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "edfe9c6760eee48ace023ca969f79342986a4025a9fd698d0cf13290218bd7b8",
+  "stage": "design",
+  "valid": true,
+  "verdict": "PASS"
+}
+unify-plugin-contract-metadata_design_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- gate tasks unify-plugin-contract-metadata --root /home/brittonr/git/mc
+{
+  "change": "unify-plugin-contract-metadata",
+  "evidence_summary": {
+    "docs_only": 0,
+    "fixture": 0,
+    "formal": 0,
+    "mode": "advisory",
+    "model": 0,
+    "probe": 0,
+    "property": 0
+  },
+  "input_hash": "3db73352b2e05ffdeb9374f9b243674ab6fd7b8feba56f899471b81229db2edf",
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "receipt_hash": "01e4846df7710c3af84ed4fddfa93ef2995117f2f071da48f59fc777ad0734dd",
+  "stage": "tasks",
+  "valid": true,
+  "verdict": "PASS"
+}
+unify-plugin-contract-metadata_tasks_exit_status=0
+$ nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+{
+  "change_issues": [],
+  "changes": 7,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 14,
+  "valid": true
+}
+cairn_validate_exit_status=0
+exit_status=0

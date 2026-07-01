@@ -1,0 +1,685 @@
+diff --git a/crates/hyperion-game-modes/src/composition.rs b/crates/hyperion-game-modes/src/composition.rs
+index 75be3cc09e..5b9341bf60 100644
+--- a/crates/hyperion-game-modes/src/composition.rs
++++ b/crates/hyperion-game-modes/src/composition.rs
+@@ -39,6 +39,13 @@
+ const NO_FEATURE_DEPENDENCIES: &[GameplayFeature] = &[];
+ const COMMAND_REGISTRATION_DEPENDENCIES: &[GameplayFeature] = &[GameplayFeature::ClapCommand];
+ 
++pub const COMPILED_PLUGIN_NON_CLAIMS: &[&str] = &[
++    "runtime-loaded shared libraries",
++    "hot reload",
++    "scripting",
++    "untrusted plugin sandboxing",
++];
++
+ pub const DEFAULT_GAMEPLAY_FEATURES: &[GameplayFeature] = &[
+     GameplayFeature::Attack,
+     GameplayFeature::Block,
+@@ -138,6 +145,10 @@
+     DuplicateCustomPlugin(&'static str),
+     FeatureToggleWithoutDefaultGameplay(GameplayFeature),
+     IncompatibleReplacement(GameplayFeature),
++    MissingReplacementPluginSlot(GameplayFeature),
++    MissingCustomPluginSlot(&'static str),
++    UnexpectedReplacementPluginSlot(GameplayFeature),
++    UnexpectedCustomPluginSlot(&'static str),
+     MissingFeatureDependency {
+         feature: GameplayFeature,
+         dependency: GameplayFeature,
+@@ -164,6 +175,98 @@
+     pub custom_plugins: Vec<&'static str>,
+ }
+ 
++#[derive(Clone, Copy, Debug, Eq, PartialEq)]
++pub enum FeatureDependencyStatus {
++    Present,
++    FeatureDisabled,
++    DependencyDisabled,
++}
++
++#[derive(Clone, Copy, Debug, Eq, PartialEq)]
++pub struct FeatureDependencyDiagnostic {
++    pub feature: GameplayFeature,
++    pub dependency: GameplayFeature,
++    pub status: FeatureDependencyStatus,
++}
++
++#[derive(Clone, Debug, Eq, PartialEq)]
++pub struct PresetDiagnostics {
++    pub mode: ExclusiveMode,
++    pub include_default_gameplay: bool,
++    pub installed_features: Vec<GameplayFeature>,
++    pub disabled_features: Vec<GameplayFeature>,
++    pub replacement_features: Vec<GameplayFeature>,
++    pub custom_plugins: Vec<&'static str>,
++    pub dependency_decisions: Vec<FeatureDependencyDiagnostic>,
++    pub non_claims: Vec<&'static str>,
++}
++
++pub fn build_preset_diagnostics(plan: &PresetPlan) -> PresetDiagnostics {
++    let installed_features = installed_default_features(plan);
++    let dependency_decisions = feature_dependency_diagnostics(plan);
++    PresetDiagnostics {
++        mode: plan.mode,
++        include_default_gameplay: plan.include_default_gameplay,
++        installed_features,
++        disabled_features: plan.disabled_features.clone(),
++        replacement_features: plan.replacement_features.clone(),
++        custom_plugins: plan.custom_plugins.clone(),
++        dependency_decisions,
++        non_claims: COMPILED_PLUGIN_NON_CLAIMS.to_vec(),
++    }
++}
++
++fn installed_default_features(plan: &PresetPlan) -> Vec<GameplayFeature> {
++    if !plan.include_default_gameplay {
++        return Vec::new();
++    }
++    DEFAULT_GAMEPLAY_FEATURES
++        .iter()
++        .copied()
++        .filter(|feature| {
++            !plan.disabled_features.contains(feature)
++                && !plan.replacement_features.contains(feature)
++        })
++        .collect()
++}
++
++fn feature_dependency_diagnostics(plan: &PresetPlan) -> Vec<FeatureDependencyDiagnostic> {
++    DEFAULT_GAMEPLAY_FEATURES
++        .iter()
++        .copied()
++        .flat_map(|feature| {
++            feature
++                .dependencies()
++                .iter()
++                .copied()
++                .map(move |dependency| FeatureDependencyDiagnostic {
++                    feature,
++                    dependency,
++                    status: feature_dependency_status(plan, feature, dependency),
++                })
++        })
++        .collect()
++}
++
++fn feature_dependency_status(
++    plan: &PresetPlan,
++    feature: GameplayFeature,
++    dependency: GameplayFeature,
++) -> FeatureDependencyStatus {
++    if !plan.include_default_gameplay
++        || plan.disabled_features.contains(&feature)
++        || plan.replacement_features.contains(&feature)
++    {
++        return FeatureDependencyStatus::FeatureDisabled;
++    }
++    if plan.disabled_features.contains(&dependency)
++        || plan.replacement_features.contains(&dependency)
++    {
++        return FeatureDependencyStatus::DependencyDisabled;
++    }
++    FeatureDependencyStatus::Present
++}
++
+ pub fn validate_exclusive_modes(modes: &[ExclusiveMode]) -> CompositionResult<ExclusiveMode> {
+     let Some((&selected, rest)) = modes.split_first() else {
+         return Err(CompositionError::MissingMode);
+@@ -399,4 +502,46 @@
+             CompositionError::DuplicateCustomPlugin(CUSTOM_SCOREBOARD_PLUGIN)
+         );
+     }
++
++    #[test]
++    fn preset_diagnostics_report_installed_disabled_replaced_and_custom_slots() {
++        let plan = build_preset_plan(PresetPlanInput {
++            disabled_features: &[GameplayFeature::Stats],
++            replacement_features: &[GameplayFeature::Bow],
++            custom_plugins: &[CUSTOM_SCOREBOARD_PLUGIN],
++            ..default_input()
++        })
++        .unwrap();
++
++        let diagnostics = build_preset_diagnostics(&plan);
++
++        assert_eq!(diagnostics.mode, ExclusiveMode::Bedwars);
++        assert!(diagnostics.include_default_gameplay);
++        assert!(
++            diagnostics
++                .installed_features
++                .contains(&GameplayFeature::Attack)
++        );
++        assert!(
++            !diagnostics
++                .installed_features
++                .contains(&GameplayFeature::Stats)
++        );
++        assert!(
++            !diagnostics
++                .installed_features
++                .contains(&GameplayFeature::Bow)
++        );
++        assert_eq!(diagnostics.disabled_features, vec![GameplayFeature::Stats]);
++        assert_eq!(diagnostics.replacement_features, vec![GameplayFeature::Bow]);
++        assert_eq!(diagnostics.custom_plugins, vec![CUSTOM_SCOREBOARD_PLUGIN]);
++        assert_eq!(diagnostics.non_claims, COMPILED_PLUGIN_NON_CLAIMS);
++        assert_eq!(diagnostics.dependency_decisions, vec![
++            FeatureDependencyDiagnostic {
++                feature: GameplayFeature::CommandRegistration,
++                dependency: GameplayFeature::ClapCommand,
++                status: FeatureDependencyStatus::Present,
++            }
++        ]);
++    }
+ }
+diff --git a/events/bedwars/src/lib.rs b/events/bedwars/src/lib.rs
+index 441cfe58ce..359bfb1530 100644
+--- a/events/bedwars/src/lib.rs
++++ b/events/bedwars/src/lib.rs
+@@ -9,8 +9,8 @@
+ use clap::ValueEnum;
+ use hyperion::{Crypto, HyperionCore, ProxyBind, simulation::packet_state, spatial::Spatial};
+ use hyperion_game_modes::composition::{
+-    CompositionError, ExclusiveMode, GameplayFeature, PresetPlan, PresetPlanInput,
+-    build_preset_plan,
++    CompositionError, ExclusiveMode, GameplayFeature, PresetDiagnostics, PresetPlan,
++    PresetPlanInput, build_preset_diagnostics, build_preset_plan,
+ };
+ use hyperion_proxy_module::SetProxyAddress;
+ use serde::Deserialize;
+@@ -161,6 +161,79 @@
+     }
+ }
+ 
++pub type PresetPluginInstaller = fn(&mut App);
++
++#[derive(Clone, Copy)]
++pub struct PresetPluginSlot {
++    pub name: &'static str,
++    install: PresetPluginInstaller,
++}
++
++impl PresetPluginSlot {
++    #[must_use]
++    pub const fn new(name: &'static str, install: PresetPluginInstaller) -> Self {
++        Self { name, install }
++    }
++
++    pub fn install(self, app: &mut App) {
++        (self.install)(app);
++    }
++}
++
++impl std::fmt::Debug for PresetPluginSlot {
++    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
++        formatter
++            .debug_struct("PresetPluginSlot")
++            .field("name", &self.name)
++            .finish_non_exhaustive()
++    }
++}
++
++impl PartialEq for PresetPluginSlot {
++    fn eq(&self, other: &Self) -> bool {
++        self.name == other.name
++    }
++}
++
++impl Eq for PresetPluginSlot {}
++
++#[derive(Clone, Copy, Debug, Eq, PartialEq)]
++pub struct PresetFeatureReplacementSlot {
++    pub feature: GameplayFeature,
++    pub slot: PresetPluginSlot,
++}
++
++#[derive(Resource, Clone, Debug, Eq, PartialEq)]
++pub struct PluginDiagnosticsRegistry {
++    pub diagnostics: PresetDiagnostics,
++    pub provenance: &'static str,
++}
++
++const VALIDATED_PRESET_BUILDER_PROVENANCE: &str = "validated-preset-builder";
++
++impl PluginDiagnosticsRegistry {
++    #[must_use]
++    pub fn from_plan(plan: &PresetPlan) -> Self {
++        Self {
++            diagnostics: build_preset_diagnostics(plan),
++            provenance: VALIDATED_PRESET_BUILDER_PROVENANCE,
++        }
++    }
++}
++
++#[derive(Clone, Copy, Debug, Eq, PartialEq)]
++pub enum PluginDiagnosticsMismatch {
++    MissingRegistry,
++    Mode,
++    DefaultGameplay,
++    InstalledFeatures,
++    DisabledFeatures,
++    ReplacementFeatures,
++    CustomPlugins,
++    DependencyDecisions,
++    NonClaims,
++}
++
+ #[derive(Clone, Debug, Eq, PartialEq)]
+ pub struct GamePreset {
+     pub game_type: GameType,
+@@ -168,6 +241,8 @@
+     pub disabled_features: Vec<GameplayFeature>,
+     pub replacement_features: Vec<GameplayFeature>,
+     pub custom_plugin_intents: Vec<&'static str>,
++    pub replacement_plugin_slots: Vec<PresetFeatureReplacementSlot>,
++    pub custom_plugin_slots: Vec<PresetPluginSlot>,
+ }
+ 
+ impl Default for GamePreset {
+@@ -185,6 +260,8 @@
+             disabled_features: Vec::new(),
+             replacement_features: Vec::new(),
+             custom_plugin_intents: Vec::new(),
++            replacement_plugin_slots: Vec::new(),
++            custom_plugin_slots: Vec::new(),
+         }
+     }
+ 
+@@ -207,10 +284,38 @@
+     }
+ 
+     #[must_use]
++    pub fn replace_feature_with_plugin(
++        mut self,
++        feature: GameplayFeature,
++        plugin_name: &'static str,
++        install: PresetPluginInstaller,
++    ) -> Self {
++        self.replacement_features.push(feature);
++        self.replacement_plugin_slots
++            .push(PresetFeatureReplacementSlot {
++                feature,
++                slot: PresetPluginSlot::new(plugin_name, install),
++            });
++        self
++    }
++
++    #[must_use]
+     pub fn add_custom_plugin_intent(mut self, plugin_name: &'static str) -> Self {
+         self.custom_plugin_intents.push(plugin_name);
+         self
+     }
++
++    #[must_use]
++    pub fn add_custom_plugin_slot(
++        mut self,
++        plugin_name: &'static str,
++        install: PresetPluginInstaller,
++    ) -> Self {
++        self.custom_plugin_intents.push(plugin_name);
++        self.custom_plugin_slots
++            .push(PresetPluginSlot::new(plugin_name, install));
++        self
++    }
+ }
+ 
+ pub fn plan_game_preset(preset: &GamePreset) -> Result<PresetPlan, CompositionError> {
+@@ -224,12 +329,154 @@
+     })
+ }
+ 
++pub fn validate_plugin_diagnostics(
++    diagnostics: &PresetDiagnostics,
++    plan: &PresetPlan,
++) -> Result<(), PluginDiagnosticsMismatch> {
++    let expected = build_preset_diagnostics(plan);
++    if diagnostics.mode != expected.mode {
++        return Err(PluginDiagnosticsMismatch::Mode);
++    }
++    if diagnostics.include_default_gameplay != expected.include_default_gameplay {
++        return Err(PluginDiagnosticsMismatch::DefaultGameplay);
++    }
++    if diagnostics.installed_features != expected.installed_features {
++        return Err(PluginDiagnosticsMismatch::InstalledFeatures);
++    }
++    if diagnostics.disabled_features != expected.disabled_features {
++        return Err(PluginDiagnosticsMismatch::DisabledFeatures);
++    }
++    if diagnostics.replacement_features != expected.replacement_features {
++        return Err(PluginDiagnosticsMismatch::ReplacementFeatures);
++    }
++    if diagnostics.custom_plugins != expected.custom_plugins {
++        return Err(PluginDiagnosticsMismatch::CustomPlugins);
++    }
++    if diagnostics.dependency_decisions != expected.dependency_decisions {
++        return Err(PluginDiagnosticsMismatch::DependencyDecisions);
++    }
++    if diagnostics.non_claims != expected.non_claims {
++        return Err(PluginDiagnosticsMismatch::NonClaims);
++    }
++    Ok(())
++}
++
++pub fn validate_plugin_diagnostics_registry(
++    app: &App,
++    plan: &PresetPlan,
++) -> Result<(), PluginDiagnosticsMismatch> {
++    let Some(registry) = app.world().get_resource::<PluginDiagnosticsRegistry>() else {
++        return Err(PluginDiagnosticsMismatch::MissingRegistry);
++    };
++    validate_plugin_diagnostics(&registry.diagnostics, plan)
++}
++
++#[must_use]
++pub fn render_plugin_diagnostics(registry: &PluginDiagnosticsRegistry) -> String {
++    let diagnostics = &registry.diagnostics;
++    format!(
++        "provenance={}\nmode={}\ninclude_default_gameplay={}\ninstalled_features={}\\
++         ndisabled_features={}\nreplacement_features={}\ncustom_plugins={}\nnon_claims={}\n",
++        registry.provenance,
++        diagnostics.mode.name(),
++        diagnostics.include_default_gameplay,
++        join_feature_names(&diagnostics.installed_features),
++        join_feature_names(&diagnostics.disabled_features),
++        join_feature_names(&diagnostics.replacement_features),
++        diagnostics.custom_plugins.join(","),
++        diagnostics.non_claims.join(","),
++    )
++}
++
+ fn features_disabled_by_plan(plan: &PresetPlan) -> Vec<GameplayFeature> {
+     let mut disabled_features = plan.disabled_features.clone();
+     disabled_features.extend(plan.replacement_features.iter().copied());
+     disabled_features
+ }
+ 
++fn validate_executable_plugin_slots(
++    preset: &GamePreset,
++    plan: &PresetPlan,
++) -> Result<(), CompositionError> {
++    validate_replacement_plugin_slots(preset, plan)?;
++    validate_custom_plugin_slots(preset, plan)
++}
++
++fn validate_replacement_plugin_slots(
++    preset: &GamePreset,
++    plan: &PresetPlan,
++) -> Result<(), CompositionError> {
++    for &feature in &plan.replacement_features {
++        if replacement_plugin_slot(preset, feature).is_none() {
++            return Err(CompositionError::MissingReplacementPluginSlot(feature));
++        }
++    }
++    for slot in &preset.replacement_plugin_slots {
++        if !plan.replacement_features.contains(&slot.feature) {
++            return Err(CompositionError::UnexpectedReplacementPluginSlot(
++                slot.feature,
++            ));
++        }
++    }
++    Ok(())
++}
++
++fn validate_custom_plugin_slots(
++    preset: &GamePreset,
++    plan: &PresetPlan,
++) -> Result<(), CompositionError> {
++    for &plugin_name in &plan.custom_plugins {
++        if custom_plugin_slot(preset, plugin_name).is_none() {
++            return Err(CompositionError::MissingCustomPluginSlot(plugin_name));
++        }
++    }
++    for slot in &preset.custom_plugin_slots {
++        if !plan.custom_plugins.contains(&slot.name) {
++            return Err(CompositionError::UnexpectedCustomPluginSlot(slot.name));
++        }
++    }
++    Ok(())
++}
++
++fn replacement_plugin_slot(
++    preset: &GamePreset,
++    feature: GameplayFeature,
++) -> Option<PresetFeatureReplacementSlot> {
++    preset
++        .replacement_plugin_slots
++        .iter()
++        .copied()
++        .find(|slot| slot.feature == feature)
++}
++
++fn custom_plugin_slot(preset: &GamePreset, plugin_name: &str) -> Option<PresetPluginSlot> {
++    preset
++        .custom_plugin_slots
++        .iter()
++        .copied()
++        .find(|slot| slot.name == plugin_name)
++}
++
++fn apply_preset_plugin_slots(app: &mut App, preset: &GamePreset, plan: &PresetPlan) {
++    for &feature in &plan.replacement_features {
++        let slot = replacement_plugin_slot(preset, feature).expect("validated replacement slot");
++        slot.slot.install(app);
++    }
++    for &plugin_name in &plan.custom_plugins {
++        let slot = custom_plugin_slot(preset, plugin_name).expect("validated custom plugin slot");
++        slot.install(app);
++    }
++}
++
++fn join_feature_names(features: &[GameplayFeature]) -> String {
++    features
++        .iter()
++        .copied()
++        .map(GameplayFeature::name)
++        .collect::<Vec<_>>()
++        .join(",")
++}
++
+ fn initialize_bedwars_player(
+     trigger: Trigger<'_, OnAdd, packet_state::Play>,
+     mut commands: Commands<'_, '_>,
+@@ -337,6 +584,9 @@
+ ) -> anyhow::Result<App> {
+     let plan = plan_game_preset(&preset)
+         .map_err(|error| anyhow::anyhow!("invalid Hyperion game preset: {error:?}"))?;
++    validate_executable_plugin_slots(&preset, &plan)
++        .map_err(|error| anyhow::anyhow!("invalid Hyperion executable plugin slots: {error:?}"))?;
++    let diagnostics = PluginDiagnosticsRegistry::from_plan(&plan);
+     let mut app = App::new();
+     let tcp_address = match &proxy_bind {
+         ProxyBind::Tcp(address) => Some(*address),
+@@ -344,6 +594,7 @@
+     };
+ 
+     app.insert_resource(proxy_bind);
++    app.insert_resource(diagnostics);
+     if let Some(crypto) = crypto {
+         app.insert_resource(crypto);
+     }
+@@ -354,6 +605,7 @@
+             &disabled_features,
+         ));
+     }
++    apply_preset_plugin_slots(&mut app, &preset, &plan);
+     add_game_type_plugins(&mut app, preset.game_type);
+     if let Some(address) = tcp_address {
+         app.world_mut().trigger(SetProxyAddress {
+@@ -384,6 +636,7 @@
+ mod tests {
+     use std::{
+         net::{Ipv4Addr, SocketAddr, SocketAddrV4, UdpSocket},
++        sync::atomic::{AtomicBool, Ordering},
+         time::Duration,
+     };
+ 
+@@ -402,6 +655,8 @@
+     const DUPLICATE_PLUGIN_PANIC: &str = "plugin was already added";
+     const EXCLUSIVE_MODE_CONFLICT_PANIC: &str = "exclusive Hyperion game mode conflict";
+     const MISSING_CLAP_COMMAND_PANIC: &str = "requires ClapCommandPlugin";
++    const BOW_REPLACEMENT_SLOT_NAME: &str = "bow-replacement-probe";
++    const CUSTOM_DIAGNOSTICS_SLOT_NAME: &str = "custom-diagnostics-probe";
+     const IROH_SECRET_KEY_BYTES: usize = 32;
+     const SERVER_KEY_SEED: u8 = 7;
+     const ALLOWED_PROXY_KEY_SEED: u8 = 8;
+@@ -512,6 +767,12 @@
+     #[derive(Resource)]
+     struct BowReplacementProbe;
+ 
++    #[derive(Resource)]
++    struct CustomDiagnosticsProbe;
++
++    #[derive(Resource)]
++    struct RejectedInstallerProbe;
++
+     struct BowReplacementPlugin;
+ 
+     impl Plugin for BowReplacementPlugin {
+@@ -520,6 +781,29 @@
+         }
+     }
+ 
++    struct CustomDiagnosticsPlugin;
++
++    impl Plugin for CustomDiagnosticsPlugin {
++        fn build(&self, app: &mut App) {
++            app.insert_resource(CustomDiagnosticsProbe);
++        }
++    }
++
++    static REJECTED_INSTALLER_RAN: AtomicBool = AtomicBool::new(false);
++
++    fn install_bow_replacement_plugin(app: &mut App) {
++        app.add_plugins(BowReplacementPlugin);
++    }
++
++    fn install_custom_diagnostics_plugin(app: &mut App) {
++        app.add_plugins(CustomDiagnosticsPlugin);
++    }
++
++    fn install_rejected_probe(app: &mut App) {
++        REJECTED_INSTALLER_RAN.store(true, Ordering::SeqCst);
++        app.insert_resource(RejectedInstallerProbe);
++    }
++
+     #[test]
+     fn game_type_names_are_stable() {
+         assert_eq!(game_type_name(GameType::Bedwars), "bedwars");
+@@ -712,6 +996,116 @@
+         );
+     }
+ 
++    #[test]
++    #[serial]
++    fn executable_preset_slots_install_replacements_custom_plugins_and_diagnostics() {
++        let server_secret = secret_key_from_seed(SERVER_KEY_SEED);
++        let allowed_proxy_secret = secret_key_from_seed(ALLOWED_PROXY_KEY_SEED);
++        let preset = GamePreset::new(GameType::Bedwars)
++            .replace_feature_with_plugin(
++                GameplayFeature::Bow,
++                BOW_REPLACEMENT_SLOT_NAME,
++                install_bow_replacement_plugin,
++            )
++            .add_custom_plugin_slot(
++                CUSTOM_DIAGNOSTICS_SLOT_NAME,
++                install_custom_diagnostics_plugin,
++            );
++        let plan = plan_game_preset(&preset).unwrap();
++
++        let app = build_game_app_from_preset_and_proxy(
++            preset,
++            bedwars_iroh_bind(
++                server_secret,
++                reserve_udp_socket_addr().unwrap(),
++                &allowed_proxy_secret,
++            ),
++            None,
++        )
++        .unwrap();
++
++        assert!(!app.is_plugin_added::<gameplay::features::BowPlugin>());
++        assert!(app.is_plugin_added::<BowReplacementPlugin>());
++        assert!(app.is_plugin_added::<CustomDiagnosticsPlugin>());
++        assert!(app.world().contains_resource::<BowReplacementProbe>());
++        assert!(app.world().contains_resource::<CustomDiagnosticsProbe>());
++        validate_plugin_diagnostics_registry(&app, &plan).unwrap();
++        let registry = app.world().resource::<PluginDiagnosticsRegistry>();
++        assert_eq!(registry.provenance, VALIDATED_PRESET_BUILDER_PROVENANCE);
++        assert_eq!(registry.diagnostics.replacement_features, vec![
++            GameplayFeature::Bow
++        ]);
++        assert_eq!(registry.diagnostics.custom_plugins, vec![
++            CUSTOM_DIAGNOSTICS_SLOT_NAME
++        ]);
++        let rendered = render_plugin_diagnostics(registry);
++        assert!(rendered.contains("provenance=validated-preset-builder"));
++        assert!(rendered.contains("replacement_features=bow"));
++        assert!(rendered.contains("custom_plugins=custom-diagnostics-probe"));
++        std::mem::forget(app);
++    }
++
++    #[test]
++    fn name_only_executable_slots_fail_preflight() {
++        let replacement_preset =
++            GamePreset::new(GameType::Bedwars).replace_feature(GameplayFeature::Bow);
++        let replacement_plan = plan_game_preset(&replacement_preset).unwrap();
++        assert_eq!(
++            validate_executable_plugin_slots(&replacement_preset, &replacement_plan).unwrap_err(),
++            CompositionError::MissingReplacementPluginSlot(GameplayFeature::Bow)
++        );
++
++        let custom_preset = GamePreset::new(GameType::Bedwars)
++            .add_custom_plugin_intent(CUSTOM_DIAGNOSTICS_SLOT_NAME);
++        let custom_plan = plan_game_preset(&custom_preset).unwrap();
++        assert_eq!(
++            validate_executable_plugin_slots(&custom_preset, &custom_plan).unwrap_err(),
++            CompositionError::MissingCustomPluginSlot(CUSTOM_DIAGNOSTICS_SLOT_NAME)
++        );
++    }
++
++    #[test]
++    fn invalid_preset_prevents_partial_slot_installation() {
++        REJECTED_INSTALLER_RAN.store(false, Ordering::SeqCst);
++        let server_secret = secret_key_from_seed(SERVER_KEY_SEED);
++        let allowed_proxy_secret = secret_key_from_seed(ALLOWED_PROXY_KEY_SEED);
++        let preset = GamePreset::new(GameType::Bedwars)
++            .disable_feature(GameplayFeature::ClapCommand)
++            .add_custom_plugin_slot(CUSTOM_DIAGNOSTICS_SLOT_NAME, install_rejected_probe);
++
++        let error = build_game_app_from_preset_and_proxy(
++            preset,
++            bedwars_iroh_bind(
++                server_secret,
++                reserve_udp_socket_addr().unwrap(),
++                &allowed_proxy_secret,
++            ),
++            None,
++        )
++        .unwrap_err();
++
++        assert!(format!("{error:?}").contains("MissingFeatureDependency"));
++        assert!(!REJECTED_INSTALLER_RAN.load(Ordering::SeqCst));
++    }
++
++    #[test]
++    fn diagnostics_registry_checks_reject_missing_and_stale_facts() {
++        let preset = GamePreset::new(GameType::Bedwars);
++        let plan = plan_game_preset(&preset).unwrap();
++        let app = App::new();
++        assert_eq!(
++            validate_plugin_diagnostics_registry(&app, &plan).unwrap_err(),
++            PluginDiagnosticsMismatch::MissingRegistry
++        );
++
++        let mut stale = build_preset_diagnostics(&plan);
++        stale.mode = ExclusiveMode::Dayz;
++        assert_eq!(
++            validate_plugin_diagnostics(&stale, &plan).unwrap_err(),
++            PluginDiagnosticsMismatch::Mode
++        );
++    }
++
+     fn connected_proxy_count(app: &App) -> usize {
+         app.world().resource::<Compose>().connected_proxy_count()
+     }

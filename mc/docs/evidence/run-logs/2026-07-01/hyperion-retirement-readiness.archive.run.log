@@ -1,0 +1,134 @@
+command=Cairn sync/archive Hyperion checkout retirement gate
+start=2026-07-01T00:47:58-04:00
+archive_date=2026-07-01
+$ CAIRN_ARCHIVE_DATE=2026-07-01 nix run path:/home/brittonr/git/mc#cairn -- sync gate-hyperion-checkout-retirement --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/gate-hyperion-checkout-retirement/specs/valence-hyperion-integration/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/gate-hyperion-checkout-retirement/specs/valence-hyperion-integration/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "gate-hyperion-checkout-retirement",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/gate-hyperion-checkout-retirement/specs/valence-hyperion-integration/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "21cac1edef33d37b6ae6120d684c6e499ac4b85be6843bdf70cc4b6b9a2539b2",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "a62b988b0bb06de963c0071ad91e0a907c9a9419f76e02af50e8a9d06281e7ec",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "ebb870859121b886a5f260103edca817f78327bae5e9ecc5ddb52652ddf742ce"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "a62b988b0bb06de963c0071ad91e0a907c9a9419f76e02af50e8a9d06281e7ec",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "ebb870859121b886a5f260103edca817f78327bae5e9ecc5ddb52652ddf742ce"
+    },
+    "kind": "sync",
+    "manifest_hash": "a855b2f3e32479a4042ad961c9d77e7cf26077905721c66e546f7c51e829f16a"
+  },
+  "plan_hash": "4c3dc45d1f4c0560ea1e6c94b838a7f48672f68a95c36f73ab90b01dafc79c7b",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "e7276dec95ec5d1183aa51cc761942eac1f8cb2329a100d5c2c7d4648fdf9c93"
+}
+sync_exit_status=0
+$ CAIRN_ARCHIVE_DATE=2026-07-01 nix run path:/home/brittonr/git/mc#cairn -- archive gate-hyperion-checkout-retirement --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: gate-hyperion-checkout-retirement",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-07-01-gate-hyperion-checkout-retirement"
+    }
+  ],
+  "blocked": false,
+  "change": "gate-hyperion-checkout-retirement",
+  "dry_run": false,
+  "input_hash": "21cac1edef33d37b6ae6120d684c6e499ac4b85be6843bdf70cc4b6b9a2539b2",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "a409ea21aa67e86f991cdd5e01d75249423ab0175fb83b2c75117dfde4ac623a",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-gate-hyperion-checkout-retirement/design.md"
+        },
+        {
+          "content_hash": "588876c362b48307428e7046d5a122ddbfde61cbd53ef358495993a9b8d8294a",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-gate-hyperion-checkout-retirement/proposal.md"
+        },
+        {
+          "content_hash": "52809584359f93c72c60cc27696304000a22a15a9a601968bafbbd63ad93b14d",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-gate-hyperion-checkout-retirement/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "0b0043045980e07a4f68e86c9b22157e6840935d0ab3b56632272d7499d082b6",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-gate-hyperion-checkout-retirement/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/gate-hyperion-checkout-retirement"
+        }
+      ],
+      "manifest_hash": "f5acf78b49f4868e3d3754bde740f4869a36b50cad9eb7c3ab72253a537dd7b2"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "a409ea21aa67e86f991cdd5e01d75249423ab0175fb83b2c75117dfde4ac623a",
+          "exists": true,
+          "path": "./cairn/changes/gate-hyperion-checkout-retirement/design.md"
+        },
+        {
+          "content_hash": "588876c362b48307428e7046d5a122ddbfde61cbd53ef358495993a9b8d8294a",
+          "exists": true,
+          "path": "./cairn/changes/gate-hyperion-checkout-retirement/proposal.md"
+        },
+        {
+          "content_hash": "52809584359f93c72c60cc27696304000a22a15a9a601968bafbbd63ad93b14d",
+          "exists": true,
+          "path": "./cairn/changes/gate-hyperion-checkout-retirement/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "0b0043045980e07a4f68e86c9b22157e6840935d0ab3b56632272d7499d082b6",
+          "exists": true,
+          "path": "./cairn/changes/gate-hyperion-checkout-retirement/tasks.md"
+        }
+      ],
+      "manifest_hash": "bd42fd5f8a7e3f9d16b90e000273fb644331728059341f3272c54ca12759a685"
+    },
+    "kind": "archive",
+    "manifest_hash": "2caad40dc4240a81706493dcdfcda027caef731d9d7c3b20996c5de663b57e7f"
+  },
+  "plan_hash": "d4b48363161f9303a51406d38cbcbae17c09f07f63296d9fdeaa62879e794586",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "470d5494b727a285e046d3286732508177151a541b090760530ff12f42591c26"
+}
+archive_exit_status=0
+exit_status=0

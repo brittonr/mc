@@ -1,0 +1,5 @@
+command=rustc tools/check_cairn_task_evidence.rs && check active task evidence
+start=2026-06-30T21:57:41-04:00
+compile_exit_status=0
+task evidence gate passed: 42 completed tasks checked across 7 task files
+exit_status=0
