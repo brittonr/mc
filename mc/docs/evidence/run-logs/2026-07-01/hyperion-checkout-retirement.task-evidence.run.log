@@ -1,8 +1,8 @@
-command=nix build mc-compat-cairn-task-evidence for checkout retirement final
-start=2026-07-01T01:58:34-04:00
+command=nix build mc-compat-cairn-task-evidence post-archive final
+start=2026-07-01T02:11:13-04:00
 $ nix build path:/home/brittonr/git/mc#checks.x86_64-linux.mc-compat-cairn-task-evidence --no-link
 this derivation will be built:
-  /nix/store/2klddkxvkmadkiyk06k90lx1c949zh7k-mc-compat-cairn-task-evidence.drv
+  /nix/store/fzlpsvjz36841jkwkw3lcxaqxk2jfad8-mc-compat-cairn-task-evidence.drv
 cannot build on 'ssh-ng://root@10.10.10.1': error: failed to start SSH connection to '10.10.10.1'
-building '/nix/store/2klddkxvkmadkiyk06k90lx1c949zh7k-mc-compat-cairn-task-evidence.drv'...
+building '/nix/store/fzlpsvjz36841jkwkw3lcxaqxk2jfad8-mc-compat-cairn-task-evidence.drv'...
 exit_status=0
