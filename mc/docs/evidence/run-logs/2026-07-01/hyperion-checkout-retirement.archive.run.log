@@ -1,0 +1,186 @@
+command=Cairn sync/archive Hyperion checkout retirement
+start=2026-07-01T02:01:53-04:00
+archive_date=2026-07-01
+$ CAIRN_ARCHIVE_DATE=2026-07-01 nix run path:/home/brittonr/git/mc#cairn -- sync retire-hyperion-checkout --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/retire-hyperion-checkout/specs/hyperion-game-modes/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/retire-hyperion-checkout/specs/hyperion-game-modes/spec.md"
+    },
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/retire-hyperion-checkout/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/retire-hyperion-checkout/specs/repository-layout/spec.md"
+    },
+    {
+      "description": "merge delta spec into main specs: /home/brittonr/git/mc/cairn/changes/retire-hyperion-checkout/specs/valence-hyperion-integration/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "/home/brittonr/git/mc/cairn/changes/retire-hyperion-checkout/specs/valence-hyperion-integration/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "retire-hyperion-checkout",
+  "delta_specs": [
+    "/home/brittonr/git/mc/cairn/changes/retire-hyperion-checkout/specs/hyperion-game-modes/spec.md",
+    "/home/brittonr/git/mc/cairn/changes/retire-hyperion-checkout/specs/repository-layout/spec.md",
+    "/home/brittonr/git/mc/cairn/changes/retire-hyperion-checkout/specs/valence-hyperion-integration/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "66e2eac7ca8c1aec66ee6a31415b25814f35f39d928cbb0da4cbfb825bc41770",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "5082210d0fa703995cf5efbdfe2db1677c238006d7b0bf8f1c62da293fb3c2f0",
+          "exists": true,
+          "path": "./cairn/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "c9df2166c3c2bea0880935ec10b021445b73ba5812161bbce0e6cab26e4fbba7",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "74fbf292207ccf40c1dbdc71c8d369965c5af51118a11d1b9c00a275d3bd1a99",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "ba30cd81e5ad5d6d9349ed6a2f88879a51e0a68f236f6aae066698d2a1f754b6"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "5082210d0fa703995cf5efbdfe2db1677c238006d7b0bf8f1c62da293fb3c2f0",
+          "exists": true,
+          "path": "./cairn/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "c9df2166c3c2bea0880935ec10b021445b73ba5812161bbce0e6cab26e4fbba7",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "74fbf292207ccf40c1dbdc71c8d369965c5af51118a11d1b9c00a275d3bd1a99",
+          "exists": true,
+          "path": "./cairn/specs/valence-hyperion-integration/spec.md"
+        }
+      ],
+      "manifest_hash": "ba30cd81e5ad5d6d9349ed6a2f88879a51e0a68f236f6aae066698d2a1f754b6"
+    },
+    "kind": "sync",
+    "manifest_hash": "65e715bf65af2b2bb3d430f2b1e8be467d8ea588c03c178d78a6c87bae2990b8"
+  },
+  "plan_hash": "9019369566c2019bc8a4f7d0b47df202fa0ee570674b34d3d7751ba79f2c3d2f",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "6dccb79a0669704ffd2c59d649efb583e36abc0887cf75e4b2d44e027c5862ce"
+}
+sync_exit_status=0
+$ CAIRN_ARCHIVE_DATE=2026-07-01 nix run path:/home/brittonr/git/mc#cairn -- archive retire-hyperion-checkout --root /home/brittonr/git/mc --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: retire-hyperion-checkout",
+      "kind": "archive_change",
+      "path": "/home/brittonr/git/mc/cairn/archive/2026-07-01-retire-hyperion-checkout"
+    }
+  ],
+  "blocked": false,
+  "change": "retire-hyperion-checkout",
+  "dry_run": false,
+  "input_hash": "66e2eac7ca8c1aec66ee6a31415b25814f35f39d928cbb0da4cbfb825bc41770",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "0192a2ab188d2b60d5b8720c6d14d8f107bdd020c759ec36cc83a20b28738361",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-retire-hyperion-checkout/design.md"
+        },
+        {
+          "content_hash": "96b689f3e29844515ff73e0de0c1ab18abef82b9e4db6c300d52a446558835ec",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-retire-hyperion-checkout/proposal.md"
+        },
+        {
+          "content_hash": "4a973f08ed4ba44322b1bc907412e75f2b66bef66e1900b7b2e88a8cf3c5417a",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-retire-hyperion-checkout/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "be8d7e9b96c433bb2a3f943b3cab67badc87b8d79f251b60d68c57af269e97b6",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-retire-hyperion-checkout/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "b3a405a5d27b6e1400a6935ec933ee55dbdbb8009a4f81350e0299700a93151e",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-retire-hyperion-checkout/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "9c1dc2eac05aeed81f43f96ec96b6e5360794a2571a53afb0bda0a5b6458db46",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-retire-hyperion-checkout/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/retire-hyperion-checkout"
+        }
+      ],
+      "manifest_hash": "4a6e12cdbd62f34e3abeb77ef5bba110ce5be45715fec3dc8975b22d45c628aa"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "0192a2ab188d2b60d5b8720c6d14d8f107bdd020c759ec36cc83a20b28738361",
+          "exists": true,
+          "path": "./cairn/changes/retire-hyperion-checkout/design.md"
+        },
+        {
+          "content_hash": "96b689f3e29844515ff73e0de0c1ab18abef82b9e4db6c300d52a446558835ec",
+          "exists": true,
+          "path": "./cairn/changes/retire-hyperion-checkout/proposal.md"
+        },
+        {
+          "content_hash": "4a973f08ed4ba44322b1bc907412e75f2b66bef66e1900b7b2e88a8cf3c5417a",
+          "exists": true,
+          "path": "./cairn/changes/retire-hyperion-checkout/specs/hyperion-game-modes/spec.md"
+        },
+        {
+          "content_hash": "be8d7e9b96c433bb2a3f943b3cab67badc87b8d79f251b60d68c57af269e97b6",
+          "exists": true,
+          "path": "./cairn/changes/retire-hyperion-checkout/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "b3a405a5d27b6e1400a6935ec933ee55dbdbb8009a4f81350e0299700a93151e",
+          "exists": true,
+          "path": "./cairn/changes/retire-hyperion-checkout/specs/valence-hyperion-integration/spec.md"
+        },
+        {
+          "content_hash": "9c1dc2eac05aeed81f43f96ec96b6e5360794a2571a53afb0bda0a5b6458db46",
+          "exists": true,
+          "path": "./cairn/changes/retire-hyperion-checkout/tasks.md"
+        }
+      ],
+      "manifest_hash": "56f9a3e62efed67bd0a10580f1a0eaa263f9e1e5feb893e31e5b627be6b22d10"
+    },
+    "kind": "archive",
+    "manifest_hash": "906d627c027b4b2082696ddc4b4a0cd430c910bf55b5b137decda18034939076"
+  },
+  "plan_hash": "71bde6c88564491ad7ba639857bdf2def2b77375b2d61df1b554c3a9d42fb0ad",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "d90424a5a260e73a338fbd2d2f88822ed7261aa88f69422ead8fd69cfbdd4047"
+}
+archive_exit_status=0
+exit_status=0
