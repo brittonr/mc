@@ -1,0 +1,15 @@
+command=grep accepted furnace_smelting_selected_row_receipts IDs and nix run .#cairn -- validate --root .
+accepted_baseline_id_status=0
+accepted_closeout_id_status=0
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+validate_status=0
+exit_status=0

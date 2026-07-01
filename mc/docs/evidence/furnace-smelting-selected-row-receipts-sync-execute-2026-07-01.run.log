@@ -1,0 +1,49 @@
+command=nix run .#cairn -- sync verify-furnace-smelting-selected-row-receipts --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/verify-furnace-smelting-selected-row-receipts/specs/vanilla-composable-plugins/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/verify-furnace-smelting-selected-row-receipts/specs/vanilla-composable-plugins/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "verify-furnace-smelting-selected-row-receipts",
+  "delta_specs": [
+    "./cairn/changes/verify-furnace-smelting-selected-row-receipts/specs/vanilla-composable-plugins/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "ea11d83a170f1a06c5f2cc4f90bca45a654789b3cd42ccd94d4204a24dd9147c",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "94b5f55bfaedd29703f5ceee4f1deac9813ef61ff85e64205e72d64d2ca68e62",
+          "exists": true,
+          "path": "./cairn/specs/vanilla-composable-plugins/spec.md"
+        }
+      ],
+      "manifest_hash": "bca4fbc6a5d138abe3dcfa9266001cb38c5e0e643a065fb3729cc8f4fbb7283c"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "0a22f9a65418a369dcc0bcb3e5a98ed8e9d8e6867f6c83c4818889be09aa0833",
+          "exists": true,
+          "path": "./cairn/specs/vanilla-composable-plugins/spec.md"
+        }
+      ],
+      "manifest_hash": "cce4bdd431467a8dd64ff41457de971987879722128e22028c1b970437783ce1"
+    },
+    "kind": "sync",
+    "manifest_hash": "ccd8501a0fe66fccd9accb7b5022d6aaa8b878f538e0e1c58aa29f11272278b3"
+  },
+  "plan_hash": "7c9e14e41661d147c7da8f8f6b7ce3e838dafe6a1dc68ca53dc6c31ea2bdd6c9",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "d0ece63da2a27244cd034aeccc119e6fd55ed0e614a043196aa507f75ac8af7a"
+}
+exit_status=0

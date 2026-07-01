@@ -1,0 +1,43 @@
+command=nix develop --no-update-lock-file -c b3sum --check docs/evidence/furnace-smelting-selected-row-receipts-2026-07-01.b3
+mc compat shell: use 'mc-compat-runner --dry-run' or 'nix run .#mc-compat-smoke -- --run'
+Stevenarella dev env: cargo/rustc/xvfb-run/OpenSSL/fontconfig/freetype/libxcb paths are available
+OnixResearch tools are pinned over SSH: cairn, cargo-octet
+Steel is available for repo scripts, e.g. steel scripts/ralph-drain-cairns.scm --self-test
+tools/check_furnace_smelting_receipt_handoff.rs: OK
+compat/config/furnace-smelting-selected-row-fixture.ncl: OK
+cairn/specs/vanilla-composable-plugins/spec.md: OK
+cairn/archive/2026-07-01-verify-furnace-smelting-selected-row-receipts/tasks.md: OK
+docs/furnace-smelting-behavior-card.md: OK
+docs/furnace-smelting-selected-row-core.md: OK
+docs/furnace-smelting-selected-row-data-fixture.md: OK
+docs/furnace-smelting-selected-row-receipt-handoff.md: OK
+docs/evidence/furnace-smelting-selected-row-receipts-2026-07-01.md: OK
+docs/evidence/furnace-smelting-selected-row-receipts-baseline-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-checker-self-test-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-handoff-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-rustfmt-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-focused-validation-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-b3-check-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-b3-check-final-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-task-evidence-initial-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-task-evidence-final-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-task-evidence-postcitation-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-cairn-gates-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-cairn-gates-final-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-sync-dry-run-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-sync-execute-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-accepted-spec-verify-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-evidence-manifest-refresh-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-evidence-manifest-final-check-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-flake-evidence-checks-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-flake-evidence-checks-final-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-archive-dry-run-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-archive-execute-2026-07-01.run.log: OK
+docs/evidence/furnace-smelting-selected-row-receipts-post-archive-validate-2026-07-01.run.log: OK
+docs/evidence/survival-furnace-smelting-breadth-paper-2026-06-21.kv: OK
+docs/evidence/survival-furnace-smelting-breadth-valence-2026-06-21.kv: OK
+b3_check_status=0
+command=nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=578; entries=6233; current=6233; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+manifest_check_status=0
+exit_status=0

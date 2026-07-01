@@ -1,0 +1,3 @@
+command=CARGO_TARGET_DIR=target/check-furnace-smelting-receipt-handoff-script nix shell fenix#minimal.toolchain nixpkgs#gcc nixpkgs#nickel -c cargo -q -Zscript tools/check_furnace_smelting_receipt_handoff.rs --self-test
+furnace smelting selected-row receipt handoff self-test passed: positive selected-row handoff and 14 negative cases exercised
+exit_status=0

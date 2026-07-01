@@ -79,6 +79,10 @@ This fixture does not claim:
 - Public-server safety.
 - Production readiness.
 
+## Receipt handoff
+
+`docs/furnace-smelting-selected-row-receipt-handoff.md` records the deterministic bridge from this fixture to archived Paper/reference and Valence receipt metrics. The handoff checker validates the selected RawIron + Coal row, timing constants, backend identities, and retained non-claims before the archived receipts are reused as selected-row evidence.
+
 ## Follow-on evidence
 
-Before promoting stronger target-version behavior, follow-on work still needs Paper/vanilla receipts for the selected furnace row, all-recipe extraction if breadth is claimed, Valence Bevy/ECS shell evidence if runtime behavior is claimed, and separate cards for hoppers, XP, recipe book, smoker, blast furnace, and chunk-unload semantics.
+Before promoting stronger target-version behavior, follow-on work still needs all-recipe extraction if breadth is claimed, Valence Bevy/ECS shell evidence if runtime behavior is claimed, and separate cards for hoppers, XP, recipe book, smoker, blast furnace, and chunk-unload semantics. The receipt handoff does not add a runtime shell or broaden the selected-row claim.

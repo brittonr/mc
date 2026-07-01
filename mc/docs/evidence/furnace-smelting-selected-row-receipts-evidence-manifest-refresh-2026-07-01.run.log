@@ -1,0 +1,17 @@
+command=nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh failed: docs/evidence/furnace-smelting-card-2026-07-01.b3:1: stale digest for docs/furnace-smelting-behavior-card.md: expected ec343d1864db7ec1b8129efce2642946d71f2a1acc10090aba01d9b076b11828, found 304b66cc860fc2a905b86c1913066b30d60c27e309dd2e30bd445b3bd6078c40
+evidence manifest refresh failed: docs/evidence/furnace-smelting-card-2026-07-01.b3:16: stale digest for cairn/specs/vanilla-composable-plugins/spec.md: expected 94b5f55bfaedd29703f5ceee4f1deac9813ef61ff85e64205e72d64d2ca68e62, found 0a22f9a65418a369dcc0bcb3e5a98ed8e9d8e6867f6c83c4818889be09aa0833
+evidence manifest refresh failed: docs/evidence/furnace-smelting-core-2026-07-01.b3:16: stale digest for docs/furnace-smelting-selected-row-core.md: expected 7c4f7fd37bd341bd1d9873651abb4212ae4c1ae7a7dbaf0b9855ec6a2be4625d, found 3d28e7cf24ff18c0b919490993df613ffce27d5c4c24cc40e2ef67a5f30ef421
+evidence manifest refresh failed: docs/evidence/furnace-smelting-core-2026-07-01.b3:18: stale digest for cairn/specs/vanilla-composable-plugins/spec.md: expected 94b5f55bfaedd29703f5ceee4f1deac9813ef61ff85e64205e72d64d2ca68e62, found 0a22f9a65418a369dcc0bcb3e5a98ed8e9d8e6867f6c83c4818889be09aa0833
+evidence manifest refresh failed: docs/evidence/furnace-smelting-data-fixture-2026-07-01.b3:16: stale digest for docs/furnace-smelting-selected-row-data-fixture.md: expected 1918eedb495c5e9e5c0fa8c33ae73056a7b1ef206ffd1d939672648d1a5fc351, found ae8880ab806290cabb2e14bf19648628cc129a166b02aee1cae450855a17aa0f
+evidence manifest refresh failed: docs/evidence/furnace-smelting-data-fixture-2026-07-01.b3:17: stale digest for docs/furnace-smelting-selected-row-core.md: expected 7c4f7fd37bd341bd1d9873651abb4212ae4c1ae7a7dbaf0b9855ec6a2be4625d, found 3d28e7cf24ff18c0b919490993df613ffce27d5c4c24cc40e2ef67a5f30ef421
+evidence manifest refresh failed: docs/evidence/furnace-smelting-data-fixture-2026-07-01.b3:22: stale digest for cairn/specs/vanilla-composable-plugins/spec.md: expected 94b5f55bfaedd29703f5ceee4f1deac9813ef61ff85e64205e72d64d2ca68e62, found 0a22f9a65418a369dcc0bcb3e5a98ed8e9d8e6867f6c83c4818889be09aa0833
+evidence manifest refresh failed: docs/evidence/minecraft-wiki-guidance-2026-07-01.b3:15: stale digest for cairn/specs/vanilla-composable-plugins/spec.md: expected 94b5f55bfaedd29703f5ceee4f1deac9813ef61ff85e64205e72d64d2ca68e62, found 0a22f9a65418a369dcc0bcb3e5a98ed8e9d8e6867f6c83c4818889be09aa0833
+initial_check_status=1
+command=nix run .#evidence-manifest-refresh -- --refresh
+evidence manifest refresh ok: mode=refresh; passes=2; manifests=577; entries=6200; current=6200; stale=0; missing=0; malformed=0; outside_root=0; not_file=0; passes=2; manifest_writes=4
+refresh_status=0
+command=nix run .#evidence-manifest-refresh -- --check
+evidence manifest refresh ok: mode=check; passes=0; manifests=577; entries=6200; current=6200; stale=0; missing=0; malformed=0; outside_root=0; not_file=0
+final_check_status=0
+exit_status=0

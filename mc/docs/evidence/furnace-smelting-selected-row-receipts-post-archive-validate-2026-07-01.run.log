@@ -1,0 +1,19 @@
+command=nix run .#cairn -- change list --root . && nix run .#cairn -- validate --root .
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+change_list_status=0
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+validate_status=0
+exit_status=0

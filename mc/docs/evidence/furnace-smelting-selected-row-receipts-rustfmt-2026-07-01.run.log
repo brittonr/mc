@@ -1,0 +1,2 @@
+command=nix shell fenix#minimal.toolchain -c rustfmt tools/check_furnace_smelting_receipt_handoff.rs
+exit_status=0

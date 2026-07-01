@@ -1,0 +1,7 @@
+command=CARGO_TARGET_DIR=target/check-furnace-smelting-data-fixture-script nix shell fenix#minimal.toolchain nixpkgs#gcc nixpkgs#nickel -c cargo -q -Zscript tools/check_furnace_smelting_data_fixture.rs --fixture compat/config/furnace-smelting-selected-row-fixture.ncl
+furnace smelting selected-row data fixture check passed
+data_fixture_status=0
+command=CARGO_TARGET_DIR=target/check-furnace-smelting-core-script nix shell fenix#minimal.toolchain nixpkgs#gcc -c cargo -q -Zscript tools/check_furnace_smelting_core.rs --self-test --fixture compat/config/furnace-smelting-selected-row-fixture.ncl
+furnace smelting selected-row core check passed
+core_status=0
+exit_status=0

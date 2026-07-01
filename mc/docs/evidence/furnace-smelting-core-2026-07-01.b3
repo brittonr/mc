@@ -13,9 +13,9 @@ ca993928ae12425e66111eb8592f9be86127b93a13042cdcb5779766ce967c8f  docs/evidence/
 6bf323b49d4bd1a19428fdc9a23cd886d128a44bc700b760e67927703ba4b0fb  docs/evidence/furnace-smelting-core-post-archive-cairn-validate-2026-07-01.run.log
 0d873b17264bc6262adc38d3863f224335e3d4137a59127117922cb4cf0ab40c  docs/evidence/furnace-smelting-core-post-archive-task-evidence-2026-07-01.run.log
 076caf9b9448ed1d83a07b073ef3e2a314d071e71aed33cf0b8d2e8264e63f7f  docs/evidence/furnace-smelting-core-post-archive-evidence-manifest-check-2026-07-01.run.log
-3d28e7cf24ff18c0b919490993df613ffce27d5c4c24cc40e2ef67a5f30ef421  docs/furnace-smelting-selected-row-core.md
+7c4f7fd37bd341bd1d9873651abb4212ae4c1ae7a7dbaf0b9855ec6a2be4625d  docs/furnace-smelting-selected-row-core.md
 3b6bd6c3610660d52cd28044ee89e78c42ce0e3d4d8cae445ff1e175a1e9976b  tools/check_furnace_smelting_core.rs
-0a22f9a65418a369dcc0bcb3e5a98ed8e9d8e6867f6c83c4818889be09aa0833  cairn/specs/vanilla-composable-plugins/spec.md
+94b5f55bfaedd29703f5ceee4f1deac9813ef61ff85e64205e72d64d2ca68e62  cairn/specs/vanilla-composable-plugins/spec.md
 7800b968b40ef4811b8c5bd419c20944e9f16ddbfd424c1bfd4a87f8eb9b2746  cairn/archive/2026-07-01-add-furnace-smelting-selected-row-core/proposal.md
 08b864743bcf72cedd31a1fd8ee0229bac93c437e5ffee7106baa82bb4abda38  cairn/archive/2026-07-01-add-furnace-smelting-selected-row-core/design.md
 2e86d7f39fa009cd6a7a9a3b30f9d614b3551abe9ce1f6af8040720a5cd89487  cairn/archive/2026-07-01-add-furnace-smelting-selected-row-core/tasks.md
