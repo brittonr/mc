@@ -1,0 +1,60 @@
+command: nix run .#cairn -- sync add-crafting-recipe-selected-matrix-core --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-crafting-recipe-selected-matrix-core/specs/vanilla-composable-plugins/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-crafting-recipe-selected-matrix-core/specs/vanilla-composable-plugins/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-crafting-recipe-selected-matrix-core",
+  "delta_specs": [
+    "./cairn/changes/add-crafting-recipe-selected-matrix-core/specs/vanilla-composable-plugins/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "d91bdfa5c570c0f3b346036d2299f876600d835fd36140faa386da31fbed7bd9",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "dd45a012631edb3f3ccaa6b51a0c0cf19a46c8c76c9238c235d3ee4cea76e908",
+          "exists": true,
+          "path": "./cairn/specs/vanilla-composable-plugins/spec.md"
+        }
+      ],
+      "manifest_hash": "160662a3a0b90e760e73b3e2ee923c9d85a355c473ef18c24ce96f97dd12d37e"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "5a0df0c2104750da33b59045ee8f65da3ab2f88e7fcec091f9f7fc6d3d20b606",
+          "exists": true,
+          "path": "./cairn/specs/vanilla-composable-plugins/spec.md"
+        }
+      ],
+      "manifest_hash": "23b92a5c76ce85d9df695b06601e4d3245b9bebd8baa9f14846ab27ffec2916a"
+    },
+    "kind": "sync",
+    "manifest_hash": "a0546a6b693d6d4d2700fb5667b578a68da614fc620085e993184782c8eca9a0"
+  },
+  "plan_hash": "581d7a51c93bb5b9bea783de92b6af19d9caee24c3b7d7d737ede88d0326f890",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "c991740d637786388b7a82e00d6fd4867e51858c1856abdd1b1877df14749bae"
+}
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+exit_status=0

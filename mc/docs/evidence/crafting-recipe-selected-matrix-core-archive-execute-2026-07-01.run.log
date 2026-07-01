@@ -1,0 +1,92 @@
+command: CAIRN_ARCHIVE_DATE=2026-07-01 nix run .#cairn -- archive add-crafting-recipe-selected-matrix-core --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-crafting-recipe-selected-matrix-core",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-07-01-add-crafting-recipe-selected-matrix-core"
+    }
+  ],
+  "blocked": false,
+  "change": "add-crafting-recipe-selected-matrix-core",
+  "dry_run": false,
+  "input_hash": "21113594dc46c6d1ca8dbb113c481e6d9e39c946f2f607f098be388ecd8337a2",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "9262114f98fdcc1cc3bc32e47e57a3608e3d4d5adfcb9e3b617ec192052f282d",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-crafting-recipe-selected-matrix-core/design.md"
+        },
+        {
+          "content_hash": "6377fb3340b0f18313cf21e789b724b72d343183cf5b4450cb26048499fd04e3",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-crafting-recipe-selected-matrix-core/proposal.md"
+        },
+        {
+          "content_hash": "e6dab67a18c7c4fc27ca9d413a4fb1b7fae7173b7d269ae1b943fc04a5c17350",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-crafting-recipe-selected-matrix-core/specs/vanilla-composable-plugins/spec.md"
+        },
+        {
+          "content_hash": "732b533224f51250a60d01afbbdde06f867b3d99a929ee6576368ead3d784e9a",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-crafting-recipe-selected-matrix-core/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-crafting-recipe-selected-matrix-core"
+        }
+      ],
+      "manifest_hash": "1b7d8ace63c5be3837fa307d544e6e50925f0f5e9e0488f23dab25c409ffcecd"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "9262114f98fdcc1cc3bc32e47e57a3608e3d4d5adfcb9e3b617ec192052f282d",
+          "exists": true,
+          "path": "./cairn/changes/add-crafting-recipe-selected-matrix-core/design.md"
+        },
+        {
+          "content_hash": "6377fb3340b0f18313cf21e789b724b72d343183cf5b4450cb26048499fd04e3",
+          "exists": true,
+          "path": "./cairn/changes/add-crafting-recipe-selected-matrix-core/proposal.md"
+        },
+        {
+          "content_hash": "e6dab67a18c7c4fc27ca9d413a4fb1b7fae7173b7d269ae1b943fc04a5c17350",
+          "exists": true,
+          "path": "./cairn/changes/add-crafting-recipe-selected-matrix-core/specs/vanilla-composable-plugins/spec.md"
+        },
+        {
+          "content_hash": "732b533224f51250a60d01afbbdde06f867b3d99a929ee6576368ead3d784e9a",
+          "exists": true,
+          "path": "./cairn/changes/add-crafting-recipe-selected-matrix-core/tasks.md"
+        }
+      ],
+      "manifest_hash": "83fccd75a6ce86c9ff2f29ed23f0568070e128dd1559e2aa9b7a94e681ecd496"
+    },
+    "kind": "archive",
+    "manifest_hash": "a2eefc354c0bf770b60b6f59da0f13480eeb09436383bd32fb7215cbd278bef5"
+  },
+  "plan_hash": "ef6e483cb6207b2d19b5159456476819358b5d3dd9f79b8c07a70d5fdcd894b8",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "4b13521acba75beb8e2265191b4f2afbca2f952eac0bfdcf13118544594eb000"
+}
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+exit_status=0

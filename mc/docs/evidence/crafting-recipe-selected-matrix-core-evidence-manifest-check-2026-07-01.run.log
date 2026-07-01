@@ -1,0 +1,4 @@
+command: rustc --edition=2021 tools/check_evidence_manifests.rs -o target/check-evidence-manifests
+command: target/check-evidence-manifests
+evidence manifests ok: 582 manifests, 6330 entries, 143 receipts scanned
+exit_status=0

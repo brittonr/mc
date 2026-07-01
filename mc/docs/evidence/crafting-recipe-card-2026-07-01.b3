@@ -17,7 +17,7 @@ d4ea93e88a61d478dffc01ca2cf68afbd14bcc75f07039ba62b40836f28ba2d0  docs/evidence/
 da02297168d41e3f6562d3cfad558cb68f83d96240849665dadbdfe7b8f06963  docs/evidence/crafting-recipe-card-archive-dry-run-2026-07-01.run.log
 4c8299e4801879a9695528d34833d7d9e4a1158801debe8aaa4022b4d1126e83  docs/evidence/crafting-recipe-card-archive-execute-2026-07-01.run.log
 6624d73d28fdac6d510d5730d65d9ada34038302526fc6e9828ccfce0e038548  docs/evidence/crafting-recipe-card-post-archive-validate-2026-07-01.run.log
-5a0df0c2104750da33b59045ee8f65da3ab2f88e7fcec091f9f7fc6d3d20b606  cairn/specs/vanilla-composable-plugins/spec.md
+dd45a012631edb3f3ccaa6b51a0c0cf19a46c8c76c9238c235d3ee4cea76e908  cairn/specs/vanilla-composable-plugins/spec.md
 0594e37517044386f45bb161d1d2206c4347401a81cf4a9233bafd41b73f9940  cairn/archive/2026-07-01-add-crafting-recipe-behavior-card/proposal.md
 7387f726e22a9414ef6907e71d76db4eb80ab114bb524279ea6f61b951a61370  cairn/archive/2026-07-01-add-crafting-recipe-behavior-card/design.md
 8f64253e913da78bc6ec7a25518cfcccf38a7eb1c44b0b44fabba8f219d5d04e  cairn/archive/2026-07-01-add-crafting-recipe-behavior-card/tasks.md

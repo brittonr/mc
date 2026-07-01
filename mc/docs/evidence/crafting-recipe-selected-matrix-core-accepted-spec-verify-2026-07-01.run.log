@@ -1,0 +1,14 @@
+command: rg -n crafting_recipe_selected_matrix_core cairn/specs/vanilla-composable-plugins/spec.md
+564:r[vanilla_composable_plugins.crafting_recipe_selected_matrix_core.inventory] Crafting selected-matrix core work MUST inventory the accepted crafting behavior card, selected matrix rows, predecessor crafting receipts, typed-event migration evidence, local fixture-core assumptions, and unresolved target-version recipe-data prerequisites before implementing core semantics.
+568:r[vanilla_composable_plugins.crafting_recipe_selected_matrix_core.inventory.reviewable]
+576:r[vanilla_composable_plugins.crafting_recipe_selected_matrix_core] Crafting recipe implementation work MUST provide a pure deterministic selected-matrix recipe core before any target-version data loader, receipt handoff, Bevy/ECS shell, scenario rail, or default plugin membership is introduced.
+580:r[vanilla_composable_plugins.crafting_recipe_selected_matrix_core.deterministic]
+587:r[vanilla_composable_plugins.crafting_recipe_selected_matrix_core.bounded]
+595:r[vanilla_composable_plugins.crafting_recipe_selected_matrix_core.tests] The selected-matrix crafting core MUST include positive and negative tests for valid selected rows, collection behavior, malformed data, unsupported scope, and state preservation.
+599:r[vanilla_composable_plugins.crafting_recipe_selected_matrix_core.tests.positive]
+606:r[vanilla_composable_plugins.crafting_recipe_selected_matrix_core.tests.negative]
+613:r[vanilla_composable_plugins.crafting_recipe_selected_matrix_core.docs] Selected-matrix crafting core work MUST document local semantics, selected row assumptions, named limits, test coverage, future evidence prerequisites, and non-claims.
+617:r[vanilla_composable_plugins.crafting_recipe_selected_matrix_core.docs.reviewable]
+624:r[vanilla_composable_plugins.crafting_recipe_selected_matrix_core.closeout] Selected-matrix crafting core work MUST record baseline validation, focused core validation, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, accepted-spec sync verification, evidence-manifest checks, and archive receipts before closeout.
+628:r[vanilla_composable_plugins.crafting_recipe_selected_matrix_core.closeout.log]
+exit_status=0
