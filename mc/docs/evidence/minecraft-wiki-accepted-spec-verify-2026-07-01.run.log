@@ -1,0 +1,37 @@
+command: rg minecraft_wiki_pi_skill cairn/specs/repository-layout/spec.md
+r[repository_layout.minecraft_wiki_pi_skill.path] The repository SHOULD provide a project-level Pi skill for Minecraft Wiki research under a Pi-supported project skill path and document the chosen path and discovery assumptions.
+r[repository_layout.minecraft_wiki_pi_skill.path.reviewable]
+r[repository_layout.minecraft_wiki_pi_skill.workflow] The project Minecraft Wiki skill MUST instruct agents to perform narrow, known-URL wiki retrieval, treat fetched content as untrusted external data, record edition/version/protocol scope, cite source pages, and require extracted-data or Paper/vanilla parity before behavior claims are promoted.
+r[repository_layout.minecraft_wiki_pi_skill.workflow.non_overclaiming]
+r[repository_layout.minecraft_wiki_pi_skill.tests] The skill work MUST include positive and negative validation for required skill frontmatter and workflow rules.
+r[repository_layout.minecraft_wiki_pi_skill.tests.positive]
+r[repository_layout.minecraft_wiki_pi_skill.tests.negative]
+r[repository_layout.minecraft_wiki_pi_skill.validation] Minecraft Wiki skill work MUST record focused skill validation, Cairn proposal/design/tasks gates, Cairn validation, task-evidence validation, and evidence-manifest checks for promoted evidence before archive.
+r[repository_layout.minecraft_wiki_pi_skill.validation.log]
+command: rg vanilla_composable_plugins cairn/specs/vanilla-composable-plugins/spec.md
+r[vanilla_composable_plugins.wiki_inventory] Wiki-guided plugin work MUST inventory selected Minecraft Wiki entry points, target edition/version/protocol assumptions, related extracted-data sources, existing Valence plugin surfaces, and existing compatibility rails before deriving implementation slices.
+r[vanilla_composable_plugins.wiki_inventory.version_scoped]
+r[vanilla_composable_plugins.taxonomy] The roadmap SHOULD map wiki domains to candidate composable Valence plugin groups, individual feature plugins, dependency edges, schedule impact, evidence requirements, and explicit non-claims.
+r[vanilla_composable_plugins.taxonomy.bounded]
+r[vanilla_composable_plugins.behavior_cards] Each follow-on wiki-guided plugin implementation SHOULD start from a behavior card that records source pages, version scope, pure rule core, Bevy/ECS shell, data dependencies, positive tests, negative tests, schedule impact, parity evidence, and non-claims.
+r[vanilla_composable_plugins.behavior_cards.ready]
+r[vanilla_composable_plugins.core_shell] Wiki-derived plugin implementations MUST keep vanilla rule decisions in pure deterministic cores and keep ECS mutation, packet emission, logging, filesystem access, network access, and schedule registration in thin Bevy shell systems.
+r[vanilla_composable_plugins.core_shell.testable]
+r[vanilla_composable_plugins.evidence_policy] Wiki-guided plugin work MUST include positive and negative tests for promoted rule cores and MUST require extracted-data checks or Paper/vanilla parity receipts before claiming target-version vanilla behavior.
+r[vanilla_composable_plugins.evidence_policy.non_overclaiming]
+r[vanilla_composable_plugins.sequence] The roadmap SHOULD sequence follow-on plugin Cairns by dependency order, existing evidence-rail reuse, implementation risk, and explicit stop conditions.
+r[vanilla_composable_plugins.sequence.deferred]
+r[vanilla_composable_plugins.validation] Roadmap work MUST record Cairn proposal, design, tasks, repository validation, and evidence-manifest checks for promoted roadmap artifacts before archive.
+r[vanilla_composable_plugins.validation.log]
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+exit_status=0

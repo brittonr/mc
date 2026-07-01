@@ -1,0 +1,227 @@
+command: nix run .#cairn -- archive add-minecraft-wiki-pi-skill --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-minecraft-wiki-pi-skill",
+      "kind": "archive_change",
+      "path": "./cairn/changes/add-minecraft-wiki-pi-skill"
+    }
+  ],
+  "blocked": false,
+  "change": "add-minecraft-wiki-pi-skill",
+  "dry_run": true,
+  "input_hash": "0138cba2a6dc533cd3e87a26876ecd676611313ecb1491686d9aa31f96b35935",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "7d030310a68347f4a3d205b1f0823eb2f4aa7a29296543385373a3e59e214d18",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "5073c1e3c825ea5401d63e21b9aa11fa0d6f91d36961549a63d0823e2b3172b0"
+}
+command: CAIRN_ARCHIVE_DATE=2026-07-01 nix run .#cairn -- archive add-minecraft-wiki-pi-skill --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: add-minecraft-wiki-pi-skill",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-07-01-add-minecraft-wiki-pi-skill"
+    }
+  ],
+  "blocked": false,
+  "change": "add-minecraft-wiki-pi-skill",
+  "dry_run": false,
+  "input_hash": "0138cba2a6dc533cd3e87a26876ecd676611313ecb1491686d9aa31f96b35935",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "3ebefb787bdb2d2f80f952d31dd48e5060d0b5ff3df1b65c3ce2d9ad98c47209",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-minecraft-wiki-pi-skill/design.md"
+        },
+        {
+          "content_hash": "6904b8674f2fc3b43e1c37010eef36680d179bcdf977e8ea17e8dd153a36d85f",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-minecraft-wiki-pi-skill/proposal.md"
+        },
+        {
+          "content_hash": "41429594afd0e7c17eb63779a83b922d5246bdff3dc530b4636df2035a0bed22",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-minecraft-wiki-pi-skill/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "6a49e539f0c7404d4d644e2d68e68df24692656e936b17df33cf1d253ec9dfb1",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-add-minecraft-wiki-pi-skill/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/add-minecraft-wiki-pi-skill"
+        }
+      ],
+      "manifest_hash": "242be21655c735e9f9a2b48f5831fffd2746ad7b99448e5bbf7c7132fd7d7f14"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "3ebefb787bdb2d2f80f952d31dd48e5060d0b5ff3df1b65c3ce2d9ad98c47209",
+          "exists": true,
+          "path": "./cairn/changes/add-minecraft-wiki-pi-skill/design.md"
+        },
+        {
+          "content_hash": "6904b8674f2fc3b43e1c37010eef36680d179bcdf977e8ea17e8dd153a36d85f",
+          "exists": true,
+          "path": "./cairn/changes/add-minecraft-wiki-pi-skill/proposal.md"
+        },
+        {
+          "content_hash": "41429594afd0e7c17eb63779a83b922d5246bdff3dc530b4636df2035a0bed22",
+          "exists": true,
+          "path": "./cairn/changes/add-minecraft-wiki-pi-skill/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "6a49e539f0c7404d4d644e2d68e68df24692656e936b17df33cf1d253ec9dfb1",
+          "exists": true,
+          "path": "./cairn/changes/add-minecraft-wiki-pi-skill/tasks.md"
+        }
+      ],
+      "manifest_hash": "0bde0d908feae1db08fec232e39545ba557f852d015b789e65463c3f0d8c60e0"
+    },
+    "kind": "archive",
+    "manifest_hash": "8dd9e61ceb769396d8f2eeedebe2cc7486dd1a3bd739d2b4d2c2f15695eb995d"
+  },
+  "plan_hash": "2dcf647359b27f440b7175e530ba00f9367873bc5b9df99099d0dac3dbaa4dc9",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "a24722234fba475b51295aef9a4706e4c5c671a6baffa95ebf33180d2b9ec94b"
+}
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+command: nix run .#cairn -- archive minecraft-wiki-plugin-roadmap --root .
+{
+  "actions": [
+    {
+      "description": "move active change to archive: minecraft-wiki-plugin-roadmap",
+      "kind": "archive_change",
+      "path": "./cairn/changes/minecraft-wiki-plugin-roadmap"
+    }
+  ],
+  "blocked": false,
+  "change": "minecraft-wiki-plugin-roadmap",
+  "dry_run": true,
+  "input_hash": "fd9b711dab74578202123bee35645f45c210273743726a8db84b94f80c121071",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "7533c440e192a6f5fa8f654677972d7229b3afdc0bab2d66628033513ba7ffbc",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "9bacca1d13fbdb7ff3359996ddd8823c3d72b8dc4189bfc027ccb8652897525c"
+}
+command: CAIRN_ARCHIVE_DATE=2026-07-01 nix run .#cairn -- archive minecraft-wiki-plugin-roadmap --root . --execute
+{
+  "actions": [
+    {
+      "description": "move active change to archive: minecraft-wiki-plugin-roadmap",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-07-01-minecraft-wiki-plugin-roadmap"
+    }
+  ],
+  "blocked": false,
+  "change": "minecraft-wiki-plugin-roadmap",
+  "dry_run": false,
+  "input_hash": "fd9b711dab74578202123bee35645f45c210273743726a8db84b94f80c121071",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "8cd78af3b91effb53c930c7c6811d140bc8899165c445cb3547a714cec4ca8cd",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-minecraft-wiki-plugin-roadmap/design.md"
+        },
+        {
+          "content_hash": "e24feaf5838321b74211b6896b2220f0745af2f02ab329333fc67fb7d7d82636",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-minecraft-wiki-plugin-roadmap/proposal.md"
+        },
+        {
+          "content_hash": "59c7fdd2a193d7a489804e7b2c0b4ad815898307343665959324f5f9df824c64",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-minecraft-wiki-plugin-roadmap/specs/vanilla-composable-plugins/spec.md"
+        },
+        {
+          "content_hash": "ad39218693ffe1626bd25ce77a4458a6839fa85cf9b6b2943d337e3c69115de8",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-01-minecraft-wiki-plugin-roadmap/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/minecraft-wiki-plugin-roadmap"
+        }
+      ],
+      "manifest_hash": "68e8ee5f42652db43514ca6493f6ef06fd3af5a34d736593e5178cff4ce324dc"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "8cd78af3b91effb53c930c7c6811d140bc8899165c445cb3547a714cec4ca8cd",
+          "exists": true,
+          "path": "./cairn/changes/minecraft-wiki-plugin-roadmap/design.md"
+        },
+        {
+          "content_hash": "e24feaf5838321b74211b6896b2220f0745af2f02ab329333fc67fb7d7d82636",
+          "exists": true,
+          "path": "./cairn/changes/minecraft-wiki-plugin-roadmap/proposal.md"
+        },
+        {
+          "content_hash": "59c7fdd2a193d7a489804e7b2c0b4ad815898307343665959324f5f9df824c64",
+          "exists": true,
+          "path": "./cairn/changes/minecraft-wiki-plugin-roadmap/specs/vanilla-composable-plugins/spec.md"
+        },
+        {
+          "content_hash": "ad39218693ffe1626bd25ce77a4458a6839fa85cf9b6b2943d337e3c69115de8",
+          "exists": true,
+          "path": "./cairn/changes/minecraft-wiki-plugin-roadmap/tasks.md"
+        }
+      ],
+      "manifest_hash": "6d299e5b264cf104855a7d80660dca4540df3ef44739157a69f430dc154e4353"
+    },
+    "kind": "archive",
+    "manifest_hash": "2ed350dc16da9009b510381e1431bde1bbf9d46552d2341ab6a6a4195d40f5d1"
+  },
+  "plan_hash": "0639df97dbbd6666e49fd15d8132bc6e8663dc3393468967945a73d339b12c95",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "29c77e2807e5b062f025496b10977e9e4da003dcaad0f537ab260e3d2fa144b4"
+}
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+exit_status=0

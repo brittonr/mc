@@ -1,0 +1,169 @@
+command: nix run .#cairn -- sync add-minecraft-wiki-pi-skill --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-minecraft-wiki-pi-skill/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-minecraft-wiki-pi-skill/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-minecraft-wiki-pi-skill",
+  "delta_specs": [
+    "./cairn/changes/add-minecraft-wiki-pi-skill/specs/repository-layout/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "0138cba2a6dc533cd3e87a26876ecd676611313ecb1491686d9aa31f96b35935",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "2f04f44bc621b312b30e2e441880a5c955cc6c66430dc1b66d91ef7d263bbdc7",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "879675c21b87b9fdfd367ddfdb80036abfb526e698c14dd96ac88897868bc48b"
+}
+command: nix run .#cairn -- sync add-minecraft-wiki-pi-skill --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/add-minecraft-wiki-pi-skill/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/add-minecraft-wiki-pi-skill/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "add-minecraft-wiki-pi-skill",
+  "delta_specs": [
+    "./cairn/changes/add-minecraft-wiki-pi-skill/specs/repository-layout/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "0138cba2a6dc533cd3e87a26876ecd676611313ecb1491686d9aa31f96b35935",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "c9df2166c3c2bea0880935ec10b021445b73ba5812161bbce0e6cab26e4fbba7",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "20c0d83a9cc83e5d40dd7b3f4726df82cde4d548949fc9daafb53605e319b387"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "c9df2166c3c2bea0880935ec10b021445b73ba5812161bbce0e6cab26e4fbba7",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "20c0d83a9cc83e5d40dd7b3f4726df82cde4d548949fc9daafb53605e319b387"
+    },
+    "kind": "sync",
+    "manifest_hash": "deba262450e822aaa7b0553459417644a22b077557112647e3d7d11df90e4830"
+  },
+  "plan_hash": "11f0b8dafed23f96077099e733324aa5b1e889bdee4bb6d5ae6529bb45d901d2",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "0e9e62a2e71628dbcdb5ecc9c0439f37a69eb753fd0f0968eaaafd162a6583b8"
+}
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+command: nix run .#cairn -- sync minecraft-wiki-plugin-roadmap --root .
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/minecraft-wiki-plugin-roadmap/specs/vanilla-composable-plugins/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/minecraft-wiki-plugin-roadmap/specs/vanilla-composable-plugins/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "minecraft-wiki-plugin-roadmap",
+  "delta_specs": [
+    "./cairn/changes/minecraft-wiki-plugin-roadmap/specs/vanilla-composable-plugins/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "fd9b711dab74578202123bee35645f45c210273743726a8db84b94f80c121071",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "6f6f6229b618978ec04ef775cea2a8a0dd6779ae40104ac5cdbcc274d59ff11c",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "2c00820ce4d3aef190669251db57cee88f03e789c605abea2dd34a32853581ca"
+}
+command: nix run .#cairn -- sync minecraft-wiki-plugin-roadmap --root . --execute
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/minecraft-wiki-plugin-roadmap/specs/vanilla-composable-plugins/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/minecraft-wiki-plugin-roadmap/specs/vanilla-composable-plugins/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "minecraft-wiki-plugin-roadmap",
+  "delta_specs": [
+    "./cairn/changes/minecraft-wiki-plugin-roadmap/specs/vanilla-composable-plugins/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "fd9b711dab74578202123bee35645f45c210273743726a8db84b94f80c121071",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "7f9c6f2b5c8024ef9952284c7c5ce7f047f029ba63607647970aa23fc4337364",
+          "exists": true,
+          "path": "./cairn/specs/vanilla-composable-plugins/spec.md"
+        }
+      ],
+      "manifest_hash": "c9a174b0cd80be64e2ddd3d057d3b3de53c260a604ab445a6a2d6170bd924579"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/specs/vanilla-composable-plugins/spec.md"
+        }
+      ],
+      "manifest_hash": "122c5293e3d754440df3ee82fb8195c586a036f24539a00684188b147ac620a4"
+    },
+    "kind": "sync",
+    "manifest_hash": "da5fd66480aa13378ac5759fabfef9fbe2b25b751b7cd8235be3b96acb8ff9b8"
+  },
+  "plan_hash": "59d174032cce546f6bce90de000d88802fb4e5a3819f790144e89245868f6e88",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "0105d555236c4ddd2cee33e4447a95b5a559fd0e1677e7d25327cc156fd73ce0"
+}
+command: nix run .#cairn -- validate --root .
+{
+  "change_issues": [],
+  "changes": 2,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 9,
+  "valid": true
+}
+exit_status=0

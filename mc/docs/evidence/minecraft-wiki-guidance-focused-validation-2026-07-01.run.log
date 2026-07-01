@@ -1,0 +1,7 @@
+command: tools/check_minecraft_wiki_guidance.rs --self-test
+minecraft wiki guidance self-test passed
+command: tools/check_minecraft_wiki_guidance.rs --root .
+minecraft wiki guidance check passed
+command: tools/check_check_tiers.rs --root .
+check tier docs passed
+exit_status=0
