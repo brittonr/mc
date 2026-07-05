@@ -1,0 +1,8 @@
+command: rustc tools/check_crafting_recipe_valence_shell_contract.rs --edition 2021 -o target/check-crafting-shell-contract && ./target/check-crafting-shell-contract --self-test
+exit_status=0
+output: crafting recipe Valence shell contract self-test passed: positive complete contract and 20 negative cases exercised
+---
+command: rustc tools/check_crafting_recipe_valence_shell_contract.rs --edition 2021 -o target/check-crafting-shell-contract && ./target/check-crafting-shell-contract
+exit_status=0
+output: crafting recipe Valence shell contract check passed: contract=docs/crafting-recipe-valence-shell-contract.md
+overall_exit_status=0

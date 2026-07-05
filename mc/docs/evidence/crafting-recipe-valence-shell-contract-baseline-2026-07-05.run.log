@@ -1,0 +1,16 @@
+command: rustc tools/check_crafting_recipe_behavior_card.rs --edition 2021 -o target/check-behavior-card && ./target/check-behavior-card --self-test
+exit_status=0
+output: crafting recipe behavior card self-test passed
+---
+command: rustc tools/check_crafting_recipe_core.rs --edition 2021 -o target/check-crafting-core && ./target/check-crafting-core --self-test
+exit_status=0
+output: crafting recipe selected-matrix core check passed
+---
+command: rustc tools/check_crafting_recipe_data_fixture.rs --edition 2021 -o target/check-crafting-fixture && ./target/check-crafting-fixture --self-test
+exit_status=0
+output: crafting recipe selected-matrix data fixture self-test passed
+---
+command: rustc tools/check_crafting_recipe_receipt_handoff.rs --edition 2021 -o target/check-crafting-receipt && ./target/check-crafting-receipt --self-test
+exit_status=0
+output: crafting recipe selected-matrix receipt handoff self-test passed: positive selected-matrix handoff and 13 negative cases exercised
+overall_exit_status=0

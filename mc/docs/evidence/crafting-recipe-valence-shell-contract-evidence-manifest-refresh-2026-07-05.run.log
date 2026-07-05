@@ -1,0 +1,5 @@
+check: evidence manifest refresh
+command: nix run path:/home/brittonr/git/mc#cairn -- evidence manifest refresh --root /home/brittonr/git/mc
+exit_status=0
+output: manifest refreshed
+overall_exit_status=0

@@ -1,0 +1,4 @@
+command: nix run path:/home/brittonr/git/mc#cairn -- sync add-crafting-recipe-valence-shell-contract --root /home/brittonr/git/mc --execute
+exit_status=0
+output: mutated=true kind=sync manifest_hash=f0d4d5f809284df2d4e1407166a9ba6a6ce8fa365181cc98c45bd72b8b2d68bb plan_hash=add85a943ae8bacf9c22ab27393814d15fbfb0da16c47db345dbb21f06c99f36
+overall_exit_status=0

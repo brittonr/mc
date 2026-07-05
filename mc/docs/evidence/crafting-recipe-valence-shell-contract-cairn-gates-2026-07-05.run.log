@@ -1,0 +1,16 @@
+command: nix run path:/home/brittonr/git/mc#cairn -- gate proposal add-crafting-recipe-valence-shell-contract --root /home/brittonr/git/mc
+exit_status=0
+output: valid=true verdict=PASS stage=proposal
+---
+command: nix run path:/home/brittonr/git/mc#cairn -- gate design add-crafting-recipe-valence-shell-contract --root /home/brittonr/git/mc
+exit_status=0
+output: valid=true verdict=PASS stage=design
+---
+command: nix run path:/home/brittonr/git/mc#cairn -- gate tasks add-crafting-recipe-valence-shell-contract --root /home/brittonr/git/mc
+exit_status=0
+output: valid=true verdict=PASS stage=tasks
+---
+command: nix run path:/home/brittonr/git/mc#cairn -- validate --root /home/brittonr/git/mc
+exit_status=0
+output: valid=true changes=1 specs_validated=8
+overall_exit_status=0

@@ -1,0 +1,4 @@
+command: nix run path:/home/brittonr/git/mc#cairn -- sync add-crafting-recipe-valence-shell-contract --root /home/brittonr/git/mc
+exit_status=0
+output: dry_run=true delta_specs=[vanilla-composable-plugins/spec.md] plan_hash=1dd6f47c75a53b7803bb72a4cae2704340934bb3b9fba12f629c4fe25a28d250
+overall_exit_status=0

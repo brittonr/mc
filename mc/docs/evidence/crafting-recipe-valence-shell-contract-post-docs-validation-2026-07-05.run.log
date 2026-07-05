@@ -1,0 +1,8 @@
+command: grep -E 'docs/crafting-recipe-valence-shell-contract' docs/evidence/crafting-recipe-selected-matrix-receipts-2026-07-01.md
+exit_status=0
+output: docs/evidence/crafting-recipe-selected-matrix-receipts-2026-07-01.md: contains "Next prerequisite" section naming docs/crafting-recipe-valence-shell-contract.md
+---
+command: grep -E 'docs/crafting-recipe-valence-shell-contract' docs/evidence/crafting-recipe-selected-matrix-core-inventory-2026-07-01.md
+exit_status=0
+output: docs/evidence/crafting-recipe-selected-matrix-core-inventory-2026-07-01.md: references docs/crafting-recipe-valence-shell-contract.md as the Valence Bevy/ECS shell contract
+overall_exit_status=0

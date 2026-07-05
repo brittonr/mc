@@ -37,5 +37,5 @@ Before stronger target-version or runtime claims, follow-on work still needs:
 - Java Edition 1.20.1 / protocol 763 recipe JSON extraction for selected shaped and shapeless rows;
 - malformed target-data fixtures and validation;
 - receipt handoff that compares selected rows against Paper/reference and Valence evidence through a dedicated checker;
-- a Valence Bevy/ECS shell contract and opt-in runtime shell evidence;
+- `docs/crafting-recipe-valence-shell-contract.md` as the Valence Bevy/ECS shell contract and opt-in runtime shell evidence;
 - dedicated scope for all-recipe breadth, data-pack loading, recipe-book behavior, automated crafter behavior, and arbitrary collection modes.

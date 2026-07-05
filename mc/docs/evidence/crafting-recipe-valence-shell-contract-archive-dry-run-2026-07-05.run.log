@@ -1,0 +1,4 @@
+command: nix run path:/home/brittonr/git/mc#cairn -- archive add-crafting-recipe-valence-shell-contract --root /home/brittonr/git/mc
+exit_status=0
+output: dry_run=true blocked=false plan_hash=540a66d678e9678ea1a702c5d4dbaf37f88c9512dbbda47b58677f224b33c4c2
+overall_exit_status=0

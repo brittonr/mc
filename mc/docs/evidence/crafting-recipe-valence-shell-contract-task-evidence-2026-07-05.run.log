@@ -1,0 +1,4 @@
+command: rustc tools/check_cairn_task_evidence.rs --edition 2021 -o target/check-cairn-evidence && ./target/check-cairn-evidence cairn/changes/add-crafting-recipe-valence-shell-contract/tasks.md
+exit_status=0
+output: task evidence gate passed: 5 completed tasks checked across 1 task files
+overall_exit_status=0

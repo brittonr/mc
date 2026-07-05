@@ -30,6 +30,10 @@ The checker summary in `docs/evidence/crafting-recipe-selected-matrix-receipts-c
 - Checker self-test and archived receipt handoff: `docs/evidence/crafting-recipe-selected-matrix-receipts-checker-2026-07-01.run.log` (`exit_status=0`).
 - BLAKE3 manifest: `docs/evidence/crafting-recipe-selected-matrix-receipts-2026-07-01.b3`.
 
+## Next prerequisite
+
+Before any Valence runtime shell implementation can claim selected-matrix crafting behavior, the next prerequisite is `docs/crafting-recipe-valence-shell-contract.md`, which defines the opt-in Bevy/ECS shell boundary, plugin ownership, schedule contract, data-loading boundaries, disabled-plugin behavior, and validation requirements.
+
 ## Non-claims
 
 This handoff proves only that the selected fixture/core inputs match the archived bounded Paper/reference and Valence receipt metrics for the finite selected matrix. It does not add a new live run and does not claim all recipes, arbitrary collection modes, shift-click/drag/split handling, data-pack loading, recipe-book behavior, recipe discovery or advancement behavior, automated crafter behavior, Valence runtime integration, default plugin membership, broad vanilla parity, broad Minecraft compatibility, public-server safety, production readiness, full survival correctness, or semantic equivalence.
