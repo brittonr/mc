@@ -1,0 +1,89 @@
+command=nix run .#cairn -- sync stage-onixresearch-workspace-namespace --root . && --execute
+cwd=/home/brittonr/git/mc
+started_at=2026-07-07T21:53:27-04:00
+== sync dry-run ==
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/stage-onixresearch-workspace-namespace/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/stage-onixresearch-workspace-namespace/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "stage-onixresearch-workspace-namespace",
+  "delta_specs": [
+    "./cairn/changes/stage-onixresearch-workspace-namespace/specs/repository-layout/spec.md"
+  ],
+  "dry_run": true,
+  "input_hash": "04352b6f2830fea8bf2a629baf7f40a58364c75cbdd1f0f41981be2711fa49ba",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "8cc85453bc699bdd068e4928be6903b12ab1bdf404958aaef8afde0e3bcf7f03",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "b854579f11c8346eeea0bc9d1b59f7a539a0e01a1d3cb786d09eb06b89e9b82a"
+}
+== sync execute ==
+{
+  "actions": [
+    {
+      "description": "merge delta spec into main specs: ./cairn/changes/stage-onixresearch-workspace-namespace/specs/repository-layout/spec.md",
+      "kind": "sync_delta_spec",
+      "path": "./cairn/changes/stage-onixresearch-workspace-namespace/specs/repository-layout/spec.md"
+    }
+  ],
+  "blocked": false,
+  "change": "stage-onixresearch-workspace-namespace",
+  "delta_specs": [
+    "./cairn/changes/stage-onixresearch-workspace-namespace/specs/repository-layout/spec.md"
+  ],
+  "dry_run": false,
+  "input_hash": "04352b6f2830fea8bf2a629baf7f40a58364c75cbdd1f0f41981be2711fa49ba",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "7d7c1ea737777bb10a5e67a634fc0f03bac71e0befc60cc6a7af9fcd009b00b9",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "f4f66e30cd981b05933c83d83b7846e9fa215f8b51fc9789fe550bfef0707571"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "3e8a548b6dc21af44ec0d86f78668c92ced800d2e53c64a647403e91c88e2052",
+          "exists": true,
+          "path": "./cairn/specs/repository-layout/spec.md"
+        }
+      ],
+      "manifest_hash": "5bfd2511dce36c7877d7228c2e0fb8b3bbf0b0dc45a513e864f2bdc5880870d0"
+    },
+    "kind": "sync",
+    "manifest_hash": "1e77d470dff4608e9067dd92f0ff65f3afc44d5b2d09e4cbaea9cd4bb9cdad54"
+  },
+  "plan_hash": "b0d2c0882ed9a65d9d0e674853d2028329b1718ef1ef561124fb9298b9cd3052",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "6c8bf6f7403da85a8e1ed237b5eb2386bb4dc492eb79df80358d668809fb91eb"
+}
+== validate ==
+{
+  "change_issues": [],
+  "changes": 1,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 8,
+  "valid": true
+}
+finished_at=2026-07-07T21:53:29-04:00
+exit_status=0

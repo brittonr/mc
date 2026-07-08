@@ -1,0 +1,6 @@
+command=cargo -Zscript tools/check_cairn_task_evidence.rs cairn/changes/stage-onixresearch-workspace-namespace/tasks.md
+cwd=/home/brittonr/git/mc
+started_at=2026-07-07T21:51:16-04:00
+task evidence gate passed: 5 completed tasks checked across 1 task files
+finished_at=2026-07-07T21:51:16-04:00
+exit_status=0

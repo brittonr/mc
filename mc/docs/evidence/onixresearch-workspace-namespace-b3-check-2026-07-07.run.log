@@ -1,0 +1,16 @@
+command=b3sum --check docs/evidence/onixresearch-workspace-namespace-2026-07-07.b3
+cwd=/home/brittonr/git/mc
+started_at=2026-07-07T21:55:56-04:00
+docs/evidence/onixresearch-workspace-namespace-baseline-2026-07-07.run.log: OK
+docs/evidence/onixresearch-workspace-namespace-move-2026-07-07.run.log: OK
+docs/evidence/onixresearch-workspace-namespace-focused-check-2026-07-07.run.log: OK
+docs/evidence/onixresearch-workspace-namespace-path-smokes-2026-07-07.run.log: OK
+docs/evidence/onixresearch-workspace-namespace-reference-updates-2026-07-07.run.log: OK
+docs/evidence/onixresearch-workspace-namespace-cairn-gates-2026-07-07.run.log: OK
+docs/evidence/onixresearch-workspace-namespace-task-evidence-2026-07-07.run.log: OK
+docs/evidence/onixresearch-workspace-namespace-inventory-2026-07-07.md: OK
+docs/onixresearch-workspace-namespace.md: OK
+tools/check_onixresearch_workspace_namespace.rs: OK
+global_manifest_check_note=docs/evidence/onixresearch-workspace-namespace-evidence-manifest-check-2026-07-07.run.log records pre-existing stale manifest drift outside this change; not refreshed to avoid blessing unrelated dirty Valence files
+finished_at=2026-07-07T21:55:56-04:00
+exit_status=0

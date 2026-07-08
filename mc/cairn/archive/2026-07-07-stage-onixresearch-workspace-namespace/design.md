@@ -2,7 +2,7 @@
 
 The local research workspace currently stores many repositories as siblings under `/home/brittonr/git/`, including `cairn`, `valence`, `octet`, `mantle`, `trellis`, `mc`, and related Onix projects. That layout works with existing local automation, but it does not clearly separate OnixResearch-owned stack repositories from unrelated checkouts.
 
-The desired target shape is a canonical namespace such as `/home/brittonr/git/OnixResearch/<repo>`. Existing consumers still reference legacy sibling paths directly, including `path:/home/brittonr/git/cairn#cairn`, repository-specific scripts, Pi skill guidance, lock files, docs, and evidence notes. Removing or moving those paths without a compatibility period would break validation commands and local workflows.
+The desired target shape is a canonical namespace such as `/home/brittonr/git/OnixResearch/<repo>`. Existing consumers still reference legacy sibling paths directly, including `path:/home/brittonr/git/cairn#cairn`, repository-specific scripts, Pi skill guidance, lock files, docs, and evidence notes. Removing or moving those paths without a compatibility period would break validation commands and local workflows. Literal Nix `path:` inputs need special handling because Nix rejects a flake root when the root path itself is a symlink.
 
 ## Decisions
 
@@ -14,9 +14,9 @@ The desired target shape is a canonical namespace such as `/home/brittonr/git/On
 
 ### 2. Canonical path plus compatibility symlink phase
 
-**Choice:** The target canonical home is `~/git/OnixResearch/<repo>`, while legacy `~/git/<repo>` paths remain as temporary compatibility symlinks for migrated repositories until all active consumers are updated or explicitly waived.
+**Choice:** The target canonical home is `~/git/OnixResearch/<repo>`, while legacy `~/git/<repo>` paths remain as temporary compatibility symlinks for shell/Git consumers of migrated repositories until all active consumers are updated or explicitly waived. Literal Nix `path:` inputs must migrate to the canonical path or resolve the symlink before invoking Nix.
 
-**Rationale:** Compatibility symlinks let existing commands keep working while docs and automation move toward the canonical namespace. They also provide a reversible transition if a path consumer is missed.
+**Rationale:** Compatibility symlinks let existing shell and Git path commands keep working while docs and automation move toward the canonical namespace. Nix flake path inputs are stricter and are safer when rewritten to canonical paths. The symlinks also provide a reversible transition if a non-Nix path consumer is missed.
 
 ### 3. Use a shared root variable for updated automation
 
@@ -30,11 +30,11 @@ The desired target shape is a canonical namespace such as `/home/brittonr/git/On
 
 **Rationale:** This is a local workspace layout migration. It should not accidentally imply organizational, provenance, release, or semantic changes.
 
-### 5. Prove both canonical and compatibility paths before archive
+### 5. Prove canonical paths, shell/Git compatibility paths, and Nix symlink behavior before archive
 
-**Choice:** Closeout evidence must show selected commands work through the canonical namespace and through compatibility paths during the transition.
+**Choice:** Closeout evidence must show selected commands work through the canonical namespace, shell/Git compatibility paths work through legacy symlinks, and literal symlinked Nix `path:` inputs fail with the expected diagnostic until they are migrated to canonical paths.
 
-**Rationale:** A migration is only safe if both the new path and the compatibility layer are valid for the tools that still depend on legacy paths.
+**Rationale:** A migration is only safe if the new path works, the compatibility layer is valid for shell/Git tools that still depend on legacy paths, and Nix-specific consumers are not falsely assumed to work through symlinked flake roots.
 
 ## Risks / Trade-offs
 

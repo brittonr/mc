@@ -2,7 +2,7 @@
 
 Selected: `stage-onixresearch-workspace-namespace`
 
-Why now: the Onix repositories are increasingly treated as one research stack, but many local skills, scripts, Nix inputs, flake locks, and evidence notes still assume sibling paths such as `/home/brittonr/git/cairn` and `path:/home/brittonr/git/cairn#cairn`. A direct move would break those consumers. A staged namespace plan can make `~/git/OnixResearch/` the canonical home while retaining temporary compatibility links and reviewable validation.
+Why now: the Onix repositories are increasingly treated as one research stack, but many local skills, scripts, Nix inputs, flake locks, and evidence notes still assume sibling paths such as `/home/brittonr/git/cairn` and `path:/home/brittonr/git/cairn#cairn`. A direct move would break shell/Git consumers and Nix `path:` consumers differently. A staged namespace plan can make `~/git/OnixResearch/` the canonical home while retaining temporary shell/Git compatibility links, migrating literal Nix path inputs to canonical paths, and recording reviewable validation.
 
 Prerequisites satisfied: current sibling repositories are already co-located under `~/git/`; the mc repository has an accepted `repository-layout` specification for path ownership, inventories, compatibility decisions, docs, and validation; prior cross-repo work identified hard-coded path consumers that need a compatibility phase.
 
@@ -20,12 +20,12 @@ A Cairn change should capture the migration contract before any filesystem mutat
 
 - Add repository-layout requirements for an OnixResearch workspace namespace inventory.
 - Define `~/git/OnixResearch/<repo>` as the proposed canonical namespace only after inventories and compatibility checks are recorded.
-- Require temporary compatibility symlinks from legacy `~/git/<repo>` paths during the staged migration.
-- Require active docs, scripts, skills, and Nix inputs to move toward a shared root variable instead of hard-coded legacy paths.
+- Require temporary compatibility symlinks from legacy `~/git/<repo>` paths during the staged migration for shell/Git path consumers.
+- Require active docs, scripts, skills, and literal Nix `path:` inputs to move toward a shared root variable instead of hard-coded legacy paths, because Nix rejects symlinked flake roots.
 - Require validation evidence before archive and before any later removal of compatibility symlinks.
 
 ## Impact
 
 - **Files**: this package adds Cairn proposal/design/tasks/spec delta. A later implementation may update workspace docs, scripts, Pi skills, Nix inputs/locks, flake references, and local symlink setup notes.
-- **Testing**: planned checks include path-reference inventory, symlink/canonical-path dry-runs, selected Nix path-input checks, Cairn gates, repository validation, and focused command smoke tests through both canonical and compatibility paths.
+- **Testing**: planned checks include path-reference inventory, symlink/canonical-path dry-runs, selected canonical Nix path-input checks, expected rejection checks for literal symlinked Nix `path:` inputs, Cairn gates, repository validation, and focused command smoke tests through canonical paths and shell/Git compatibility paths.
 - **Non-claims**: no repository is moved by this package; no remote, branch, commit, package lock, or release evidence claim changes without follow-up implementation evidence.

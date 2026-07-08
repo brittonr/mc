@@ -1,0 +1,124 @@
+command=nix run .#cairn -- archive stage-onixresearch-workspace-namespace --root . && --execute
+cwd=/home/brittonr/git/mc
+started_at=2026-07-07T21:56:24-04:00
+== archive dry-run ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: stage-onixresearch-workspace-namespace",
+      "kind": "archive_change",
+      "path": "./cairn/changes/stage-onixresearch-workspace-namespace"
+    }
+  ],
+  "blocked": false,
+  "change": "stage-onixresearch-workspace-namespace",
+  "dry_run": true,
+  "input_hash": "04352b6f2830fea8bf2a629baf7f40a58364c75cbdd1f0f41981be2711fa49ba",
+  "layout": "cairn",
+  "mutated": false,
+  "mutation_manifest": null,
+  "plan_hash": "e0abfaea91482f92646ba4d7b2055623bd0312d86eba5295b73946fdb25aefdb",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "1b8fe71cb9f97ff07414420bc544acb738398af3edbf856c63271672c234d4b4"
+}
+== archive execute ==
+{
+  "actions": [
+    {
+      "description": "move active change to archive: stage-onixresearch-workspace-namespace",
+      "kind": "archive_change",
+      "path": "./cairn/archive/2026-07-07-stage-onixresearch-workspace-namespace"
+    }
+  ],
+  "blocked": false,
+  "change": "stage-onixresearch-workspace-namespace",
+  "dry_run": false,
+  "input_hash": "04352b6f2830fea8bf2a629baf7f40a58364c75cbdd1f0f41981be2711fa49ba",
+  "layout": "cairn",
+  "mutated": true,
+  "mutation_manifest": {
+    "after": {
+      "entries": [
+        {
+          "content_hash": "ffd4b897da04e0f68cd877449c59cbd8a3bada114bd3d5c1863b036f06e972ae",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-07-stage-onixresearch-workspace-namespace/design.md"
+        },
+        {
+          "content_hash": "ebf28acfd3a14ec9da49a2f6adeb860c8eae2345f9742b739c2aef850d3e34c1",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-07-stage-onixresearch-workspace-namespace/proposal.md"
+        },
+        {
+          "content_hash": "040bc713bfd24084f4ae98c4635254ad96007df351f8ad9257cc102054984717",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-07-stage-onixresearch-workspace-namespace/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "57926bf52394a9b1902c457110bd3bd48754072708299d29ceec8a686e6679b5",
+          "exists": true,
+          "path": "./cairn/archive/2026-07-07-stage-onixresearch-workspace-namespace/tasks.md"
+        },
+        {
+          "content_hash": null,
+          "exists": false,
+          "path": "./cairn/changes/stage-onixresearch-workspace-namespace"
+        }
+      ],
+      "manifest_hash": "87db997158b8b772e62e0bc0fd900e18ebd42fdd9895cd8e659a8e0b2e1eaadb"
+    },
+    "before": {
+      "entries": [
+        {
+          "content_hash": "ffd4b897da04e0f68cd877449c59cbd8a3bada114bd3d5c1863b036f06e972ae",
+          "exists": true,
+          "path": "./cairn/changes/stage-onixresearch-workspace-namespace/design.md"
+        },
+        {
+          "content_hash": "ebf28acfd3a14ec9da49a2f6adeb860c8eae2345f9742b739c2aef850d3e34c1",
+          "exists": true,
+          "path": "./cairn/changes/stage-onixresearch-workspace-namespace/proposal.md"
+        },
+        {
+          "content_hash": "040bc713bfd24084f4ae98c4635254ad96007df351f8ad9257cc102054984717",
+          "exists": true,
+          "path": "./cairn/changes/stage-onixresearch-workspace-namespace/specs/repository-layout/spec.md"
+        },
+        {
+          "content_hash": "57926bf52394a9b1902c457110bd3bd48754072708299d29ceec8a686e6679b5",
+          "exists": true,
+          "path": "./cairn/changes/stage-onixresearch-workspace-namespace/tasks.md"
+        }
+      ],
+      "manifest_hash": "9dc9d5c4ba1d4321d77fc74d5fdc42ccac03e482c0a894f20f681f59c28421cd"
+    },
+    "kind": "archive",
+    "manifest_hash": "cfe09b7fd1302b11b76417581d1f7a011e180ef37efe5d84c7aac5448015822a"
+  },
+  "plan_hash": "88501d27bfe57bb4970bcaccfacc9ceaf4c15884bf0fe4ba561668efcac16e93",
+  "policy": "cairn-default",
+  "policy_hash": "a210ed841d260e0bf026f3c67ec810216b6409cfe6036f9132b51cc4e3176618",
+  "reasons": [],
+  "receipt_hash": "2b66598fa4b930b37dce2377705681313facb20048cab18c3486b46fc95b41e1"
+}
+== post-archive validate ==
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+== post-archive change list ==
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+finished_at=2026-07-07T21:56:26-04:00
+exit_status=0

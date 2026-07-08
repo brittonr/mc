@@ -1,0 +1,26 @@
+command=stage clean sibling repositories under /home/brittonr/git/OnixResearch with legacy symlinks
+cwd=/home/brittonr/git
+started_at=2026-07-07T21:39:33-04:00
+== cairn ==
+moved=/home/brittonr/git/cairn -> /home/brittonr/git/OnixResearch/cairn
+compat_link=/home/brittonr/git/cairn -> OnixResearch/cairn
+== valence ==
+The working copy has no changes.
+Working copy  (@) : uvrwrswz 218e1779 (empty) (no description set)
+Parent commit (@-): wxupstom f7b2279e main* | add deterministic evidence harness gates
+moved=/home/brittonr/git/valence -> /home/brittonr/git/OnixResearch/valence
+compat_link=/home/brittonr/git/valence -> OnixResearch/valence
+== octet ==
+moved=/home/brittonr/git/octet -> /home/brittonr/git/OnixResearch/octet
+compat_link=/home/brittonr/git/octet -> OnixResearch/octet
+== mantle ==
+moved=/home/brittonr/git/mantle -> /home/brittonr/git/OnixResearch/mantle
+compat_link=/home/brittonr/git/mantle -> OnixResearch/mantle
+== trellis ==
+moved=/home/brittonr/git/trellis -> /home/brittonr/git/OnixResearch/trellis
+compat_link=/home/brittonr/git/trellis -> OnixResearch/trellis
+== deferred ==
+mc_deferred=parent-owned tracked subtree with pre-existing dirty state; leave /home/brittonr/git/mc in place
+lowercase_onix_research_deferred=/home/brittonr/git/onix-research is an unrelated existing repository; not touched
+finished_at=2026-07-07T21:39:33-04:00
+exit_status=0

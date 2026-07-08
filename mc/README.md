@@ -62,6 +62,7 @@ Some receipt fields keep their historical names for schema compatibility, includ
 - [docs/configuration.md](docs/configuration.md): Nickel-backed config, source-tree overrides, matrix/compare workflows, Paper fallback, and pinned Cairn/Octet inputs.
 - [docs/verification.md](docs/verification.md): focused verification commands and closeout flow.
 - [docs/check-tiers.md](docs/check-tiers.md): validation tier taxonomy for docs, generated surfaces, evidence, component code, live/manual rails, and Cairn archive closeout.
+- [docs/onixresearch-workspace-namespace.md](docs/onixresearch-workspace-namespace.md): staged `ONIX_RESEARCH_ROOT` migration, compatibility symlink rules, path-reference classification, and non-claims.
 - [docs/scenario-derived-surfaces.md](docs/scenario-derived-surfaces.md): scenario-derived source-of-truth and freshness ownership.
 
 ## Evidence caveats

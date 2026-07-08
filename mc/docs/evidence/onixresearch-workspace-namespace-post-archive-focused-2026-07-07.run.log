@@ -1,0 +1,26 @@
+command=focused post-archive docs/layout checks
+cwd=/home/brittonr/git/mc
+started_at=2026-07-07T21:56:52-04:00
+OnixResearch workspace namespace self-test passed
+OnixResearch workspace namespace checks passed
+layout boundary self-test passed
+layout boundary checks passed; advisory_findings=2
+severity=Advisory code=root_transient_artifact path=result rule=root_transient_artifact message=root transient artifact result should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+severity=Advisory code=root_transient_artifact path=target rule=root_transient_artifact message=root transient artifact target should stay scratch-only owner_or_waiver_hint=transient root artifacts are advisory unless cited as review evidence next_action=move review-critical output under docs/evidence/ with a BLAKE3 manifest, otherwise leave it ignored or clean it locally
+{
+  "change_issues": [],
+  "changes": 0,
+  "issues": [],
+  "layout": "cairn",
+  "policy": "cairn-default",
+  "spec_issues": [],
+  "specs_validated": 7,
+  "valid": true
+}
+{
+  "changes": [],
+  "layout": "cairn",
+  "root": "."
+}
+finished_at=2026-07-07T21:56:52-04:00
+exit_status=0

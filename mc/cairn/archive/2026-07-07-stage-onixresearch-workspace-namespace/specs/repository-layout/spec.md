@@ -26,15 +26,16 @@ r[repository_layout.onixresearch_workspace_namespace.canonical_paths.contract]
 
 ### Requirement: OnixResearch compatibility links
 
-r[repository_layout.onixresearch_workspace_namespace.compatibility_links] Migrated repositories MUST retain temporary compatibility links from legacy `~/git/<repo>` paths to canonical `~/git/OnixResearch/<repo>` paths until active consumers are updated or explicitly waived.
+r[repository_layout.onixresearch_workspace_namespace.compatibility_links] Migrated repositories MUST retain temporary compatibility links from legacy `~/git/<repo>` paths to canonical `~/git/OnixResearch/<repo>` paths for shell and Git path consumers until active consumers are updated or explicitly waived.
 
-#### Scenario: Legacy commands keep working during migration
+#### Scenario: Legacy shell and Git commands keep working during migration
 
 r[repository_layout.onixresearch_workspace_namespace.compatibility_links.legacy]
 - GIVEN a repository has moved to the canonical namespace
-- WHEN a still-active legacy command resolves `~/git/<repo>` or `path:/home/brittonr/git/<repo>#...`
+- WHEN a still-active shell or Git command resolves `~/git/<repo>`
 - THEN the compatibility link resolves to the canonical repository path
-- AND validation records which consumers still depend on the compatibility path.
+- AND validation records which consumers still depend on the compatibility path
+- AND literal Nix `path:` inputs are migrated to the canonical path or recorded as expected symlink-root rejections until they are updated.
 
 #### Scenario: Compatibility removal fails closed
 
@@ -45,7 +46,7 @@ r[repository_layout.onixresearch_workspace_namespace.compatibility_links.retirem
 
 ### Requirement: OnixResearch reference updates
 
-r[repository_layout.onixresearch_workspace_namespace.reference_updates] Active workspace docs, scripts, skills, and Nix path references SHOULD migrate toward a shared canonical root setting instead of adding new hard-coded legacy sibling paths.
+r[repository_layout.onixresearch_workspace_namespace.reference_updates] Active workspace docs, scripts, skills, and literal Nix path references SHOULD migrate toward a shared canonical root setting instead of adding new hard-coded legacy sibling paths.
 
 #### Scenario: Updated automation uses a shared root
 
@@ -57,12 +58,12 @@ r[repository_layout.onixresearch_workspace_namespace.reference_updates.shared_ro
 
 ### Requirement: OnixResearch namespace validation
 
-r[repository_layout.onixresearch_workspace_namespace.validation] OnixResearch workspace namespace migration work MUST record focused validation through both canonical and compatibility paths before archive.
+r[repository_layout.onixresearch_workspace_namespace.validation] OnixResearch workspace namespace migration work MUST record focused validation through canonical paths, compatibility shell/Git paths, and selected canonical Nix path inputs before archive.
 
 #### Scenario: Migration closeout is reviewable
 
 r[repository_layout.onixresearch_workspace_namespace.validation.log]
 - GIVEN namespace migration work is ready to archive
 - WHEN reviewers inspect task evidence
-- THEN successful logs show path-reference inventory freshness, canonical-path command smoke checks, compatibility-path command smoke checks, selected Nix path-input validation, Cairn proposal/design/tasks gates, Cairn validation, and any waivers or rollback notes
+- THEN successful logs show path-reference inventory freshness, canonical-path command smoke checks, compatibility-path shell/Git command smoke checks, selected canonical Nix path-input validation, expected symlink-root rejection checks for literal compatibility Nix `path:` inputs, Cairn proposal/design/tasks gates, Cairn validation, and any waivers or rollback notes
 - AND the evidence preserves non-claims for remote changes, history rewriting, release eligibility, behavioral correctness, whole-stack safety, and compatibility-link retirement.

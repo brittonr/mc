@@ -1,0 +1,7 @@
+command=tools/check_onixresearch_workspace_namespace.rs --self-test && tools/check_onixresearch_workspace_namespace.rs --root .
+cwd=/home/brittonr/git/mc
+started_at=2026-07-07T21:47:43-04:00
+OnixResearch workspace namespace self-test passed
+OnixResearch workspace namespace checks passed
+finished_at=2026-07-07T21:47:43-04:00
+exit_status=0

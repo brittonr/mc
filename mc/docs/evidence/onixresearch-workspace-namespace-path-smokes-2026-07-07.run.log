@@ -1,0 +1,72 @@
+command=canonical path smokes, compatibility shell/Git smokes, and expected symlinked-Nix rejection checks
+cwd=/home/brittonr/git/mc
+started_at=2026-07-07T21:48:13-04:00
+== path facts ==
+cairn legacy=OnixResearch/cairn canonical_exists=yes
+valence legacy=OnixResearch/valence canonical_exists=yes
+octet legacy=OnixResearch/octet canonical_exists=yes
+mantle legacy=OnixResearch/mantle canonical_exists=yes
+trellis legacy=OnixResearch/trellis canonical_exists=yes
+mc legacy_is_dir=yes legacy_is_symlink=no
+== canonical cairn command smoke ==
+{
+  "changes": [
+    {
+      "delta_specs": [
+        "./cairn/changes/stage-onixresearch-workspace-namespace/specs/repository-layout/spec.md"
+      ],
+      "has_design": true,
+      "has_proposal": true,
+      "has_tasks": true,
+      "metadata": {
+        "groups": [],
+        "status": null,
+        "target_date": null
+      },
+      "name": "stage-onixresearch-workspace-namespace",
+      "path": "./cairn/changes/stage-onixresearch-workspace-namespace",
+      "task_counts": {
+        "done": 0,
+        "in_progress": 0,
+        "todo": 5,
+        "total": 5,
+        "unmarked": 0
+      }
+    }
+  ],
+  "layout": "cairn",
+  "root": "."
+}
+== compatibility shell/Git path smokes ==
+The working copy has no changes.
+Working copy  (@) : uvrwrswz 218e1779 (empty) (no description set)
+Parent commit (@-): wxupstom f7b2279e main* | add deterministic evidence harness gates
+== canonical nix path-input metadata ==
+[1mResolved URL:[0m  path:/home/brittonr/git/OnixResearch/cairn
+[1mLocked URL:[0m    path:/home/brittonr/git/OnixResearch/cairn?lastModified=1783475295&narHash=sha256-eszFMY9n0K1t/2nEGPB60lpHSuAPgKR1av/cu3pLG%2Bk%3D
+[1mDescription:[0m   Rust/Nickel Cairn lifecycle engine
+[1mPath:[0m          /nix/store/bawyjk3rkb3mks23c5gh66wwsgfpg6rh-source
+[1mLast modified:[0m 2026-07-07 21:48:15
+[1mFingerprint:[0m   4fb7b0c2c731e1ec9a41654dc2df83c27be74cd3ebdbb73654930b15892e5955
+[1mInputs:[0m
+├───[1mnixpkgs[0m: github:NixOS/nixpkgs/d233902?narHash=sha256-30sZNZoA1cqF5JNO9fVX%2BwgiQYjB7HJqqJ4ztCDeBZE%3D (2026-05-15 18:21:44)
+└───[1mslotcar[0m: github:OnixResearch/slotcar/2f8213a?narHash=sha256-OvqB00mDIsGDOcuK5jvPJUModVz9WbIBuM/l06TABHc%3D (2026-07-07 18:32:24)
+    ├───[1mcairn[0m: github:onixresearch/cairn/3c470b9?narHash=sha256-tnsP7kS55Druw%2Bk%2B/ZD%2B4hd5f0JsLgW8komD6LSCWJ4%3D (2026-05-23 01:47:20)
+    │   ├───[1mnixpkgs[0m follows input 'slotcar/nixpkgs'
+    │   └───[1mslotcar[0m: github:onixresearch/slotcar/b18a547?narHash=sha256-8F7g650MFMXm5zyOBadWg0pOHxXccDgwbOVUZYLwwkQ%3D (2026-05-16 03:56:12)
+    │       ├───[1mcrane[0m: github:ipetkov/crane/b556d7b?narHash=sha256-5xsK26KRHf0WytBtsBnQYC/lTWDhQuT57HJ7SzuqZcM%3D (2026-03-18 18:16:12)
+    │       ├───[1mdylint-src[0m: github:trailofbits/dylint/0e0a71e?narHash=sha256-3OkN9IX1ommW6JZlgOOalz8Zx8tQGNgjaM7LVMYFZVg%3D (2026-03-23 00:27:49)
+    │       ├───[1mflake-utils[0m: github:numtide/flake-utils/11707dc?narHash=sha256-l0KFg5HjrsfsO/JpG%2Br7fRrqm12kzFHyUHqHCVpMMbI%3D (2024-11-13 21:27:16)
+    │       │   └───[1msystems[0m: github:nix-systems/default/da67096?narHash=sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768%3D (2023-04-09 08:27:08)
+    │       ├───[1mnixpkgs[0m: github:NixOS/nixpkgs/9cf7092?narHash=sha256-9tpvMGFteZnd3gRQZFlRCohVpqooygFuy9yjuyRL2C0%3D (2026-03-18 13:30:56)
+    │       └───[1mrust-overlay[0m: github:oxalica/rust-overlay/dc00324?narHash=sha256-D8OOwvq3zDDCtIhMcNueb9tGSZaZUanKpWDleRgQ80U%3D (2026-03-23 03:12:45)
+    │           └───[1mnixpkgs[0m follows input 'slotcar/cairn/slotcar/nixpkgs'
+    ├───[1mcrane[0m: github:ipetkov/crane/b556d7b?narHash=sha256-5xsK26KRHf0WytBtsBnQYC/lTWDhQuT57HJ7SzuqZcM%3D (2026-03-18 18:16:12)
+== expected legacy symlinked nix path rejection: run ==
+legacy_nix_run_status=1
+error: file '«path:/home/brittonr/git/cairn»' is a symlink
+== expected legacy symlinked nix path rejection: metadata ==
+legacy_nix_metadata_status=1
+error: file '«path:/home/brittonr/git/cairn»' is a symlink
+finished_at=2026-07-07T21:48:16-04:00
+exit_status=0
